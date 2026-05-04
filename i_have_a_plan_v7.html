@@ -1,0 +1,514 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ink:#10182C;--green:#04B477;--green-mid:#0D8A5C;
+    --green-bg:#EBF8F2;--teal:#0D3F4A;
+    --sand:#FBF7F0;--sand-dark:#F2EBE0;
+    --grey:#47495A;--grey-light:#8A8C9A;--orange:#FB5004;
+    --wip:#BC0278;--white:#FFFFFF;
+    --border:rgba(16,24,44,0.10);--border-med:rgba(16,24,44,0.16);
+    --font:'DM Sans',sans-serif;--serif:'DM Serif Display',serif;
+  }
+  html,body{width:100%;background:var(--sand);font-family:var(--font);color:var(--ink)}
+  .app{width:100%;background:var(--sand);padding:0 32px 48px}
+
+  .top-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0 18px;border-bottom:1px solid var(--border);margin-bottom:26px}
+  .brand{font-family:var(--serif);font-size:20px;color:var(--ink)}
+  .brand span{color:var(--green)}
+  .nav-tabs{display:flex;gap:2px}
+  .nav-tab{font-size:13px;font-weight:500;padding:7px 16px;border-radius:20px;cursor:pointer;border:none;background:transparent;color:var(--grey);font-family:var(--font);transition:all 0.15s}
+  .nav-tab:hover{background:rgba(4,180,119,0.10);color:var(--green-mid)}
+  .nav-tab.active{background:var(--ink);color:white}
+
+  .plan-hero{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:26px 32px;margin-bottom:8px}
+  .plan-hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:1.2px;color:var(--green-mid);text-transform:uppercase;margin-bottom:7px}
+  .plan-hero-title{font-family:var(--serif);font-size:30px;color:var(--ink);line-height:1.2;margin-bottom:5px}
+  .plan-hero-sub{font-size:13px;color:var(--grey-light)}
+
+  .section-tabs{display:flex;border-bottom:1.5px solid var(--border)}
+  .section-tab{font-size:13px;font-weight:500;padding:11px 22px;cursor:pointer;border:none;background:transparent;color:var(--grey);font-family:var(--font);border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:all 0.15s}
+  .section-tab:hover{color:var(--ink)}
+  .section-tab.active{color:var(--green-mid);border-bottom-color:var(--green)}
+
+  .section-panel{display:none;padding:24px 0}
+  .section-panel.active{display:block}
+
+  .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+  .metric-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center}
+  .metric-label{font-size:10px;font-weight:600;color:var(--grey-light);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+  .metric-value{font-size:22px;font-weight:600;color:var(--ink);line-height:1}
+  .metric-value.green{color:var(--green-mid)}
+  .metric-value.orange{color:var(--orange)}
+  .metric-sub{font-size:11px;color:var(--grey-light);margin-top:4px}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+
+  .chart-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:20px}
+  .chart-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+  .chart-title{font-size:11px;font-weight:600;color:var(--grey);letter-spacing:0.8px;text-transform:uppercase}
+  .chart-sub{font-size:11px;color:var(--grey-light);margin-top:2px}
+  .chart-action{font-size:12px;color:var(--grey-light);border:1px solid var(--border-med);border-radius:6px;padding:4px 10px;cursor:pointer;background:transparent;font-family:var(--font);white-space:nowrap}
+  .chart-action:hover{color:var(--green-mid);border-color:var(--green)}
+
+  .ai-block{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:16px 20px;margin-bottom:20px}
+  .ai-block-header{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+  .ai-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+  .ai-label{font-size:10px;font-weight:600;color:var(--green-mid);letter-spacing:0.8px;text-transform:uppercase}
+  .ai-text{font-size:13px;color:var(--ink);line-height:1.70}
+  .ai-prompt-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--border)}
+  .prompt-chip{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border-med);background:var(--sand);cursor:pointer;color:var(--grey);font-family:var(--font);transition:all 0.15s}
+  .prompt-chip:hover{border-color:var(--green);color:var(--green-mid);background:var(--green-bg)}
+
+  .info-card{border:1px solid var(--border);border-radius:10px;padding:15px 18px;background:var(--white)}
+  .info-card-title{font-size:10px;font-weight:600;color:var(--grey-light);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px}
+  .info-card ul{padding:0;list-style:none}
+  .info-card li{font-size:13px;color:var(--ink);padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
+  .info-card li:last-child{border-bottom:none}
+  .info-card li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px}
+  .info-card li.warn::before{background:var(--orange)}
+
+  .deeper-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+  .deeper-link{font-size:12px;padding:6px 14px;border-radius:20px;border:1px solid var(--border-med);background:var(--white);cursor:pointer;color:var(--grey);font-family:var(--font);transition:all 0.15s}
+  .deeper-link:hover{border-color:var(--green-mid);color:var(--green-mid)}
+
+  .connector{background:var(--ink);border-radius:10px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;margin-top:8px;cursor:pointer}
+  .connector-text{font-size:13px;color:rgba(255,255,255,0.78);line-height:1.55;max-width:84%}
+  .connector-arrow{width:30px;height:30px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:white}
+
+  .alloc-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .alloc-row:last-child{margin-bottom:0}
+  .alloc-name{font-size:12px;color:var(--grey);width:96px;flex-shrink:0}
+  .alloc-track{flex:1;height:7px;background:var(--sand-dark);border-radius:4px;overflow:hidden}
+  .alloc-fill{height:100%;border-radius:4px}
+  .alloc-pct{font-size:12px;font-weight:500;color:var(--ink);width:32px;text-align:right}
+
+  .tax-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+  .tax-row:last-child{border-bottom:none}
+  .tax-row-label{color:var(--grey-light)}
+  .tax-row-value{font-weight:500;color:var(--ink)}
+  .tax-row-value.good{color:var(--green-mid)}
+
+  .bracket-row{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .bracket-row:last-child{margin-bottom:0}
+  .bracket-label{font-size:11px;color:var(--grey-light);width:36px;flex-shrink:0}
+  .bracket-bar-wrap{flex:1;height:17px;background:var(--sand-dark);border-radius:3px;overflow:hidden}
+  .bracket-bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:7px}
+  .bracket-bar-text{font-size:10px;font-weight:500;white-space:nowrap}
+
+  .paycheck-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:15px 18px;display:flex;align-items:center;gap:18px}
+  .ring-details{flex:1}
+  .ring-detail-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--border)}
+  .ring-detail-row:last-child{border-bottom:none}
+  .ring-detail-label{color:var(--grey-light);display:flex;align-items:center;gap:6px}
+  .ring-detail-val{font-weight:500;color:var(--ink)}
+
+  .ss-card{background:var(--green-bg);border:1px solid rgba(4,180,119,0.2);border-radius:10px;padding:15px 18px}
+  .ss-title{font-size:10px;font-weight:600;color:var(--green-mid);margin-bottom:9px;text-transform:uppercase;letter-spacing:0.5px}
+  .ss-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid rgba(4,180,119,0.15)}
+  .ss-row:last-child{border-bottom:none}
+  .ss-label{color:var(--grey)}
+  .ss-value{font-weight:500;color:var(--ink)}
+  .ss-value.better{color:var(--green-mid)}
+  .wip-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(188,2,120,0.08);color:var(--wip);font-weight:500;margin-left:4px}
+
+  .scrubber{margin-top:6px;padding:0 4px}
+  .scrubber-track{height:3px;background:var(--sand-dark);border-radius:2px;position:relative}
+  .scrubber-fill{position:absolute;left:0;top:0;height:100%;background:var(--green);border-radius:2px}
+  .scrubber-thumb{position:absolute;top:-5px;width:13px;height:13px;border-radius:50%;background:var(--ink);border:2px solid white;transform:translateX(-50%)}
+  .scrubber-labels{display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--grey-light)}
+  .scrubber-pill{background:var(--ink);color:white;padding:2px 8px;border-radius:10px;font-size:10px}
+</style>
+
+<div class="app">
+  <div class="top-nav">
+    <div class="brand">Boldin<span>.</span></div>
+    <div class="nav-tabs">
+      <button class="nav-tab">Home</button>
+      <button class="nav-tab">Today</button>
+      <button class="nav-tab active">My Plan</button>
+      <button class="nav-tab">Intelligence</button>
+    </div>
+  </div>
+
+  <div class="plan-hero">
+    <div class="plan-hero-eyebrow">I Have a Plan</div>
+    <div class="plan-hero-title">Your financial journey, in four chapters.</div>
+    <div class="plan-hero-sub">AI-powered · Boldin projection engine · Updated today</div>
+  </div>
+
+  <div class="section-tabs">
+    <button class="section-tab active" onclick="showSection('snapshot',0)">Snapshot</button>
+    <button class="section-tab" onclick="showSection('financial',1)">Financial Life</button>
+    <button class="section-tab" onclick="showSection('retirement',2)">Retirement</button>
+    <button class="section-tab" onclick="showSection('taxes',3)">Tax Strategy</button>
+  </div>
+
+  <!-- ── SNAPSHOT ─────────────────────────────────────── -->
+  <div id="snapshot" class="section-panel active">
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-label">Chance of Success</div><div class="metric-value green">82%</div><div class="metric-sub">Strong</div></div>
+      <div class="metric-card"><div class="metric-label">To Retirement</div><div class="metric-value">7 yrs</div><div class="metric-sub">Age 65</div></div>
+      <div class="metric-card"><div class="metric-label">FIRE</div><div class="metric-value orange">4 yrs</div><div class="metric-sub">Age 62</div></div>
+      <div class="metric-card"><div class="metric-label">Allocation</div><div class="metric-value">68/32</div><div class="metric-sub">Stocks / Bonds</div></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-title">My Financial Journey</div>
+        <button class="chart-action">+ Add event</button>
+      </div>
+      <svg width="100%" height="220" viewBox="0 0 860 220" preserveAspectRatio="xMidYMid meet">
+        <text x="48" y="32" text-anchor="end" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">$20M</text>
+        <text x="48" y="77" text-anchor="end" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">$12M</text>
+        <text x="48" y="122" text-anchor="end" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">$7.6M</text>
+        <text x="48" y="167" text-anchor="end" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">$3.1M</text>
+        <text x="12" y="110" text-anchor="middle" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif" transform="rotate(-90,12,110)">Projected net worth</text>
+        <line x1="55" y1="30" x2="845" y2="30" stroke="#E8E8EC" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="55" y1="75" x2="845" y2="75" stroke="#E8E8EC" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="55" y1="120" x2="845" y2="120" stroke="#E8E8EC" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="55" y1="165" x2="845" y2="165" stroke="#E8E8EC" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- FIRE at age 62 = 4 yrs from now — ~22% along the x axis -->
+        <line x1="230" y1="20" x2="230" y2="185" stroke="#FB5004" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+        <rect x="200" y="6" width="58" height="18" rx="4" fill="#FBF7F0" stroke="rgba(251,80,4,0.3)" stroke-width="1"/>
+        <text x="229" y="18" text-anchor="middle" font-size="9" fill="#FB5004" font-family="DM Sans,sans-serif" font-weight="600">FIRE 62</text>
+        <!-- Retirement at age 65 = 7 yrs from now — ~35% along -->
+        <line x1="350" y1="20" x2="350" y2="185" stroke="#8A8C9A" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="353" y="18" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">Retirement 65</text>
+        <!-- Confidence band -->
+        <path d="M55,168 C150,160 230,150 350,138 C470,126 580,100 700,70 C760,54 800,38 845,22 L845,50 C800,64 760,80 700,96 C580,126 470,152 350,162 C230,172 150,178 55,182 Z" fill="rgba(4,180,119,0.10)"/>
+        <!-- Net worth line -->
+        <path d="M55,168 C150,162 230,154 350,142 C470,130 580,104 700,72 C760,56 800,40 845,26" fill="none" stroke="#04B477" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- X axis -->
+        <text x="55" y="200" text-anchor="middle" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">2026</text>
+        <text x="175" y="200" text-anchor="middle" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">2029</text>
+        <text x="310" y="200" text-anchor="middle" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">2033</text>
+        <text x="450" y="200" text-anchor="middle" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">2038</text>
+        <text x="585" y="200" text-anchor="middle" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">2043</text>
+        <text x="720" y="200" text-anchor="middle" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">2050</text>
+        <text x="845" y="200" text-anchor="middle" font-size="10" fill="#8A8C9A" font-family="DM Sans,sans-serif">2062</text>
+        <!-- Event bubbles -->
+        <circle cx="80" cy="170" r="10" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <circle cx="115" cy="168" r="10" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <circle cx="200" cy="158" r="10" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <circle cx="280" cy="150" r="10" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <circle cx="360" cy="142" r="10" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <circle cx="430" cy="132" r="10" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <circle cx="500" cy="118" r="11" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <circle cx="720" cy="46" r="12" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <circle cx="845" cy="26" r="13" fill="white" stroke="#D0D3E0" stroke-width="1.5"/>
+        <text x="845" y="30" text-anchor="middle" font-size="11" fill="#04B477" font-family="DM Sans,sans-serif">♡</text>
+      </svg>
+      <div class="scrubber">
+        <div class="scrubber-track">
+          <div class="scrubber-fill" style="width:12%"></div>
+          <div class="scrubber-thumb" style="left:12%"></div>
+        </div>
+        <div class="scrubber-labels">
+          <span class="scrubber-pill">2026 (Age 58)</span>
+          <span>2062</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-block">
+      <div class="ai-block-header"><div class="ai-dot"></div><div class="ai-label">Boldin AI · Snapshot</div></div>
+      <div class="ai-text">Your plan is on solid ground. An 82% chance of success means you're well-positioned to retire at 65 — and your savings rate is doing the heavy lifting. The main thing to watch: your Social Security claiming age hasn't been set, and optimizing that one decision could meaningfully increase your lifetime income. Your asset allocation is reasonable for your timeline, though worth revisiting as you move into pre-retirement.</div>
+      <div class="ai-prompt-row">
+        <button class="prompt-chip" onclick="sendPrompt('What is my biggest financial risk right now?')">Biggest risk? ↗</button>
+        <button class="prompt-chip" onclick="sendPrompt('What would it take to retire 2 years earlier?')">Retire 2 years earlier? ↗</button>
+        <button class="prompt-chip" onclick="sendPrompt('How does my savings rate compare to what I need?')">Is my savings rate enough? ↗</button>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-title">Top opportunities</div>
+        <ul>
+          <li>Set Social Security claiming age</li>
+          <li>Add retirement spending phases</li>
+          <li>Review allocation for your timeline</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Data gaps</div>
+        <ul>
+          <li class="warn">Social Security age not set — using FRA</li>
+          <li class="warn">Spending phases not entered</li>
+          <li>All accounts linked</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="connector" onclick="showSection('financial',1)">
+      <div class="connector-text">Your trajectory looks strong. Before we look ahead, let's make sure the foundation is solid — here's where your financial life stands today.</div>
+      <div class="connector-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- ── FINANCIAL LIFE ──────────────────────────────── -->
+  <div id="financial" class="section-panel">
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-label">Net Worth</div><div class="metric-value">$1.24M</div><div class="metric-sub">+$48K this year</div></div>
+      <div class="metric-card"><div class="metric-label">Surplus</div><div class="metric-value green">$2,100</div><div class="metric-sub">/ month</div></div>
+      <div class="metric-card"><div class="metric-label">Savings Rate</div><div class="metric-value">18%</div><div class="metric-sub">Target: 15%</div></div>
+      <div class="metric-card"><div class="metric-label">DTI</div><div class="metric-value green">22%</div><div class="metric-sub">Healthy</div></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-title">Cash Flow Breakdown</div>
+          <div class="chart-sub">Total Income $145,896</div>
+        </div>
+        <div style="font-size:11px;color:var(--grey-light);font-weight:500;padding-top:2px">Total Outflows $145,895</div>
+      </div>
+      <svg width="100%" height="240" viewBox="0 0 860 240" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="gWork" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#E8C84A;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#B4B2A9;stop-opacity:0.6"/>
+          </linearGradient>
+          <linearGradient id="gPension" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#7EC8A0;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#B4B2A9;stop-opacity:0.6"/>
+          </linearGradient>
+        </defs>
+        <!-- Income bars left -->
+        <rect x="30" y="28" width="18" height="162" rx="3" fill="#E8C84A"/>
+        <text x="22" y="116" text-anchor="end" font-size="11" fill="#47495A" font-family="DM Sans,sans-serif">Work: $134,988</text>
+        <rect x="30" y="196" width="18" height="28" rx="3" fill="#7EC8A0"/>
+        <text x="22" y="213" text-anchor="end" font-size="11" fill="#47495A" font-family="DM Sans,sans-serif">Pension: $10,908</text>
+        <!-- Flow paths -->
+        <path d="M48,28 C210,28 210,38 365,38 L365,200 C210,200 210,190 48,190 Z" fill="url(#gWork)" opacity="0.5"/>
+        <path d="M48,196 C210,196 210,206 365,206 L365,224 C210,224 210,214 48,224 Z" fill="url(#gPension)" opacity="0.45"/>
+        <!-- Center divider -->
+        <rect x="363" y="36" width="6" height="190" rx="2" fill="#8A8C9A" opacity="0.35"/>
+        <!-- Output flows -->
+        <path d="M369,36 C530,36 530,26 710,26 L710,58 C530,58 530,68 369,68 Z" fill="#B4D4E8" opacity="0.5"/>
+        <path d="M369,68 C530,68 530,60 710,60 L710,102 C530,102 530,110 369,110 Z" fill="#85C1E9" opacity="0.45"/>
+        <path d="M369,110 C530,110 530,98 710,98 L710,204 C530,204 530,216 369,216 Z" fill="#FADBD8" opacity="0.5"/>
+        <path d="M369,216 C530,216 530,222 710,222 L710,236 C530,236 530,230 369,230 Z" fill="#D5E8D4" opacity="0.5"/>
+        <!-- Output bars right -->
+        <rect x="826" y="20" width="14" height="42" rx="3" fill="#1A5276"/>
+        <text x="820" y="36" text-anchor="end" font-size="10" fill="#47495A" font-family="DM Sans,sans-serif">Medical: $19,200</text>
+        <rect x="826" y="58" width="14" height="46" rx="3" fill="#2E86C1"/>
+        <text x="820" y="74" text-anchor="end" font-size="10" fill="#47495A" font-family="DM Sans,sans-serif">Est. Income Tax: $27,870</text>
+        <rect x="826" y="96" width="14" height="110" rx="3" fill="#E74C3C"/>
+        <text x="820" y="155" text-anchor="end" font-size="11" fill="#47495A" font-family="DM Sans,sans-serif">General recurring: $85,500</text>
+        <rect x="826" y="218" width="14" height="20" rx="3" fill="#8E44AD" opacity="0.65"/>
+        <text x="820" y="232" text-anchor="end" font-size="10" fill="#47495A" font-family="DM Sans,sans-serif">Savings &amp; Contributions: $13,325</text>
+      </svg>
+      <div class="scrubber">
+        <div class="scrubber-track">
+          <div class="scrubber-fill" style="width:12%"></div>
+          <div class="scrubber-thumb" style="left:12%"></div>
+        </div>
+        <div class="scrubber-labels">
+          <span class="scrubber-pill">2026 (Age 58)</span>
+          <span>2062</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-title" style="margin-bottom:10px">Asset allocation</div>
+        <div class="alloc-row"><div class="alloc-name">US Equities</div><div class="alloc-track"><div class="alloc-fill" style="width:48%;background:#04B477"></div></div><div class="alloc-pct">48%</div></div>
+        <div class="alloc-row"><div class="alloc-name">Intl Equities</div><div class="alloc-track"><div class="alloc-fill" style="width:20%;background:#0D3F4A"></div></div><div class="alloc-pct">20%</div></div>
+        <div class="alloc-row"><div class="alloc-name">Bonds</div><div class="alloc-track"><div class="alloc-fill" style="width:22%;background:#7EC8A0"></div></div><div class="alloc-pct">22%</div></div>
+        <div class="alloc-row"><div class="alloc-name">Cash</div><div class="alloc-track"><div class="alloc-fill" style="width:6%;background:#BDCCC4"></div></div><div class="alloc-pct">6%</div></div>
+        <div class="alloc-row"><div class="alloc-name">Other</div><div class="alloc-track"><div class="alloc-fill" style="width:4%;background:#D0D3E0"></div></div><div class="alloc-pct">4%</div></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Top opportunities</div>
+        <ul>
+          <li>Direct surplus to Roth contributions</li>
+          <li>Review tax location across accounts</li>
+          <li>Link 2 remaining accounts via Plaid</li>
+        </ul>
+        <div style="margin-top:12px"><div class="info-card-title">Data gaps</div></div>
+        <ul style="margin-top:10px"><li class="warn">Cost basis missing on taxable accounts</li></ul>
+      </div>
+    </div>
+
+    <div class="ai-block">
+      <div class="ai-block-header"><div class="ai-dot"></div><div class="ai-label">Boldin AI · Financial Life</div></div>
+      <div class="ai-text">Your financial foundation is working in your favor. An 18% savings rate that exceeds your target, a healthy surplus, and a manageable debt load all point to a household building wealth steadily. The main opportunity: make sure that $2,100 monthly surplus has a clear destination — idle surplus is the most common missed opportunity at your stage. Your tax location across accounts also has room for optimization.</div>
+      <div class="ai-prompt-row">
+        <button class="prompt-chip" onclick="sendPrompt('What is the best use of my monthly surplus?')">Best use of surplus? ↗</button>
+        <button class="prompt-chip" onclick="sendPrompt('Am I holding too much cash?')">Too much cash? ↗</button>
+        <button class="prompt-chip" onclick="sendPrompt('When will I be debt-free?')">When debt-free? ↗</button>
+      </div>
+    </div>
+
+    <div class="deeper-row">
+      <button class="deeper-link">Asset Allocation report →</button>
+      <button class="deeper-link">Tax Location report →</button>
+      <button class="deeper-link">Net Worth report →</button>
+    </div>
+
+    <div class="connector" onclick="showSection('retirement',2)">
+      <div class="connector-text">Your financial foundation gives us a clear picture of what you're working with. Now the question that matters most — will it be enough?</div>
+      <div class="connector-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- ── RETIREMENT ──────────────────────────────────── -->
+  <div id="retirement" class="section-panel">
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-label">Chance of Success</div><div class="metric-value green">82%</div><div class="metric-sub">Strong</div></div>
+      <div class="metric-card"><div class="metric-label">To Retirement</div><div class="metric-value">7 yrs</div><div class="metric-sub">Target: Age 65</div></div>
+      <div class="metric-card"><div class="metric-label">Safe Spending</div><div class="metric-value">$8,400</div><div class="metric-sub">/ month</div></div>
+      <div class="metric-card"><div class="metric-label">FIRE</div><div class="metric-value orange">Age 62</div><div class="metric-sub">4 yrs away</div></div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="paycheck-card">
+        <svg width="96" height="96" viewBox="0 0 96 96" style="flex-shrink:0">
+          <path d="M48,48 L48,6 A42,42 0 0,1 84.4,69 Z" fill="#04B477"/>
+          <path d="M48,48 L84.4,69 A42,42 0 1,1 48,6 Z" fill="#0D3F4A"/>
+          <circle cx="48" cy="48" r="26" fill="white"/>
+          <text x="48" y="45" text-anchor="middle" font-size="11" font-weight="600" fill="#10182C" font-family="DM Sans,sans-serif">$8,040</text>
+          <text x="48" y="58" text-anchor="middle" font-size="9" fill="#8A8C9A" font-family="DM Sans,sans-serif">/ month</text>
+        </svg>
+        <div class="ring-details">
+          <div style="font-size:10px;font-weight:600;color:var(--grey-light);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:9px">Retirement Paycheck</div>
+          <div class="ring-detail-row">
+            <span class="ring-detail-label"><span style="width:8px;height:8px;border-radius:50%;background:#04B477;display:inline-block;flex-shrink:0"></span>Social Security</span>
+            <span class="ring-detail-val">$2,840 / mo</span>
+          </div>
+          <div class="ring-detail-row">
+            <span class="ring-detail-label"><span style="width:8px;height:8px;border-radius:50%;background:#0D3F4A;display:inline-block;flex-shrink:0"></span>Portfolio income</span>
+            <span class="ring-detail-val">$5,200 / mo</span>
+          </div>
+          <div class="ring-detail-row"><span class="ring-detail-label">Total monthly</span><span class="ring-detail-val" style="color:var(--green-mid)">$8,040 / mo</span></div>
+        </div>
+      </div>
+      <div class="ss-card">
+        <div class="ss-title">Social Security summary</div>
+        <div class="ss-row"><span class="ss-label">Claiming at 65 (FRA)</span><span class="ss-value">$2,840 / mo</span></div>
+        <div class="ss-row"><span class="ss-label">Claiming at 70</span><span class="ss-value better">$3,520 / mo · +24%</span></div>
+        <div class="ss-row"><span class="ss-label">Breakeven age</span><span class="ss-value">82</span></div>
+        <div class="ss-row"><span class="ss-label">Avg withdrawal rate</span><span class="ss-value">3.8% · within guardrails</span></div>
+      </div>
+    </div>
+
+    <div class="ai-block">
+      <div class="ai-block-header"><div class="ai-dot"></div><div class="ai-label">Boldin AI · Retirement</div></div>
+      <div class="ai-text">You're on track. An 82% chance of success means your plan survives most market scenarios, and your safe spending of $8,400/month supports a solid retirement lifestyle. The highest-impact move still available: delaying Social Security to 70 adds $680/month for life — more than worth the 5-year wait if you live past 82. Your healthcare bridge from 65 to Medicare enrollment isn't modeled yet. That's your most important next input.</div>
+      <div class="ai-prompt-row">
+        <button class="prompt-chip" onclick="sendPrompt('What happens to my plan if markets drop 30% in my first year of retirement?')">30% market drop scenario ↗</button>
+        <button class="prompt-chip" onclick="sendPrompt('How much more secure would I be claiming Social Security at 70?')">SS at 70 impact ↗</button>
+        <button class="prompt-chip" onclick="sendPrompt('What is my safe annual spending in retirement?')">Safe spending detail ↗</button>
+      </div>
+    </div>
+
+    <div class="deeper-row">
+      <button class="deeper-link">Retirement Withdrawals →</button>
+      <button class="deeper-link">IRMAA projection →</button>
+      <button class="deeper-link">Estate &amp; Surviving Spouse <span class="wip-badge">WIP</span> →</button>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-title">Top opportunities</div>
+        <ul>
+          <li>Model Social Security at age 70</li>
+          <li>Add healthcare bridge (65–Medicare)</li>
+          <li>Model part-time income bridge</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Data gaps</div>
+        <ul>
+          <li class="warn">Healthcare bridge not modeled</li>
+          <li class="warn">Long-term care cost not entered</li>
+          <li class="warn">Estate documents not uploaded</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="connector" onclick="showSection('taxes',3)">
+      <div class="connector-text">You have a clear path to retirement. What most people don't realize is that taxes are one of the biggest variables between here and there. Let's look at how much you actually get to keep.</div>
+      <div class="connector-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- ── TAX STRATEGY ────────────────────────────────── -->
+  <div id="taxes" class="section-panel">
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-label">Effective Rate</div><div class="metric-value">19.4%</div><div class="metric-sub">Today</div></div>
+      <div class="metric-card"><div class="metric-label">Lifetime Rate</div><div class="metric-value orange">23.1%</div><div class="metric-sub">Projected</div></div>
+      <div class="metric-card"><div class="metric-label">Lifetime Taxes</div><div class="metric-value">$618K</div><div class="metric-sub">Projected</div></div>
+      <div class="metric-card"><div class="metric-label">Roth Opportunity</div><div class="metric-value green">Yes</div><div class="metric-sub">~$24K headroom</div></div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="info-card">
+        <div class="info-card-title" style="margin-bottom:10px">Current tax situation</div>
+        <div class="tax-row"><span class="tax-row-label">Filing status</span><span class="tax-row-value">Married filing jointly</span></div>
+        <div class="tax-row"><span class="tax-row-label">Gross income</span><span class="tax-row-value">$184,000</span></div>
+        <div class="tax-row"><span class="tax-row-label">Taxable income</span><span class="tax-row-value">$152,400</span></div>
+        <div class="tax-row"><span class="tax-row-label">Current bracket</span><span class="tax-row-value">22%</span></div>
+        <div class="tax-row"><span class="tax-row-label">Roth headroom</span><span class="tax-row-value good">~$24,000</span></div>
+        <div class="tax-row"><span class="tax-row-label">Active strategies</span><span class="tax-row-value">Roth · IRMAA planning</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title" style="margin-bottom:10px">Net taxable income by bracket</div>
+        <div class="bracket-row"><div class="bracket-label">10%</div><div class="bracket-bar-wrap"><div class="bracket-bar-fill" style="width:14%;background:#A4E8CE"><span class="bracket-bar-text" style="color:#0D3F4A">$23K</span></div></div></div>
+        <div class="bracket-row"><div class="bracket-label">12%</div><div class="bracket-bar-wrap"><div class="bracket-bar-fill" style="width:50%;background:#04B477"><span class="bracket-bar-text" style="color:white">$89K</span></div></div></div>
+        <div class="bracket-row"><div class="bracket-label">22%</div><div class="bracket-bar-wrap"><div class="bracket-bar-fill" style="width:23%;background:#0D3F4A"><span class="bracket-bar-text" style="color:white">$40K ← you</span></div></div></div>
+        <div class="bracket-row"><div class="bracket-label">24%</div><div class="bracket-bar-wrap"><div class="bracket-bar-fill" style="width:4%;background:#D0D3E0"><span class="bracket-bar-text" style="color:var(--grey)"></span></div></div></div>
+      </div>
+    </div>
+
+    <div class="ai-block">
+      <div class="ai-block-header"><div class="ai-dot"></div><div class="ai-label">Boldin AI · Tax Strategy</div></div>
+      <div class="ai-text">You're in the 22% bracket with about $24,000 of headroom before hitting 24% — a meaningful Roth conversion window. Converting now locks in today's rate on dollars that would otherwise be taxed at higher rates in retirement when RMDs arrive. Your projected lifetime rate of 23.1% is higher than your current effective rate, which tells us your tax burden grows in retirement. Roth conversions in the next 7 years are your most powerful tool to close that gap.</div>
+      <div class="ai-prompt-row">
+        <button class="prompt-chip" onclick="sendPrompt('How much should I convert to Roth this year?')">How much to convert? ↗</button>
+        <button class="prompt-chip" onclick="sendPrompt('What will my RMDs look like at 73 if I do nothing?')">RMDs at 73 ↗</button>
+        <button class="prompt-chip" onclick="sendPrompt('Am I at risk for IRMAA in retirement?')">IRMAA risk? ↗</button>
+      </div>
+    </div>
+
+    <div class="deeper-row">
+      <button class="deeper-link">Lifetime Tax report →</button>
+      <button class="deeper-link">Roth Explorer →</button>
+      <button class="deeper-link">IRMAA report →</button>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-title">Top opportunities</div>
+        <ul>
+          <li>Convert $24K to Roth this year at 22%</li>
+          <li>Model Roth ladder in Intelligence</li>
+          <li>Upload tax return to Vault</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Data gaps</div>
+        <ul>
+          <li class="warn">Tax return not uploaded to Vault</li>
+          <li class="warn">Cost basis missing on taxable accounts</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="connector" onclick="sendPrompt('Take me to Intelligence to optimize my plan')">
+      <div class="connector-text">You've seen the full picture. Now let's sharpen it. Intelligence uses everything you've reviewed to surface your highest-impact moves. Ready to optimize?</div>
+      <div class="connector-arrow">→</div>
+    </div>
+  </div>
+
+</div>
+<script>
+function showSection(id,idx){
+  document.querySelectorAll('.section-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.section-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+}
+</script>
