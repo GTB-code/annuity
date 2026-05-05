@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boldin — Social Security Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#10182C;--green:#04B477;--teal:#0D3F4A;--white:#FFFFFF;
+  --orange:#FB5004;--mint:#A4E8CE;--yellow:#FBBD04;
+  --eggshell:#EBF8F2;--sand:#FBF7F0;--gray:#47495A;
+  --font:'DM Sans',sans-serif;--r:10px;
+}
+body{font-family:var(--font);background:#ECEEF1;color:var(--ink);min-height:100vh;padding:28px 16px;}
+.page{max-width:820px;margin:0 auto;}
+.shell{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(16,24,44,.10);}
+
+/* ── Top bar ── */
+.topbar{background:var(--ink);padding:13px 20px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:9px;}
+.arches{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.arch{border:2.5px solid var(--green);border-bottom:none;border-radius:50% 50% 0 0/100% 100% 0 0;}
+.a1{width:18px;height:9px;}.a2{width:12px;height:6px;}.a3{width:6px;height:3px;}
+.logo-txt{color:var(--white);font-size:15px;font-weight:700;letter-spacing:-.3px;}
+.crumb{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.4);}
+.crumb .cur{color:var(--mint);font-weight:600;}
+.cs{color:rgba(255,255,255,.2);}
+
+/* ── Section header ── */
+.sec-hdr{background:var(--eggshell);border-bottom:.5px solid rgba(4,180,119,.18);padding:13px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.sec-hdr h2{font-size:14px;font-weight:700;margin-bottom:2px;}
+.sec-hdr p{font-size:11px;color:var(--gray);}
+.mtog{display:flex;background:rgba(16,24,44,.08);border-radius:20px;padding:3px;gap:2px;}
+.mb{padding:5px 13px;font-size:12px;font-weight:600;border:none;border-radius:16px;cursor:pointer;background:transparent;color:var(--gray);font-family:var(--font);transition:all .15s;}
+.mb.on{background:var(--green);color:var(--white);}
+
+/* ── Body ── */
+.body{padding:16px 20px;display:flex;flex-direction:column;gap:14px;}
+
+/* ── My Plan data banner ── */
+.plan-banner{background:var(--ink);border-radius:var(--r);padding:12px 16px;}
+.plan-banner-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.plan-banner-hdr span{font-size:10px;font-weight:700;color:var(--mint);text-transform:uppercase;letter-spacing:.07em;}
+.plan-link{font-size:10px;color:rgba(255,255,255,.45);text-decoration:none;border-bottom:.5px solid rgba(255,255,255,.2);padding-bottom:1px;cursor:pointer;}
+.plan-link:hover{color:var(--mint);}
+.plan-fields{display:grid;gap:8px;}
+.plan-fields.couple{grid-template-columns:repeat(4,1fr);}
+.plan-fields.single{grid-template-columns:repeat(3,1fr);}
+.pf{background:rgba(255,255,255,.06);border-radius:6px;padding:7px 10px;}
+.pf-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.pf-val{font-size:13px;font-weight:600;color:var(--white);}
+.pf-sub{font-size:9px;color:rgba(255,255,255,.35);margin-top:1px;}
+.plan-divider{height:.5px;background:rgba(255,255,255,.08);margin:10px 0;}
+.plan-fields-bottom{display:grid;gap:8px;}
+.plan-fields-bottom.couple{grid-template-columns:repeat(4,1fr);}
+.plan-fields-bottom.single{grid-template-columns:repeat(3,1fr);}
+
+/* ── Controls card ── */
+.card{border-radius:var(--r);border:.5px solid rgba(16,24,44,.1);padding:14px 16px;}
+.sand{background:var(--sand);}
+.white{background:var(--white);}
+.egg{background:var(--eggshell);border-color:rgba(4,180,119,.2);}
+.slbl{font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid var(--mint);}
+.inl{display:flex;align-items:center;gap:7px;}
+input[type=range]{accent-color:var(--green);flex:1;}
+.f label{font-size:10px;font-weight:700;color:var(--gray);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;}
+.f select{width:100%;background:var(--white);border:.5px solid rgba(16,24,44,.2);border-radius:6px;padding:6px 9px;font-size:13px;font-weight:500;color:var(--ink);font-family:var(--font);}
+.f select:focus{outline:2px solid var(--green);outline-offset:1px;border-color:transparent;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px 13px;}
+
+/* ── Benefit reduction toggle ── */
+.sw{position:relative;width:34px;height:19px;flex-shrink:0;}
+.sw input{opacity:0;width:0;height:0;position:absolute;}
+.trk{position:absolute;inset:0;background:rgba(16,24,44,.18);border-radius:20px;cursor:pointer;transition:background .2s;}
+.sw input:checked+.trk{background:var(--green);}
+.trk::before{content:'';position:absolute;width:13px;height:13px;left:3px;top:3px;background:white;border-radius:50%;transition:transform .2s;}
+.sw input:checked+.trk::before{transform:translateX(15px);}
+.tlbl{font-size:12px;font-weight:600;color:var(--ink);}
+.rexp{margin-top:11px;padding-top:11px;border-top:.5px solid rgba(16,24,44,.08);display:none;}
+.rexp.vis{display:block;}
+.rhint{font-size:11px;color:var(--orange);line-height:1.5;margin-top:8px;}
+.f input{width:100%;background:var(--white);border:.5px solid rgba(16,24,44,.2);border-radius:6px;padding:6px 9px;font-size:13px;font-weight:500;color:var(--ink);font-family:var(--font);}
+.f input:focus{outline:2px solid var(--green);outline-offset:1px;border-color:transparent;}
+
+/* ── Strategy grid ── */
+.sg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.sc-card{border-radius:var(--r);overflow:hidden;border:.5px solid rgba(16,24,44,.12);display:flex;flex-direction:column;}
+.sc-card.rec{border:2px solid var(--green);}
+.sh{padding:9px 11px;}
+.hink{background:var(--ink);}.hteal{background:var(--teal);}.hgreen{background:var(--green);}
+.sh-t{font-size:11px;font-weight:700;color:white;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.sh-s{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px;}
+.rpill{background:rgba(255,255,255,.22);color:white;font-size:9px;font-weight:700;padding:2px 6px;border-radius:9px;white-space:nowrap;}
+.sb{background:var(--white);padding:11px;flex:1;display:flex;flex-direction:column;}
+.mv{font-size:20px;font-weight:700;color:var(--ink);line-height:1.1;}
+.mv span{font-size:12px;font-weight:400;color:var(--gray);}
+.ml{font-size:10px;color:var(--gray);margin-top:2px;}
+.dv{height:.5px;background:rgba(16,24,44,.08);margin:9px 0;}
+.sr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.sr:last-child{margin-bottom:0;}
+.srl{font-size:10px;color:var(--gray);}
+.srv{font-size:11px;font-weight:600;color:var(--ink);}
+.srv.g{color:var(--green);}
+
+/* ── CoS meter ── */
+.cos-wrap{margin-top:2px;}
+.cos-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.cos-pct{font-size:13px;font-weight:700;}
+.cos-note{font-size:9px;color:var(--gray);font-style:italic;}
+.cos-track{height:6px;background:rgba(16,24,44,.1);border-radius:3px;overflow:hidden;}
+.cos-fill{height:100%;border-radius:3px;transition:width .4s;}
+
+/* ── Estate block ── */
+.est-block{background:var(--sand);border-radius:6px;padding:7px 9px;margin-top:8px;}
+.est-lbl{font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;}
+.est-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:1px;}
+.est-sub{font-size:9px;color:var(--gray);margin-top:1px;}
+
+/* ── Reduction notice ── */
+.rn{background:rgba(251,80,4,.07);border-left:2px solid var(--orange);padding:4px 7px;border-radius:0 4px 4px 0;font-size:9px;color:var(--orange);font-weight:600;margin-top:7px;}
+
+/* ── Per-card Apply to scenario ── */
+.card-apply{margin-top:auto;padding-top:10px;}
+.card-apply-inner{background:var(--eggshell);border-radius:7px;padding:8px 9px;}
+.ca-lbl{font-size:9px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.ca-sel{width:100%;background:var(--white);border:.5px solid rgba(16,24,44,.18);border-radius:5px;padding:5px 7px;font-size:10px;font-weight:600;color:var(--ink);font-family:var(--font);margin-bottom:6px;}
+.ca-sel:focus{outline:2px solid var(--green);outline-offset:1px;border-color:transparent;}
+.bapply{width:100%;background:var(--green);color:white;border:none;border-radius:6px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);transition:opacity .15s;text-align:center;}
+.bapply:hover{opacity:.88;}
+.ca-toast{display:none;font-size:9px;font-weight:700;color:var(--teal);margin-top:5px;text-align:center;}
+
+/* ── Guidance ── */
+.guid h3{font-size:12px;font-weight:700;color:var(--teal);margin-bottom:7px;}
+.guid p{font-size:11px;color:var(--gray);line-height:1.65;margin-bottom:5px;}
+.guid p:last-child{margin-bottom:0;}
+.guid b{color:var(--ink);font-weight:600;}
+.guid .note{font-style:italic;font-size:10px;color:var(--gray);}
+.guid .warn{color:var(--orange);}
+
+/* ── Chart ── */
+.chart-shell{border-radius:var(--r);border:.5px solid rgba(16,24,44,.1);overflow:hidden;}
+.ch{background:var(--ink);padding:10px 15px;}
+.ch h3{font-size:12px;font-weight:700;color:white;}
+.ch p{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;}
+.cb{padding:13px;background:var(--white);}
+.cw{position:relative;width:100%;height:190px;}
+.leg{display:flex;gap:13px;flex-wrap:wrap;margin-top:9px;}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--gray);}
+.ld{width:8px;height:8px;border-radius:2px;}
+
+.disc{font-size:10px;color:var(--gray);line-height:1.6;padding:12px 20px;border-top:.5px solid rgba(16,24,44,.08);font-style:italic;}
+
+@media(max-width:600px){
+  .sg{grid-template-columns:1fr;}
+  .plan-fields.couple,.plan-fields-bottom.couple{grid-template-columns:1fr 1fr;}
+  .plan-fields.single,.plan-fields-bottom.single{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="shell">
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="logo">
+    <div class="arches"><div class="arch a3"></div><div class="arch a2"></div><div class="arch a1"></div></div>
+    <span class="logo-txt">Boldin</span>
+  </div>
+  <div class="crumb">
+    <span>Explorer</span><span class="cs">›</span>
+    <span>Income</span><span class="cs">›</span>
+    <span class="cur">Social Security</span>
+  </div>
+</div>
+
+<!-- Section header -->
+<div class="sec-hdr">
+  <div>
+    <h2>Social Security claiming strategies</h2>
+    <p>Compare income floor, chance of success, estate value, and lifetime income across claiming ages — using data from My Plan</p>
+  </div>
+  <div class="mtog">
+    <button class="mb on" id="btn-couple" onclick="setMode('couple')">Married couple</button>
+    <button class="mb" id="btn-single" onclick="setMode('single')">Single</button>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- My Plan data banner -->
+  <div class="plan-banner">
+    <div class="plan-banner-hdr">
+      <span>From My Plan</span>
+      <a class="plan-link" href="#">Edit in My Plan ↗</a>
+    </div>
+
+    <!-- Couple view -->
+    <div id="plan-couple">
+      <div class="plan-fields" style="grid-template-columns:repeat(3,1fr);">
+        <div class="pf"><div class="pf-lbl">Your age</div><div class="pf-val" id="d-a1">62</div></div>
+        <div class="pf"><div class="pf-lbl">Your PIA at FRA</div><div class="pf-val" id="d-p1">$3,200<span style="font-size:10px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div></div>
+        <div class="pf"><div class="pf-lbl">Your FRA</div><div class="pf-val" id="d-f1">67</div></div>
+      </div>
+      <div class="plan-divider"></div>
+      <div class="plan-fields-bottom" style="grid-template-columns:repeat(3,1fr);">
+        <div class="pf"><div class="pf-lbl">Spouse age</div><div class="pf-val" id="d-a2">60</div></div>
+        <div class="pf"><div class="pf-lbl">Spouse PIA at FRA</div><div class="pf-val" id="d-p2">$1,600<span style="font-size:10px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div></div>
+        <div class="pf"><div class="pf-lbl">Spouse FRA</div><div class="pf-val" id="d-f2">67</div></div>
+      </div>
+    </div>
+
+    <!-- Single view -->
+    <div id="plan-single" style="display:none;">
+      <div class="plan-fields" style="grid-template-columns:repeat(3,1fr);">
+        <div class="pf"><div class="pf-lbl">Your age</div><div class="pf-val" id="d-sa">62</div></div>
+        <div class="pf"><div class="pf-lbl">Your PIA at FRA</div><div class="pf-val" id="d-sp">$2,800<span style="font-size:10px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div></div>
+        <div class="pf"><div class="pf-lbl">Your FRA</div><div class="pf-val" id="d-sf">67</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="card sand">
+    <div style="margin-bottom:13px;">
+      <div class="slbl" style="margin-bottom:7px;">Longevity assumption — planning to age <span id="lon-lbl">88</span></div>
+      <div class="inl">
+        <span style="font-size:11px;color:var(--gray);">75</span>
+        <input type="range" id="lon" min="75" max="100" value="88" step="1"
+          oninput="document.getElementById('lon-lbl').textContent=this.value;calc()">
+        <span style="font-size:11px;color:var(--gray);">100</span>
+      </div>
+    </div>
+
+    <!-- Claiming ages (couple only) -->
+    <div id="claim-age-controls" class="g2">
+      <div class="f">
+        <label>Your desired claim age</label>
+        <select id="c-ca1" onchange="calc()"></select>
+      </div>
+      <div class="f">
+        <label>Spouse desired claim age</label>
+        <select id="c-ca2" onchange="calc()"></select>
+      </div>
+    </div>
+
+    <!-- Single claim age -->
+    <div id="claim-age-single" style="display:none;">
+      <div class="f" style="max-width:220px;">
+        <label>Your desired claim age</label>
+        <select id="s-ca" onchange="calc()"></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Benefit reduction toggle -->
+  <div class="card white">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <label class="sw"><input type="checkbox" id="red-tog" onchange="toggleRed()"><span class="trk"></span></label>
+      <span class="tlbl">Apply projected Social Security benefit reduction</span>
+    </div>
+    <div class="rexp" id="rexp">
+      <div class="g2" style="gap:9px;">
+        <div class="f">
+          <label>Reduction % — <span id="rp-lbl">23%</span></label>
+          <div class="inl">
+            <input type="range" id="red-pct" min="5" max="30" value="23" step="1"
+              oninput="document.getElementById('rp-lbl').textContent=this.value+'%';calc()">
+          </div>
+        </div>
+        <div class="f">
+          <label>Effective from year</label>
+          <input type="number" id="red-yr" value="2033" min="2025" max="2060" oninput="calc()">
+        </div>
+      </div>
+      <p class="rhint">The SSA trustees currently project a potential automatic benefit cut if the trust fund is depleted — estimated around 2033. This models that scenario equally across all three strategies.</p>
+    </div>
+  </div>
+
+  <!-- Strategy cards -->
+  <div>
+    <div class="slbl" style="margin-bottom:10px;">Strategy comparison</div>
+    <div class="sg" id="sg"></div>
+  </div>
+
+  <!-- Guidance -->
+  <div class="card egg guid" id="guid"></div>
+
+  <!-- Chart -->
+  <div class="chart-shell">
+    <div class="ch">
+      <h3>Cumulative lifetime Social Security income</h3>
+      <p id="ch-sub">Total income to longevity age across strategies</p>
+    </div>
+    <div class="cb">
+      <div class="cw">
+        <canvas id="ltc" role="img"
+          aria-label="Bar chart comparing cumulative lifetime SS income across three claiming strategies">
+          Cumulative totals vary by strategy and longevity assumption.
+        </canvas>
+      </div>
+      <div class="leg" id="leg"></div>
+    </div>
+  </div>
+
+  <!-- Metrics explainer -->
+  <div class="card egg guid">
+    <h3>How to read chance of success and estate value</h3>
+    <p><b>Chance of success</b> is the probability that your plan fully covers your spending across your planning horizon. It is modeled year-by-year using your plan's assumptions: SS income reduces required withdrawals from your other assets, and a higher monthly floor means a more durable plan. Delaying improves this metric by reducing drawdown pressure during the critical early-retirement sequence-of-returns window.</p>
+    <p><b>Estate value</b> is the projected net worth remaining at your planning age — what might remain for heirs. It is endpoint-sensitive: it can favor early claiming in short-horizon projections because SS income flows in sooner. It is included for context, not as a primary decision driver. The right question is not "which strategy leaves more at age 88?" — it is "which strategy keeps guaranteed income high enough if either of us lives to 95?"</p>
+  </div>
+
+</div>
+
+<p class="disc">For educational and illustrative purposes only. Chance of success and estate value are derived from your plan's assumptions and use simplified deterministic projections that do not account for inflation, taxes, or sequence-of-returns risk. Consult your Boldin advisor before making Social Security claiming decisions.</p>
+</div>
+</div>
+
+<script>
+/* ── Simulated My Plan data (in production, injected by the platform) ── */
+const PLAN = {
+  couple: {
+    you:    { age: 62, pia: 3200, fra: 67 },
+    spouse: { age: 60, pia: 1600, fra: 67 },
+    portfolio: 800000,
+    annualExp: 80000,
+    returnRate: 0.06
+  },
+  single: {
+    you: { age: 62, pia: 2800, fra: 67 },
+    portfolio: 800000,
+    annualExp: 80000,
+    returnRate: 0.06
+  }
+};
+
+const SCENARIOS = [
+  { value: 'dup',  label: 'Duplicate of active scenario' },
+  { value: 's1',   label: 'Base Case' },
+  { value: 's2',   label: 'Conservative' },
+  { value: 's3',   label: 'Optimistic' },
+  { value: 's4',   label: 'Early Retirement' }
+];
+
+let mode = 'couple';
+let ltChart = null;
+
+/* ── Helpers ── */
+function fmt(n){ return '$' + Math.round(n).toLocaleString(); }
+
+function bf(claim, fra){
+  if(claim >= fra) return 1 + (Math.min(claim,70) - fra) * 0.08;
+  const mo = Math.round((fra - claim) * 12);
+  return mo <= 36
+    ? 1 - mo * (5/9) / 100
+    : Math.max((1 - 36*(5/9)/100) - (mo-36)*(5/12)/100, 0.4);
+}
+
+function applyRed(m, claimAge, curAge){
+  if(!document.getElementById('red-tog').checked) return m;
+  const pct = parseFloat(document.getElementById('red-pct').value)||0;
+  const yr  = parseFloat(document.getElementById('red-yr').value)||9999;
+  return (new Date().getFullYear() + (claimAge - curAge)) >= yr
+    ? m * (1 - pct/100) : m;
+}
+
+function ltCalc(monthly, start, end){
+  return start >= end ? 0 : monthly * 12 * (end - start);
+}
+
+/* Year-by-year deterministic portfolio simulation */
+function simulate(ssMonthly, ssStart, curAge, lon, portfolio, annExp, ret){
+  let bal = portfolio;
+  const yrs = lon - curAge;
+  let solvent = 0;
+  for(let y = 0; y < yrs; y++){
+    const age = curAge + y;
+    const income = age >= ssStart ? ssMonthly * 12 : 0;
+    const wd = Math.max(0, annExp - income);
+    bal = (bal - wd*0.5) * (1 + ret) - wd*0.5;
+    if(bal >= 0) solvent++;
+    else bal = 0;
+  }
+  return {
+    cos:   yrs > 0 ? Math.min(100, (solvent/yrs)*100) : 100,
+    estate: Math.max(0, bal)
+  };
+}
+
+function cosColor(p){
+  if(p >= 85) return { fill:'#04B477', text:'#04B477' };
+  if(p >= 65) return { fill:'#FBBD04', text:'#9A6800' };
+  return { fill:'#FB5004', text:'#FB5004' };
+}
+
+/* ── Build claiming-age dropdowns ── */
+function buildDrop(id, defaultAge){
+  const sel = document.getElementById(id);
+  const cur = parseFloat(sel.value) || defaultAge;
+  sel.innerHTML = '';
+  for(let a = 62; a <= 70; a += 0.5){
+    const o = document.createElement('option');
+    o.value = a;
+    o.textContent = a === Math.floor(a) ? a + 'y 0m' : Math.floor(a) + 'y 6m';
+    if(Math.abs(a - cur) < 0.1) o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+function buildSingleDrop(defaultAge){
+  buildDrop('s-ca', defaultAge);
+}
+
+/* ── Mode switch ── */
+function setMode(m){
+  mode = m;
+  document.getElementById('btn-couple').classList.toggle('on', m==='couple');
+  document.getElementById('btn-single').classList.toggle('on', m==='single');
+  document.getElementById('plan-couple').style.display    = m==='couple' ? '' : 'none';
+  document.getElementById('plan-single').style.display    = m==='single' ? '' : 'none';
+  document.getElementById('claim-age-controls').style.display = m==='couple' ? '' : 'none';
+  document.getElementById('claim-age-single').style.display   = m==='single' ? '' : 'none';
+  calc();
+}
+
+/* ── Reduction toggle ── */
+function toggleRed(){
+  document.getElementById('rexp').classList.toggle('vis',
+    document.getElementById('red-tog').checked);
+  calc();
+}
+
+/* ── Scenario select options HTML ── */
+function scenarioOptions(){
+  return SCENARIOS.map((s,i) =>
+    `<option value="${s.value}"${i===0?' selected':''}>${s.label}</option>`
+  ).join('');
+}
+
+/* ── Per-card apply action ── */
+function applyCard(idx){
+  const sel = document.getElementById('ca-sel-'+idx);
+  const name = sel.options[sel.selectedIndex].text;
+  const toast = document.getElementById('ca-toast-'+idx);
+  toast.textContent = '✓ Applied to: ' + name;
+  toast.style.display = 'block';
+  setTimeout(() => toast.style.display = 'none', 3500);
+}
+
+/* ── Strategy card HTML ── */
+function stratCard(s, recLabel, isRec, hdrCls, curAge, idx){
+  const lon = parseFloat(document.getElementById('lon').value)||88;
+  const plan = mode === 'couple' ? PLAN.couple : PLAN.single;
+  const { cos, estate } = simulate(
+    s.monthly, s.claimAge, curAge, lon,
+    plan.portfolio, plan.annualExp, plan.returnRate
+  );
+  const { fill, text } = cosColor(cos);
+  const redOn = document.getElementById('red-tog').checked;
+
+  return `<div class="sc-card${isRec?' rec':''}">
+    <div class="sh ${hdrCls}">
+      <div class="sh-t">${s.label}${isRec?`<span class="rpill">${recLabel}</span>`:''}</div>
+      <div class="sh-s">${s.sub}</div>
+    </div>
+    <div class="sb">
+      <div class="mv">${fmt(s.monthly)}<span>/mo</span></div>
+      <div class="ml">${s.isCouple?'Combined household':'Monthly floor'}</div>
+      ${s.isCouple?`<div class="sr" style="margin-top:6px;">
+        <span class="srl">Survivor floor</span>
+        <span class="srv${isRec?' g':''}">${fmt(s.survivor)}/mo</span>
+      </div>`:''}
+
+      <div class="dv"></div>
+
+      <div style="font-size:9px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Chance of success</div>
+      <div class="cos-wrap">
+        <div class="cos-hdr">
+          <span class="cos-pct" style="color:${text};">${Math.round(cos)}%</span>
+          <span class="cos-note">covers expenses to age ${lon}</span>
+        </div>
+        <div class="cos-track">
+          <div class="cos-fill" style="width:${Math.round(cos)}%;background:${fill};"></div>
+        </div>
+      </div>
+
+      <div class="est-block">
+        <div class="est-lbl">Est. estate value at age ${lon}</div>
+        <div class="est-val">${fmt(estate)}</div>
+        <div class="est-sub">plan value at end age — endpoint-sensitive</div>
+      </div>
+
+      <div class="dv"></div>
+      <div class="sr">
+        <span class="srl">Lifetime SS to age ${lon}</span>
+        <span class="srv">${fmt(s.lifetime)}</span>
+      </div>
+      ${redOn?`<div class="rn">Includes ${document.getElementById('red-pct').value}% reduction from ${document.getElementById('red-yr').value}</div>`:''}
+
+      <div class="card-apply">
+        <div class="card-apply-inner">
+          <div class="ca-lbl">Apply to scenario</div>
+          <select class="ca-sel" id="ca-sel-${idx}">${scenarioOptions()}</select>
+          <button class="bapply" onclick="applyCard(${idx})">Apply ↗</button>
+          <div class="ca-toast" id="ca-toast-${idx}"></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Chart ── */
+function renderChart(labels, values, colors, lon){
+  if(ltChart){ ltChart.destroy(); ltChart = null; }
+  const ctx = document.getElementById('ltc');
+  if(!ctx) return;
+  ltChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors.map(c => c + 'CC'),
+        borderColor: colors,
+        borderWidth: 1.5,
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ' ' + fmt(c.parsed.y) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#47495A' } },
+        y: { grid: { color: 'rgba(16,24,44,.06)' }, ticks: { font: { size: 10 }, color: '#47495A',
+          callback: n => n >= 1000000 ? '$'+(n/1000000).toFixed(1)+'M' : '$'+(n/1000).toFixed(0)+'K'
+        }}
+      }
+    }
+  });
+  document.getElementById('leg').innerHTML = labels.map((l,i) =>
+    `<span class="li"><span class="ld" style="background:${colors[i]};"></span>${l}</span>`
+  ).join('');
+  document.getElementById('ch-sub').textContent =
+    `Total Social Security income to age ${lon} — all strategies`;
+}
+
+/* ── Couple calc ── */
+function calcCouple(){
+  const p = PLAN.couple;
+  const lon = parseFloat(document.getElementById('lon').value)||88;
+  const hIs1 = p.you.pia >= p.spouse.pia;
+  const h  = hIs1 ? {...p.you,  lbl:'You'}    : {...p.spouse, lbl:'Spouse'};
+  const lo = hIs1 ? {...p.spouse,lbl:'Spouse'} : {...p.you,  lbl:'You'};
+
+  function sc(hC, lC, label, sub){
+    const hM = applyRed(h.pia * bf(hC, h.fra), hC, h.age);
+    const rawLM = lo.pia * bf(lC, lo.fra);
+    const spousal = Math.max(
+      applyRed(rawLM, lC, lo.age),
+      0.5 * applyRed(h.pia, hC, h.age)
+    );
+    return {
+      label, sub,
+      monthly: hM + spousal,
+      survivor: hM,
+      claimAge: Math.min(hC, lC),
+      lifetime: ltCalc(hM, hC, lon) + ltCalc(spousal, lC, lon),
+      isCouple: true
+    };
+  }
+
+  const strategies = [
+    sc(62, 62, 'Both at 62',   `${h.lbl} 62 · ${lo.lbl} 62`),
+    sc(70, 62, 'Recommended',  `${h.lbl} 70 · ${lo.lbl} 62`),
+    sc(70, 70, 'Both at 70',   `${h.lbl} 70 · ${lo.lbl} 70`)
+  ];
+
+  const hdrs = ['hink','hteal','hgreen'];
+  const curAge = Math.min(h.age, lo.age);
+  document.getElementById('sg').innerHTML = strategies.map((s,i) =>
+    stratCard(s, i===1?'Recommended':'', i===1, hdrs[i], curAge, i)
+  ).join('');
+
+  const gain = strategies[1].monthly - strategies[0].monthly;
+  const be = strategies[1].monthly > strategies[0].monthly
+    ? 70 + (strategies[0].monthly*12*8) / ((strategies[1].monthly-strategies[0].monthly)*12)
+    : null;
+
+  let g = `<h3>Income floor analysis</h3>
+    <p>The recommended strategy — <b>${h.lbl} claims at 70, ${lo.lbl} claims at 62</b> — raises the combined household floor by <b>${fmt(gain)}/mo</b> vs. both claiming at 62. The survivor floor is <b>${fmt(strategies[1].survivor)}/mo</b> for whoever lives longest.</p>
+    <p>A higher monthly floor reduces required withdrawals from your other assets each year, directly improving chance of success and plan durability. The chance-of-success improvement reflects structurally lower drawdown pressure — not a different return assumption.</p>
+    <p class="note"><b>Estate value note:</b> At a fixed planning age like ${lon}, earlier claiming can show a higher estate value because SS income flows in sooner. If either spouse lives significantly past ${lon}, delay produces more cumulative income and leaves your plan less depleted.</p>`;
+  if(be) g += `<p class="note">Breakeven vs both-at-62: ~age ${Math.round(be)}. For a couple, the real breakeven extends through the survivor's full lifespan — single-life math systematically undervalues delay.</p>`;
+  if(document.getElementById('red-tog').checked)
+    g += `<p class="note warn">A ${document.getElementById('red-pct').value}% reduction from ${document.getElementById('red-yr').value} is applied equally to all strategies. The relative advantage of delay is preserved — the chance-of-success gap typically widens under a reduction scenario because a higher actuarial factor partially offsets the cut.</p>`;
+  document.getElementById('guid').innerHTML = g;
+
+  renderChart(
+    strategies.map(s => s.sub),
+    strategies.map(s => Math.round(s.lifetime)),
+    ['#10182C','#04B477','#0D3F4A'], lon
+  );
+}
+
+/* ── Single calc ── */
+function calcSingle(){
+  const p = PLAN.single;
+  const lon = parseFloat(document.getElementById('lon').value)||88;
+  const fra = p.you.fra;
+
+  function sc(ca, label, sub){
+    const m = applyRed(p.you.pia * bf(ca, fra), ca, p.you.age);
+    return { label, sub, monthly: m, survivor: m, claimAge: ca,
+      lifetime: ltCalc(m, ca, lon), isCouple: false };
+  }
+
+  const strategies = [
+    sc(62,  'Claim at 62',  'age 62 · '  + Math.round(bf(62,fra)*100)  + '% of PIA'),
+    sc(fra, 'Claim at FRA', 'age '+fra+' · 100% of PIA'),
+    sc(70,  'Claim at 70',  'age 70 · '  + Math.round(bf(70,fra)*100)  + '% of PIA')
+  ];
+
+  // Recommend age 70 unless longevity is short enough that earlier claiming
+  // wins on both lifetime income AND the breakeven hasn't been reached.
+  const m62 = strategies[0].monthly;
+  const m70 = strategies[2].monthly;
+  const be = m70 > m62
+    ? 62 + (m62 * 12 * 8) / ((m70 - m62) * 12)
+    : null;
+  // Low longevity = planning age is before breakeven (typically ~mid 70s to early 80s)
+  const lowLongevity = be !== null && lon < Math.round(be);
+  // Recommended index: 70 unless low longevity, in which case 62
+  const recIdx = lowLongevity ? 0 : 2;
+  const recLabels = ['Early access', 'Balanced', 'Recommended'];
+  // Override label for low-longevity case
+  const cardRecLabel = lowLongevity ? 'Given your longevity' : 'Recommended';
+
+  const hdrs = ['hink','hteal','hgreen'];
+  document.getElementById('sg').innerHTML = strategies.map((s,i) =>
+    stratCard(s, i===recIdx ? cardRecLabel : '', i===recIdx, hdrs[i], p.you.age, i)
+  ).join('');
+
+  const gain = m70 - m62;
+
+  let g = `<h3>Income floor analysis</h3>`;
+
+  if(!lowLongevity){
+    g += `<p>Delaying to 70 is recommended. It raises your monthly benefit to <b>${fmt(m70)}</b> — <b>${fmt(gain)}/mo more</b> than claiming at 62. That increase is permanent, inflation-adjusted, and cannot be outlived.</p>
+    <p>A higher monthly floor reduces required withdrawals from your other assets each year, directly improving chance of success and plan durability.</p>`;
+    if(be) g += `<p class="note">Breakeven vs age-62: ~age ${Math.round(be)}. With a planning age of ${lon}, you are well past breakeven — every additional year of life produces more income under the delay strategy.</p>`;
+  } else {
+    g += `<p>With a planning age of <b>${lon}</b>, claiming at 62 may produce more cumulative income before your planning horizon — the breakeven age for delay is approximately <b>${Math.round(be)}</b>. Delaying still provides a permanently higher monthly floor, which matters if you live longer than expected.</p>
+    <p>If your health or personal circumstances suggest a shorter horizon, earlier claiming is a reasonable choice. Consider: the monthly floor from delaying is <b>${fmt(gain)}/mo higher</b> for every year you live past the breakeven age.</p>`;
+  }
+
+  g += `<p class="note"><b>Estate value note:</b> At a fixed planning age like ${lon}, earlier claiming can show a higher estate value. If you live significantly past ${lon}, delay produces more cumulative income and leaves your plan less depleted.</p>`;
+
+  if(document.getElementById('red-tog').checked)
+    g += `<p class="note warn">A ${document.getElementById('red-pct').value}% reduction from ${document.getElementById('red-yr').value} is applied. A higher actuarial factor from delaying partially offsets the cut — preserving the relative advantage of delay even under a reduction scenario.</p>`;
+  document.getElementById('guid').innerHTML = g;
+
+  renderChart(
+    strategies.map(s => s.label),
+    strategies.map(s => Math.round(s.lifetime)),
+    ['#10182C','#04B477','#0D3F4A'], lon
+  );
+}
+
+function calc(){ mode === 'couple' ? calcCouple() : calcSingle(); }
+
+/* ── Init ── */
+buildDrop('c-ca1', 70);
+buildDrop('c-ca2', 62);
+buildSingleDrop(70);
+calc();
+</script>
+</body>
+</html>
