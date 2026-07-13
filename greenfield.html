@@ -399,7 +399,10 @@ nav.modes a.active .ic{opacity:1;}
   padding:14px 16px; border-bottom:1px solid var(--hairline);
 }
 .acct .nm{font-size:17px; font-weight:600; color:var(--ink);}
-.acct .ty{font-size:15px; color:var(--text-secondary); margin-top:2px;}
+.acct .ty{font-size:15px; color:var(--text-secondary); margin-top:2px; display:inline-flex; align-items:center;}
+.acct-linked{ display:inline-flex; align-items:center; gap:4px; margin-left:8px; padding:2px 9px 2px 7px;
+  background:#E7F7F0; color:#0E794E; border-radius:999px; font-size:12.5px; font-weight:600; line-height:1; }
+.acct-linked svg{ width:12px; height:12px; flex:none; }
 .acct .amt{font-size:17px; font-weight:500; font-variant-numeric:tabular-nums;
   cursor:text; padding:4px 8px; margin:-4px -8px; border-radius:8px; transition:background var(--dur-fast);}
 .acct .amt:hover{background:#EDF6F1;}
@@ -556,7 +559,6 @@ nav.modes a.active .ic{opacity:1;}
 /* The global Ask bar drives the Boldin AI rail, which only exists on the main plan pages.
    Optimize sub-pages (budgeter, allocation, social security, tax, withdrawals) have their
    own rails and no AI host, so the bar is hidden there rather than expanding into nothing. */
-body.bud-open .dock,
 body.alo-open .dock,
 body.soc-open .dock,
 body.tax-open .dock,
@@ -2269,6 +2271,7 @@ body.alo-open .layout.page.opt-index.on{display:none;}
 body.alo-open .layout.page.bud-layout.on{display:none;}
 .alo-top .bud-sub{margin-bottom:52px;}
 .bud-top .bud-sub{margin-bottom:32px;}   /* matches the Today sub to already-yours card gap */
+body.ai-expanded .bud-top .bud-sub{ white-space:normal; }   /* wraps instead of running under the AI rail */
 #alo-mix .alo-bars{margin-top:-26px;}
 .alo-sec{margin-top:0;scroll-margin-top:100px;}
 .alo-sec + .alo-sec{margin-top:64px;}
@@ -2418,9 +2421,9 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .bmf-addbtn{ background:#0E794E; color:#fff; border:none; border-radius:999px; padding:8px 17px; font:600 13.5px var(--font); cursor:pointer; }
 .bmf-addbtn:hover{ background:#0B5F3D; }
 /* gantt */
-.bmf-grow{ display:grid; grid-template-columns:104px 1fr; align-items:center; column-gap:10px; padding:2px 0; }
-.bmf-glab{ font-size:12.5px; font-weight:400; color:var(--ink); }
-.bmf-gtrack{ position:relative; height:18px; }
+.bmf-grow{ display:grid; grid-template-columns:1fr 104px; align-items:center; column-gap:10px; padding:2px 0; }
+.bmf-glab{ font-size:12.5px; font-weight:400; color:var(--ink); text-align:right; }
+.bmf-gtrack{ position:relative; display:block; height:18px; }
 .bmf-axisrow .bmf-gtrack{ height:13px; }
 .bmf-axis i{ position:absolute; top:0; transform:translateX(-50%); font-style:normal; font-size:11px; color:#9AA0AE; font-family:"DM Sans", sans-serif; }
 .bmf-bar{ position:absolute; top:0; height:18px; background:#E7F7F0; border:1px solid #CDEBDD; border-radius:6px; box-sizing:border-box;
@@ -2431,8 +2434,8 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .bmf-bar.pale2{ background:#F8FCFA; border-color:#E5F2EA; }
 .bmf-chart{ position:relative; }
 .bmf-scan{ position:absolute; top:20px; bottom:14px; width:2px; background:#0D3F4A; border-radius:1px; pointer-events:none; z-index:1; }
-.bmf-slider{ display:block; width:calc(100% - 114px); margin:6px 0 6px 114px; accent-color:#0E794E; height:16px; cursor:pointer; }
-.bmf-foot{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; padding:8px 0 0; margin-left:114px; }
+.bmf-slider{ display:block; width:calc(100% - 114px); margin:6px 114px 6px 0; accent-color:#0E794E; height:16px; cursor:pointer; }
+.bmf-foot{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; padding:8px 0 0; margin-right:114px; }
 .bmf-footlab{ font-size:12px; font-weight:600; color:var(--text-secondary); }
 .bmf-footlab b{ color:var(--ink); font-family:"DM Sans", sans-serif; }
 .bmf-footamt{ font:700 17px "DM Sans", sans-serif; font-variant-numeric:tabular-nums; color:var(--ink); margin-top:2px; }
@@ -3158,8 +3161,8 @@ body.mpanel-open{ overflow:hidden; }
 
       <div class="acc-body" id="assetsBody">
       <div class="bucket" data-bucket="taxable">
-        <div class="bucket-label">Taxable (4)</div>
-        <div class="acct"><div><div class="nm">JPMorgan Chase Bank, N.A.</div><div class="ty">Checking</div></div><div class="amt">$8,450</div></div>
+        <div class="bucket-label">Savings (4)</div>
+        <div class="acct"><div><div class="nm">JPMorgan Chase Bank, N.A.</div><div class="ty">Checking <span class="acct-linked"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Connected &middot; updates daily</span></div></div><div class="amt">$8,450</div></div>
         <div class="acct"><div><div class="nm">Ally Bank</div><div class="ty">Savings</div></div><div class="amt">$12,000</div></div>
         <div class="acct"><div><div class="nm">Marcus by Goldman Sachs</div><div class="ty">Investment</div></div><div class="amt">$18,300</div></div>
 
@@ -3197,25 +3200,17 @@ body.mpanel-open{ overflow:hidden; }
           </div>
         </div>
 
-        <div class="add-row">Add Account</div>
+        <div class="add-row">Add account</div>
       </div>
 
       <div class="bucket" data-bucket="deferred">
-        <div class="bucket-label">Tax-deferred (3)</div>
+        <div class="bucket-label">Other assets (3)</div>
         <div class="acct"><div><div class="nm">Fidelity Investments</div><div class="ty">401(k)</div></div><div class="amt">$10,000</div></div>
         <div class="acct"><div><div class="nm">Vanguard Institutional</div><div class="ty">401(k)</div></div><div class="amt">$85,000</div></div>
         <div class="acct"><div><div class="nm">Empower Retirement</div><div class="ty">401(k)</div></div><div class="amt">$96,000</div></div>
-        <div class="add-row">Add Account</div>
+        <div class="add-row">Add an asset</div>
       </div>
 
-      <div class="bucket" data-bucket="free">
-        <div class="bucket-label">Tax Free (4)</div>
-        <div class="acct"><div><div class="nm">Charles Schwab &amp; Co., Inc.</div><div class="ty">Traditional IRA (rollover)</div></div><div class="amt">$120,000</div></div>
-        <div class="acct"><div><div class="nm">Vanguard</div><div class="ty">Roth IRA</div></div><div class="amt">$60,000</div></div>
-        <div class="acct"><div><div class="nm">Fidelity Investments</div><div class="ty">SEP IRA</div></div><div class="amt">$85,000</div></div>
-        <div class="acct"><div><div class="nm">Edward Jones</div><div class="ty">Inherited IRA</div></div><div class="amt">$72,000</div></div>
-        <div class="add-row">Add Account</div>
-      </div>
       </div>
     </div>
 
@@ -3226,10 +3221,10 @@ body.mpanel-open{ overflow:hidden; }
       </div>
       <div class="acc-body" style="height:0;opacity:0;overflow:hidden;">
         <div class="bucket">
-          <div class="acct"><div><div class="nm">Wells Fargo Home Mortgage</div><div class="ty">Mortgage</div></div><div class="amt">$312,000</div></div>
+          <div class="bucket-label">Non-mortgage debts (2)</div>
           <div class="acct"><div><div class="nm">Toyota Financial</div><div class="ty">Auto loan</div></div><div class="amt">$18,400</div></div>
           <div class="acct"><div><div class="nm">Chase Sapphire</div><div class="ty">Credit card</div></div><div class="amt">$2,150</div></div>
-          <div class="add-row">Add Debt</div>
+          <div class="add-row">Add a non-mortgage debt</div>
         </div>
       </div>
     </div>
@@ -3243,7 +3238,7 @@ body.mpanel-open{ overflow:hidden; }
         <div class="bucket">
           <div class="acct"><div><div class="nm">My Job</div><div class="ty">Employment</div></div><div class="amt">$4,200</div></div>
           <div class="acct"><div><div class="nm">Part-time, Lily</div><div class="ty">Employment</div></div><div class="amt">$1,385</div></div>
-          <div class="add-row">Add income source</div>
+          <div class="add-row">Add job</div>
         </div>
       </div>
     </div>
@@ -3254,24 +3249,30 @@ body.mpanel-open{ overflow:hidden; }
         <div class="assets-actions"><button class="btn-collapse" aria-label="Expand" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"/></svg></button></div>
       </div>
       <div class="acc-body" style="height:0;opacity:0;overflow:hidden;">
-        <div class="bucket">
-          <div class="acct"><div><div class="nm">Primary residence</div><div class="ty">Single-family home</div></div><div class="amt">$620,000</div></div>
-          <div class="acct"><div><div class="nm">Rental property</div><div class="ty">Condo</div></div><div class="amt">$285,000</div></div>
-          <div class="add-row">Add property</div>
+        <div class="bucket" data-bucket="primary-home">
+          <div class="bucket-label">Primary residence</div>
+          <div class="acct"><div><div class="nm">555 Market St, San Francisco</div><div class="ty">Single-family home</div></div><div class="amt">$620,000</div></div>
+          <div class="add-row">Add primary residence</div>
+        </div>
+        <div class="bucket" data-bucket="other-realestate">
+          <div class="bucket-label">Other owned real estate</div>
+          <div class="acct"><div><div class="nm">888 Hill St, South Lake Tahoe</div><div class="ty">Condo</div></div><div class="amt">$285,000</div></div>
+          <div class="add-row">Add other real estate</div>
         </div>
       </div>
     </div>
 
     <div class="acc start-collapsed">
       <div class="acc-head acc-collapsed">
-        <div><h2>Expenses</h2><div class="sub">What you spend now and in retirement</div></div>
+        <div><h2>Expenses</h2><div class="sub">What you spend each month today</div></div>
         <div class="assets-actions"><button class="btn-collapse" aria-label="Expand" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"/></svg></button></div>
       </div>
       <div class="acc-body" style="height:0;opacity:0;overflow:hidden;">
-        <div class="bucket">
-          <div class="acct"><div><div class="nm">Housing</div><div class="ty">Mortgage, utilities, upkeep</div></div><div class="amt">$2,400</div></div>
-          <div class="acct"><div><div class="nm">Healthcare</div><div class="ty">Premiums and out-of-pocket</div></div><div class="amt">$760</div></div>
-          <div class="acct"><div><div class="nm">Living</div><div class="ty">Food, transport, lifestyle</div></div><div class="amt">$1,425</div></div>
+        <div class="bucket" data-bucket="expenses" data-ftue="1">
+          <div class="flow-empty">
+            <div class="flow-empty-t">No expenses yet</div>
+            <div class="flow-empty-s">Add what you spend each month, from housing to the small things, and your plan will carry it forward year by year.</div>
+          </div>
           <div class="add-row-line">
             <div class="add-row">Add expense</div>
             <span class="exp-budgeter-cta" role="button" tabindex="0">Try detailed budgeter <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -4818,17 +4819,16 @@ body.mpanel-open{ overflow:hidden; }
 
         <div class="bmf-panel" data-bmfp="budget">
           <div class="bmf-chart">
-          <i class="bmf-scan" id="bmfScan" aria-hidden="true" style="left:113px"></i>
+          <i class="bmf-scan" id="bmfScan" aria-hidden="true" style="left:-1px"></i>
           <div class="bmf-gantt">
-            <div class="bmf-grow bmf-axisrow" aria-hidden="true"><span class="bmf-glab"></span><span class="bmf-gtrack bmf-axis"><i style="left:11.8%">65</i><i style="left:41.2%">75</i><i style="left:70.6%">85</i><i style="left:100%">95</i></span></div>
-            <div class="bmf-grow"><span class="bmf-glab">Housing</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:47.1%">$978</b><b class="bmf-bar pale" style="left:47.1%;width:52.9%">$520 &middot; mortgage paid</b></span></div>
-            <div class="bmf-grow"><span class="bmf-glab">Food</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$820</b><b class="bmf-bar pale" style="left:41.2%;width:29.4%">$700</b><b class="bmf-bar pale2" style="left:70.6%;width:29.4%">$600</b></span></div>
-            <div class="bmf-grow"><span class="bmf-glab">Transportation</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:55.9%">$640</b><b class="bmf-bar pale" style="left:55.9%;width:44.1%">$380 &middot; one car</b></span></div>
-            <div class="bmf-grow"><span class="bmf-glab">Healthcare</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$760</b><b class="bmf-bar deep" style="left:41.2%;width:29.4%">$1,150</b><b class="bmf-bar deep2" style="left:70.6%;width:29.4%">$1,480</b></span></div>
-            <div class="bmf-grow"><span class="bmf-glab">Travel</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$1,500</b><b class="bmf-bar pale" style="left:41.2%;width:29.4%">$700 &middot; ends 85</b></span></div>
-            <div class="bmf-grow"><span class="bmf-glab">Hobbies</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$400</b><b class="bmf-bar deep" style="left:41.2%;width:58.8%">$550</b></span></div>
-            <div class="bmf-grow"><span class="bmf-glab">Everything else</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:100%">$1,225</b></span></div>
-          </div>
+            <div class="bmf-grow bmf-axisrow" aria-hidden="true"><span class="bmf-gtrack bmf-axis"><i style="left:11.8%">65</i><i style="left:41.2%">75</i><i style="left:70.6%">85</i><i style="left:100%">95</i></span><span class="bmf-glab"></span></div>
+            <div class="bmf-grow"><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:47.1%">$978</b><b class="bmf-bar pale" style="left:47.1%;width:52.9%">$520 &middot; mortgage paid</b></span><span class="bmf-glab">Housing</span></div>
+            <div class="bmf-grow"><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$820</b><b class="bmf-bar pale" style="left:41.2%;width:29.4%">$700</b><b class="bmf-bar pale2" style="left:70.6%;width:29.4%">$600</b></span><span class="bmf-glab">Food</span></div>
+            <div class="bmf-grow"><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:55.9%">$640</b><b class="bmf-bar pale" style="left:55.9%;width:44.1%">$380 &middot; one car</b></span><span class="bmf-glab">Transportation</span></div>
+            <div class="bmf-grow"><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$760</b><b class="bmf-bar deep" style="left:41.2%;width:29.4%">$1,150</b><b class="bmf-bar deep2" style="left:70.6%;width:29.4%">$1,480</b></span><span class="bmf-glab">Healthcare</span></div>
+            <div class="bmf-grow"><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$1,500</b><b class="bmf-bar pale" style="left:41.2%;width:29.4%">$700 &middot; ends 85</b></span><span class="bmf-glab">Travel</span></div>
+            <div class="bmf-grow"><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$400</b><b class="bmf-bar deep" style="left:41.2%;width:58.8%">$550</b></span><span class="bmf-glab">Hobbies</span></div>
+            <div class="bmf-grow"><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:100%">$1,225</b></span><span class="bmf-glab">Everything else</span></div>
           <input type="range" class="bmf-slider" id="bmfSlider" min="61" max="95" value="61" aria-label="Check spending at any age">
           </div>
           <div class="bmf-foot">
@@ -6198,7 +6198,7 @@ document.addEventListener('click', function(e){
       document.querySelectorAll('.stat-delta').forEach(d=> d.classList.add('in'));
     }
     clearTimeout(loadTimer);
-    loadTimer = setTimeout(()=>{ if(msgOpen) morphMessageToCompact(); }, 8500);
+    loadTimer = setTimeout(()=>{ if(msgOpen) morphMessageToCompact(); }, 3500);   // FTUE: bring the score card in sooner
   }
 
   /* ---------- scroll: wipe the top nav and pin the score to the very top ---------- */
@@ -6477,12 +6477,12 @@ document.addEventListener('click', function(e){
   }
   // one cancelable scroll animation, so a later scroll never fights an in-progress one
   let _scrollRAF=0;
-  function animateScrollTo(targetY, dur){
+  function animateScrollTo(targetY, dur, onDone){
     if(_scrollRAF){ cancelAnimationFrame(_scrollRAF); _scrollRAF=0; }
     targetY=Math.max(0, targetY);
-    if(reduce){ window.scrollTo(0, targetY); return; }
+    if(reduce){ window.scrollTo(0, targetY); if(onDone) onDone(); return; }
     const startY=window.scrollY, dist=targetY-startY, t0=performance.now(), D=dur||420, ease=t=>1-Math.pow(1-t,3);
-    (function step(now){ const p=Math.min(1,(now-t0)/D); window.scrollTo(0, startY+dist*ease(p)); if(p<1){ _scrollRAF=requestAnimationFrame(step); } else { _scrollRAF=0; } })(t0);
+    (function step(now){ const p=Math.min(1,(now-t0)/D); window.scrollTo(0, startY+dist*ease(p)); if(p<1){ _scrollRAF=requestAnimationFrame(step); } else { _scrollRAF=0; if(onDone) onDone(); } })(t0);
   }
   function scrollToSection(sec){
     const psWrap=document.querySelector('.ps-wrap');
@@ -6533,10 +6533,14 @@ document.addEventListener('click', function(e){
     // preferred landing: card top just under the top guard
     let desired = r.top + window.scrollY - topGuard;
     const cardH = r.height;
-    // if the card is shorter than the available space, and pushing the top down would hide the
-    // bottom, pull up just enough to reveal the bottom instead
     const avail = vh - topGuard - 16;
-    if(cardH <= avail){
+    if(cardH > avail){
+      // card is taller than the viewport: pin its TOP at the guard so the title is always
+      // visible, and let the bottom overflow into normal scroll. Never scroll the top past the guard.
+      desired = r.top + window.scrollY - topGuard;
+    } else {
+      // shorter than the available space: if pushing the top down would hide the bottom,
+      // pull up just enough to reveal the bottom instead
       const bottomDesired = r.bottom + window.scrollY - (vh - 16);
       if(desired < bottomDesired) desired = bottomDesired;  // ensure bottom is on-screen
     }
@@ -6544,7 +6548,13 @@ document.addEventListener('click', function(e){
     if(desired > max) spacer.style.height = Math.ceil(desired - max + 4) + 'px';
     let targetY = Math.max(0, desired);
     if(_forcePin) targetY = Math.max(targetY, widgetPinY() + 4);
-    animateScrollTo(targetY);
+    animateScrollTo(targetY, 0, ()=>{
+      // safety net: whatever path we took, the editor's title must be visible below the guard.
+      // if it landed above, nudge the page down just enough to reveal it.
+      const rr=ed.getBoundingClientRect();
+      const over = topGuard - rr.top;                 // positive when the title sits above the guard
+      if(over > 1){ window.scrollTo(0, Math.max(0, window.scrollY - over - 8)); }
+    });
   }
   document.querySelectorAll('.acc').forEach(acc=>{
     const head=acc.querySelector('.acc-head');
@@ -6592,6 +6602,7 @@ document.addEventListener('click', function(e){
   const ICON_KEBAB='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>';
   const ICON_TRASH='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
   const ICON_CLOSE='<svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const ICON_UNLINK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 14.8l-2 2a4 4 0 0 1-5.7-5.7l2.5-2.5a4 4 0 0 1 5.7 0M14.8 9.2l2-2a4 4 0 0 1 5.7 5.7l-2.5 2.5a4 4 0 0 1-5.7 0M4 4l16 16"/></svg>';
   function rowBalanceLabel(sectionTitle){
     const t=(sectionTitle||'').toLowerCase();
     if(t.includes('income')||t.includes('expense')||t.includes('flow')) return 'Monthly amount';
@@ -6617,7 +6628,9 @@ document.addEventListener('click', function(e){
     const amt=(row.querySelector('.amt')?.textContent || '').trim();
     const sectionTitle=row.closest('.acc')?.querySelector('h2')?.textContent || '';
     const isNew=row.classList.contains('acct-new');
-    const titleText = nm || (sectionTitle==='Expenses' ? 'Add Expense'
+    const firstExpense = isNew && sectionTitle==='Expenses' && row.closest('.bucket')?.dataset.ftue==='1';
+    const titleText = nm || (firstExpense ? 'Add your first expense'
+                 : sectionTitle==='Expenses' ? 'Add Expense'
                  : sectionTitle==='Monthly Income' ? 'Add income'
                  : sectionTitle==='Money Flows' ? 'Add a flow'
                  : 'Add');
@@ -6631,7 +6644,7 @@ document.addEventListener('click', function(e){
           '<div class="ec-actions">'+
             '<div class="ec-menu-wrap">'+
               '<button class="ec-kebab" type="button" aria-label="More options" aria-haspopup="true" aria-expanded="false">'+ICON_KEBAB+'</button>'+
-              '<div class="ec-menu" role="menu" hidden><button class="ec-menu-item ec-menu-delete" type="button" role="menuitem">'+ICON_TRASH+'Delete</button></div>'+
+              '<div class="ec-menu" role="menu" hidden>'+(row.querySelector('.acct-linked') ? '<button class="ec-menu-item ec-menu-disconnect" type="button" role="menuitem">'+ICON_UNLINK+'Disconnect account</button>' : '')+'<button class="ec-menu-item ec-menu-delete" type="button" role="menuitem">'+ICON_TRASH+'Delete</button></div>'+
             '</div>'+
             '<button class="ec-toggle" type="button" aria-label="Close">'+ICON_CLOSE+'</button>'+
           '</div>'+
@@ -6641,21 +6654,17 @@ document.addEventListener('click', function(e){
             ? selectHTML('Who is earning the income?', ['Me','Spouse'], 'Me')+
               fieldHTML('Name', nm, false)+
               fieldHTML('Pre-tax income', amt, false)+
-              fieldHTML('Start age', '61', false)+
-              fieldHTML('Stop age', '63', false)+
               '<div class="cf-inline-link" role="button" tabindex="0">+ Add contribution</div><div class="cf-inline" hidden></div>'
             : sectionTitle==='Expenses'
             ? fieldHTML('Name', nm, false, 'e.g. Streaming services')+
               fieldHTML('Category', (ty && ty!=='Monthly') ? ty : '', false, 'e.g. Entertainment')+
-              fieldHTML('Monthly amount', amt, false, 'e.g. $48')+
-              fieldHTML('Start age', '', false, 'e.g. Now')+
-              fieldHTML('Stop age', '', false, 'e.g. Age 90')
+              fieldHTML('Monthly amount', amt, false, 'e.g. $48')
             : sectionTitle==='Money Flows'
             ? fieldHTML('Name', nm, false, 'e.g. Savings contribution')+
               fieldHTML('Monthly amount', amt, false, 'e.g. $1,000')+
               fieldHTML('Timing', ty, false, 'e.g. Monthly, while working')
             : fieldHTML('Name', nm, false)+
-              fieldHTML('Type', ty, true)+
+              fieldHTML('Account type', ty, true)+
               fieldHTML(rowBalanceLabel(sectionTitle), amt, false))+
           '<div class="edit-actions"><button class="btn-save" type="button">Save</button></div>'+
         '</div>'+
@@ -6695,6 +6704,12 @@ document.addEventListener('click', function(e){
       kebab.addEventListener('click', (e)=>{ e.stopPropagation(); menu.hidden=!menu.hidden; kebab.setAttribute('aria-expanded', String(!menu.hidden)); });
       menu.addEventListener('click', (e)=> e.stopPropagation());
       const del=ed.querySelector('.ec-menu-delete'); if(del) del.addEventListener('click', ()=> closeRowEditor(ed, row));
+      const disc=ed.querySelector('.ec-menu-disconnect');
+      if(disc) disc.addEventListener('click', ()=>{
+        const tag=row.querySelector('.acct-linked'); if(tag) tag.remove();
+        disc.remove();
+        menu.hidden=true; kebab.setAttribute('aria-expanded','false');
+      });
     }
     const tog=ed.querySelector('.ec-toggle'); if(tog) tog.addEventListener('click', ()=> closeRowEditor(ed, row));
     const cancel=ed.querySelector('.btn-cancel'); if(cancel) cancel.addEventListener('click', ()=>{ if(opts.chain){ skipChain(row, ed); } else { closeRowEditor(ed, row); } });
@@ -6742,6 +6757,7 @@ document.addEventListener('click', function(e){
           if(row.classList.contains('acct-new')){
             if(nmEl && !nmEl.textContent.trim()) nmEl.textContent='New expense';
             row.classList.remove('acct-new');
+            const b=row.closest('.bucket'); if(b) b.removeAttribute('data-ftue');   // first expense saved: no longer FTUE
           }
           if(amtEl){
             let amtF=null;
@@ -6887,6 +6903,27 @@ document.addEventListener('click', function(e){
       add.addEventListener('click', ()=> spawnBlankRow(acc, {scroll:true}));
     });
   });
+
+  // First-time Expenses: opening the section drops the user straight into adding
+  // their first expense (empty-state prompt -> field editor already open).
+  (function(){
+    const acc=[...document.querySelectorAll('.acc')].find(a=>{
+      const h2=a.querySelector('h2'); return h2 && h2.textContent==='Expenses' && a.querySelector('.bucket[data-ftue="1"]'); });
+    if(!acc) return;
+    const head=acc.querySelector('.acc-head');
+    let sprung=false;
+    function springOpen(){
+      if(sprung) return;
+      const bucket=acc.querySelector('.bucket[data-ftue="1"]');
+      if(!bucket || bucket.querySelector('.acct')) { sprung=true; return; }   // already has a row
+      sprung=true;
+      // wait for the accordion to finish expanding, then open the editor in place
+      setTimeout(()=> spawnBlankRow(acc, {scroll:false}), reduce?0:260);
+    }
+    if(head) head.addEventListener('click', ()=>{ if(head.classList.contains('acc-collapsed')) springOpen(); }, true);
+    // if the section is already open on load (e.g. deep-link), spring immediately
+    if(head && !head.classList.contains('acc-collapsed')) springOpen();
+  })();
 
   // Profile rows expose their own fields
   const PROFILE_FIELDS = {
@@ -10600,8 +10637,9 @@ window.CONTRIB={ open, openInline, close, finishInline, back:()=>advance(-1), ne
     const c=e.target.closest && e.target.closest('.exp-budgeter-cta');
     if(!c) return;
     e.stopPropagation();
+    /* both steps in one task so the Optimize index never gets a paint - straight to the budgeter */
     document.querySelector('.topnav nav.modes a[data-view="optimize"]')?.click();
-    setTimeout(()=>{ document.querySelector('.onav-item[data-opt="budget"]')?.click(); }, 240);
+    document.querySelector('.onav-item[data-opt="budget"]')?.click();
   }, true);
 })();
 </script>
@@ -11186,23 +11224,36 @@ body.story-open{ overflow:hidden; }
     var chart=scan.parentNode; if(!chart || !chart.offsetParent) return;
     var trackW=chart.clientWidth-114;
     var pct=(+slider.value-61)/34;
-    scan.style.left=(114 + pct*trackW - 1)+'px';
+    scan.style.left=(pct*trackW - 1)+'px';
   }
   function slide(){ var a=+slider.value; atAge.textContent=a; atAmt.textContent=fmt(total(a))+'/mo'; positionScan(); }
   if(slider){ slider.addEventListener('input', slide); slide(); }
   window.addEventListener('resize', positionScan);
   pills.forEach(function(p){ p.addEventListener('click', function(){ setTimeout(positionScan, 60); }); });
 
-  /* on first reveal, the slider takes one slow tour left to right */
+  /* on first reveal, the scan line draws the chart: it tours left to right and the
+     bars only exist to the LEFT of the line - the line itself is the mask. */
   var swept=false;
+  var reduceBMF = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var gantt=root.querySelector('.bmf-gantt');
+  var gtracks=gantt ? gantt.querySelectorAll('.bmf-gtrack') : [];
+  function clipAt(v){
+    if(!gantt || !scan) return;
+    var chart=scan.parentNode; if(!chart) return;
+    var trackW=chart.clientWidth-114;
+    var r=Math.max(0, (1-((v-61)/34))*trackW);
+    var cp='inset(0 '+r+'px 0 0)';
+    for(var i=0;i<gtracks.length;i++){ gtracks[i].style.clipPath=cp; gtracks[i].style.webkitClipPath=cp; }
+  }
+  function clearClip(){ for(var i=0;i<gtracks.length;i++){ gtracks[i].style.clipPath=''; gtracks[i].style.webkitClipPath=''; } }
   function sweep(){
     if(swept || !slider || !scan) return;
     var chart=scan.parentNode;
     if(!chart || !chart.offsetParent) return;
     swept=true;
-    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if(reduceBMF){ clearClip(); return; }
     var DUR=3200, from=61, to=95, start=null, cancelled=false;
-    slider.addEventListener('pointerdown', function(){ cancelled=true; }, {once:true});
+    slider.addEventListener('pointerdown', function(){ cancelled=true; clearClip(); }, {once:true});
     function frame(ts){
       if(cancelled) return;
       if(start===null) start=ts;
@@ -11213,13 +11264,16 @@ body.story-open{ overflow:hidden; }
       var a=Math.round(v);
       atAge.textContent=a; atAmt.textContent=fmt(total(a))+'/mo';
       var trackW=chart.clientWidth-114;
-      scan.style.left=(114+((v-from)/(to-from))*trackW-1)+'px';
-      if(p<1) requestAnimationFrame(frame);
+      scan.style.left=(((v-from)/(to-from))*trackW-1)+'px';
+      clipAt(v);
+      if(p<1){ requestAnimationFrame(frame); } else { clearClip(); }
     }
     requestAnimationFrame(frame);
   }
   if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(en){ if(en[0] && en[0].isIntersecting){ setTimeout(sweep, 500); io.disconnect(); } }, {threshold:0.4});
+    var io=new IntersectionObserver(function(en){ if(en[0] && en[0].isIntersecting){
+      if(!reduceBMF && !swept) clipAt(61);   /* bars wait behind the line before it moves */
+      setTimeout(sweep, 420); io.disconnect(); } }, {threshold:0.4});
     var ch=document.querySelector('.bmf-chart'); if(ch) io.observe(ch);
   }
 })();
@@ -12357,6 +12411,12 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
   }
   function setExpanded(on){
     if(busy) return;
+    /* the budgeter planning table absorbs both rails to go full-width; if the AI is
+       opening there, return to list view first so it expands into a visible rail */
+    if(on){
+      var budLay=document.querySelector('.bud-layout.bud-tablemode');
+      if(budLay && window.BUD && typeof window.BUD.switchView==='function'){ window.BUD.switchView('list'); }
+    }
     if(!on){ document.body.classList.add('ai-collapsing');
       setTimeout(function(){ document.body.classList.remove('ai-collapsing'); }, 560); }
     var hadFs=document.body.classList.contains('ai-fullscreen');
