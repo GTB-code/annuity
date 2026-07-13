@@ -34,7 +34,7 @@
   --ease-settle:cubic-bezier(0.34,1.3,0.64,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{-webkit-font-smoothing:antialiased;}
+html{-webkit-font-smoothing:antialiased; scrollbar-gutter:stable;}
 body{
   font-family:var(--font);
   font-size:18px; line-height:1.5;
@@ -948,6 +948,8 @@ body.vb-open{ overflow:hidden; }
 /* retirement: opportunities, risks, and decisions */
 .ret-plays{ display:flex; flex-direction:column; gap:44px; }
 .ret-seclabel{ font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:14px; }
+/* the Financial Life deep-dive section headlines read as true headings, not eyebrow labels */
+.flx .ret-seclabel{ font-size:22px; font-weight:600; color:var(--ink); letter-spacing:-0.2px; margin-bottom:18px; }
 .ret-cards{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--s-4); }
 .ret-card{ border:1px solid var(--hairline); border-radius:16px; padding:18px 20px; background:var(--white); display:flex; flex-direction:column; gap:8px; }
 .ret-card.feature{ padding:26px 28px; gap:16px; border-radius:18px; }
@@ -2622,7 +2624,7 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .pf-hl{ font-size:34px; line-height:1.12; letter-spacing:0; font-weight:500; color:var(--ink); margin:0 0 4px; }
 .pf-gold{ color:var(--yellow); }
 .pf-em{ color:#0E794E; font-style:italic; }
-.pf-hl .nw{ white-space:nowrap; }
+.pf-hl .nw, .pf-sub .nw{ white-space:nowrap; }
 .today-hero{ margin-top:-8px; }
 .pf-sub{ font-size:17px; color:var(--text-secondary); margin:0; line-height:1.55; }
 .pf-sub b{ color:var(--ink); font-weight:600; }
@@ -2885,7 +2887,7 @@ body.mpanel-open{ overflow:hidden; }
     <!-- ===== Today, in one picture: single-card infographic with toggles ===== -->
     <div class="today-hero">
       <h2 class="pf-hl"><span class="nw">You&rsquo;ve done <span class="pf-em">better</span></span> <span class="nw">than you <span class="pf-gold">think</span>.</span></h2>
-      <p class="pf-sub">Fact, not forecast &middot; Linked accounts, refreshed this morning</p>
+      <p class="pf-sub"><span class="nw">Fact, not forecast &middot;</span> <span class="nw">Real data as of today &middot;</span> <span class="nw">Linked accounts plus your inputs</span></p>
     </div>
     <section class="uber-today" id="uberToday">
       <div class="uber-card">
@@ -6514,6 +6516,7 @@ document.addEventListener('click', function(e){
               '<div class="cf-inline-link" role="button" tabindex="0">+ Add contribution</div><div class="cf-inline" hidden></div>'
             : sectionTitle==='Expenses'
             ? fieldHTML('Name', nm, false, 'e.g. Streaming services')+
+              fieldHTML('Category', (ty && ty!=='Monthly') ? ty : '', false, 'e.g. Entertainment')+
               fieldHTML('Monthly amount', amt, false, 'e.g. $48')+
               fieldHTML('Start age', '', false, 'e.g. Now')+
               fieldHTML('Stop age', '', false, 'e.g. Age 90')
@@ -6598,9 +6601,18 @@ document.addEventListener('click', function(e){
         (function(){
           const fields=ed.querySelectorAll('.field');
           const getVal=f=>{ const t=f?.querySelector('.vtext'); return t && !t.classList.contains('is-placeholder') ? t.textContent.trim() : ''; };
-          const nmEl=row.querySelector('.nm'), amtEl=row.querySelector('.amt');
+          const nmEl=row.querySelector('.nm'), amtEl=row.querySelector('.amt'), tyEl=row.querySelector('.ty');
           // Name is always the first text field; amount is the last field whose label looks monetary
           if(nmEl && fields[0]){ const v=getVal(fields[0]); if(v) nmEl.textContent=v; }
+          if(tyEl){
+            let catF=null;
+            fields.forEach(f=>{ const lab=(f.querySelector('label')?.textContent||'').trim().toLowerCase(); if(lab==='category') catF=f; });
+            const cv=getVal(catF); if(cv) tyEl.textContent=cv;
+          }
+          if(row.classList.contains('acct-new')){
+            if(nmEl && !nmEl.textContent.trim()) nmEl.textContent='New expense';
+            row.classList.remove('acct-new');
+          }
           if(amtEl){
             let amtF=null;
             fields.forEach(f=>{ const lab=(f.querySelector('label')?.textContent||'').toLowerCase();
@@ -11283,16 +11295,26 @@ body.ai-expanded .rail .ctx-body{ max-width:52ch; }
 .rail-ai-toggle{ display:none; }
 body.ai-expanded .rail-ai-toggle{ display:flex; }
 
-/* second control: full screen (sits left of the contract chevrons) */
+/* second control: full view (sits left of the contract chevrons).
+   Labeled and green so the bigger canvas is discoverable, with one soft
+   halo pulse when the rail docks open. */
 .rail-ai-fs{
-  position:absolute; z-index:90; top:0; right:44px; width:34px; height:34px; border-radius:10px;
-  border:1px solid var(--hairline); background:var(--white); color:var(--ink);
-  display:none; align-items:center; justify-content:center; cursor:pointer; padding:0;
+  position:absolute; z-index:90; top:0; right:44px; width:auto; height:34px; border-radius:999px;
+  border:1px solid var(--hairline); background:var(--white); color:#0E794E;
+  display:none; align-items:center; justify-content:center; gap:7px; cursor:pointer; padding:0 13px 0 11px;
+  font:600 13px var(--font);
   transition:border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
 }
-.rail-ai-fs:hover{ border-color:var(--hairline-strong); background:#FCFCFC; }
-.rail-ai-fs svg{ width:16px; height:16px; }
+.rail-ai-fs .fsl{ white-space:nowrap; }
+.rail-ai-fs:hover{ border-color:#BFE3D2; background:#F3FBF7; }
+.rail-ai-fs svg{ width:15px; height:15px; flex:none; }
 body.ai-expanded .rail-ai-fs{ display:flex; }
+@media (prefers-reduced-motion: no-preference){
+  body.ai-expanded:not(.ai-fullscreen) .rail-ai-fs{ animation:fsHalo 2s ease-out 1s 2; }
+}
+@keyframes fsHalo{ 0%{ box-shadow:0 0 0 0 rgba(4,180,119,0.30); } 55%{ box-shadow:0 0 0 9px rgba(4,180,119,0); } 100%{ box-shadow:0 0 0 0 rgba(4,180,119,0); } }
+@media (prefers-reduced-motion: reduce){ .rail-ai-fs{ animation:none !important; } }
+body.ai-fullscreen .rail-ai-fs{ width:34px; padding:0; border-radius:10px; color:var(--ink); }
 
 /* fullscreen: pin the controls to a FIXED spot in the top-right of the centered
    workspace (max-width 1116 → right edge = 50% + 558). Because they are fixed to the
@@ -11324,7 +11346,7 @@ body.ai-fullscreen .rail-ai-host{ display:grid;
   width:100%; max-width:1116px; margin:0 auto; }
 body.ai-fullscreen .rail-ai-head{ grid-column:1 / -1; grid-row:1; }
 body.ai-fullscreen .rail-ai-hist{ display:flex; flex-direction:column; grid-column:1; grid-row:2; }
-body.ai-fullscreen .rail-ai-chat{ grid-column:2; grid-row:2; }
+body.ai-fullscreen .rail-ai-chat{ grid-column:2; grid-row:2; padding:0 28px; box-sizing:border-box; }
 body.ai-fullscreen .rail-ai-mini{ display:block; grid-column:3; grid-row:2;
   border:1px solid var(--hairline); border-radius:18px; padding:22px; background:#FCFDFD; }
 
@@ -11332,7 +11354,7 @@ body.ai-fullscreen .rail-ai-mini{ display:block; grid-column:3; grid-row:2;
    The center chat column gets the largest boost since it holds the conversation. */
 /* --- center chat column: the main reading surface --- */
 body.ai-fullscreen .aic-msg{ font-size:18.5px; line-height:1.6; max-width:60ch; }
-body.ai-fullscreen .aic-msg.user{ padding:12px 17px; }
+body.ai-fullscreen .aic-msg.user{ padding:12px 17px; max-width:min(30ch, 62%); }
 body.ai-fullscreen .aic-card{ padding:18px 20px; }
 body.ai-fullscreen .aic-ctitle{ font-size:14.5px; }
 body.ai-fullscreen .aic-ctitle .val{ font-size:18px; }
@@ -11456,9 +11478,14 @@ body.ai-expanded .rail-ai-host > *:not(.rail-ai-toggle):not(.rail-ai-fs):not(.ra
 .rail-ai-chat{ display:none; }
 body.ai-expanded .rail-ai-host .rail-ai-chat{ display:flex; flex-direction:column; gap:16px;
   animation: aiRise 340ms cubic-bezier(0.22,1,0.36,1) 100ms backwards; }
-.aic-thread{ display:flex; flex-direction:column; gap:14px; max-height:calc(100vh - 300px); overflow-y:auto; padding-right:2px; }
+.aic-thread{ display:flex; flex-direction:column; gap:14px; max-height:calc(100vh - 300px); overflow-y:auto;
+  padding-right:10px; scrollbar-gutter:stable; scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; }
+.aic-thread::-webkit-scrollbar{ width:8px; }
+.aic-thread::-webkit-scrollbar-thumb{ background:#D9DDE3; border-radius:4px; }
+.aic-thread::-webkit-scrollbar-thumb:hover{ background:#C4C9D2; }
+.aic-thread::-webkit-scrollbar-track{ background:transparent; }
 .aic-msg{ font-size:16px; line-height:1.55; color:var(--ink); max-width:52ch; }
-.aic-msg.user{ align-self:flex-end; background:#F6F7F8; border:1px solid var(--hairline); border-radius:16px; padding:10px 14px; max-width:85%; }
+.aic-msg.user{ align-self:flex-end; background:#0D3F4A; border:1px solid #0D3F4A; color:#FFFFFF; line-height:1.2; border-radius:16px 16px 0 16px; padding:10px 14px; max-width:min(30ch, 62%); margin-top:10px; margin-bottom:10px; }
 /* rich AI message content: charts, data updates, agent actions */
 .aic-msg.rich{ max-width:100%; }
 .aic-card{ border:1px solid var(--hairline); border-radius:14px; padding:15px 16px; margin-top:10px; }
@@ -11635,6 +11662,7 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
   var ICON_EXPAND='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
   var ICON_X='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var ICON_FS_EXIT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4v6H4M3 3l7 7M14 20v-6h6M21 21l-7-7"/></svg>';
+  function fsContent(on){ return on ? ICON_FS_EXIT : ICON_EXPAND+'<span class="fsl">Full view</span>'; }
   var SPARK='<span class="spark"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>';
 
   /* ---- the chat: one shared thread, rendered into whichever rail is visible ---- */
@@ -12025,8 +12053,8 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
     btn.addEventListener('click', function(e){ e.stopPropagation(); toggle(); });
     rail.appendChild(btn);
     var fs=document.createElement('button');
-    fs.type='button'; fs.className='rail-ai-fs'; fs.setAttribute('aria-label','Full screen');
-    fs.innerHTML= document.body.classList.contains('ai-fullscreen') ? ICON_FS_EXIT : ICON_EXPAND;
+    fs.type='button'; fs.className='rail-ai-fs'; fs.setAttribute('aria-label','Open full view');
+    fs.innerHTML= fsContent(document.body.classList.contains('ai-fullscreen'));
     fs.addEventListener('click', function(e){ e.stopPropagation();
       setFullscreen(!document.body.classList.contains('ai-fullscreen')); });
     rail.appendChild(fs);
@@ -12142,11 +12170,11 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
   window.addEventListener('resize', positionFsControls);
   function applyFsState(on){
     document.querySelectorAll('.rail-ai-fs').forEach(function(b){
-      b.innerHTML= on ? ICON_FS_EXIT : ICON_EXPAND;
-      b.setAttribute('aria-label', on ? 'Exit full screen' : 'Full screen');
+      b.innerHTML= fsContent(on);
+      b.setAttribute('aria-label', on ? 'Exit full view' : 'Open full view');
       if(b.offsetParent && b.animate) b.animate(
-        [{transform:'rotate(-90deg) scale(0.8)', opacity:0.3},{transform:'none', opacity:1}],
-        {duration:260, easing:'cubic-bezier(0.22,1,0.36,1)'});
+        [{opacity:0.3},{opacity:1}],
+        {duration:220, easing:'cubic-bezier(0.22,1,0.36,1)'});
     });
     if(on){ requestAnimationFrame(positionFsControls); } else { var t=document.querySelector('.rail-ai-toggle'), f=document.querySelector('.rail-ai-fs'); if(t) t.style.right=''; if(f) f.style.right=''; }
   }
