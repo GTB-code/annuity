@@ -2268,6 +2268,7 @@ body.alo-open .layout.page.alo-layout.on{display:grid;}
 body.alo-open .layout.page.opt-index.on{display:none;}
 body.alo-open .layout.page.bud-layout.on{display:none;}
 .alo-top .bud-sub{margin-bottom:52px;}
+.bud-top .bud-sub{margin-bottom:32px;}   /* matches the Today sub to already-yours card gap */
 #alo-mix .alo-bars{margin-top:-26px;}
 .alo-sec{margin-top:0;scroll-margin-top:100px;}
 .alo-sec + .alo-sec{margin-top:64px;}
@@ -2371,17 +2372,12 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .bud-addtop svg{width:13px;height:13px;flex:none;}
 /* ===== BMF: spending-method mini flow ===== */
 .bmf{ border:1px solid var(--hairline); border-radius:16px; padding:16px 20px 18px; margin:0 0 22px; }
-.bmf-head{ margin-bottom:12px; }
-.bmf-lab{ font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-bottom:8px; }
-.bmf-pills{ display:flex; gap:10px; flex-wrap:wrap; }
-.bmf-pill{ display:inline-flex; align-items:center; gap:7px; font:600 13.5px var(--font); color:var(--ink);
-  background:var(--white); border:1px solid var(--hairline); border-radius:999px; padding:7px 14px; cursor:pointer;
-  transition:border-color .15s ease, background .15s ease; }
-.bmf-pill:hover{ border-color:var(--hairline-strong); }
-.bmf-dot{ width:14px; height:14px; border-radius:999px; border:2px solid #C4C9D2; box-sizing:border-box; flex:none; transition:border-color .15s ease; }
-.bmf-pill.active{ background:#F3FBF7; border-color:#0E794E; color:#0E794E; }
-.bmf-pill.active .bmf-dot{ border-color:#0E794E; border-width:4.5px; }
-.bmf-note{ font-size:12px; color:var(--text-secondary); margin-top:8px; }
+.bmf-head{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
+.bmf-lab{ font-size:22px; font-weight:700; color:var(--ink); letter-spacing:-0.3px; }
+.bmf-pills{ display:flex; gap:18px; }
+.bmf-pill{ background:none; border:none; padding:2px 0 5px; font-size:14px; font-weight:500; color:var(--text-secondary); font-family:inherit; cursor:pointer; border-bottom:2px solid transparent; transition:color .2s, border-color .2s; }
+.bmf-pill:hover{ color:var(--ink); }
+.bmf-pill.active{ color:var(--green-cta); font-weight:700; border-bottom-color:var(--green); }
 .bmf-panel{ min-height:266px; }
 .bmf-panel.bmf-in{ animation:bmfIn .24s ease; }
 @keyframes bmfIn{ from{ opacity:0; transform:translateY(5px); } }
@@ -2393,6 +2389,11 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .bmf-inwrap span{ color:var(--text-secondary); font-size:15px; }
 .bmf-inwrap input{ border:none; outline:none; font:600 16px "DM Sans", sans-serif; font-variant-numeric:tabular-nums; color:var(--ink); width:100%; background:transparent; }
 .bmf-help{ font-size:13px; color:var(--text-secondary); margin:8px 0 0; }
+.bmf-nudge{ margin-top:20px; background:#F3FBF7; border-radius:12px; padding:14px 16px 13px; max-width:470px; }
+.bmf-nudge p{ font-size:13.5px; line-height:1.55; color:var(--text-secondary); margin:0 0 8px; }
+.bmf-nudge p b{ color:var(--ink); font-weight:600; }
+.bmf-nudgelink{ display:inline-flex; align-items:center; gap:5px; font-size:14px; font-weight:600; color:var(--green-cta); cursor:pointer; }
+.bmf-nudgelink:hover{ text-decoration:underline; }
 .bmf-panel[data-bmfp="one"]{ padding-top:2px; }
 /* timeline */
 .bmf-sechead{ display:flex; justify-content:space-between; align-items:baseline; gap:14px; margin-bottom:5px; flex-wrap:wrap; }
@@ -2410,7 +2411,7 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .bmf-del svg{ width:14px; height:14px; }
 .bmf-delspace{ width:28px; }
 .bmf-addchange{ display:flex; align-items:flex-end; gap:10px; margin-top:10px; flex-wrap:wrap; }
-.bmf-addchange .bmf-field.sm .bmf-inwrap, .bmf-addchange .bmf-field.sm > input{ padding:8px 12px; max-width:150px; border:1px solid var(--hairline); border-radius:10px; }
+.bmf-addchange .bmf-field.sm .bmf-inwrap, .bmf-addchange .bmf-field.sm > input{ padding:0 12px; height:40px; box-sizing:border-box; max-width:150px; border:1px solid var(--hairline); border-radius:10px; }
 .bmf-addchange .bmf-field.sm > input{ display:block; font:600 14px "DM Sans", sans-serif; color:var(--ink); outline:none; width:96px; }
 .bmf-addchange .bmf-field.sm > input:focus{ border-color:#0E794E; }
 .bmf-addchange .bmf-field.sm .bmf-inwrap input{ font-size:14px; }
@@ -2431,12 +2432,12 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .bmf-chart{ position:relative; }
 .bmf-scan{ position:absolute; top:20px; bottom:14px; width:2px; background:#0D3F4A; border-radius:1px; pointer-events:none; z-index:1; }
 .bmf-slider{ display:block; width:calc(100% - 114px); margin:6px 0 6px 114px; accent-color:#0E794E; height:16px; cursor:pointer; }
-.bmf-foot{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; background:#F3FBF7; border-radius:10px; padding:8px 14px; margin-left:114px; }
+.bmf-foot{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; padding:8px 0 0; margin-left:114px; }
 .bmf-footlab{ font-size:12px; font-weight:600; color:var(--text-secondary); }
 .bmf-footlab b{ color:var(--ink); font-family:"DM Sans", sans-serif; }
 .bmf-footamt{ font:700 17px "DM Sans", sans-serif; font-variant-numeric:tabular-nums; color:var(--ink); margin-top:2px; }
 .bmf-footr{ text-align:right; }
-body.ai-expanded .bmf-pills{ gap:8px; }
+body.ai-expanded .bmf-pills{ gap:14px; }
 .bud-viewtog{display:inline-flex;border:1px solid var(--hairline-strong);border-radius:999px;padding:3px;}
 .bud-vt{border:none;background:none;font:600 13.5px var(--font);color:var(--text-secondary);padding:7px 16px;border-radius:999px;cursor:pointer;}
 .bud-vt.active{background:#F6F7F8;color:var(--ink);}
@@ -4782,11 +4783,10 @@ body.mpanel-open{ overflow:hidden; }
         <div class="bmf-head">
           <div class="bmf-lab">Spending method</div>
           <div class="bmf-pills" role="tablist" aria-label="Spending method">
-            <button type="button" class="bmf-pill" data-bmf="one" role="tab" aria-selected="false"><span class="bmf-dot"></span>One amount</button>
-            <button type="button" class="bmf-pill" data-bmf="timeline" role="tab" aria-selected="false"><span class="bmf-dot"></span>Timeline</button>
-            <button type="button" class="bmf-pill active" data-bmf="budget" role="tab" aria-selected="true"><span class="bmf-dot"></span>Full budget</button>
+            <button type="button" class="bmf-pill" data-bmf="one" role="tab" aria-selected="false">One amount</button>
+            <button type="button" class="bmf-pill" data-bmf="timeline" role="tab" aria-selected="false">Timeline</button>
+            <button type="button" class="bmf-pill active" data-bmf="budget" role="tab" aria-selected="true">Full budget</button>
           </div>
-          <div class="bmf-note">Switching methods won&rsquo;t delete your entries.</div>
         </div>
 
         <div class="bmf-panel" data-bmfp="one" hidden>
@@ -4795,6 +4795,10 @@ body.mpanel-open{ overflow:hidden; }
             <div class="bmf-inwrap"><span>$</span><input id="bmfOneAmt" inputmode="numeric" value="6,323" aria-describedby="bmfOneHelp"></div>
           </div>
           <p class="bmf-help" id="bmfOneHelp">About $75,900 per year, before adjusting for inflation.</p>
+          <div class="bmf-nudge">
+            <p><b>Want a plan that fits real life?</b> One number assumes every year looks the same. The full budget lets housing, healthcare, and travel rise and fall on their own, so the plan funds the life you will actually live.</p>
+            <a class="bmf-nudgelink" role="button" tabindex="0">Switch to Full budget &rarr;</a>
+          </div>
         </div>
 
         <div class="bmf-panel" data-bmfp="timeline" hidden>
@@ -4813,7 +4817,6 @@ body.mpanel-open{ overflow:hidden; }
         </div>
 
         <div class="bmf-panel" data-bmfp="budget">
-          <div class="bmf-sechead"><span class="bmf-seclab">Categories (7)</span><span class="bmf-hint">Each expense runs on its own ages &middot; drag the slider to check any age</span></div>
           <div class="bmf-chart">
           <i class="bmf-scan" id="bmfScan" aria-hidden="true" style="left:113px"></i>
           <div class="bmf-gantt">
@@ -11170,6 +11173,13 @@ body.story-open{ overflow:hidden; }
     t += (age<75 ? 400 : 550);                             /* more hobby time later */
     return t;
   }
+  var nudge=root.querySelector('.bmf-nudgelink');
+  if(nudge){
+    var goBudget=function(){ var p=root.querySelector('.bmf-pill[data-bmf="budget"]'); if(p) p.click(); };
+    nudge.addEventListener('click', goBudget);
+    nudge.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); goBudget(); } });
+  }
+
   var scan=document.getElementById('bmfScan');
   function positionScan(){
     if(!scan || !slider) return;
@@ -11182,6 +11192,36 @@ body.story-open{ overflow:hidden; }
   if(slider){ slider.addEventListener('input', slide); slide(); }
   window.addEventListener('resize', positionScan);
   pills.forEach(function(p){ p.addEventListener('click', function(){ setTimeout(positionScan, 60); }); });
+
+  /* on first reveal, the slider takes one slow tour left to right */
+  var swept=false;
+  function sweep(){
+    if(swept || !slider || !scan) return;
+    var chart=scan.parentNode;
+    if(!chart || !chart.offsetParent) return;
+    swept=true;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var DUR=3200, from=61, to=95, start=null, cancelled=false;
+    slider.addEventListener('pointerdown', function(){ cancelled=true; }, {once:true});
+    function frame(ts){
+      if(cancelled) return;
+      if(start===null) start=ts;
+      var p=Math.min(1,(ts-start)/DUR);
+      var e=p<0.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
+      var v=from+(to-from)*e;
+      slider.value=v;
+      var a=Math.round(v);
+      atAge.textContent=a; atAmt.textContent=fmt(total(a))+'/mo';
+      var trackW=chart.clientWidth-114;
+      scan.style.left=(114+((v-from)/(to-from))*trackW-1)+'px';
+      if(p<1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(en){ if(en[0] && en[0].isIntersecting){ setTimeout(sweep, 500); io.disconnect(); } }, {threshold:0.4});
+    var ch=document.querySelector('.bmf-chart'); if(ch) io.observe(ch);
+  }
 })();
 </script>
 </body>
