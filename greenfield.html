@@ -544,8 +544,8 @@ nav.modes a.active .ic{opacity:1;}
 @property --ask-ang { syntax:"<angle>"; initial-value:0deg; inherits:false; }
 .dock{
   position:fixed; left:0; right:0; bottom:0; z-index:55;
-  padding:18px 0 32px;
-  background:linear-gradient(to top, rgba(255,255,255,0.96), rgba(255,255,255,0));
+  padding:44px 0 32px;
+  background:linear-gradient(to top, #FFFFFF 0%, #FFFFFF 58%, rgba(255,255,255,0.88) 78%, rgba(255,255,255,0) 100%);
   pointer-events:none;
 }
 .dock-inner{
@@ -2369,6 +2369,74 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .bud-addtop{display:inline-flex;align-items:center;gap:7px;font:600 14px var(--font);color:#FFFFFF;background:#0E794E;border:none;border-radius:999px;padding:9px 18px;cursor:pointer;}
 .bud-addtop:hover{background:#0B5F3D;}
 .bud-addtop svg{width:13px;height:13px;flex:none;}
+/* ===== BMF: spending-method mini flow ===== */
+.bmf{ border:1px solid var(--hairline); border-radius:16px; padding:16px 20px 18px; margin:0 0 22px; }
+.bmf-head{ margin-bottom:12px; }
+.bmf-lab{ font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-bottom:8px; }
+.bmf-pills{ display:flex; gap:10px; flex-wrap:wrap; }
+.bmf-pill{ display:inline-flex; align-items:center; gap:7px; font:600 13.5px var(--font); color:var(--ink);
+  background:var(--white); border:1px solid var(--hairline); border-radius:999px; padding:7px 14px; cursor:pointer;
+  transition:border-color .15s ease, background .15s ease; }
+.bmf-pill:hover{ border-color:var(--hairline-strong); }
+.bmf-dot{ width:14px; height:14px; border-radius:999px; border:2px solid #C4C9D2; box-sizing:border-box; flex:none; transition:border-color .15s ease; }
+.bmf-pill.active{ background:#F3FBF7; border-color:#0E794E; color:#0E794E; }
+.bmf-pill.active .bmf-dot{ border-color:#0E794E; border-width:4.5px; }
+.bmf-note{ font-size:12px; color:var(--text-secondary); margin-top:8px; }
+.bmf-panel{ min-height:266px; }
+.bmf-panel.bmf-in{ animation:bmfIn .24s ease; }
+@keyframes bmfIn{ from{ opacity:0; transform:translateY(5px); } }
+@media (prefers-reduced-motion: reduce){ .bmf-panel.bmf-in{ animation:none; } }
+/* fields */
+.bmf-field label{ display:block; font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
+.bmf-inwrap{ display:flex; align-items:center; gap:6px; border:1px solid var(--hairline); border-radius:12px; padding:9px 12px; max-width:260px; }
+.bmf-inwrap:focus-within{ border-color:#0E794E; }
+.bmf-inwrap span{ color:var(--text-secondary); font-size:15px; }
+.bmf-inwrap input{ border:none; outline:none; font:600 16px "DM Sans", sans-serif; font-variant-numeric:tabular-nums; color:var(--ink); width:100%; background:transparent; }
+.bmf-help{ font-size:13px; color:var(--text-secondary); margin:8px 0 0; }
+.bmf-panel[data-bmfp="one"]{ padding-top:2px; }
+/* timeline */
+.bmf-sechead{ display:flex; justify-content:space-between; align-items:baseline; gap:14px; margin-bottom:5px; flex-wrap:wrap; }
+.bmf-seclab{ font-size:14px; font-weight:600; color:#0E794E; }
+.bmf-hint{ font-size:12px; color:var(--text-secondary); }
+.bmf-tlrow{ display:flex; align-items:center; gap:12px; padding:5px 2px; border-bottom:1px solid var(--hairline); }
+.bmf-when{ flex:1; font-size:14.5px; font-weight:600; color:var(--ink); }
+.bmf-inmini{ display:flex; align-items:center; gap:4px; border:1px solid var(--hairline); border-radius:10px; padding:4px 9px; width:104px; }
+.bmf-inmini:focus-within{ border-color:#0E794E; }
+.bmf-inmini span{ color:var(--text-secondary); font-size:13px; }
+.bmf-inmini input{ border:none; outline:none; font:600 14px "DM Sans", sans-serif; font-variant-numeric:tabular-nums; color:var(--ink); width:100%; background:transparent; }
+.bmf-per{ font-size:12.5px; color:var(--text-secondary); width:26px; }
+.bmf-del{ width:28px; height:28px; display:flex; align-items:center; justify-content:center; background:none; border:none; border-radius:8px; color:#9AA0AE; cursor:pointer; }
+.bmf-del:hover{ color:#B3261E; background:#FBF2F1; }
+.bmf-del svg{ width:14px; height:14px; }
+.bmf-delspace{ width:28px; }
+.bmf-addchange{ display:flex; align-items:flex-end; gap:10px; margin-top:10px; flex-wrap:wrap; }
+.bmf-addchange .bmf-field.sm .bmf-inwrap, .bmf-addchange .bmf-field.sm > input{ padding:8px 12px; max-width:150px; border:1px solid var(--hairline); border-radius:10px; }
+.bmf-addchange .bmf-field.sm > input{ display:block; font:600 14px "DM Sans", sans-serif; color:var(--ink); outline:none; width:96px; }
+.bmf-addchange .bmf-field.sm > input:focus{ border-color:#0E794E; }
+.bmf-addchange .bmf-field.sm .bmf-inwrap input{ font-size:14px; }
+.bmf-addbtn{ background:#0E794E; color:#fff; border:none; border-radius:999px; padding:8px 17px; font:600 13.5px var(--font); cursor:pointer; }
+.bmf-addbtn:hover{ background:#0B5F3D; }
+/* gantt */
+.bmf-grow{ display:grid; grid-template-columns:104px 1fr; align-items:center; column-gap:10px; padding:2px 0; }
+.bmf-glab{ font-size:12.5px; font-weight:400; color:var(--ink); }
+.bmf-gtrack{ position:relative; height:18px; }
+.bmf-axisrow .bmf-gtrack{ height:13px; }
+.bmf-axis i{ position:absolute; top:0; transform:translateX(-50%); font-style:normal; font-size:11px; color:#9AA0AE; font-family:"DM Sans", sans-serif; }
+.bmf-bar{ position:absolute; top:0; height:18px; background:#E7F7F0; border:1px solid #CDEBDD; border-radius:6px; box-sizing:border-box;
+  font:400 11px "DM Sans", sans-serif; font-variant-numeric:tabular-nums; color:var(--ink); display:flex; align-items:center; justify-content:center; overflow:hidden; white-space:nowrap; }
+.bmf-bar.deep{ background:#D2EFE0; border-color:#B9E2CD; }
+.bmf-bar.deep2{ background:#BFE7D2; border-color:#A3D7BC; }
+.bmf-bar.pale{ background:#F1FAF5; border-color:#DCEFE4; }
+.bmf-bar.pale2{ background:#F8FCFA; border-color:#E5F2EA; }
+.bmf-chart{ position:relative; }
+.bmf-scan{ position:absolute; top:20px; bottom:14px; width:2px; background:#0D3F4A; border-radius:1px; pointer-events:none; z-index:1; }
+.bmf-slider{ display:block; width:calc(100% - 114px); margin:6px 0 6px 114px; accent-color:#0E794E; height:16px; cursor:pointer; }
+.bmf-foot{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; background:#F3FBF7; border-radius:10px; padding:8px 14px; margin-left:114px; }
+.bmf-footlab{ font-size:12px; font-weight:600; color:var(--text-secondary); }
+.bmf-footlab b{ color:var(--ink); font-family:"DM Sans", sans-serif; }
+.bmf-footamt{ font:700 17px "DM Sans", sans-serif; font-variant-numeric:tabular-nums; color:var(--ink); margin-top:2px; }
+.bmf-footr{ text-align:right; }
+body.ai-expanded .bmf-pills{ gap:8px; }
 .bud-viewtog{display:inline-flex;border:1px solid var(--hairline-strong);border-radius:999px;padding:3px;}
 .bud-vt{border:none;background:none;font:600 13.5px var(--font);color:var(--text-secondary);padding:7px 16px;border-radius:999px;cursor:pointer;}
 .bud-vt.active{background:#F6F7F8;color:var(--ink);}
@@ -4708,6 +4776,65 @@ body.mpanel-open{ overflow:hidden; }
       <button class="bud-back bud-back-tbl" onclick="BUD.closeBudget()"><span aria-hidden="true">←</span> Optimize</button>
       <h2 class="snap-headline" id="budHeadline">Live <span class="yrs">well</span> on <span class="amt" id="heroAmt">$6,323</span> a month.</h2>
       <p class="bud-sub">Document what you spend now and what you would like to spend.</p>
+
+      <!-- ===== BMF: spending-method mini flow (light version of Nancy's prototype) ===== -->
+      <section class="bmf" aria-label="Spending method">
+        <div class="bmf-head">
+          <div class="bmf-lab">Spending method</div>
+          <div class="bmf-pills" role="tablist" aria-label="Spending method">
+            <button type="button" class="bmf-pill" data-bmf="one" role="tab" aria-selected="false"><span class="bmf-dot"></span>One amount</button>
+            <button type="button" class="bmf-pill" data-bmf="timeline" role="tab" aria-selected="false"><span class="bmf-dot"></span>Timeline</button>
+            <button type="button" class="bmf-pill active" data-bmf="budget" role="tab" aria-selected="true"><span class="bmf-dot"></span>Full budget</button>
+          </div>
+          <div class="bmf-note">Switching methods won&rsquo;t delete your entries.</div>
+        </div>
+
+        <div class="bmf-panel" data-bmfp="one" hidden>
+          <div class="bmf-field">
+            <label for="bmfOneAmt">Monthly amount</label>
+            <div class="bmf-inwrap"><span>$</span><input id="bmfOneAmt" inputmode="numeric" value="6,323" aria-describedby="bmfOneHelp"></div>
+          </div>
+          <p class="bmf-help" id="bmfOneHelp">About $75,900 per year, before adjusting for inflation.</p>
+        </div>
+
+        <div class="bmf-panel" data-bmfp="timeline" hidden>
+          <div class="bmf-sechead"><span class="bmf-seclab">Timeline (<b id="bmfTlCount">4</b>)</span><span class="bmf-hint">Amounts change at the ages you set</span></div>
+          <div id="bmfTlRows">
+            <div class="bmf-tlrow" data-age="61"><span class="bmf-when">From now</span><span class="bmf-inmini"><span>$</span><input value="6,323" inputmode="numeric" aria-label="Monthly amount from now"></span><span class="bmf-per">/mo</span><span class="bmf-delspace"></span></div>
+            <div class="bmf-tlrow" data-age="63"><span class="bmf-when">From age 63</span><span class="bmf-inmini"><span>$</span><input value="6,900" inputmode="numeric" aria-label="Monthly amount from age 63"></span><span class="bmf-per">/mo</span><button type="button" class="bmf-del" aria-label="Remove this change"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></div>
+            <div class="bmf-tlrow" data-age="75"><span class="bmf-when">From age 75</span><span class="bmf-inmini"><span>$</span><input value="5,800" inputmode="numeric" aria-label="Monthly amount from age 75"></span><span class="bmf-per">/mo</span><button type="button" class="bmf-del" aria-label="Remove this change"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></div>
+            <div class="bmf-tlrow" data-age="85"><span class="bmf-when">From age 85</span><span class="bmf-inmini"><span>$</span><input value="5,100" inputmode="numeric" aria-label="Monthly amount from age 85"></span><span class="bmf-per">/mo</span><button type="button" class="bmf-del" aria-label="Remove this change"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></div>
+          </div>
+          <div class="bmf-addchange">
+            <div class="bmf-field sm"><label for="bmfAge">From age</label><input id="bmfAge" inputmode="numeric" placeholder="70"></div>
+            <div class="bmf-field sm"><label for="bmfAmt">Monthly amount</label><div class="bmf-inwrap"><span>$</span><input id="bmfAmt" inputmode="numeric" placeholder="6,000"></div></div>
+            <button type="button" class="bmf-addbtn" id="bmfAddChange">Add change</button>
+          </div>
+        </div>
+
+        <div class="bmf-panel" data-bmfp="budget">
+          <div class="bmf-sechead"><span class="bmf-seclab">Categories (7)</span><span class="bmf-hint">Each expense runs on its own ages &middot; drag the slider to check any age</span></div>
+          <div class="bmf-chart">
+          <i class="bmf-scan" id="bmfScan" aria-hidden="true" style="left:113px"></i>
+          <div class="bmf-gantt">
+            <div class="bmf-grow bmf-axisrow" aria-hidden="true"><span class="bmf-glab"></span><span class="bmf-gtrack bmf-axis"><i style="left:11.8%">65</i><i style="left:41.2%">75</i><i style="left:70.6%">85</i><i style="left:100%">95</i></span></div>
+            <div class="bmf-grow"><span class="bmf-glab">Housing</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:47.1%">$978</b><b class="bmf-bar pale" style="left:47.1%;width:52.9%">$520 &middot; mortgage paid</b></span></div>
+            <div class="bmf-grow"><span class="bmf-glab">Food</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$820</b><b class="bmf-bar pale" style="left:41.2%;width:29.4%">$700</b><b class="bmf-bar pale2" style="left:70.6%;width:29.4%">$600</b></span></div>
+            <div class="bmf-grow"><span class="bmf-glab">Transportation</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:55.9%">$640</b><b class="bmf-bar pale" style="left:55.9%;width:44.1%">$380 &middot; one car</b></span></div>
+            <div class="bmf-grow"><span class="bmf-glab">Healthcare</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$760</b><b class="bmf-bar deep" style="left:41.2%;width:29.4%">$1,150</b><b class="bmf-bar deep2" style="left:70.6%;width:29.4%">$1,480</b></span></div>
+            <div class="bmf-grow"><span class="bmf-glab">Travel</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$1,500</b><b class="bmf-bar pale" style="left:41.2%;width:29.4%">$700 &middot; ends 85</b></span></div>
+            <div class="bmf-grow"><span class="bmf-glab">Hobbies</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:41.2%">$400</b><b class="bmf-bar deep" style="left:41.2%;width:58.8%">$550</b></span></div>
+            <div class="bmf-grow"><span class="bmf-glab">Everything else</span><span class="bmf-gtrack"><b class="bmf-bar" style="left:0;width:100%">$1,225</b></span></div>
+          </div>
+          <input type="range" class="bmf-slider" id="bmfSlider" min="61" max="95" value="61" aria-label="Check spending at any age">
+          </div>
+          <div class="bmf-foot">
+            <div><div class="bmf-footlab">At age <b id="bmfAtAge">61</b></div><div class="bmf-footamt" id="bmfAtAmt">$6,323/mo</div></div>
+            <div class="bmf-footr"><div class="bmf-footlab">Peak &middot; the go-go years</div><div class="bmf-footamt">$6,323/mo</div></div>
+          </div>
+        </div>
+      </section>
+
       <div class="bud-viewrow">
         <button type="button" class="bud-addtop" onclick="BUD.addExpenseTop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add expense</button>
         <div class="bud-viewtog" role="tablist" aria-label="Budget view">
@@ -10991,6 +11118,72 @@ body.story-open{ overflow:hidden; }
 })();
 </script>
 
+<script>
+/* ==== BMF: spending-method mini flow ==== */
+(function(){
+  var root=document.querySelector('.bmf'); if(!root) return;
+  var fmt=function(n){ return '$'+Math.round(n).toLocaleString('en-US'); };
+  var parse=function(s){ var n=parseFloat(String(s).replace(/[^0-9.]/g,'')); return isNaN(n)?0:n; };
+
+  /* mode switching */
+  var pills=root.querySelectorAll('.bmf-pill'), panels=root.querySelectorAll('.bmf-panel');
+  pills.forEach(function(p){ p.addEventListener('click', function(){
+    pills.forEach(function(x){ var on=x===p; x.classList.toggle('active',on); x.setAttribute('aria-selected',on?'true':'false'); });
+    panels.forEach(function(pn){ var show=pn.dataset.bmfp===p.dataset.bmf; pn.hidden=!show;
+      if(show){ pn.classList.remove('bmf-in'); void pn.offsetWidth; pn.classList.add('bmf-in'); } });
+  }); });
+
+  /* one amount: live yearly helper */
+  var one=document.getElementById('bmfOneAmt'), help=document.getElementById('bmfOneHelp');
+  function oneUpdate(){ var m=parse(one.value); help.textContent='About '+fmt(m*12)+' per year, before adjusting for inflation.'; }
+  if(one){ one.addEventListener('input', oneUpdate); one.addEventListener('blur', function(){ var m=parse(one.value); if(m) one.value=Math.round(m).toLocaleString('en-US'); }); }
+
+  /* timeline: add / remove changes, kept sorted by age */
+  var rows=document.getElementById('bmfTlRows'), count=document.getElementById('bmfTlCount');
+  function recount(){ if(count) count.textContent=rows.querySelectorAll('.bmf-tlrow').length; }
+  rows.addEventListener('click', function(e){ var d=e.target.closest('.bmf-del'); if(!d) return; d.closest('.bmf-tlrow').remove(); recount(); });
+  var addBtn=document.getElementById('bmfAddChange');
+  if(addBtn) addBtn.addEventListener('click', function(){
+    var age=Math.round(parse(document.getElementById('bmfAge').value));
+    var amt=parse(document.getElementById('bmfAmt').value);
+    if(!age || age<62 || age>99 || !amt) return;
+    var r=document.createElement('div');
+    r.className='bmf-tlrow'; r.dataset.age=age;
+    r.innerHTML='<span class="bmf-when">From age '+age+'</span><span class="bmf-inmini"><span>$</span><input value="'+Math.round(amt).toLocaleString('en-US')+'" inputmode="numeric" aria-label="Monthly amount from age '+age+'"></span><span class="bmf-per">/mo</span><button type="button" class="bmf-del" aria-label="Remove this change"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>';
+    var after=[].slice.call(rows.querySelectorAll('.bmf-tlrow')).find(function(x){ return +x.dataset.age > age; });
+    rows.insertBefore(r, after||null);
+    document.getElementById('bmfAge').value=''; document.getElementById('bmfAmt').value='';
+    recount();
+    var rm=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!rm && r.animate) r.animate([{opacity:0, transform:'translateY(-5px)'},{opacity:1, transform:'none'}],{duration:240, easing:'cubic-bezier(0.22,1,0.36,1)'});
+  });
+
+  /* full budget: at-age readout from the category bars */
+  var slider=document.getElementById('bmfSlider'), atAge=document.getElementById('bmfAtAge'), atAmt=document.getElementById('bmfAtAmt');
+  function total(age){
+    var t=1225;                                            /* everything else, steady */
+    t += (age<77 ? 978 : 520);                             /* mortgage paid off at 77 */
+    t += (age<75 ? 820 : (age<85 ? 700 : 600));            /* food tapers */
+    t += (age<80 ? 640 : 380);                             /* down to one car at 80 */
+    t += (age<75 ? 760 : (age<85 ? 1150 : 1480));          /* healthcare climbs */
+    t += (age<75 ? 1500 : (age<85 ? 700 : 0));             /* travel: go-go, slow-go, done */
+    t += (age<75 ? 400 : 550);                             /* more hobby time later */
+    return t;
+  }
+  var scan=document.getElementById('bmfScan');
+  function positionScan(){
+    if(!scan || !slider) return;
+    var chart=scan.parentNode; if(!chart || !chart.offsetParent) return;
+    var trackW=chart.clientWidth-114;
+    var pct=(+slider.value-61)/34;
+    scan.style.left=(114 + pct*trackW - 1)+'px';
+  }
+  function slide(){ var a=+slider.value; atAge.textContent=a; atAmt.textContent=fmt(total(a))+'/mo'; positionScan(); }
+  if(slider){ slider.addEventListener('input', slide); slide(); }
+  window.addEventListener('resize', positionScan);
+  pills.forEach(function(p){ p.addEventListener('click', function(){ setTimeout(positionScan, 60); }); });
+})();
+</script>
 </body>
 
 
