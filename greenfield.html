@@ -553,7 +553,14 @@ nav.modes a.active .ic{opacity:1;}
   display:grid; grid-template-columns:200px minmax(0,620px) 1fr; gap:var(--s-8);
 }
 @media (max-width:1080px){ .dock-inner{grid-template-columns:180px minmax(0,1fr);} }
-@media (max-width:760px){ .dock-inner{grid-template-columns:1fr;} .askbar{grid-column:1 !important;} }
+/* The global Ask bar drives the Boldin AI rail, which only exists on the main plan pages.
+   Optimize sub-pages (budgeter, allocation, social security, tax, withdrawals) have their
+   own rails and no AI host, so the bar is hidden there rather than expanding into nothing. */
+body.bud-open .dock,
+body.alo-open .dock,
+body.soc-open .dock,
+body.tax-open .dock,
+body.wdr-open .dock{ display:none; }@media (max-width:760px){ .dock-inner{grid-template-columns:1fr;} .askbar{grid-column:1 !important;} }
 .askbar{
   grid-column:2; justify-self:center;
   pointer-events:auto; width:100%; max-width:496px; position:relative;
@@ -1083,6 +1090,151 @@ body.vb-open{ overflow:hidden; }
 .alloc-bar{ position:relative; flex:1; height:4px; border-radius:2px; background:var(--hairline); }
 .alloc-bar > span{ position:absolute; left:0; top:0; height:4px; border-radius:2px; background:var(--green); }
 
+/* ===== FLX: the Financial Life deep dive (below the sankey) ===== */
+.flx{ display:flex; flex-direction:column; gap:48px; margin-top:8px; }
+.flx-card{ border:1px solid var(--hairline); border-radius:16px; padding:22px 24px; background:var(--white); }
+.flx-num{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; }
+.flx-chip{ display:inline-flex; align-items:center; gap:5px; flex:none; font-size:12.5px; font-weight:600; padding:3px 10px; border-radius:999px; white-space:nowrap; }
+.flx-chip.mint{ background:#E7F7F0; color:#0E794E; }
+.flx-chip.gold{ background:#FFF3D6; color:#8A5A03; }
+.flx-chip.line{ background:transparent; border:1px solid var(--hairline-strong); color:var(--text-secondary); }
+.flx .cta{ margin-top:16px; white-space:nowrap; align-self:flex-start; }
+
+/* the advisor's shortlist */
+.flx-moves{ border:1px solid var(--hairline); border-radius:16px; background:var(--white); overflow:hidden; }
+.flx-move{ display:flex; align-items:flex-start; gap:18px; padding:18px 22px; border-top:1px solid var(--hairline); }
+.flx-move:first-child{ border-top:0; }
+.flx-mnum{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; flex:none; width:30px; height:30px; border-radius:999px; border:1.5px solid #0E794E; color:#0E794E; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+.flx-mbody{ flex:1; min-width:0; }
+.flx-mtitle{ font-size:17px; font-weight:600; color:var(--ink); margin-bottom:3px; }
+.flx-msub{ font-size:14.5px; line-height:1.5; color:var(--text-secondary); }
+.flx-move .flx-chip{ margin-top:4px; }
+
+/* cash ledger: in / out / kept */
+.flx-lede{ display:flex; align-items:flex-end; gap:26px; padding-bottom:18px; border-bottom:1px solid var(--hairline); margin-bottom:18px; flex-wrap:wrap; }
+.flx-io{ display:flex; flex-direction:column; align-items:flex-start; }
+.flx-io .k{ display:block; font-size:12.5px; font-weight:600; letter-spacing:0.06em; color:var(--text-secondary); margin-bottom:4px; }
+.flx-io b{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:26px; font-weight:600; color:var(--ink); letter-spacing:-0.3px; }
+.flx-io.keep b{ color:#0E794E; }
+.flx-io.keep{ display:flex; flex-direction:column; align-items:flex-start; }
+.flx-io.keep .flx-chip{ margin-bottom:7px; }
+.flx-lede .sep{ font-size:20px; color:#C4C9D2; padding-bottom:4px; }
+.flx-bars{ display:flex; flex-direction:column; gap:12px; }
+.flx-bar{ display:grid; grid-template-columns:128px 1fr 76px 40px; align-items:center; gap:14px; }
+.flx-bar .l{ font-size:15px; color:var(--ink); }
+.flx-bar .t{ position:relative; height:8px; border-radius:4px; background:#EEF1F4; overflow:hidden; }
+.flx-bar .t i{ position:absolute; left:0; top:0; bottom:0; border-radius:4px; background:#0E794E; animation:flxGrow .9s cubic-bezier(0.16,1,0.3,1) backwards; }
+.flx-bar .v{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:15px; font-weight:600; color:var(--ink); text-align:right; }
+.flx-bar .p{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:12.5px; color:var(--text-secondary); text-align:right; }
+@keyframes flxGrow{ from{ width:0 !important; } }
+.flx-split{ display:flex; height:10px; border-radius:5px; overflow:hidden; margin:20px 0 10px; }
+.flx-split .ess{ background:#0D3F4A; }
+.flx-split .flex{ background:#9FDFC6; }
+.flx-splitkey{ display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+.flx-splitkey span{ display:inline-flex; align-items:center; gap:7px; font-size:13.5px; color:var(--text-secondary); }
+.flx-splitkey .dot{ width:9px; height:9px; border-radius:3px; flex:none; }
+.flx-splitkey .dot.ess{ background:#0D3F4A; } .flx-splitkey .dot.flex{ background:#9FDFC6; }
+
+/* savings waterfall */
+.flx-wf{ display:flex; flex-direction:column; }
+.flx-wfrow{ display:grid; grid-template-columns:1fr 96px; align-items:center; gap:16px; padding:13px 0; border-top:1px solid var(--hairline); }
+.flx-wfrow:first-child{ border-top:0; padding-top:2px; }
+.flx-wfl .n{ font-size:16px; font-weight:600; color:var(--ink); }
+.flx-wfl .d{ font-size:13.5px; color:var(--text-secondary); margin-top:2px; }
+.flx-wfbar{ height:6px; border-radius:3px; background:#EEF1F4; overflow:hidden; margin-top:8px; max-width:340px; }
+.flx-wfbar i{ display:block; height:100%; border-radius:3px; background:#0E794E; animation:flxGrow .9s cubic-bezier(0.16,1,0.3,1) backwards; }
+.flx-wfv{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:17px; font-weight:600; color:var(--ink); text-align:right; }
+.flx-wfrow.gold{ background:#FFF9EC; border-top:1px solid #F3E3AE; border-bottom:1px solid #F3E3AE; margin:0 -24px; padding:13px 24px; }
+.flx-wfrow.gold + .flx-wfrow{ border-top:0; }
+.flx-wfrow.gold .flx-wfv{ color:#8A5A03; }
+.flx-wffoot{ display:flex; justify-content:space-between; align-items:baseline; gap:14px; padding-top:16px; margin-top:4px; border-top:1.5px solid var(--ink); flex-wrap:wrap; }
+.flx-wffoot .s{ font-size:14.5px; color:var(--text-secondary); }
+.flx-wffoot b{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:17px; color:var(--ink); }
+
+/* balance sheet */
+.flx-bs{ display:grid; grid-template-columns:1fr 1fr; gap:0 40px; }
+.flx-bshead{ font-size:12.5px; font-weight:600; letter-spacing:0.08em; color:var(--text-secondary); padding-bottom:10px; border-bottom:1.5px solid var(--ink); margin-bottom:2px; }
+.flx-bsrow{ display:flex; justify-content:space-between; align-items:baseline; gap:14px; padding:11px 0; border-bottom:1px solid var(--hairline); }
+.flx-bsrow .k{ font-size:15px; color:var(--ink); }
+.flx-bsrow .k small{ display:block; font-size:12.5px; color:var(--text-secondary); margin-top:1px; }
+.flx-bsrow .v{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:15px; font-weight:600; color:var(--ink); }
+.flx-bsrow.subtle .k, .flx-bsrow.subtle .v{ color:var(--text-secondary); font-weight:500; font-size:14px; }
+.flx-bssub{ display:flex; justify-content:space-between; padding:12px 0 0; }
+.flx-bssub .k{ font-size:13.5px; font-weight:600; color:var(--text-secondary); }
+.flx-bssub .v{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:15.5px; font-weight:700; color:var(--ink); }
+.flx-bstotal{ display:flex; align-items:baseline; gap:14px; margin-top:22px; padding-top:18px; border-top:1.5px solid var(--ink); flex-wrap:wrap; }
+.flx-bstotal .k{ font-size:16px; font-weight:600; color:var(--ink); }
+.flx-bstotal b{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:30px; font-weight:600; letter-spacing:-0.4px; color:var(--ink); }
+.flx-prov{ font-size:13px; color:var(--text-secondary); margin-top:10px; }
+.flx-liq{ margin-top:24px; padding-top:20px; border-top:1px solid var(--hairline); }
+.flx-liqhead{ display:flex; justify-content:space-between; align-items:baseline; gap:14px; margin-bottom:12px; flex-wrap:wrap; }
+.flx-liqhead .h{ font-size:15.5px; color:var(--ink); }
+.flx-liqhead .h b{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; }
+.flx-liqhead .muted{ font-size:13px; color:var(--text-secondary); }
+.flx-meter{ position:relative; height:10px; border-radius:5px; background:#EEF1F4; }
+.flx-meter .band{ position:absolute; top:0; bottom:0; left:33.3%; width:33.3%; background:#DCEFE6; border-radius:2px; }
+.flx-meter .mark{ position:absolute; top:-4px; bottom:-4px; width:2.5px; border-radius:2px; background:#0E794E; left:94.4%; }
+.flx-mticks{ display:flex; justify-content:space-between; margin-top:7px; }
+.flx-mticks span{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:12px; color:var(--text-secondary); }
+.flx-liq .s{ font-size:14px; line-height:1.55; color:var(--text-secondary); margin-top:12px; }
+
+/* allocation vs target */
+.flx-two{ display:grid; grid-template-columns:1.35fr 1fr; gap:var(--s-4); align-items:start; }
+.flx-stack{ display:flex; flex-direction:column; gap:var(--s-4); }
+.flx-stack .flx-card{ width:100%; }
+.flx-al{ display:flex; flex-direction:column; gap:20px; }
+.flx-alrow{ display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; row-gap:9px; column-gap:12px; align-items:baseline; }
+.flx-alrow .l{ font-size:15px; font-weight:600; color:var(--ink); grid-column:1; grid-row:1; }
+.flx-altrack{ position:relative; height:10px; border-radius:5px; background:#EEF1F4; grid-column:1 / -1; grid-row:2; }
+.flx-altrack .now{ position:absolute; left:0; top:0; bottom:0; border-radius:5px; background:#0E794E; animation:flxGrow .9s cubic-bezier(0.16,1,0.3,1) backwards; }
+.flx-altrack .tgt{ position:absolute; top:-4px; bottom:-4px; width:2.5px; border-radius:2px; background:#10182C; }
+.flx-alnums{ display:flex; align-items:center; gap:10px; grid-column:2; grid-row:1; }
+.flx-alnums .now{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:15px; font-weight:600; color:var(--ink); }
+.flx-alnums .now small{ font-weight:500; color:var(--text-secondary); }
+.flx-alfoot{ font-size:13.5px; line-height:1.55; color:var(--text-secondary); margin-top:18px; }
+.flx-ctasub{ font-size:13px; color:var(--text-secondary); margin-top:5px; }
+.flx-note h4{ font-size:17px; font-weight:600; color:var(--ink); margin:0 0 8px; }
+.flx-note p{ font-size:14.5px; line-height:1.6; color:var(--text-secondary); margin:0; }
+
+/* debt */
+.flx-ring{ position:relative; width:96px; height:96px; border-radius:50%; flex:none;
+  background:conic-gradient(#0E794E 0 calc(var(--p,63)*1%), #EEF0F3 calc(var(--p,63)*1%) 100%); }
+.flx-ring .hole{ position:absolute; inset:11px; border-radius:50%; background:var(--white); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.flx-ring .hole b{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:21px; font-weight:600; color:var(--ink); }
+.flx-ring .hole span{ font-size:11.5px; color:var(--text-secondary); }
+.flx-mort{ display:flex; gap:22px; align-items:flex-start; }
+.flx-facts{ display:grid; grid-template-columns:1fr 1fr; gap:12px 22px; margin-top:12px; }
+.flx-fact .k{ font-size:12.5px; color:var(--text-secondary); margin-bottom:2px; }
+.flx-fact .v{ font-family:"DM Sans", sans-serif; font-variant-numeric:tabular-nums; font-size:15px; font-weight:600; color:var(--ink); white-space:nowrap; }
+.flx-vs{ display:flex; flex-direction:column; gap:0; margin-top:6px; }
+.flx-vsrow{ display:flex; gap:14px; align-items:flex-start; padding:13px 0; border-top:1px solid var(--hairline); }
+.flx-vsrow:first-child{ border-top:0; }
+.flx-vsrow .tag{ flex:none; width:26px; height:26px; border-radius:8px; background:#EEF1F6; color:#47495A; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+.flx-vsrow .b{ flex:1; font-size:14.5px; line-height:1.55; color:var(--text-secondary); }
+.flx-vsrow .b b{ color:var(--ink); font-weight:600; }
+.flx-verdict{ display:flex; align-items:flex-start; gap:12px; margin-top:14px; padding-top:16px; border-top:1px solid var(--hairline); }
+.flx-verdict p{ font-size:14px; line-height:1.55; color:var(--text-secondary); margin:0; }
+.flx-nodebt{ font-size:13px; color:var(--text-secondary); margin-top:14px; }
+.flx-cardtitle{ font-size:18px; font-weight:600; color:var(--ink); margin:0 0 4px; }
+.flx-cardsub{ font-size:14.5px; line-height:1.55; color:var(--text-secondary); margin:8px 0 0; }
+
+@media (max-width:760px){
+  .flx-two{ grid-template-columns:1fr; }
+  .flx-bs{ grid-template-columns:1fr; gap:26px; }
+  .flx-bar{ grid-template-columns:96px 1fr 70px; }
+  .flx-bar .p{ display:none; }
+  .flx-mort{ flex-direction:column; }
+  .flx-move{ flex-wrap:wrap; }
+}
+/* compact center while Boldin AI is docked open */
+body.ai-expanded .flx-two{ grid-template-columns:1fr; }
+body.ai-expanded .flx-bs{ grid-template-columns:1fr; gap:26px; }
+body.ai-expanded .flx-bar{ grid-template-columns:96px 1fr 70px; }
+body.ai-expanded .flx-bar .p{ display:none; }
+body.ai-expanded .flx-lede{ gap:18px; }
+body.ai-expanded .flx-lede .sep{ display:none; }
+body.ai-expanded .flx-mort{ flex-direction:column; }
+
 @media (max-width:760px){
   .snap-stats{ grid-template-columns:1fr; }
   .snap-chips{ grid-template-columns:repeat(2,1fr); }
@@ -1248,6 +1400,7 @@ body[data-view="today"] #sideNav .side-download.sd-today{ display:inline-flex; }
 .hz-age{ font-size:16px; font-weight:700; color:var(--ink); margin-top:10px; font-variant-numeric:tabular-nums; }
 .hz-lbl{ font-size:12px; color:var(--text-secondary); margin-top:2px; max-width:80px; line-height:1.25; }
 .hz-star .hz-dot{ width:15px; height:15px; background:var(--yellow); border-color:var(--yellow); margin-top:-2px; }
+
 .hz-star .hz-lbl{ color:var(--green-cta); font-weight:600; }
 
 /* ===================== HOME: vault bridge ===================== */
@@ -2210,34 +2363,50 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 
 
 /* budgeter: view toggle + pre-retirement planning table */
-.bud-viewrow{display:flex;justify-content:flex-end;margin:-34px 0 22px;}
+.bud-viewrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:4px 0 22px;}
+.bud-addtop{display:inline-flex;align-items:center;gap:7px;font:600 14px var(--font);color:#FFFFFF;background:#0E794E;border:none;border-radius:999px;padding:9px 18px;cursor:pointer;}
+.bud-addtop:hover{background:#0B5F3D;}
+.bud-addtop svg{width:13px;height:13px;flex:none;}
 .bud-viewtog{display:inline-flex;border:1px solid var(--hairline-strong);border-radius:999px;padding:3px;}
 .bud-vt{border:none;background:none;font:600 13.5px var(--font);color:var(--text-secondary);padding:7px 16px;border-radius:999px;cursor:pointer;}
 .bud-vt.active{background:#F6F7F8;color:var(--ink);}
-/* table mode consumes the left rail */
+/* table mode consumes both rails: a true full-width spreadsheet */
 .bud-layout.bud-tablemode .side{visibility:hidden;}
-.bud-layout.bud-tablemode .bud-top{margin-left:-232px;width:852px;}
-.bud-layout.bud-tablemode #budTable{width:852px;}
+.bud-layout.bud-tablemode .rail{visibility:hidden;}
+.bud-layout.bud-tablemode .bud-top{margin-left:-232px;width:1116px;}
+.bud-layout.bud-tablemode #budTable{width:1116px;}
 .bud-back-tbl{display:none !important;}
 .bud-tablemode .bud-back-tbl{display:inline-flex !important;margin-bottom:14px;}
 /* the planning table, per the standalone build */
 .bud-top{position:relative;}
-.tbl-headstats{display:none;position:absolute;top:26px;right:0;gap:34px;}
-.bud-tablemode .tbl-headstats{display:flex;}
-.head-stat .label{font-size:13px;color:var(--text-secondary);}
-.head-stat .value{font-size:24px;font-weight:600;letter-spacing:-0.01em;color:var(--ink);font-variant-numeric:tabular-nums;}
-.head-stat .value small{font-size:14px;font-weight:500;color:var(--text-secondary);margin-left:2px;}
 #budTable .budget-table{width:100%;border-collapse:collapse;table-layout:fixed;}
-#budTable .budget-table thead th{font-size:13px;font-weight:600;color:var(--text-secondary);text-align:left;padding:0 var(--s-2) 10px;white-space:nowrap;border-bottom:1px solid var(--hairline-strong);}
+#budTable .budget-table thead th{font-size:13px;font-weight:600;color:var(--text-secondary);text-align:left;padding:14px var(--s-2) 10px;white-space:nowrap;border-bottom:1px solid var(--hairline-strong);position:sticky;top:73px;background:var(--white);z-index:3;}
 #budTable .budget-table th.num, #budTable .budget-table td.num{text-align:right;}
 #budTable .budget-table td{padding:var(--s-2) var(--s-1);border-bottom:1px solid var(--hairline);vertical-align:middle;}
-#budTable .field{width:100%;height:40px;font:400 15px var(--font);color:var(--ink);
+#budTable .field{display:block;width:100%;height:40px;margin:0;font:400 15px var(--font);color:var(--ink);
   background:transparent;border:1px solid transparent;border-radius:10px;padding:0 var(--s-2);
   transition:border-color 120ms ease, background 120ms ease;}
 #budTable .field:hover{border-color:var(--hairline);background:var(--white);}
 #budTable .field:focus{outline:none;border-color:var(--green);background:var(--white);}
-#budTable select.field{appearance:auto;-webkit-appearance:menulist;cursor:pointer;color:var(--text-secondary);}
-#budTable .field.f-label{font-weight:500;color:var(--ink);}
+#budTable select.field{appearance:none;-webkit-appearance:none;cursor:pointer;color:var(--ink);font-size:14px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%239AA0AE' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;padding-right:28px;}
+#budTable tr.bud-add-tr td{padding:6px 0 2px;border-bottom:1px solid var(--hairline);}
+#budTable tr.cat-gap td{padding:0;border-bottom:none;height:28px;}
+.bud-addrow{display:inline-flex;align-items:center;gap:8px;font:600 15px var(--font);color:var(--green-cta);background:none;border:none;padding:10px 6px;cursor:pointer;border-radius:10px;}
+.bud-addrow:hover{color:#0B5F3D;}
+.bud-addrow svg{width:14px;height:14px;flex:none;}
+/* new-row entrance: the row grows open so neighbors glide, then a mint wash settles */
+#budTable tr.tr-new td{overflow:hidden;animation:budCellPad 420ms cubic-bezier(0.22,1,0.36,1);}
+#budTable tr.tr-new .field{animation:budFieldIn 420ms cubic-bezier(0.22,1,0.36,1);}
+#budTable tr.tr-new{animation:budRowWash 1100ms ease 140ms backwards;}
+@keyframes budCellPad{from{padding-top:0;padding-bottom:0;}}
+@keyframes budFieldIn{from{height:0;opacity:0;}}
+@keyframes budRowWash{from{background:#E7F7F0;}to{background:transparent;}}
+@media (prefers-reduced-motion:reduce){
+  #budTable tr.tr-new td, #budTable tr.tr-new .field, #budTable tr.tr-new{animation:none;}
+}
+#budTable .field.f-label{font-weight:500;color:var(--ink);font-size:14px;padding:0 4px;}
 #budTable .field.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);}
 #budTable .budget-table tr.total-row td{padding-top:var(--s-6);border-bottom:none;font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;}
 #budTable .budget-table tr.total-row td.meta{font-weight:500;color:var(--text-secondary);font-size:14px;}
@@ -2556,44 +2725,9 @@ body.soc-open .layout.page.opt-index.on, body.tax-open .layout.page.opt-index.on
 .pf-rail-eyebrow{ font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:10px; }
 .pf-rail-fig{ font-size:30px; font-weight:600; color:var(--ink); font-family:"DM Sans", inherit; margin-bottom:8px; }
 .pf-rail-body{ font-size:16px; line-height:1.55; color:var(--text-secondary); margin:0 0 14px; }
-@media (prefers-reduced-motion: no-preference){
-  .layout.page[data-page="profile"].on .pf-bar i{ animation: pfBarIn 900ms cubic-bezier(0.22,1,0.36,1) .45s backwards; }
-  .layout.page[data-page="profile"].on .pf-hero > *,
-  .layout.page[data-page="profile"].on .pf-stat,
-  .layout.page[data-page="profile"].on .pf-card,
-  .layout.page[data-page="profile"].on .pf-person,
-  .layout.page[data-page="profile"].on .rail > *{ animation: pfUp 520ms cubic-bezier(0.22,1,0.36,1) backwards; }
-  .layout.page[data-page="profile"].on .pf-hero > *:nth-child(2){ animation-delay:60ms; }
-  .layout.page[data-page="profile"].on .pf-stat:nth-child(1){ animation-delay:260ms; }
-  .layout.page[data-page="profile"].on .pf-stat:nth-child(2){ animation-delay:320ms; }
-  .layout.page[data-page="profile"].on .pf-stat:nth-child(3){ animation-delay:380ms; }
-  .layout.page[data-page="profile"].on .pf-card{ animation-delay:420ms; }
-  .layout.page[data-page="profile"].on .pf-person:nth-child(1){ animation-delay:140ms; }
-  .layout.page[data-page="profile"].on .pf-person:nth-child(2){ animation-delay:200ms; }
-  .layout.page[data-page="profile"].on .rail > *:nth-child(2){ animation-delay:340ms; }
-  .layout.page[data-page="profile"].on .rail > *:nth-child(3){ animation-delay:400ms; }
-  .layout.page[data-page="profile"].on .rail > *:nth-child(4){ animation-delay:460ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-fill,
-  .layout.page[data-page="profile"].on .pf-climb .cl-lbl{ animation: pfFade 700ms ease 900ms backwards; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-past{ stroke-dasharray:1; stroke-dashoffset:1; animation: pfDraw 950ms cubic-bezier(0.22,1,0.36,1) 520ms forwards; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-future{ stroke-dasharray:1; stroke-dashoffset:1; animation: pfDraw 950ms cubic-bezier(0.22,1,0.36,1) 1250ms forwards; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-dot{ transform-box:fill-box; transform-origin:center; animation: pfPop 420ms cubic-bezier(0.34,1.56,0.64,1) backwards; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-d1{ animation-delay:560ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-d2{ animation-delay:760ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-d3{ animation-delay:960ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-d4{ animation-delay:1160ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-d5{ animation-delay:1420ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-d6{ animation-delay:1580ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-d7{ animation-delay:1740ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-d8{ animation-delay:1900ms; }
-  .layout.page[data-page="profile"].on .pf-climb .cl-halo{ animation: pfHalo 2.8s ease-out 2200ms infinite; }
-}
-@keyframes pfBarIn{ from{ width:0; } }
+
 @keyframes pfUp{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
-@keyframes pfDraw{ to{ stroke-dashoffset:0; } }
 @keyframes pfPop{ from{ opacity:0; transform:scale(0); } to{ opacity:1; transform:none; } }
-@keyframes pfHalo{ 0%{ r:6; opacity:.55; } 75%{ r:16; opacity:0; } 100%{ r:16; opacity:0; } }
-@keyframes pfFade{ from{ opacity:0; } to{ opacity:1; } }
 @media (max-width:760px){ .pf-hl{ font-size:28px; } }
 
 
@@ -3427,80 +3561,178 @@ body.mpanel-open{ overflow:hidden; }
           </div>
         </div>
 
-        <div class="tax-cards">
-          <div class="tax-card">
-            <h3>Asset Allocation</h3>
-            <div class="alloc">
-              <div class="alloc-row"><span class="alloc-l">US Equities</span><span class="alloc-bar"><span style="width:62%"></span></span></div>
-              <div class="alloc-row"><span class="alloc-l">Intl Equities</span><span class="alloc-bar"><span style="width:26%"></span></span></div>
-              <div class="alloc-row"><span class="alloc-l">Bonds</span><span class="alloc-bar"><span style="width:18%"></span></span></div>
-            </div>
-          </div>
-          <div class="tax-card">
-            <h3>Top Opportunities</h3>
-            <ul>
-              <li>Direct surplus to Roth contributions</li>
-              <li>Review tax location across accounts</li>
-              <li>Link 2 remaining accounts via Plaid</li>
-            </ul>
-          </div>
-        </div>
+        <!-- ===== FLX: the financial life deep dive ===== -->
+        <div class="flx">
 
-        <div class="lens-extra">
           <div class="ret-section">
-            <div class="ret-seclabel">Where your money goes</div>
-            <div class="ret-cards one">
-              <div class="ret-card">
-                <div class="card-row">
-                  <div class="ret-card-title">Your $6,750 of monthly spending</div>
-                  <span class="chip flat">5 categories</span>
+            <div class="ret-seclabel">The advisor&rsquo;s shortlist</div>
+            <div class="flx-moves">
+              <div class="flx-move">
+                <span class="flx-mnum">1</span>
+                <div class="flx-mbody">
+                  <div class="flx-mtitle">Invest the cash above the 12-month line</div>
+                  <div class="flx-msub">Your buffer covers 17 months of essentials. Keeping 12 and investing the other $31K puts every dollar back on the field.</div>
                 </div>
-                <div class="hbars">
-                  <div class="hbar"><span class="hb-l">Housing</span><div class="hb-track"><i style="width:72%"></i></div><span class="hb-v">$2,600</span></div>
-                  <div class="hbar"><span class="hb-l">Everyday</span><div class="hb-track"><i style="width:51%"></i></div><span class="hb-v">$1,850</span></div>
-                  <div class="hbar"><span class="hb-l">Savings</span><div class="hb-track"><i style="width:34%"></i></div><span class="hb-v">$1,240</span></div>
-                  <div class="hbar"><span class="hb-l">Travel &amp; fun</span><div class="hb-track"><i style="width:20%"></i></div><span class="hb-v">$720</span></div>
-                  <div class="hbar"><span class="hb-l">Insurance</span><div class="hb-track"><i style="width:15%"></i></div><span class="hb-v">$540</span></div>
+                <span class="flx-chip mint">&asymp; +$25K by 2036</span>
+              </div>
+              <div class="flx-move">
+                <span class="flx-mnum">2</span>
+                <div class="flx-mbody">
+                  <div class="flx-mtitle">Rebalance the taxable account</div>
+                  <div class="flx-msub">A strong US run pushed equities to 71% against your 60% target. Trimming the winners brings risk back to the plan you chose.</div>
                 </div>
-                <div class="ret-card-sub">Housing and everyday costs are just over half of your spending. Setting a target for each makes your retirement projections far more accurate.</div>
-                <a class="cta">Set spending targets &rarr;</a>
+                <span class="flx-chip line">4 trades</span>
+              </div>
+              <div class="flx-move">
+                <span class="flx-mnum">3</span>
+                <div class="flx-mbody">
+                  <div class="flx-mtitle">Move bond exposure into the 401(k)</div>
+                  <div class="flx-msub">Same 60&thinsp;&middot;&thinsp;25&thinsp;&middot;&thinsp;15 mix, smarter address. Bond interest compounds untaxed there instead of adding to each year&rsquo;s bill.</div>
+                </div>
+                <span class="flx-chip mint">+$400/yr after tax</span>
               </div>
             </div>
           </div>
 
           <div class="ret-section">
-            <div class="ret-seclabel">Put your surplus to work</div>
-            <div class="ret-cards one">
-              <div class="ret-card">
-                <div class="card-row">
-                  <div class="ret-card-title">$2,210 a month is sitting idle</div>
-                  <span class="chip warn">Unallocated</span>
+            <div class="ret-seclabel">Where every dollar goes</div>
+            <div class="flx-card">
+              <div class="flx-lede">
+                <div class="flx-io"><span class="k">Comes in</span><b>$12,300</b></div>
+                <span class="sep">&rarr;</span>
+                <div class="flx-io"><span class="k">Goes out</span><b>$8,850</b></div>
+                <span class="sep">&rarr;</span>
+                <div class="flx-io keep"><span class="flx-chip mint">28% saved, every month</span><span class="k">Stays yours</span><b>$3,450</b></div>
+              </div>
+              <div class="flx-bars">
+                <div class="flx-bar"><span class="l">Housing</span><span class="t"><i style="width:100%"></i></span><span class="v">$2,980</span><span class="p">34%</span></div>
+                <div class="flx-bar"><span class="l">Everyday living</span><span class="t"><i style="width:72%"></i></span><span class="v">$2,150</span><span class="p">24%</span></div>
+                <div class="flx-bar"><span class="l">Health &amp; insurance</span><span class="t"><i style="width:39%"></i></span><span class="v">$1,160</span><span class="p">13%</span></div>
+                <div class="flx-bar"><span class="l">Travel &amp; fun</span><span class="t"><i style="width:33%"></i></span><span class="v">$980</span><span class="p">11%</span></div>
+                <div class="flx-bar"><span class="l">Everything else</span><span class="t"><i style="width:32%"></i></span><span class="v">$960</span><span class="p">11%</span></div>
+                <div class="flx-bar"><span class="l">Giving &amp; family</span><span class="t"><i style="width:21%"></i></span><span class="v">$620</span><span class="p">7%</span></div>
+              </div>
+              <div class="flx-split"><i class="ess" style="width:71%"></i><i class="flex" style="width:29%"></i></div>
+              <div class="flx-splitkey">
+                <span><i class="dot ess"></i>Essentials &middot; $6,290 &middot; the floor retirement must cover</span>
+                <span><i class="dot flex"></i>Flexible &middot; $2,560 &middot; where a lean year cuts</span>
+              </div>
+              <a class="cta">Set category targets &rarr;</a>
+            </div>
+          </div>
+
+          <div class="ret-section">
+            <div class="ret-seclabel">Every surplus dollar has a job</div>
+            <div class="flx-card">
+              <div class="flx-wf">
+                <div class="flx-wfrow">
+                  <div class="flx-wfl"><div class="n">401(k) contributions</div><div class="d">Marshall and Lily, set to capture every matched dollar</div><div class="flx-wfbar"><i style="width:45%"></i></div></div>
+                  <div class="flx-wfv">$1,540</div>
                 </div>
-                <div class="card-metric"><span class="big">$3,450</span><span class="unit">monthly surplus after expenses</span></div>
-                <div class="gauge"><span class="g-used" style="width:36%"></span><span class="g-alt" style="width:64%"></span></div>
-                <div class="gauge-key"><span>Going to savings ($1,240)</span><span class="alt">Sitting in checking ($2,210)</span></div>
-                <div class="ret-card-sub">Investing the idle portion instead of leaving it in cash could add roughly $310K by age 65 at a 6% return.</div>
-                <a class="cta">Automate your surplus &rarr;</a>
+                <div class="flx-wfrow gold">
+                  <div class="flx-wfl"><div class="n">Employer match <span class="flx-chip gold">free money</span></div><div class="d">Money you don&rsquo;t have to earn twice</div></div>
+                  <div class="flx-wfv">+$520</div>
+                </div>
+                <div class="flx-wfrow">
+                  <div class="flx-wfl"><div class="n">Roth IRA, Lily</div><div class="d">Maxes the age-50 catch-up limit to the dollar</div><div class="flx-wfbar"><i style="width:19%"></i></div></div>
+                  <div class="flx-wfv">$670</div>
+                </div>
+                <div class="flx-wfrow">
+                  <div class="flx-wfl"><div class="n">Taxable brokerage</div><div class="d">The bridge account that carries you from 63 to Social Security at 70</div><div class="flx-wfbar"><i style="width:26%"></i></div></div>
+                  <div class="flx-wfv">$890</div>
+                </div>
+                <div class="flx-wfrow">
+                  <div class="flx-wfl"><div class="n">Cash buffer top-up</div><div class="d">Holds the 12-month line as prices drift</div><div class="flx-wfbar"><i style="width:10%"></i></div></div>
+                  <div class="flx-wfv">$350</div>
+                </div>
+                <div class="flx-wffoot"><span class="s">Adds up, every year</span><b>$41,400 saved &middot; $47,640 counting the match</b></div>
+              </div>
+              <a class="cta">Automate the sweep &rarr;</a>
+            </div>
+          </div>
+
+          <div class="ret-section">
+            <div class="ret-seclabel">The balance sheet, reconciled</div>
+            <div class="flx-card">
+              <div class="flx-bs">
+                <div class="flx-bscol">
+                  <div class="flx-bshead">What you own</div>
+                  <div class="flx-bsrow"><span class="k">Home<small>Refreshed against local comps monthly</small></span><span class="v">$905,000</span></div>
+                  <div class="flx-bsrow"><span class="k">401(k)<small>Fidelity &middot; linked</small></span><span class="v">$310,000</span></div>
+                  <div class="flx-bsrow"><span class="k">Brokerage<small>Fidelity &middot; linked</small></span><span class="v">$150,000</span></div>
+                  <div class="flx-bsrow"><span class="k">Cash<small>Ally savings + joint checking</small></span><span class="v">$106,750</span></div>
+                  <div class="flx-bssub"><span class="k">Total owned</span><span class="v">$1,471,750</span></div>
+                </div>
+                <div class="flx-bscol">
+                  <div class="flx-bshead">What you owe</div>
+                  <div class="flx-bsrow"><span class="k">Mortgage<small>3.1% fixed &middot; the only balance</small></span><span class="v">$332,550</span></div>
+                  <div class="flx-bsrow subtle"><span class="k">Credit cards</span><span class="v">$0</span></div>
+                  <div class="flx-bsrow subtle"><span class="k">Auto &amp; other loans</span><span class="v">$0</span></div>
+                  <div class="flx-bssub"><span class="k">Total owed</span><span class="v">$332,550</span></div>
+                </div>
+              </div>
+              <div class="flx-bstotal"><span class="k">Net worth</span><b>$1,139,200</b><span class="flx-chip mint">&#9650; $8,200 since January</span></div>
+              <div class="flx-prov">6 linked accounts &middot; refreshed this morning &middot; matches your Today page to the dollar</div>
+              <div class="flx-liq">
+                <div class="flx-liqhead"><span class="h">Cash covers <b>17 months</b> of essentials</span><span class="muted">planner&rsquo;s range: 6&ndash;12</span></div>
+                <div class="flx-meter"><span class="band"></span><span class="mark"></span></div>
+                <div class="flx-mticks"><span>0</span><span>6</span><span>12</span><span>18 mo</span></div>
+                <p class="s">Strong, two years from retirement. The $31K above the 12-month line is the shortlist&rsquo;s first move.</p>
               </div>
             </div>
           </div>
 
           <div class="ret-section">
-            <div class="ret-seclabel">Debt</div>
-            <div class="ret-cards">
-              <div class="ret-card">
-                <div class="ring-row">
-                  <div class="ring"><div class="hole"><b>68%</b><span>paid off</span></div></div>
-                  <div>
-                    <div class="ret-card-title">Mortgage payoff</div>
-                    <div class="ret-card-sub">$118K left on a 3.1% loan. On track to be clear in 11 years, sooner if you send surplus to principal.</div>
+            <div class="ret-seclabel">Allocation, against the target you set</div>
+            <div class="flx-two">
+              <div class="flx-card">
+                <div class="flx-al">
+                  <div class="flx-alrow"><span class="l">US equities</span><span class="flx-altrack"><span class="now" style="width:71%"></span><span class="tgt" style="left:60%"></span></span><span class="flx-alnums"><span class="now">71% <small>vs 60</small></span><span class="flx-chip line">+11 over</span></span></div>
+                  <div class="flx-alrow"><span class="l">International</span><span class="flx-altrack"><span class="now" style="width:22%"></span><span class="tgt" style="left:25%"></span></span><span class="flx-alnums"><span class="now">22% <small>vs 25</small></span><span class="flx-chip line">&minus;3 under</span></span></div>
+                  <div class="flx-alrow"><span class="l">Bonds</span><span class="flx-altrack"><span class="now" style="width:7%"></span><span class="tgt" style="left:15%"></span></span><span class="flx-alnums"><span class="now">7% <small>vs 15</small></span><span class="flx-chip line">&minus;8 under</span></span></div>
+                </div>
+                <div class="flx-alfoot">Target of 60&thinsp;&middot;&thinsp;25&thinsp;&middot;&thinsp;15 was set with your risk profile in March 2026. The drift came from a strong US run, not new money, which makes trimming easier to stomach.</div>
+                <a class="cta">Rebalance back to target &rarr;</a>
+                <div class="flx-ctasub">4 trades at Fidelity &middot; est. $140 of long-term gains realized</div>
+              </div>
+              <div class="flx-card flx-note">
+                <h4>Bonds belong in the 401(k)</h4>
+                <p>In the brokerage, bond interest is taxed as ordinary income every single year. Inside the 401(k) it compounds untouched until you draw it.</p>
+                <p style="margin-top:10px">Holding the same 60&thinsp;&middot;&thinsp;25&thinsp;&middot;&thinsp;15 with bonds relocated saves roughly $400 a year in tax, for zero change in risk.</p>
+                <a class="cta">Fix asset location &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ret-section">
+            <div class="ret-seclabel">Debt, weighed properly</div>
+            <div class="flx-stack">
+              <div class="flx-card">
+                <div class="flx-mort">
+                  <div class="flx-ring" style="--p:63"><div class="hole"><b>63%</b><span>equity</span></div></div>
+                  <div style="flex:1;min-width:0">
+                    <div class="flx-cardtitle">The mortgage</div>
+                    <div class="flx-facts">
+                      <div class="flx-fact"><div class="k">Balance</div><div class="v">$332,550</div></div>
+                      <div class="flx-fact"><div class="k">Rate</div><div class="v">3.1% fixed</div></div>
+                      <div class="flx-fact"><div class="k">Payment</div><div class="v">$2,140 P&amp;I</div></div>
+                      <div class="flx-fact"><div class="k">Free &amp; clear</div><div class="v">2042</div></div>
+                    </div>
                   </div>
                 </div>
+                <p class="flx-cardsub">Fourteen of those payment years land inside retirement. The plan&rsquo;s income floor already carries every one of them, so this is a choice, not a problem.</p>
               </div>
-              <div class="ret-card">
-                <div class="ret-card-title">No high-interest debt</div>
-                <div class="ret-card-sub">Your only balance sits well below today's rates, so investing the surplus likely beats paying it down early.</div>
-                <a class="ret-card-link">Compare payoff vs invest &rarr;</a>
+              <div class="flx-card">
+                <div class="flx-cardtitle">Pay it down, or invest?</div>
+                <div class="flx-vs">
+                  <div class="flx-vsrow"><span class="tag">A</span><span class="b">Send an extra $500 a month to principal: debt-free about <b>four years sooner</b>, with <b>&asymp; $23K</b> of interest never paid.</span></div>
+                  <div class="flx-vsrow"><span class="tag">B</span><span class="b">Invest that $500 a month instead: <b>&asymp; $114K</b> at a 6% return by the same date, before tax.</span></div>
+                </div>
+                <div class="flx-verdict">
+                  <span class="flx-chip mint">Slight edge: invest</span>
+                  <p>3.1% is a guaranteed return; markets are not. The spread favors investing, the certainty favors paying down. Either one is a good decision made on purpose.</p>
+                </div>
+                <div class="flx-nodebt">No other household debt. Nothing at card rates to clear first.</div>
               </div>
             </div>
           </div>
@@ -4056,7 +4288,7 @@ body.mpanel-open{ overflow:hidden; }
   </aside>
   <main class="center">
     <section class="pf-hero" id="pf-sec-profile">
-      <h2 class="pf-hl"><span class="nw">Two people. <span class="pf-em">One plan</span>.</span> <span class="nw"><span class="pf-gold">903 days</span> to go.</span></h2>
+      <h2 class="pf-hl"><span class="nw">Two people. <span class="pf-em">One plan</span>.</span> <span class="nw"><span class="pf-gold"><span id="pfDaysHl">903 days</span></span> to go.</span></h2>
       <p class="pf-sub">Planning together since March 2024 &middot; Confidence <b>87%</b> and climbing</p>
     </section>
     <section class="pf-two" id="pf-sec-household">
@@ -4096,7 +4328,7 @@ body.mpanel-open{ overflow:hidden; }
         <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20v-7"/><path d="M12 13c0-3.2 2.4-5.2 5.6-5.2 0 3.2-2.4 5.2-5.6 5.2z"/><path d="M12 13c0-3.2-2.4-5.2-5.6-5.2 0 3.2 2.4 5.2 5.6 5.2z"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">March 2024</div><div class="pf-jwhat"><b>Joined Boldin.</b> Confidence that first week: 64%.</div></div><div class="pf-jchip">64%</div></div>
         <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 13.5a4.6 4.6 0 0 0 6.5 0l2-2a4.6 4.6 0 0 0-6.5-6.5L11.2 6.3"/><path d="M13.5 10.5a4.6 4.6 0 0 0-6.5 0l-2 2a4.6 4.6 0 0 0 6.5 6.5l1.3-1.3"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">May 2026</div><div class="pf-jwhat"><b>Every account linked.</b> TrueView went live.</div></div><div class="pf-jchip">$1.47M</div></div>
         <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 2.8v5.1c0 4.8-3.4 7.7-7 9.6-3.6-1.9-7-4.8-7-9.6V5.8z"/><path d="M9 12l2.1 2.1L15.4 9.8"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">June 2026</div><div class="pf-jwhat"><b>Plan funded to 87%.</b> Holds in 9 of 10 markets.</div></div><div class="pf-jchip">87%</div></div>
-        <div class="pf-jrow today"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M15.2 8.8l-2 4.4-4.4 2 2-4.4z"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">Today</div><div class="pf-jwhat"><b>903 days out.</b> Three moves queued on Optimize.</div></div><div class="pf-jchip">903 days</div></div>
+        <div class="pf-jrow today"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M15.2 8.8l-2 4.4-4.4 2 2-4.4z"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">Today</div><div class="pf-jwhat"><b><span id="pfDaysRow">903 days</span> out.</b> Three moves queued on Optimize.</div></div><div class="pf-jchip"><span id="pfDaysChip">903 days</span></div></div>
         <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8h10"/><path d="M14 5l3 3-3 3"/><path d="M17 16H7"/><path d="M10 19l-3-3 3-3"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">December 2026</div><div class="pf-jwhat"><b>First Roth December.</b> $40,000 moves while the bracket is low.</div></div><div class="pf-jchip">$40,000</div></div>
         <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 18h15"/><path d="M8 18a4 4 0 0 1 8 0"/><path d="M12 10V7.5"/><path d="M6.8 12.2 5 10.4"/><path d="M17.2 12.2l1.8-1.8"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">December 2028</div><div class="pf-jwhat"><b>Marshall retires at 63.</b> The Tuesday mornings begin.</div></div><div class="pf-jchip">Age 63</div></div>
         <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.6 12h.01"/><path d="M17.4 12h.01"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">June 2030</div><div class="pf-jwhat"><b>The math at 65.</b> The nest egg becomes a paycheck.</div></div><div class="pf-jchip">$1.6M</div></div>
@@ -4472,13 +4704,10 @@ body.mpanel-open{ overflow:hidden; }
   <main class="center">
     <div class="bud-top">
       <button class="bud-back bud-back-tbl" onclick="BUD.closeBudget()"><span aria-hidden="true">←</span> Optimize</button>
-      <div class="tbl-headstats">
-        <div class="head-stat"><div class="label">Must spend</div><div class="value" ><span id="totMust">$5,191</span><small>/mo</small></div></div>
-        <div class="head-stat"><div class="label">Like to spend</div><div class="value"><span id="totLike">$6,323</span><small>/mo</small></div></div>
-      </div>
       <h2 class="snap-headline" id="budHeadline">Live <span class="yrs">well</span> on <span class="amt" id="heroAmt">$6,323</span> a month.</h2>
       <p class="bud-sub">Document what you spend now and what you would like to spend.</p>
       <div class="bud-viewrow">
+        <button type="button" class="bud-addtop" onclick="BUD.addExpenseTop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add expense</button>
         <div class="bud-viewtog" role="tablist" aria-label="Budget view">
           <button class="bud-vt active" data-bview="list" role="tab" aria-selected="true" onclick="BUD.switchView('list')">Expense list</button>
           <button class="bud-vt" data-bview="table" role="tab" aria-selected="false" onclick="BUD.switchView('table')">Planning table</button>
@@ -8162,11 +8391,9 @@ document.addEventListener('click', function(e){
     }
   }
 
-  /* Today hero: the same left-to-right wipe the plan headline uses (see setLens: REVEAL/clip-path) */
-  window.addEventListener('boldin:view', function(e){
-    if(e.detail!=='today') return;
-    var hl=document.querySelector('.today-hero .pf-hl');
-    var sub=document.querySelector('.today-hero .pf-sub');
+  /* Page headline reveal: the same left-to-right clip wipe on Today, Profile, and Vault
+     so all three read identically (see setLens: REVEAL/clip-path). */
+  function revealHeadline(hl, sub){
     if(!hl) return;
     var clear=function(el){ if(!el) return; ['clipPath','webkitClipPath','opacity','transition'].forEach(function(p){ el.style[p]=''; }); };
     if(reduce){ clear(hl); clear(sub); return; }
@@ -8180,7 +8407,26 @@ document.addEventListener('click', function(e){
       if(sub){ sub.style.transition='opacity 400ms '+EASE; sub.style.opacity='1'; }
     }); });
     setTimeout(function(){ clear(hl); clear(sub); }, 620);
+  }
+  window.addEventListener('boldin:view', function(e){
+    var scope=null;
+    if(e.detail==='today') scope='.today-hero';
+    else if(e.detail==='profile') scope='.layout.page[data-page="profile"] .pf-hero';
+    else if(e.detail==='vault') scope='.layout.page[data-page="vault"] #vview-vault .pagehead';
+    else return;
+    var root=document.querySelector(scope); if(!root) return;
+    revealHeadline(root.querySelector('.pf-hl'), root.querySelector('.pf-sub'));
   });
+
+  /* live day-count to Marshall's retirement (Dec 1 2028) so the profile never drifts stale */
+  (function(){
+    var target=new Date(2028,11,1);
+    var days=Math.max(0, Math.round((target - new Date())/86400000));
+    var txt=days.toLocaleString('en-US')+' days';
+    ['pfDaysHl','pfDaysRow','pfDaysChip'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.textContent=txt;
+    });
+  })();
 
   modeLinks.forEach(a=> a.addEventListener('click', e=>{ e.preventDefault(); showView(a.dataset.view, a); }));
   document.querySelectorAll('.topnav .right .iconbtn[data-view]').forEach(b=> b.addEventListener('click', ()=> showView(b.dataset.view)));
@@ -8364,10 +8610,8 @@ function renderSections(){
   wrap.innerHTML = CATEGORIES.map(c=>{
     const rows = catExpenses(c.key);
     const m = catMonthly(c.key);
-    const totalHtml = rows.length ? `<span class="bud-cat-total"><b>${fmt(m.like)}</b> / mo like to spend</span>` : '';
-    const caps = rows.length ? `<div class="bud-caps"><span></span><span>Must</span></div>` : '';
     const body = rows.length
-      ? caps + rows.map(rowHtml).join('')
+      ? rows.map(rowHtml).join('')
       : `<div class="bud-empty">Nothing here yet.</div>`;
     const adder = c.synced
       ? `<div class="bud-empty" style="padding-top:14px">These payments sync from the debt section of your plan. Edit them there and they update here.</div>`
@@ -8377,7 +8621,7 @@ function renderSections(){
          </button>
          <div id="composer-${c.key}"></div>`;
     return `<section class="bud-cat" id="sec-${c.key}" data-sec="${c.key}">
-      <div class="bud-cat-head"><h3>${c.name}${rows.length?` (${rows.length})`:''}</h3>${totalHtml}</div>
+      <div class="bud-cat-head"><h3>${c.name}${rows.length?` (${rows.length})`:''}</h3></div>
       ${body}
       ${adder}
     </section>`;
@@ -8450,13 +8694,10 @@ function refreshRow(id){
   old.replaceWith(tmp.firstElementChild);
 }
 function refreshCatTotal(catKey){
-  const sec = document.querySelector(`[data-sec="${catKey}"] .bud-cat-head`);
-  if(!sec) return;
-  const m = catMonthly(catKey);
-  const t = sec.querySelector('.bud-cat-total');
-  const html = `<b>${fmt(m.like)}</b> / mo like to spend`;
-  if(t) t.innerHTML = html;
-  else if(catExpenses(catKey).length){ const s=document.createElement('span'); s.className='bud-cat-total'; s.innerHTML=html; sec.appendChild(s); }
+  /* category heads no longer carry a running total; keep the hook as a no-op for callers */
+  const t = document.querySelector(`[data-sec="${catKey}"] .bud-cat-total`);
+  if(t) t.remove();
+  return;
 }
 
 /* ---- full editor ---- */
@@ -8647,6 +8888,7 @@ document.getElementById('catnav').addEventListener('click', ev=>{
 /* ---- Optimize index <-> budgeter sub-view ---- */
 function openBudget(){
   ['alo-open','soc-open','tax-open','wdr-open'].forEach(c=>document.body.classList.remove(c));
+  document.body.classList.remove('ai-expanded','ai-fullscreen');
   document.body.classList.add('bud-open');
   const sp = document.getElementById('bottomSpacer'); if(sp) sp.style.height='0px';
   window.scrollTo({top:0, behavior:'auto'});
@@ -8680,32 +8922,37 @@ function renderTable(){
   const money=v=>'$'+Math.round(v).toLocaleString('en-US');
   const FREQS=['Monthly','Quarterly','Twice a year','Annually'];
   const opts=(list,cur)=>list.map(o=>'<option'+(o===cur?' selected':'')+'>'+escT(o)+'</option>').join('');
+  let prevCat=null;
   const rows=expenses.map((e,i)=>{
     const cat=CATEGORIES.find(c=>c.key===e.cat)||CATEGORIES[0];
     const subs=['\u2014'].concat(cat.suggests||[]);
     if(e.sub && !subs.includes(e.sub)) subs.push(e.sub);
-    return '<tr data-ei="'+i+'">'+
+    const gap=(prevCat!==null && e.cat!==prevCat)?'<tr class="cat-gap" aria-hidden="true"><td colspan="9"></td></tr>':'';
+    prevCat=e.cat;
+    return gap+'<tr data-ei="'+i+'">'+
       '<td><select class="field f-cat">'+opts(CATEGORIES.map(c=>c.name),cat.name)+'</select></td>'+
       '<td><select class="field f-sub">'+opts(subs, e.sub||'\u2014')+'</select></td>'+
       '<td><input class="field f-label" value="'+escT(e.label)+'"></td>'+
       '<td><select class="field f-freq">'+opts(FREQS,e.freq)+'</select></td>'+
       '<td class="num"><input class="field num f-must" value="'+money(e.must)+'"></td>'+
       '<td class="num"><input class="field num f-like" value="'+money(e.like)+'"></td>'+
-      '<td class="num"><input class="field num f-ded" value="'+(e.ded?'100%':'\u2014')+'"></td>'+
+      '<td><select class="field f-ded">'+opts(['\u2014','Yes'], e.ded?'Yes':'\u2014')+'</select></td>'+
       '<td><input class="field f-start" value="'+escT(e.start||'Jan 2026')+'"></td>'+
       '<td><input class="field f-end" value="'+escT(e.end||'Ongoing')+'"></td>'+
     '</tr>';
   }).join('');
   el.innerHTML=
    '<table class="budget-table"><colgroup>'+
-   '<col style="width:106px"><col style="width:106px"><col style="width:142px"><col style="width:92px">'+
-   '<col style="width:84px"><col style="width:84px"><col style="width:72px"><col style="width:78px"><col style="width:78px">'+
+   '<col style="width:178px"><col style="width:142px"><col style="width:200px"><col style="width:122px">'+
+   '<col style="width:96px"><col style="width:96px"><col style="width:86px"><col style="width:98px"><col style="width:98px">'+
    '</colgroup><thead><tr>'+
    '<th>Category</th><th>Sub category</th><th>Label</th><th>Frequency</th>'+
-   '<th class="num">Must spend</th><th class="num">Like to spend</th><th class="num">Deductible</th>'+
+   '<th class="num">Must spend</th><th class="num">Like to spend</th><th>Deductible</th>'+
    '<th>Start</th><th>End</th>'+
    '</tr></thead><tbody id="budTbody">'+rows+
-   '<tr class="total-row"><td></td><td>Monthly total</td><td class="meta">per month</td>'+
+   '<tr class="bud-add-tr"><td colspan="9"><button type="button" class="bud-addrow" onclick="BUD.addTableRow()">'+
+   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add expense</button></td></tr>'+
+   '<tr class="total-row"><td></td><td></td><td>Monthly total</td><td class="meta">per month</td>'+
    '<td class="num" id="footMust"></td><td class="num" id="footLike"></td><td></td><td></td><td></td></tr>'+
    '</tbody></table>'+
    '<p class="footnote">Marshall and Lily, retiring December 2028. Amounts shown per period. Must Spend covers essentials, Like to Spend adds room for the life you want.</p>';
@@ -8736,11 +8983,34 @@ function renderTable(){
       inp.addEventListener('input', ()=>{ e[k]=p(inp.value); recalc(); });
       inp.addEventListener('blur', ()=>{ inp.value=money(e[k]); });
     });
-    tr.querySelector('.f-ded').addEventListener('input', ev=>{ e.ded=/\d/.test(ev.target.value); });
+    tr.querySelector('.f-ded').addEventListener('change', ev=>{ e.ded = ev.target.value==='Yes'; });
     tr.querySelector('.f-start').addEventListener('input', ev=>{ e.start=ev.target.value; });
     tr.querySelector('.f-end').addEventListener('input', ev=>{ e.end=ev.target.value; });
   });
   recalc();
+}
+function addExpenseTop(){
+  const lay=document.querySelector('.bud-layout');
+  if(lay && lay.classList.contains('bud-tablemode')){ addTableRow(true); return; }
+  const cat=(CATEGORIES[0] && CATEGORIES[0].key) || 'home';
+  openComposer(cat);
+  const holder=document.getElementById('composer-'+cat);
+  if(holder){ holder.scrollIntoView({block:'center', behavior:'smooth'});
+    const f=holder.querySelector('input'); if(f) setTimeout(()=>f.focus(), 350); }
+}
+function addTableRow(atTop){
+  const maxId = expenses.reduce((m,e)=>Math.max(m, e.id||0), 0);
+  const firstCat = (CATEGORIES[0] && CATEGORIES[0].key) || 'home';
+  const fresh = {id:maxId+1, cat:firstCat, label:'', sub:'', freq:'Monthly', must:0, like:0, ded:false};
+  if(atTop) expenses.unshift(fresh); else expenses.push(fresh);
+  renderTable(); render();
+  const trs=document.querySelectorAll('#budTbody tr[data-ei]');
+  const row = atTop ? trs[0] : trs[trs.length-1];
+  if(!row) return;
+  row.classList.add('tr-new');
+  row.scrollIntoView({block:'nearest', behavior:'smooth'});
+  const f=row.querySelector('.f-label');
+  if(f) setTimeout(()=>f.focus(), 440);
 }
 function switchView(v){
   const tbl=document.getElementById('budTable'), secs=document.getElementById('sections');
@@ -8752,7 +9022,7 @@ function switchView(v){
   if(v==='table'){ renderTable(); tbl.hidden=false; secs.style.display='none'; if(lay) lay.classList.add('bud-tablemode'); }
   else { tbl.hidden=true; secs.style.display=''; if(lay) lay.classList.remove('bud-tablemode'); render(); }
 }
-window.BUD = {toggleEditor, inlineAmt, openComposer, useSuggestion, commitComposer, saveEditor, deleteExpense, downloadCSV, segPick, closeBudget, switchView};
+window.BUD = {toggleEditor, inlineAmt, openComposer, useSuggestion, commitComposer, saveEditor, deleteExpense, downloadCSV, segPick, closeBudget, switchView, addTableRow, addExpenseTop};
 render();
 })();
 </script>
@@ -10194,7 +10464,524 @@ window.CONTRIB={ open, openInline, close, finishInline, back:()=>advance(-1), ne
 })();
 </script>
 
+<style id="STORY-EXPERIENCE">
+/* ===================== "Your Story" v2 - full-screen year-in-review ===================== */
+#storyPortal{ position:fixed; inset:0; z-index:600; display:none; background:#07100F;
+  font-family:var(--font); color:#fff; overflow:hidden; }
+#storyPortal.open{ display:block; }
+body.story-open{ overflow:hidden; }
+
+.st-stage{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.st-card{ position:relative; width:100%; height:100%; max-width:520px; max-height:920px; overflow:hidden;
+  border-radius:0; background:#0B1A18; }
+@media (min-width:560px){ .st-card{ border-radius:28px; margin:22px; height:calc(100% - 44px); box-shadow:0 40px 120px rgba(0,0,0,0.5); } }
+
+/* scenes: hard-cut out, cinematic zoom-settle in */
+.st-scene{ position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center;
+  padding:64px 40px 108px; opacity:0; pointer-events:none; overflow:hidden; }
+.st-scene.on{ opacity:1; pointer-events:auto; animation:stSceneIn 480ms cubic-bezier(0.22,1,0.36,1); }
+@keyframes stSceneIn{ from{ opacity:0; transform:scale(1.035); } }
+.st-scene .st-bg{ position:absolute; inset:0; z-index:0; }
+.st-scene .st-inner{ position:relative; z-index:2; }
+
+/* progress bars */
+.st-bars{ position:absolute; top:0; left:0; right:0; z-index:30; display:flex; gap:5px; padding:16px 18px; }
+@media (min-width:560px){ .st-bars{ padding:20px 22px; } }
+.st-bar{ flex:1; height:3px; border-radius:999px; background:rgba(255,255,255,0.28); overflow:hidden; }
+.st-bar i{ display:block; height:100%; width:0; background:#fff; border-radius:999px; }
+.st-bar.done i{ width:100%; }
+.st-bar.active i{ animation:stFill var(--st-dur,5200ms) linear forwards; }
+@keyframes stFill{ from{ width:0; } to{ width:100%; } }
+
+/* top brand + close */
+.st-top{ position:absolute; top:30px; left:22px; right:22px; z-index:30; display:flex; align-items:center; justify-content:space-between; }
+@media (min-width:560px){ .st-top{ top:36px; } }
+.st-brand{ display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; letter-spacing:-0.01em; color:rgba(255,255,255,0.96); }
+.st-brand svg{ width:18px; height:18px; }
+.st-x{ width:34px; height:34px; border-radius:999px; border:0; background:rgba(255,255,255,0.16); color:#fff;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); }
+.st-x:hover{ background:rgba(255,255,255,0.28); }
+.st-x svg{ width:16px; height:16px; }
+
+/* nav zones */
+.st-nav{ position:absolute; inset:0; z-index:20; display:flex; }
+.st-nav .st-prev{ width:32%; } .st-nav .st-next{ flex:1; } .st-nav > div{ cursor:pointer; }
+
+/* type kit */
+.st-eyebrow{ font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; opacity:0.72; margin:0 0 20px; }
+.st-big{ font-size:96px; line-height:0.92; font-weight:600; letter-spacing:-0.03em; margin:0; }
+.st-big.sm{ font-size:64px; }
+.st-giant{ font-size:120px; line-height:0.88; font-weight:650; letter-spacing:-0.04em; margin:0; }
+.st-unit{ font-size:0.42em; font-weight:600; opacity:0.7; letter-spacing:-0.01em; }
+.st-head{ font-size:34px; line-height:1.08; font-weight:600; letter-spacing:-0.02em; margin:0 0 16px; }
+.st-sub{ font-size:19px; line-height:1.5; opacity:0.88; margin:20px 0 0; max-width:24ch; font-weight:450; }
+.st-kicker{ font-size:16px; font-weight:600; opacity:0.9; margin:0 0 14px; }
+.st-foot{ position:absolute; left:40px; right:40px; bottom:44px; z-index:3; font-size:15px; line-height:1.45; opacity:0.8; }
+
+/* staggered reveals */
+.st-scene.on .rv{ animation:stRise 720ms cubic-bezier(0.16,1,0.3,1) backwards; }
+.st-scene.on .rv1{ animation-delay:.15s; } .st-scene.on .rv2{ animation-delay:.35s; }
+.st-scene.on .rv3{ animation-delay:.55s; } .st-scene.on .rv4{ animation-delay:.78s; }
+.st-scene.on .rv5{ animation-delay:1s; }
+@keyframes stRise{ from{ opacity:0; transform:translateY(26px); } }
+.st-scene.on .pop{ animation:stPop 820ms cubic-bezier(0.34,1.56,0.64,1) backwards; }
+.st-scene.on .pop.rv2{ animation-delay:.3s; } .st-scene.on .pop.rv4{ animation-delay:.72s; }
+@keyframes stPop{ 0%{ opacity:0; transform:scale(0.6); } 60%{ opacity:1; } 100%{ transform:scale(1); } }
+@keyframes stPopIn{ 0%{ opacity:0; transform:scale(0.5); } 60%{ opacity:1; } 100%{ opacity:1; transform:scale(1); } }
+
+/* backdrops */
+.stb-1{ background:radial-gradient(120% 100% at 20% 10%, #0E5A46 0%, #072B22 55%, #04110D 100%); }
+.stb-2{ background:radial-gradient(130% 110% at 80% 0%, #10794E 0%, #0A3E32 50%, #051A15 100%); }
+.stb-3{ background:linear-gradient(160deg, #04B477 0%, #0B6B4C 46%, #06251E 100%); }
+.stb-4{ background:radial-gradient(120% 100% at 15% 90%, #1C6B8F 0%, #0C2F45 55%, #06161F 100%); }
+.stb-5{ background:linear-gradient(155deg, #FBBD04 0%, #E07A05 44%, #7A2E04 100%); }
+.stb-6{ background:radial-gradient(130% 110% at 85% 15%, #6B1E63 0%, #35123B 52%, #140618 100%); }
+.stb-7{ background:linear-gradient(160deg, #0E794E 0%, #0A5238 44%, #04140F 100%); }
+.stb-dawn{ background:linear-gradient(175deg, #0D3F4A 0%, #1C5257 48%, #C97B4A 86%, #F4C99B 100%); }
+.stb-9{ background:radial-gradient(125% 110% at 50% 12%, #10a06a 0%, #0A5238 46%, #051A15 100%); }
+
+/* soft orbs */
+.st-orb{ position:absolute; border-radius:50%; filter:blur(2px); opacity:0.5; z-index:0; }
+.st-scene.on .st-orb{ animation:stFloat 9s ease-in-out infinite alternate; }
+@keyframes stFloat{ from{ transform:translateY(0) translateX(0); } to{ transform:translateY(-26px) translateX(14px); } }
+
+/* kinetic marquee bands */
+.st-marq{ position:absolute; left:0; right:0; overflow:hidden; opacity:0.12; z-index:1; pointer-events:none; }
+.st-mrow{ display:inline-block; white-space:nowrap; font-weight:700; font-size:92px; letter-spacing:-0.02em; will-change:transform; }
+.st-scene.on .st-mrow{ animation:stMarq 18s linear infinite; }
+.st-mrow.rev{ animation-direction:reverse; }
+@keyframes stMarq{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+/* 412-day dot grid */
+.st-days{ display:grid; grid-template-columns:repeat(24,1fr); gap:6px; margin-top:26px; max-width:430px; }
+.st-dot{ width:100%; aspect-ratio:1; border-radius:999px; background:rgba(255,255,255,0.92); opacity:0; transform:scale(0.3); }
+.st-dot.gold{ background:#FBBD04; }
+.st-scene.on .st-dot{ animation:stDot 0.5s cubic-bezier(0.2,1,0.4,1) forwards; animation-delay:calc(0.35s + var(--i)*2.6ms); }
+@keyframes stDot{ to{ opacity:1; transform:scale(1); } }
+
+/* confidence climb */
+.st-climb{ display:flex; align-items:flex-end; gap:12px; height:180px; margin-top:8px; }
+.st-climb .stc-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+.st-climb .stc-fill{ width:100%; border-radius:8px 8px 0 0; height:0; }
+.st-scene.on .st-climb .stc-fill{ animation:stGrow 1s cubic-bezier(0.16,1,0.3,1) backwards; }
+.st-scene.on .st-climb .stc-col:nth-child(2) .stc-fill{ animation-delay:.15s; }
+.st-scene.on .st-climb .stc-col:nth-child(3) .stc-fill{ animation-delay:.3s; }
+.st-scene.on .st-climb .stc-col:nth-child(4) .stc-fill{ animation-delay:.45s; }
+@keyframes stGrow{ from{ height:0; } }
+.st-climb .stc-lab{ font-size:12px; opacity:0.7; margin-top:8px; font-weight:500; }
+
+/* top 5% chip */
+.st-chip{ display:inline-flex; align-items:center; gap:8px; background:#2A1403; color:#FFE9B8;
+  border-radius:999px; padding:10px 18px; font-size:18px; font-weight:700; letter-spacing:-0.01em; }
+.st-chip svg{ width:16px; height:16px; }
+
+/* net worth receipt */
+.st-rcp{ margin-top:6px; max-width:370px; font-variant-numeric:tabular-nums; }
+.st-rcp .rr{ display:flex; justify-content:space-between; gap:18px; padding:13px 2px;
+  border-bottom:1px dashed rgba(255,255,255,0.26); font-size:20px; }
+.st-rcp .rr .k{ opacity:0.78; } .st-rcp .rr .v{ font-weight:600; }
+.st-rcp .rr.total{ border-bottom:0; padding-top:18px; font-size:25px; font-weight:700; }
+.st-rcp .rr.total .v{ font-weight:700; }
+
+/* roth year chips */
+.st-years{ display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 2px; max-width:380px; }
+.st-yr{ padding:7px 13px; border-radius:999px; border:1px solid rgba(255,255,255,0.4); font-size:14px; font-weight:600; opacity:0; }
+.st-yr.hot{ background:#fff; color:#3A123F; border-color:#fff; }
+.st-scene.on .st-yr{ animation:stPopIn 0.5s cubic-bezier(0.2,1,0.35,1) forwards; animation-delay:calc(0.5s + var(--i)*0.13s); }
+
+/* mountain */
+.st-mtn{ display:block; width:100%; max-width:430px; margin-top:22px; }
+.st-mtn .line{ stroke-dasharray:1; stroke-dashoffset:1; }
+.st-scene.on .st-mtn .line{ animation:stDrawLine 1.7s cubic-bezier(0.16,1,0.3,1) 0.35s forwards; }
+@keyframes stDrawLine{ to{ stroke-dashoffset:0; } }
+.st-flag{ opacity:0; transform-origin:330px 32px; }
+.st-scene.on .st-flag{ animation:stPopIn 0.55s cubic-bezier(0.34,1.56,0.64,1) 1.95s forwards; }
+
+/* petals */
+.st-petal{ position:absolute; top:0; width:16px; height:13px; z-index:1; pointer-events:none;
+  background:radial-gradient(circle at 30% 30%, #FFD9E4, #F2A9C0 70%); opacity:0.9;
+  border-radius:62% 38% 55% 45% / 48% 62% 38% 52%; transform:translateY(-60px) scale(var(--sc,1)); }
+.st-scene.on .st-petal{ animation:stPetal var(--d,9s) linear var(--dl,0s) infinite; }
+@keyframes stPetal{
+  0%{ transform:translate3d(0,-60px,0) rotate(0deg) scale(var(--sc,1)); }
+  50%{ transform:translate3d(var(--dx,24px),440px,0) rotate(210deg) scale(var(--sc,1)); }
+  100%{ transform:translate3d(calc(var(--dx,24px)*-0.4),960px,0) rotate(430deg) scale(var(--sc,1)); } }
+
+/* finish ring */
+.st-ring{ width:220px; height:220px; margin:0 auto; position:relative; }
+.st-ring svg{ transform:rotate(-90deg); }
+.st-ring .stnum{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:56px; font-weight:600; letter-spacing:-0.02em; }
+.st-ring circle.track{ fill:none; stroke:rgba(255,255,255,0.16); stroke-width:14; }
+.st-ring circle.val{ fill:none; stroke:#fff; stroke-width:14; stroke-linecap:round; stroke-dasharray:596; stroke-dashoffset:596; }
+.st-scene.on .st-ring circle.val{ animation:stRing 1.6s cubic-bezier(0.16,1,0.3,1) 0.3s forwards; }
+@keyframes stRing{ to{ stroke-dashoffset:78; } }
+
+/* confetti canvas */
+.st-confetti{ position:absolute; inset:0; z-index:6; pointer-events:none; }
+
+/* share scene */
+.st-share{ text-align:center; }
+.st-sharecard{ position:relative; border-radius:24px; padding:2px; margin:20px 0 0;
+  background:linear-gradient(135deg,#04B477,#FBBD04 46%,#BC0278); }
+.st-sharecard .in{ background:rgba(7,20,17,0.93); border-radius:22px; padding:20px 22px 12px; backdrop-filter:blur(6px); }
+.st-sr{ display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-top:1px solid rgba(255,255,255,0.14); font-size:15px; }
+.st-sr:first-of-type{ border-top:0; }
+.st-sr .k{ opacity:0.72; } .st-sr .v{ font-weight:600; }
+.st-btns{ display:flex; gap:12px; justify-content:center; margin-top:24px; flex-wrap:wrap; }
+.st-cta{ display:inline-flex; align-items:center; gap:9px; padding:15px 24px; border-radius:999px;
+  background:#fff; color:#0B1A18; font-size:16px; font-weight:650; border:0; cursor:pointer; }
+.st-cta:hover{ transform:translateY(-1px); }
+.st-cta svg{ width:17px; height:17px; }
+.st-cta.ghost{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.55); }
+.st-restart{ display:block; margin:16px auto 0; background:none; border:0; color:rgba(255,255,255,0.66); font-size:14px; cursor:pointer; font-weight:500; }
+.st-restart:hover{ color:#fff; }
+
+@media (prefers-reduced-motion: reduce){
+  .st-scene.on{ animation:none; }
+  .st-bar.active i{ animation:none; width:100%; }
+  .st-scene.on .rv, .st-scene.on .pop, .st-scene.on .st-orb,
+  .st-scene.on .st-climb .stc-fill, .st-scene.on .st-ring circle.val{ animation:none; }
+  .st-scene.on .st-climb .stc-fill{ height:var(--h,50%); }
+  .st-scene.on .st-ring circle.val{ stroke-dashoffset:78; }
+  .st-mrow, .st-scene.on .st-mrow{ animation:none; }
+  .st-petal{ display:none; }
+  .st-dot, .st-scene.on .st-dot{ animation:none; opacity:1; transform:scale(1); }
+  .st-yr, .st-scene.on .st-yr{ animation:none; opacity:1; }
+  .st-mtn .line, .st-scene.on .st-mtn .line{ animation:none; stroke-dashoffset:0; }
+  .st-flag, .st-scene.on .st-flag{ animation:none; opacity:1; }
+}
+</style>
+<script>
+/* ===================== "Your Story" - year-in-review engine (v2) ===================== */
+(function(){
+  var SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
+  var DL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M6.5 10.5L12 16l5.5-5.5"/><path d="M5 20h14"/></svg>';
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function orbs(spec){ return spec.map(function(o){ return '<div class="st-orb" style="'+o+'"></div>'; }).join(''); }
+  function marq(txt){ var one=''; for(var i=0;i<8;i++){ one+=txt+' \u00b7\u00a0 '; } return one; }
+  function daysGrid(){ var s=''; for(var i=0;i<412;i++){ s+='<span class="st-dot'+(i===411?' gold':'')+'" style="--i:'+i+'"></span>'; } return '<div class="st-days">'+s+'</div>'; }
+  function petals(){ var s=''; for(var i=0;i<12;i++){
+    s+='<span class="st-petal" style="left:'+(4+i*8)+'%;--d:'+(7+(i%5)*1.3)+'s;--dl:'+(-(i*0.9))+'s;--sc:'+(0.7+(i%4)*0.18)+';--dx:'+(((i%2)?1:-1)*(20+(i%3)*14))+'px"></span>'; }
+    return s; }
+  function yearChips(){ var s=''; for(var y=2029;y<=2036;y++){ s+='<span class="st-yr'+(y===2036?' hot':'')+'" style="--i:'+(y-2029)+'">'+y+'</span>'; } return '<div class="st-years">'+s+'</div>'; }
+
+  var SCENES=[
+    /* 1 - cold open */
+    { bg:'stb-1', dur:4200, html: function(){ return ''+
+      '<div class="st-marq" style="top:8%"><div class="st-mrow">'+marq('Your story')+'</div></div>'+
+      '<div class="st-marq" style="bottom:10%"><div class="st-mrow rev">'+marq('Your story')+'</div></div>'+
+      orbs(['width:260px;height:260px;background:#0B8A5F;top:-60px;right:-70px'])+
+      '<div class="st-inner">'+
+        '<div class="st-eyebrow rv rv1">Boldin presents</div>'+
+        '<h1 class="st-giant rv rv2">Marshall.</h1>'+
+        '<p class="st-sub rv rv3">Your 2026, told the way it deserves to be told.</p>'+
+      '</div>'+
+      '<div class="st-foot rv rv4">Tap to begin \u203a</div>'; } },
+
+    /* 2 - 412 days, dot by dot */
+    { bg:'stb-2', dur:5200, html: function(){ return ''+
+      '<div class="st-inner">'+
+        '<div class="st-eyebrow rv rv1">You showed up</div>'+
+        '<h2 class="st-giant pop rv2" data-count="412">0</h2>'+
+        '<p class="st-kicker rv rv3" style="margin-top:14px">days of planning together, every one of them below</p>'+
+        daysGrid()+
+      '</div>'; } },
+
+    /* 3 - confidence climb */
+    { bg:'stb-3', dur:5400, html:
+      '<div class="st-inner">'+
+        '<div class="st-eyebrow rv rv1">Your confidence</div>'+
+        '<h2 class="st-giant pop rv2" data-count="87" data-suffix="%">0</h2>'+
+        '<p class="st-kicker rv rv3" style="margin-top:12px;color:#EAFBF3">up from 64% when you started, a climb of 23 points</p>'+
+        '<div class="st-climb rv rv4">'+
+          '<div class="stc-col"><div class="stc-fill" style="--h:56%;height:56%;background:linear-gradient(to top,rgba(255,255,255,.25),rgba(255,255,255,.5))"></div><div class="stc-lab">start<br>64%</div></div>'+
+          '<div class="stc-col"><div class="stc-fill" style="--h:70%;height:70%;background:linear-gradient(to top,rgba(255,255,255,.3),rgba(255,255,255,.6))"></div><div class="stc-lab">spring<br>73%</div></div>'+
+          '<div class="stc-col"><div class="stc-fill" style="--h:82%;height:82%;background:linear-gradient(to top,rgba(255,255,255,.4),rgba(255,255,255,.75))"></div><div class="stc-lab">summer<br>81%</div></div>'+
+          '<div class="stc-col"><div class="stc-fill" style="--h:100%;height:100%;background:linear-gradient(to top,rgba(255,255,255,.6),#fff)"></div><div class="stc-lab">today<br>87%</div></div>'+
+        '</div>'+
+      '</div>' },
+
+    /* 4 - top 5% brag */
+    { bg:'stb-5', dur:5200, html:
+      orbs(['width:220px;height:220px;background:#FFD24A;top:-40px;left:-50px;opacity:.4',
+            'width:160px;height:160px;background:#E07A05;bottom:14%;right:-40px;animation-delay:.7s;opacity:.4'])+
+      '<div class="st-inner" style="color:#2A1403">'+
+        '<div class="st-eyebrow rv rv1" style="opacity:.66">Every single month</div>'+
+        '<h2 class="st-giant pop rv2" data-count="28" data-suffix="%">0</h2>'+
+        '<p class="st-kicker rv rv3" style="margin-top:12px;opacity:.85">of your income, saved</p>'+
+        '<div class="rv rv4" style="margin-top:18px"><span class="st-chip pop rv4">'+SPARK+'Top 5% of savers</span></div>'+
+        '<p class="st-sub rv rv5" style="opacity:.82;color:#3A1E05">The typical household saves about 5%. You are not typical.</p>'+
+      '</div>' },
+
+    /* 5 - net worth receipt */
+    { bg:'stb-4', dur:5400, html:
+      orbs(['width:240px;height:240px;background:#1E6E92;top:-50px;right:-60px'])+
+      '<div class="st-inner">'+
+        '<div class="st-eyebrow rv rv1">What you built</div>'+
+        '<div class="st-rcp">'+
+          '<div class="rr rv rv1"><span class="k">The house</span><span class="v">+ $905,000</span></div>'+
+          '<div class="rr rv rv2"><span class="k">Invested</span><span class="v">+ $566,750</span></div>'+
+          '<div class="rr rv rv3"><span class="k">Debts</span><span class="v">\u2212 $332,550</span></div>'+
+          '<div class="rr total pop rv4"><span class="k" style="opacity:1">Net worth</span><span class="v">$1.14M</span></div>'+
+        '</div>'+
+        '<p class="st-sub rv rv5">Built one paycheck, one decision, one year at a time.</p>'+
+      '</div>' },
+
+    /* 6 - the smartest move (Roth) */
+    { bg:'stb-6', dur:5400, html: function(){ return ''+
+      orbs(['width:230px;height:230px;background:#7E2475;top:8%;right:-60px'])+
+      '<div class="st-inner">'+
+        '<div class="st-eyebrow rv rv1">Your smartest move</div>'+
+        '<h2 class="st-big sm pop rv2"><span class="st-unit">$</span><span data-count="93">0</span><span class="st-unit">K</span></h2>'+
+        '<p class="st-kicker rv rv3" style="margin-top:14px">saved in future taxes</p>'+
+        yearChips()+
+        '<p class="st-sub rv rv5">$40,000 a year moved to Roth in your low-bracket window. Future Marshall says thank you.</p>'+
+      '</div>'; } },
+
+    /* 7 - the mountaintop */
+    { bg:'stb-7', dur:5200, html:
+      '<div class="st-inner">'+
+        '<div class="st-eyebrow rv rv1">The mountaintop</div>'+
+        '<h2 class="st-big sm pop rv2"><span class="st-unit">$</span><span data-count="2.16" data-dec="2">0</span><span class="st-unit">M</span></h2>'+
+        '<p class="st-kicker rv rv3" style="margin-top:14px">your portfolio at its peak, in 2056</p>'+
+        '<svg class="st-mtn rv rv3" viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+          '<path d="M0 200 L0 150 L70 110 L120 138 L200 62 L250 104 L330 30 L440 74 L440 200 Z" fill="rgba(255,255,255,0.08)"/>'+
+          '<path class="line" pathLength="1" d="M0 150 L70 110 L120 138 L200 62 L250 104 L330 30" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+
+          '<g class="st-flag"><line x1="330" y1="30" x2="330" y2="6" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/><path d="M330 6 L354 12 L330 18 Z" fill="#FBBD04"/><circle cx="330" cy="30" r="4.5" fill="#FFFFFF"/></g>'+
+        '</svg>'+
+        '<p class="st-sub rv rv5">From here, the plan spends it down carefully, funding every year without ever running out.</p>'+
+      '</div>' },
+
+    /* 8 - what it is all for (petals) */
+    { bg:'stb-dawn', dur:6200, html: function(){ return petals()+
+      '<div class="st-inner">'+
+        '<div class="st-eyebrow rv rv1">What it\u2019s all for</div>'+
+        '<p class="st-kicker rv rv2" style="font-size:22px;font-weight:600">Tuesday mornings with nowhere to be.</p>'+
+        '<p class="st-kicker rv rv3" style="font-size:22px;font-weight:600">Kyoto, in blossom.</p>'+
+        '<p class="st-kicker rv rv4" style="font-size:22px;font-weight:600">Coffee on the dock while the water wakes up.</p>'+
+        '<h2 class="st-head rv rv5" style="margin-top:26px;max-width:15ch">Every one of them, already paid for.</h2>'+
+      '</div>'; } },
+
+    /* 9 - finish ring + confetti */
+    { bg:'stb-9', dur:5600, confetti:true, html:
+      '<div class="st-inner st-share">'+
+        '<div class="st-eyebrow rv rv1">The finish line</div>'+
+        '<div class="st-ring rv rv2"><svg width="220" height="220" viewBox="0 0 220 220"><circle class="track" cx="110" cy="110" r="95"/><circle class="val" cx="110" cy="110" r="95"/></svg><div class="stnum" data-count="99">0</div></div>'+
+        '<p class="st-kicker rv rv4" style="margin-top:22px">every year funded, all the way to age 99</p>'+
+        '<p class="st-sub rv rv4" style="margin:16px auto 0">Retirement starts December 2028. The math is done. The confetti is real.</p>'+
+      '</div>' },
+
+    /* 10 - share card */
+    { bg:'stb-1', dur:99000, last:true, html:
+      orbs(['width:280px;height:280px;background:#0B8A5F;top:-80px;right:-80px',
+            'width:180px;height:180px;background:#0E5A46;bottom:8%;left:-60px;animation-delay:1s'])+
+      '<div class="st-inner st-share">'+
+        '<div class="st-brand rv rv1" style="justify-content:center;margin-bottom:8px">'+SPARK+' Your 2026 in planning</div>'+
+        '<h2 class="st-head rv rv2" style="font-size:30px;margin-bottom:2px">The hard part is behind you.</h2>'+
+        '<div class="st-sharecard rv rv3"><div class="in">'+
+          '<div class="st-sr"><span class="k">Days planning</span><span class="v">412</span></div>'+
+          '<div class="st-sr"><span class="k">Confidence</span><span class="v">64% \u2192 87%</span></div>'+
+          '<div class="st-sr"><span class="k">Net worth</span><span class="v">$1.14M</span></div>'+
+          '<div class="st-sr"><span class="k">Tax saved</span><span class="v">$93K</span></div>'+
+          '<div class="st-sr"><span class="k">Saver rank</span><span class="v">Top 5%</span></div>'+
+          '<div class="st-sr"><span class="k">Funded to</span><span class="v">Age 99</span></div>'+
+        '</div></div>'+
+        '<div class="st-btns rv rv4">'+
+          '<button type="button" class="st-cta" data-st-download>'+DL+'Download my card</button>'+
+          '<button type="button" class="st-cta ghost" data-st-share>'+SPARK+'Share</button>'+
+        '</div>'+
+        '<button type="button" class="st-restart rv rv5" data-st-restart>Watch again</button>'+
+      '</div>' }
+  ];
+
+  var portal, idx=0, timer=null, confTimer=null, paused=false, built=false;
+  var confCanvas=null, confRAF=0;
+
+  function build(){
+    if(built) return;
+    portal=document.createElement('div'); portal.id='storyPortal';
+    var bars=SCENES.map(function(_,i){ return '<div class="st-bar" data-bi="'+i+'"><i></i></div>'; }).join('');
+    var scenes=SCENES.map(function(s,i){
+      var inner = (typeof s.html==='function') ? s.html() : s.html;
+      return '<div class="st-scene '+s.bg+'" data-si="'+i+'"><div class="st-bg"></div>'+inner+'</div>'; }).join('');
+    portal.innerHTML=
+      '<div class="st-stage"><div class="st-card">'+
+        scenes+
+        '<div class="st-bars">'+bars+'</div>'+
+        '<div class="st-top"><div class="st-brand">'+SPARK+' Your Story</div>'+
+          '<button type="button" class="st-x" data-st-x aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>'+
+        '<div class="st-nav"><div class="st-prev" data-st-prev></div><div class="st-next" data-st-next></div></div>'+
+      '</div></div>';
+    document.body.appendChild(portal);
+    built=true;
+
+    portal.addEventListener('click', function(e){
+      if(e.target.closest('[data-st-x]')){ closeStory(); return; }
+      if(e.target.closest('[data-st-restart]')){ idx=0; show(0); return; }
+      if(e.target.closest('[data-st-download]')){ downloadCard(e.target.closest('[data-st-download]')); return; }
+      if(e.target.closest('[data-st-share]')){ shareStory(); return; }
+      if(e.target.closest('[data-st-prev]')){ go(-1); return; }
+      if(e.target.closest('[data-st-next]')){ go(1); return; }
+    });
+    var card=portal.querySelector('.st-card');
+    ['mousedown','touchstart'].forEach(function(ev){ card.addEventListener(ev, function(e){ if(e.target.closest('.st-cta,.st-restart,.st-x')) return; pause(); }); });
+    ['mouseup','touchend','mouseleave'].forEach(function(ev){ card.addEventListener(ev, resume); });
+    document.addEventListener('keydown', function(e){ if(!portal.classList.contains('open')) return;
+      if(e.key==='Escape') closeStory(); else if(e.key==='ArrowRight') go(1); else if(e.key==='ArrowLeft') go(-1); });
+  }
+
+  function countUp(scene){
+    scene.querySelectorAll('[data-count]').forEach(function(el){
+      var target=parseFloat(el.getAttribute('data-count'));
+      var dec=parseInt(el.getAttribute('data-dec')||'0',10);
+      var suffix=el.getAttribute('data-suffix')||'';
+      var dur=1100, t0=null;
+      function step(ts){ if(!t0) t0=ts; var p=Math.min(1,(ts-t0)/dur);
+        var e=1-Math.pow(1-p,3); var v=target*e;
+        el.textContent=(dec? v.toFixed(dec): Math.round(v).toLocaleString())+suffix;
+        if(p<1) requestAnimationFrame(step); else el.textContent=(dec? target.toFixed(dec): Math.round(target).toLocaleString())+suffix; }
+      requestAnimationFrame(step);
+    });
+  }
+
+  function stopConfetti(){
+    if(confRAF){ cancelAnimationFrame(confRAF); confRAF=0; }
+    if(confCanvas && confCanvas.parentNode){ confCanvas.parentNode.removeChild(confCanvas); }
+    confCanvas=null;
+  }
+  function fireConfetti(scene){
+    if(reduced) return;
+    stopConfetti();
+    var card=portal.querySelector('.st-card'); var r=card.getBoundingClientRect();
+    var cv=document.createElement('canvas'); cv.className='st-confetti';
+    var dpr=Math.min(2, window.devicePixelRatio||1);
+    cv.width=Math.max(2, r.width*dpr); cv.height=Math.max(2, r.height*dpr);
+    cv.style.width='100%'; cv.style.height='100%';
+    scene.appendChild(cv); confCanvas=cv;
+    var ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+    var W=r.width, H=r.height, cols=['#04B477','#FBBD04','#FFFFFF','#9FDFC6','#FB5004'];
+    var P=[]; for(var i=0;i<150;i++){ P.push({ x:W/2+(Math.random()-0.5)*140, y:H*0.42,
+      vx:(Math.random()-0.5)*10, vy:-(5.5+Math.random()*8.5), g:0.22+Math.random()*0.08,
+      s:4+Math.random()*6, rot:Math.random()*Math.PI, vr:(Math.random()-0.5)*0.35,
+      c:cols[i%cols.length], sq:(i%3)!==0 }); }
+    var t0=null;
+    function tick(ts){ if(!t0) t0=ts; var t=(ts-t0)/2400;
+      ctx.clearRect(0,0,W,H);
+      for(var i=0;i<P.length;i++){ var p=P[i]; p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.vx*=0.992; p.rot+=p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+        ctx.globalAlpha=Math.max(0, 1-Math.max(0,t-0.55)/0.45); ctx.fillStyle=p.c;
+        if(p.sq){ ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.62); } else { ctx.beginPath(); ctx.arc(0,0,p.s*0.42,0,6.2832); ctx.fill(); }
+        ctx.restore(); }
+      if(t<1){ confRAF=requestAnimationFrame(tick); } else { stopConfetti(); } }
+    confRAF=requestAnimationFrame(tick);
+  }
+
+  function show(i){
+    idx=i;
+    clearTimeout(confTimer); stopConfetti();
+    var scenes=portal.querySelectorAll('.st-scene');
+    scenes.forEach(function(s,si){ s.classList.toggle('on', si===i); });
+    var bars=portal.querySelectorAll('.st-bar');
+    bars.forEach(function(bar,bi){ bar.classList.remove('active','done');
+      var fill=bar.querySelector('i'); fill.style.animation='none'; void fill.offsetWidth; fill.style.animation='';
+      if(bi<i) bar.classList.add('done'); });
+    var active=scenes[i]; var dur=SCENES[i].dur||5000;
+    var abar=bars[i]; abar.style.setProperty('--st-dur', dur+'ms'); abar.classList.add('active');
+    countUp(active);
+    if(SCENES[i].confetti){ confTimer=setTimeout(function(){ fireConfetti(active); }, 1900); }
+    clearTimeout(timer);
+    if(!SCENES[i].last){ timer=setTimeout(function(){ go(1); }, dur); }
+  }
+
+  function go(dir){
+    var next=idx+dir;
+    if(next<0) next=0;
+    if(next>=SCENES.length){ closeStory(); return; }
+    show(next);
+  }
+  function pause(){ if(paused) return; paused=true; clearTimeout(timer);
+    var abar=portal.querySelector('.st-bar.active i'); if(abar){ abar.style.animationPlayState='paused'; }
+    var sc=portal.querySelector('.st-scene.on'); if(sc) sc.style.filter='brightness(0.82)';
+  }
+  function resume(){ if(!paused) return; paused=false;
+    var sc=portal.querySelector('.st-scene.on'); if(sc) sc.style.filter='';
+    var abar=portal.querySelector('.st-bar.active i');
+    if(abar){ abar.style.animationPlayState='running';
+      var bar=abar.parentElement.getBoundingClientRect(), fill=abar.getBoundingClientRect();
+      var frac=bar.width? fill.width/bar.width : 0; var dur=SCENES[idx].dur||5000;
+      var remain=Math.max(400, dur*(1-frac));
+      clearTimeout(timer); if(!SCENES[idx].last) timer=setTimeout(function(){ go(1); }, remain);
+    }
+  }
+
+  function openStory(){ build(); document.body.classList.add('story-open'); portal.classList.add('open'); idx=0; requestAnimationFrame(function(){ show(0); }); }
+  function closeStory(){ clearTimeout(timer); clearTimeout(confTimer); stopConfetti();
+    if(!portal) return;
+    portal.classList.remove('open'); document.body.classList.remove('story-open');
+    portal.querySelectorAll('.st-scene').forEach(function(s){ s.classList.remove('on'); }); }
+
+  function shareStory(){
+    var txt='412 days of planning. Confidence up from 64% to 87%. Top 5% saver. Funded to age 99. My retirement story, told by Boldin.';
+    if(navigator.share){ navigator.share({title:'My Boldin Story', text:txt}).catch(function(){}); }
+    else {
+      var btn=portal.querySelector('[data-st-share]'); var old=btn.innerHTML;
+      if(navigator.clipboard){ navigator.clipboard.writeText(txt).catch(function(){}); }
+      btn.innerHTML='Copied'; setTimeout(function(){ btn.innerHTML=old; }, 1800);
+    }
+  }
+
+  function downloadCard(btn){
+    var c=document.createElement('canvas'); c.width=1080; c.height=1920; var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,0,1920); g.addColorStop(0,'#0E5A46'); g.addColorStop(0.55,'#07231C'); g.addColorStop(1,'#04110D');
+    x.fillStyle=g; x.fillRect(0,0,1080,1920);
+    function orb(cx,cy,rad,col,a){ var rg=x.createRadialGradient(cx,cy,0,cx,cy,rad); rg.addColorStop(0,col); rg.addColorStop(1,'rgba(0,0,0,0)');
+      x.globalAlpha=a; x.fillStyle=rg; x.beginPath(); x.arc(cx,cy,rad,0,6.2832); x.fill(); x.globalAlpha=1; }
+    orb(950,160,420,'#0FA76E',0.5); orb(120,1760,380,'#0B8A5F',0.45);
+    var fam=getComputedStyle(document.body).fontFamily || 'sans-serif';
+    try{ var sp=new Path2D('M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z');
+      x.save(); x.translate(72,72); x.scale(2.6,2.6); x.fillStyle='#9FDFC6'; x.fill(sp); x.restore(); }catch(err){}
+    x.textAlign='left';
+    x.fillStyle='rgba(255,255,255,0.94)'; x.font='600 42px '+fam; x.fillText('Boldin', 150, 116);
+    x.fillStyle='rgba(255,255,255,0.6)'; x.font='600 30px '+fam; x.fillText('Your 2026 story', 150, 160);
+    x.fillStyle='#FFFFFF'; x.font='600 98px '+fam;
+    x.fillText('The hard part', 72, 400); x.fillText('is behind you.', 72, 512);
+    var rows=[['Days planning','412'],['Confidence','64%  \u2192  87%'],['Net worth','$1.14M'],['Tax saved','$93K'],['Saver rank','Top 5%'],['Funded to','Age 99']];
+    var y=690;
+    rows.forEach(function(r){
+      x.textAlign='left'; x.fillStyle='rgba(255,255,255,0.66)'; x.font='500 40px '+fam; x.fillText(r[0],72,y);
+      x.textAlign='right'; x.fillStyle='#FFFFFF'; x.font='650 44px '+fam; x.fillText(r[1],1008,y);
+      x.strokeStyle='rgba(255,255,255,0.16)'; x.beginPath(); x.moveTo(72,y+34); x.lineTo(1008,y+34); x.stroke();
+      y+=112; });
+    x.textAlign='left';
+    x.fillStyle='rgba(255,255,255,0.10)'; x.font='700 300px '+fam; x.fillText('87%',52,1660);
+    x.fillStyle='rgba(255,255,255,0.85)'; x.font='600 34px '+fam; x.fillText('chance of success, and climbing',72,1728);
+    x.fillStyle='rgba(255,255,255,0.55)'; x.font='500 30px '+fam; x.fillText('made with Boldin \u00b7 boldin.com',72,1846);
+    var url=c.toDataURL('image/png'); window._stCardURL=url;
+    try{ var a=document.createElement('a'); a.href=url; a.download='my-boldin-story.png';
+      document.body.appendChild(a); a.click(); a.remove(); }catch(err){}
+    if(btn){ var o=btn.innerHTML; btn.innerHTML='Saved to your device'; setTimeout(function(){ btn.innerHTML=o; },1800); }
+  }
+
+  /* any "See the full story" link anywhere (plan rail, profile rail) opens the story */
+  document.addEventListener('click', function(e){
+    var t=e.target.closest && e.target.closest('a, button, [role="button"]');
+    if(!t || (t.closest && t.closest('#storyPortal'))) return;
+    if(/see the full story/i.test(t.textContent||'')){ e.preventDefault(); e.stopPropagation(); openStory(); }
+  }, true);
+  document.addEventListener('keydown', function(e){
+    if(e.key!=='Enter' && e.key!==' ') return;
+    var t=e.target.closest && e.target.closest('a, button, [role="button"]');
+    if(!t || (t.closest && t.closest('#storyPortal'))) return;
+    if(/see the full story/i.test(t.textContent||'')){ e.preventDefault(); openStory(); }
+  }, true);
+  window.openBoldinStory=openStory;
+})();
+</script>
+
 </body>
+
+
 </html>
 
 <div class="mpanel" id="mp-classes" role="dialog" aria-modal="true" aria-label="Classes and live events"><div class="mp-scrim" data-mp-close></div><div class="mp-sheet">
@@ -10458,6 +11245,18 @@ body.ai-expanded .layout{ grid-template-columns:200px minmax(0,460px) 1fr; }
 body.ai-expanded .dock .dock-inner{ grid-template-columns:200px minmax(0,460px) 1fr; }
 /* the ask bar slides under the expanded rail (Boldin AI) and fills it */
 body.ai-expanded .dock .askbar{ grid-column:3; justify-self:stretch; max-width:none; }
+/* compact center while Boldin AI is docked open: the Today page reflows.
+   The uber-card header stacks (title above the toggle tabs, nothing wraps mid-word),
+   and the three stat cards become full-width rows: label + delta left, figure right. */
+body.ai-expanded .ut-bar{ flex-direction:column; align-items:flex-start; gap:10px; margin-bottom:12px; }
+body.ai-expanded .ut-title{ font-size:19px; letter-spacing:-0.2px; }
+body.ai-expanded .ut-toggles{ gap:16px; }
+body.ai-expanded .ut-tg{ white-space:nowrap; }
+body.ai-expanded .stat-cards{ grid-template-columns:1fr; gap:10px; }
+body.ai-expanded .stat-card{ display:grid; grid-template-columns:1fr auto; align-items:center; column-gap:14px; padding:12px 16px; }
+body.ai-expanded .stat-card .stat-label{ grid-column:1; grid-row:1; }
+body.ai-expanded .stat-card .stat-figure{ grid-column:2; grid-row:1 / span 2; margin-top:0; font-size:21px; }
+body.ai-expanded .stat-card .stat-delta{ grid-column:1; grid-row:2; margin-top:3px; white-space:nowrap; }
 /* Today tab: the score widget is position:fixed with a width hardcoded to the 620px
    center column; match it to the contracted 460px column while expanded. Its left
    calc already lands on the center column's edge, which does not move. */
@@ -10734,8 +11533,18 @@ body.ai-fullscreen .aic-msg.aic-greeting .aic-caret{ width:3px; height:0.92em; v
 .askbar.ab-typing .spark{ display:none; }
 .askbar.ab-typing input{ flex:1; min-width:0; }
 .askbar.ab-typing .ab-plus, .askbar.ab-typing .ab-mic, .askbar.ab-typing .ab-send{ display:flex; }
+/* while Boldin AI is docked open in the rail, the composer controls stay exposed
+   even before typing, so the bar reads as a ready conversation input */
+body.ai-expanded .askbar .ab-plus,
+body.ai-expanded .askbar .ab-mic,
+body.ai-expanded .askbar .ab-send{ display:flex; }
+/* with the composer controls exposed, the spark comes off the bar to keep it calm;
+   the Ask Boldin rail header still carries the spark identity */
+body.ai-expanded .askbar .spark{ display:none; }
+body.ai-expanded .askbar input{ flex:1; min-width:0; }
 @media (prefers-reduced-motion: no-preference){
-  .askbar.ab-typing .ab-plus, .askbar.ab-typing .ab-mic, .askbar.ab-typing .ab-send{ animation: abPop 200ms cubic-bezier(0.22,1,0.36,1); }
+  .askbar.ab-typing .ab-plus, .askbar.ab-typing .ab-mic, .askbar.ab-typing .ab-send,
+  body.ai-expanded .askbar .ab-plus, body.ai-expanded .askbar .ab-mic, body.ai-expanded .askbar .ab-send{ animation: abPop 200ms cubic-bezier(0.22,1,0.36,1); }
 }
 @keyframes abPop{ from{ opacity:0; transform:scale(0.7); } to{ opacity:1; transform:none; } }
 @media (prefers-reduced-motion: no-preference){
