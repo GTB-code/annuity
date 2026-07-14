@@ -79,6 +79,21 @@ nav.modes a.active .ic{opacity:1;}
 .topnav .right{margin-left:auto; display:flex; align-items:center; gap:var(--s-3);}
 .iconbtn{width:42px; height:42px; border-radius:var(--r-pill); border:1px solid var(--hairline); background:var(--white); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink);}
 .avatar-s{width:42px; height:42px; border-radius:var(--r-pill); background:var(--white); color:var(--ink); border:1px solid var(--hairline); display:flex; align-items:center; justify-content:center; font-weight:600; font-size:15px;}
+/* hover tooltips for the top-right nav controls */
+.topnav .right [data-tip]{ position:relative; }
+.topnav .right [data-tip]::after{
+  content:attr(data-tip); position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%) translateY(4px);
+  background:#10182C; color:#FFFFFF; font-size:12px; font-weight:500; line-height:1; white-space:nowrap;
+  padding:6px 9px; border-radius:7px; pointer-events:none; opacity:0; z-index:120;
+  transition:opacity .16s ease, transform .16s ease; }
+.topnav .right [data-tip]::before{
+  content:''; position:absolute; top:calc(100% + 3px); left:50%; transform:translateX(-50%) translateY(4px);
+  border:5px solid transparent; border-bottom-color:#10182C; pointer-events:none; opacity:0; z-index:120;
+  transition:opacity .16s ease, transform .16s ease; }
+.topnav .right [data-tip]:hover::after, .topnav .right [data-tip]:focus-visible::after,
+.topnav .right [data-tip]:hover::before, .topnav .right [data-tip]:focus-visible::before{
+  opacity:1; transform:translateX(-50%) translateY(0); }
+@media (prefers-reduced-motion: reduce){ .topnav .right [data-tip]::after, .topnav .right [data-tip]::before{ transition:none; } }
 
 .layout{
   display:grid;
@@ -634,7 +649,8 @@ nav.modes a.active .ic{opacity:1;}
   flex:1; border:none; background:none; outline:none;
   font-family:var(--font); font-size:17px; color:var(--ink);
 }
-.askbar input::placeholder{color:var(--text-secondary);}
+.askbar input::placeholder{color:var(--text-secondary); transition:opacity .2s ease;}
+.askbar input.ab-ph-sw::placeholder{ opacity:0; }
 @media (prefers-reduced-motion: reduce){ .askbar::before{animation:none;} }
 
 /* demo reset */
@@ -1634,6 +1650,24 @@ body[data-page="signup"] .layout.page{ display:none !important; }
 .op-col p{ font-size:15px; color:var(--text-secondary); line-height:1.6; margin:0; }
 
 /* one quiet testimonial line */
+/* named member voices */
+.su-voices{ margin-top:52px; padding-top:36px; border-top:1px solid var(--hairline);
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:26px; }
+.su-voice-q{ font-size:16.5px; font-weight:500; color:var(--ink); line-height:1.5; letter-spacing:-0.1px; }
+.su-voice-who{ display:flex; align-items:center; gap:10px; margin-top:14px; }
+.su-voice-ava{ width:36px; height:36px; flex:none; border-radius:999px; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:12px; letter-spacing:.02em; }
+.su-voice-ava.v1{ background:var(--teal); }
+.su-voice-ava.v2{ background:#0E794E; }
+.su-voice-ava.v3{ background:#5B8A72; }
+.su-voice-meta{ font-size:13px; color:var(--text-secondary); line-height:1.35; }
+.su-voice-meta b{ display:block; color:var(--ink); font-weight:600; font-size:13.5px; }
+@media (max-width:900px){ .su-voices{ grid-template-columns:1fr; gap:22px; } }
+/* founder note */
+.su-note{ padding:64px 24px; border-top:1px solid var(--hairline); background:var(--white); }
+.su-note-inner{ max-width:620px; margin:0 auto; display:flex; gap:16px; align-items:flex-start; }
+.su-note-ava{ width:44px; height:44px; flex:none; border-radius:999px; background:var(--teal); color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:16px; }
+.su-note-p{ margin:0; font-size:17.5px; line-height:1.6; color:var(--ink); letter-spacing:-0.1px; }
+.su-note-attr{ margin-top:12px; font-size:14px; font-weight:600; color:var(--text-secondary); }
 .op-quote{ margin-top:52px; padding-top:32px; border-top:1px solid var(--hairline);
   display:flex; align-items:baseline; justify-content:space-between; gap:32px; flex-wrap:wrap; }
 .op-quote blockquote{ margin:0; font-size:22px; font-weight:500; color:var(--ink); letter-spacing:-0.3px; line-height:1.4; max-width:46ch; }
@@ -2930,11 +2964,11 @@ body.mpanel-open{ overflow:hidden; }
       <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M13 3L5 13h6l-1 8 8-10h-6l1-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Optimize</a>
   </nav>
   <div class="right">
-    <button class="iconbtn" aria-label="Vault" title="Vault" data-view="vault">
+    <button class="iconbtn" aria-label="Vault" data-tip="File vault" data-view="vault">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#10182C" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" stroke="#10182C" stroke-width="1.8"/><path d="M12 12v3" stroke="#10182C" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
-    <div class="avatar-s">ML</div>
-    <button class="iconbtn" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="#10182C" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    <div class="avatar-s" data-tip="Your profile">ML</div>
+    <button class="iconbtn" aria-label="Menu" data-tip="More"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="#10182C" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   </div>
 </header>
 
@@ -3905,7 +3939,8 @@ body.mpanel-open{ overflow:hidden; }
       <div class="tax-links">
         <a>Best use of surplus? <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
-    </div>
+
+      </div>
   </aside>
 </div>
 
@@ -4107,9 +4142,19 @@ body.mpanel-open{ overflow:hidden; }
         </div>
       </div>
 
-      <div class="op-quote">
-        <blockquote>&#8220;The Boldin Planner gave me the confidence to retire three years early.&#8221;</blockquote>
-        <div class="op-attr"><span class="op-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>A Boldin member, planning since 2021</div>
+      <div class="su-voices">
+        <div class="su-voice">
+          <div class="su-voice-q">&#8220;We stopped arguing about money the week we could both see the same plan.&#8221;</div>
+          <div class="su-voice-who"><span class="su-voice-ava v1">D&amp;B</span><span class="su-voice-meta"><b>Diane &amp; Bob</b>Tucson &middot; retired 2024</span></div>
+        </div>
+        <div class="su-voice">
+          <div class="su-voice-q">&#8220;I used to check the market every morning. Now I check my confidence score. It is a much calmer habit.&#8221;</div>
+          <div class="su-voice-who"><span class="su-voice-ava v2">P</span><span class="su-voice-meta"><b>Priya</b>Sacramento &middot; retiring 2027</span></div>
+        </div>
+        <div class="su-voice">
+          <div class="su-voice-q">&#8220;Boldin found a Roth window my old advisor never mentioned. One afternoon paid for itself.&#8221;</div>
+          <div class="su-voice-who"><span class="su-voice-ava v3">T</span><span class="su-voice-meta"><b>Tom</b>Grand Rapids &middot; planning since 2022</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -4341,6 +4386,16 @@ body.mpanel-open{ overflow:hidden; }
     </div>
   </section>
 
+  <section class="su-note">
+    <div class="su-note-inner">
+      <span class="su-note-ava">S</span>
+      <div class="su-note-body">
+        <p class="su-note-p">We started Boldin because retirement math felt like a test nobody had studied for. It should feel like your life, thought through. Every feature on this page exists because a member asked for it, usually by name, usually more than once.</p>
+        <div class="su-note-attr">Steve, founder of Boldin</div>
+      </div>
+    </div>
+  </section>
+
   <section class="suf-final">
     <h2>Your future is worth an honest look.</h2>
     <p>A few real numbers are all it takes to see your retirement take shape. Free to start, no credit card, and your first plan takes minutes.</p>
@@ -4503,12 +4558,6 @@ body.mpanel-open{ overflow:hidden; }
         <div class="pf-for-line"><span class="pf-spark"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>The grandkids&#8217; flights, covered without a second thought.</div>
         <div class="pf-for-line"><span class="pf-spark"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>Tuesday mornings with nowhere you have to be.</div>
       </div>
-    </section>
-    <section class="pf-card pf-complete">
-      <div class="pf-complete-row"><div class="pf-card-t">Your picture</div><div class="pf-pct">82%</div></div>
-      <div class="pf-bar"><i></i></div>
-      <div class="pf-note">Add more accounts and the view gets better. The plan can only be as sharp as what it can see.</div>
-      <a class="pf-link" role="button" tabindex="0">Finish your picture <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </section>
     <section class="pf-card" id="pf-sec-security">
       <div class="pf-card-t">Security</div>
@@ -6684,6 +6733,25 @@ document.addEventListener('click', function(e){
   const ICON_TRASH='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
   const ICON_CLOSE='<svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   const ICON_UNLINK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 14.8l-2 2a4 4 0 0 1-5.7-5.7l2.5-2.5a4 4 0 0 1 5.7 0M14.8 9.2l2-2a4 4 0 0 1 5.7 5.7l-2.5 2.5a4 4 0 0 1-5.7 0M4 4l16 16"/></svg>';
+  function acctNamePH(sectionTitle){
+    const t=(sectionTitle||'').toLowerCase();
+    if(t.includes('income')) return 'e.g. My job, Lily\u2019s pension';
+    if(t.includes('home')||t.includes('real estate')) return 'e.g. 123 Main St';
+    return 'e.g. Wells Fargo, Chase';
+  }
+  function acctTypePH(sectionTitle){
+    const t=(sectionTitle||'').toLowerCase();
+    if(t.includes('debt')) return 'e.g. Auto loan, Credit card';
+    if(t.includes('income')) return 'e.g. Employment, Pension';
+    if(t.includes('home')||t.includes('real estate')) return 'e.g. Single-family home, Condo';
+    return 'e.g. Checking, Savings, 401(k)';
+  }
+  function acctAmtPH(sectionTitle){
+    const t=(sectionTitle||'').toLowerCase();
+    if(t.includes('home')||t.includes('real estate')) return 'e.g. $620,000';
+    if(t.includes('income')) return 'e.g. $4,200';
+    return 'e.g. $100,000';
+  }
   function rowBalanceLabel(sectionTitle){
     const t=(sectionTitle||'').toLowerCase();
     if(t.includes('income')||t.includes('expense')||t.includes('flow')) return 'Monthly amount';
@@ -6716,6 +6784,9 @@ document.addEventListener('click', function(e){
                  : sectionTitle==='Expenses' ? 'Add Expense'
                  : sectionTitle==='Monthly Income' ? 'Add income'
                  : sectionTitle==='Money Flows' ? 'Add a flow'
+                 : sectionTitle==='Assets' ? 'Add account'
+                 : sectionTitle==='Debts' ? 'Add a debt'
+                 : (sectionTitle && /home|real estate/i.test(sectionTitle)) ? 'Add property'
                  : 'Add');
     const ed=document.createElement('div');
     ed.className='row-editor';
@@ -6746,9 +6817,9 @@ document.addEventListener('click', function(e){
             ? fieldHTML('Name', nm, false, 'e.g. Savings contribution')+
               fieldHTML('Monthly amount', amt, false, 'e.g. $1,000')+
               fieldHTML('Timing', ty, false, 'e.g. Monthly, while working')
-            : fieldHTML('Name', nm, false)+
-              fieldHTML('Account type', ty, true)+
-              fieldHTML(rowBalanceLabel(sectionTitle), amt, false))+
+            : fieldHTML('Name', nm, false, acctNamePH(sectionTitle))+
+              fieldHTML('Account type', ty, true, acctTypePH(sectionTitle))+
+              fieldHTML(rowBalanceLabel(sectionTitle), amt, false, acctAmtPH(sectionTitle)))+
           '<div class="edit-actions"><button class="btn-save" type="button">Save</button></div>'+
         '</div>'+
       '</div>';
@@ -6847,7 +6918,13 @@ document.addEventListener('click', function(e){
             fields.forEach(f=>{ const lab=(f.querySelector('label')?.textContent||'').toLowerCase();
               if(lab.includes('amount')||lab.includes('income')||lab.includes('balance')||lab.includes('value')) amtF=f; });
             const v=getVal(amtF);
-            if(v){ amtEl.textContent = /^\$/.test(v) ? v : ('$'+v.replace(/[^0-9.,]/g,'')); }
+            if(v){
+              var digits=v.replace(/[^0-9.]/g,'');
+              if(digits && /^[0-9.,\s$]+$/.test(v)){
+                var n=parseFloat(digits);
+                amtEl.textContent = isNaN(n) ? ('$'+v.replace(/[^0-9.,]/g,'')) : ('$'+n.toLocaleString('en-US'));
+              } else { amtEl.textContent = /^\$/.test(v) ? v : ('$'+v.replace(/[^0-9.,]/g,'')); }
+            }
           }
         })();
         brightenCenter();                                // the middle column returns to full opacity
@@ -6941,7 +7018,9 @@ document.addEventListener('click', function(e){
   })();
 
   /* ---------- Add expense / Add a flow: spawn a fresh row + open its editor with the full save animation ---------- */
-  const SPAWN_SECTIONS = { 'Expenses':{cta:'add expense', ty:'Monthly'}, 'Money Flows':{cta:'add a flow', ty:''} };
+  const SPAWN_SECTIONS = { 'Expenses':{cta:'add expense', ty:'Monthly'}, 'Money Flows':{cta:'add a flow', ty:''},
+    'Assets':{cta:'add account', ty:'', any:true}, 'Debts':{cta:'add a non-mortgage debt', ty:'', any:true},
+    'Monthly Income':{cta:'add job', ty:'', any:true}, 'Home & Real Estate':{cta:'add primary residence', ty:'', any:true} };
   function newBlankRow(defaultTy){
     const r=document.createElement('div');
     r.className='acct acct-new';
@@ -6985,7 +7064,11 @@ document.addEventListener('click', function(e){
     const isExpenses = h2.textContent==='Expenses';
     acc.querySelectorAll('.add-row').forEach(add=>{
       const label=add.textContent.trim().toLowerCase();
-      const match = isExpenses ? /^add (a |an )?.*expense$/.test(label) : label===cfg.cta;
+      // Expenses + the account sections carry several distinct "Add ..." rows across buckets;
+      // any of them spawns a blank row into its own bucket. Other sections match the single cta.
+      const match = isExpenses ? /^add (a |an )?.*expense$/.test(label)
+                  : cfg.any ? /^add /.test(label)
+                  : label===cfg.cta;
       if(!match) return;
       add.style.cursor='pointer';
       add.addEventListener('click', ()=> spawnBlankRow(acc, {scroll:true, addRow:add}));
@@ -8556,6 +8639,38 @@ document.addEventListener('click', function(e){
       ph.classList.add('sw');
       setTimeout(()=>{ i=(i+1)%qs.length; ph.textContent=qs[i]; ph.classList.remove('sw'); }, 300);
     }, 3600);
+  })();
+
+  /* Financial Life: the ask bar type-ahead surfaces the advisor + tax-coach prompts.
+     When you are on the Financial Life lens (and not typing), the placeholder cycles
+     questions that put Renee (your advisor) and Devin (tax coach) one tap away. */
+  (function(){
+    var input=document.querySelector('.dock .askbar input'); if(!input) return;
+    var FL_PROMPTS=[
+      'Ask anything',
+      'Renee, is my $3,450 surplus working hard enough?',
+      'Renee, what would you do with the extra each month?',
+      'Devin, map my Roth window from 2029 to 2035',
+      'Devin, will a big year push me into higher IRMAA?',
+      'Who should I talk to about my plan?'
+    ];
+    var i=0, timer=null;
+    function flActive(){ return document.body.classList.contains('plan-view') && document.body.classList.contains('lens-fl'); }
+    function idle(){ return !document.body.classList.contains('ab-typing') && !document.body.classList.contains('ai-expanded') && document.activeElement!==input && !input.value; }
+    function tick(){
+      if(!flActive() || !idle()){ return; }
+      i=(i+1)%FL_PROMPTS.length;
+      input.classList.add('ab-ph-sw');
+      setTimeout(function(){ input.setAttribute('placeholder', FL_PROMPTS[i]); input.classList.remove('ab-ph-sw'); }, 220);
+    }
+    function start(){ if(timer) return; i=0; input.setAttribute('placeholder', FL_PROMPTS[0]); timer=setInterval(tick, 3400); }
+    function stop(){ if(timer){ clearInterval(timer); timer=null; } if(idle()) input.setAttribute('placeholder','Ask anything'); }
+    // react to lens changes
+    var mo=new MutationObserver(function(){ if(flActive()) start(); else stop(); });
+    mo.observe(document.body, {attributes:true, attributeFilter:['class']});
+    if(flActive()) start();
+    input.addEventListener('focus', function(){ if(idle()) input.setAttribute('placeholder','Ask anything'); });
+    input.addEventListener('blur', function(){ if(flActive() && idle()){ input.setAttribute('placeholder', FL_PROMPTS[i]); } });
   })();
   document.querySelectorAll('[data-suv-top]').forEach(b=> b.addEventListener('click', ()=>{
     const reg=document.querySelector('#signupPage .su-register');
