@@ -557,12 +557,9 @@ nav.modes a.active .ic{opacity:1;}
 }
 @media (max-width:1080px){ .dock-inner{grid-template-columns:180px minmax(0,1fr);} }
 /* The global Ask bar drives the Boldin AI rail, which only exists on the main plan pages.
-   Optimize sub-pages (budgeter, allocation, social security, tax, withdrawals) have their
-   own rails and no AI host, so the bar is hidden there rather than expanding into nothing. */
-body.alo-open .dock,
-body.soc-open .dock,
-body.tax-open .dock,
-body.wdr-open .dock{ display:none; }@media (max-width:760px){ .dock-inner{grid-template-columns:1fr;} .askbar{grid-column:1 !important;} }
+   The ask-anything bar shows on every Optimize sub-page; each has its own rail-ai-host
+   for the AI to expand into. */
+@media (max-width:760px){ .dock-inner{grid-template-columns:1fr;} .askbar{grid-column:1 !important;} }
 .askbar{
   grid-column:2; justify-self:center;
   pointer-events:auto; width:100%; max-width:496px; position:relative;
@@ -2709,6 +2706,15 @@ body.ai-expanded .bmf-pills{ gap:14px; }
 .pf-card{ border:1px solid var(--hairline); border-radius:16px; padding:24px; background:var(--white); }
 .pf-card-t{ font-size:19px; font-weight:600; color:var(--ink); }
 .pf-card-s{ font-size:15px; color:var(--text-secondary); margin-top:4px; }
+.pf-reset-row{ text-align:center; margin:26px 0 4px; }
+.pf-reset{ background:none; border:0; font-family:inherit; font-size:12px; color:var(--text-tertiary, #9AA0AE); cursor:pointer; padding:4px 8px; letter-spacing:.01em; }
+.pf-reset:hover{ color:var(--text-secondary); text-decoration:underline; }
+.pf-acct .pfa-tabs{ display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; border-bottom:1px solid var(--hairline); }
+.pfa-tab{ background:none; border:0; padding:2px 0 10px; font-family:inherit; font-size:14px; font-weight:500; color:var(--text-secondary); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color .2s, border-color .2s; }
+.pfa-tab:hover{ color:var(--ink); }
+.pfa-tab.active{ color:var(--green-cta); font-weight:700; border-bottom-color:var(--green); }
+.pfa-panel{ padding-top:16px; }
+.pfa-block{ background:#F8F9FB; border-radius:12px; padding:26px 20px; font-size:14.5px; color:var(--text-secondary); line-height:1.5; }
 /* the climb: confidence-over-time infographic */
 .pf-climb{ display:block; width:100%; height:auto; margin:18px 0 6px; }
 .pf-climb text{ font-family:"DM Sans", sans-serif; }
@@ -2777,7 +2783,28 @@ body.ai-expanded .bmf-pills{ gap:14px; }
 .pf-for-line{ display:flex; gap:12px; align-items:flex-start; font-size:17px; color:var(--ink); line-height:1.5; }
 .pf-spark{ flex:0 0 auto; margin-top:5px; color:#04B477; }
 .pf-two{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.pf-person{ border:1px solid var(--hairline); border-radius:16px; padding:18px 20px; background:var(--white); display:flex; gap:14px; align-items:flex-start; }
+.pf-person{ position:relative; border:1px solid var(--hairline); border-radius:16px; padding:18px 20px; background:var(--white); display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; }
+.pf-p-edit{ position:absolute; top:14px; right:16px; }
+.pf-p-editor{ flex-basis:100%; }
+.pf-p-ava[hidden], .pf-p-txt[hidden]{ display:none; }
+.pfe-f{ display:block; }
+.pfe-f span{ display:block; font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-bottom:5px; }
+.pfe-f input, .pfe-f select{ width:100%; box-sizing:border-box; height:40px; border:1px solid var(--hairline); border-radius:10px; padding:0 12px; font:500 14px var(--font); color:var(--ink); background:var(--white); outline:none; }
+.pfe-f input:focus, .pfe-f select:focus{ border-color:#0E794E; }
+.pfe-name{ margin-bottom:12px; }
+.pfe-row{ display:grid; grid-template-columns:minmax(0,1fr) 76px; gap:10px; }
+.pfe-acts{ display:flex; justify-content:flex-end; align-items:center; gap:16px; margin-top:14px; }
+.pf-ask{ border:1px solid var(--hairline); border-radius:16px; padding:18px 20px; background:var(--white); }
+.pf-ask-q{ display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%;
+  background:none; border:0; padding:0; font-family:inherit; text-align:left; cursor:pointer;
+  font-size:16px; font-weight:600; color:var(--ink); }
+.pf-ask-chev{ width:18px; height:18px; flex:none; color:var(--text-secondary); transition:transform .24s cubic-bezier(0.22,1,0.36,1); }
+.pf-ask:not(.pf-ask-collapsed) .pf-ask-chev{ transform:rotate(180deg); }
+.pf-ask .pf-ask-seg{ margin-left:0; flex-wrap:wrap; gap:8px; margin-top:14px;
+  overflow:hidden; transition:max-height .28s cubic-bezier(0.22,1,0.36,1), opacity .2s ease, margin-top .28s ease; }
+.pf-ask-collapsed .pf-ask-seg{ max-height:0; opacity:0; margin-top:0; pointer-events:none; }
+.pf-ask .rm-chip{ padding:7px 14px; font-size:13.5px; }
+@media (prefers-reduced-motion: reduce){ .pf-ask-chev, .pf-ask .pf-ask-seg{ transition:none; } }
 .pf-p-ava{ width:40px; height:40px; flex:none; border-radius:999px; background:var(--teal); color:#FFFFFF;
   display:flex; align-items:center; justify-content:center; font-weight:600; font-size:15px; }
 .pf-p-txt{ min-width:0; }
@@ -3268,13 +3295,29 @@ body.mpanel-open{ overflow:hidden; }
         <div class="assets-actions"><button class="btn-collapse" aria-label="Expand" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"/></svg></button></div>
       </div>
       <div class="acc-body" style="height:0;opacity:0;overflow:hidden;">
-        <div class="bucket" data-bucket="expenses" data-ftue="1">
+        <div class="bucket" data-bucket="recurring">
+          <div class="bucket-label">Recurring expenses</div>
           <div class="flow-empty">
-            <div class="flow-empty-t">No expenses yet</div>
-            <div class="flow-empty-s">Add what you spend each month, from housing to the small things, and your plan will carry it forward year by year.</div>
+            <div class="flow-empty-t">No recurring expenses yet</div>
+            <div class="flow-empty-s">Add what you spend each month, from housing to the small things, and your plan carries it forward year by year.</div>
           </div>
+          <div class="add-row">Add a recurring expense</div>
+        </div>
+        <div class="bucket" data-bucket="onetime">
+          <div class="bucket-label">One-time expenses</div>
+          <div class="acct"><div><div class="nm">Kitchen remodel</div><div class="ty">2027 &middot; one-time</div></div><div class="amt">$38,000</div></div>
+          <div class="add-row">Add a one-time expense</div>
+        </div>
+        <div class="bucket" data-bucket="medical-pre65">
+          <div class="bucket-label">Medical expenses before 65</div>
+          <div class="acct"><div><div class="nm">Health insurance bridge</div><div class="ty">Until Medicare at 65</div></div><div class="amt">$1,180</div></div>
+          <div class="add-row">Add a pre-65 medical expense</div>
+        </div>
+        <div class="bucket" data-bucket="ltc">
+          <div class="bucket-label">Long-term care</div>
+          <div class="acct"><div><div class="nm">Long-term care reserve</div><div class="ty">Planned from age 82</div></div><div class="amt">$6,500</div></div>
           <div class="add-row-line">
-            <div class="add-row">Add expense</div>
+            <div class="add-row">Add a long-term care expense</div>
             <span class="exp-budgeter-cta" role="button" tabindex="0">Try detailed budgeter <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </div>
         </div>
@@ -4351,8 +4394,9 @@ body.mpanel-open{ overflow:hidden; }
   <aside class="side">
     <h1>Profile</h1>
     <div class="pf-nav">
-      <div class="pf-nav-item on" data-target="pf-sec-profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.3 3.6-4.9 6.5-4.9s5.3 1.6 6.5 4.9"/></svg>Your profile</div>
-      <div class="pf-nav-item" data-target="pf-sec-household"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8.6" r="3"/><path d="M3.5 19c.9-2.8 3-4.3 5.5-4.3s4.6 1.5 5.5 4.3"/><circle cx="16.8" cy="9.4" r="2.3"/><path d="M15.4 14.6c2.4.1 4.2 1.5 5 4.4"/></svg>Household</div>
+      <div class="pf-nav-item on" data-target="pf-sec-profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.3 3.6-4.9 6.5-4.9s5.3 1.6 6.5 4.9"/></svg>Household</div>
+      <div class="pf-nav-item" data-target="pf-sec-account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Account settings</div>
+      <div class="pf-nav-item" data-target="pf-sec-progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15l4.5-5 3.5 3.2L20 6"/><path d="M4 20h16"/></svg>Progress</div>
       <div class="pf-nav-item" data-target="pf-sec-security"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 2.8v5.1c0 4.8-3.4 7.7-7 9.6-3.6-1.9-7-4.8-7-9.6V5.8z"/><path d="M9 12l2.1 2.1L15.4 9.8"/></svg>Security</div>
       <div class="pf-nav-item" data-target="pf-sec-notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 15.5H6c1.4-1.4 2-3 2-5a4 4 0 0 1 8 0c0 2 .6 3.6 2 5z"/><path d="M10.4 18.6a1.7 1.7 0 0 0 3.2 0"/></svg>Notifications</div>
       <div class="pf-nav-item" data-target="pf-sec-preferences"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5h16"/><circle cx="15" cy="7.5" r="2.2" fill="#fff"/><path d="M4 12h16"/><circle cx="8.5" cy="12" r="2.2" fill="#fff"/><path d="M4 16.5h16"/><circle cx="16.5" cy="16.5" r="2.2" fill="#fff"/></svg>Preferences</div>
@@ -4364,8 +4408,28 @@ body.mpanel-open{ overflow:hidden; }
       <p class="pf-sub">Planning together since March 2024 &middot; Confidence <b>87%</b> and climbing</p>
     </section>
     <section class="pf-two" id="pf-sec-household">
-      <div class="pf-person"><div class="pf-p-ava">M</div><div class="pf-p-txt"><div class="pf-p-name">Marshall Hartwell</div><div class="pf-p-meta">61 &middot; Retires December 2028, at 63 &middot; Claims Social Security at 70</div></div></div>
-      <div class="pf-person"><div class="pf-p-ava">L</div><div class="pf-p-txt"><div class="pf-p-name">Lily Hartwell</div><div class="pf-p-meta">59 &middot; Retires 2032 &middot; The reason the plan runs to 92</div></div></div>
+      <div class="pf-person" data-sex="Male" data-bmonth="January" data-byear="1965"><div class="pf-p-ava">M</div><div class="pf-p-txt"><div class="pf-p-name">Marshall Hartwell</div><div class="pf-p-meta">61 &middot; Retires December 2028, at 63 &middot; Claims Social Security at 70</div></div><button type="button" class="pfg-edit pf-p-edit">Edit</button><div class="pf-p-editor" hidden></div></div>
+      <div class="pf-person" data-sex="Female" data-bmonth="September" data-byear="1966"><div class="pf-p-ava">L</div><div class="pf-p-txt"><div class="pf-p-name">Lily Hartwell</div><div class="pf-p-meta">59 &middot; Retires 2032 &middot; The reason the plan runs to 92</div></div><button type="button" class="pfg-edit pf-p-edit">Edit</button><div class="pf-p-editor" hidden></div></div>
+    </section>
+    <section class="pf-two">
+      <div class="pf-ask pf-ask-collapsed">
+        <button type="button" class="pf-ask-q" aria-expanded="false"><span>How much do you like planning?</span><svg class="pf-ask-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="pf-seg pf-ask-seg" role="radiogroup" aria-label="How much do you like planning">
+          <button type="button" class="rm-chip">Avoid it</button>
+          <button type="button" class="rm-chip">Tolerate it</button>
+          <button type="button" class="rm-chip on">Enjoy it</button>
+          <button type="button" class="rm-chip">Love it</button>
+        </div>
+      </div>
+      <div class="pf-ask pf-ask-collapsed">
+        <button type="button" class="pf-ask-q" aria-expanded="false"><span>What brings you to Boldin?</span><svg class="pf-ask-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="pf-seg pf-ask-seg" role="radiogroup" aria-label="What brings you to Boldin">
+          <button type="button" class="rm-chip on">Retiring soon</button>
+          <button type="button" class="rm-chip">Tax strategy</button>
+          <button type="button" class="rm-chip">Getting organized</button>
+          <button type="button" class="rm-chip">A second opinion</button>
+        </div>
+      </div>
     </section>
 
     <section class="pf-goal" id="pfGoal">
@@ -4379,7 +4443,23 @@ body.mpanel-open{ overflow:hidden; }
         <div class="pfg-bar"><span class="pfg-count">0 / 140</span><span class="pfg-acts"><button type="button" class="pfg-cancel">Cancel</button><button type="button" class="pfg-save">Save</button></span></div>
       </div>
     </section>
-    <section class="pf-card">
+
+    <section class="pf-card pf-acct" id="pf-sec-account">
+      <div class="pf-card-t">Account settings</div>
+      <div class="pfa-tabs" role="tablist" aria-label="Account settings">
+        <button type="button" class="pfa-tab active" data-pfa="signin" role="tab" aria-selected="true">Sign-in and security</button>
+        <button type="button" class="pfa-tab" data-pfa="ai" role="tab" aria-selected="false">Boldin AI</button>
+        <button type="button" class="pfa-tab" data-pfa="sub" role="tab" aria-selected="false">Subscription</button>
+        <button type="button" class="pfa-tab" data-pfa="risk" role="tab" aria-selected="false">Risk tolerance</button>
+        <button type="button" class="pfa-tab" data-pfa="beta" role="tab" aria-selected="false">Beta</button>
+      </div>
+      <div class="pfa-panel" data-pfap="signin"><div class="pfa-block">Sign-in and security lives here: email, password, two-factor, and connected devices.</div></div>
+      <div class="pfa-panel" data-pfap="ai" hidden><div class="pfa-block">Boldin AI lives here: memory, tone, and what the agent may do on its own.</div></div>
+      <div class="pfa-panel" data-pfap="sub" hidden><div class="pfa-block">Subscription lives here: your plan, billing, and receipts.</div></div>
+      <div class="pfa-panel" data-pfap="risk" hidden><div class="pfa-block">Risk tolerance lives here: your comfort with market swings, and how the plan should respond.</div></div>
+      <div class="pfa-panel" data-pfap="beta" hidden><div class="pfa-block">Beta lives here: early features you can switch on before everyone else.</div></div>
+    </section>
+    <section class="pf-card" id="pf-sec-progress">
       <div class="pf-card-t">The road so far, and the road ahead</div>
       <div class="pf-card-s">The line is your confidence. Solid is behind you, hollow is waiting.</div>
       <svg class="pf-climb" viewBox="0 0 620 214" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confidence climbing from 64% in 2024 to 87% today, projected onward to 2035">
@@ -4445,6 +4525,7 @@ body.mpanel-open{ overflow:hidden; }
       <div class="pf-card-s">The plan, tuned to how you think.</div>
       <div class="pf-srows"><div class="pf-srow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4.5"/><path d="M6 5.2c4-2 7.5 1.8 12 0v8c-4.5 1.8-8-2-12 0"/></svg></div><div class="pf-stxt"><div class="pf-sl">Planning horizon</div><div class="pf-ss">Every number runs to Lily&rsquo;s age 92.</div></div><span class="pf-jchip">To 92</span></div><div class="pf-srow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.5v9"/><path d="M14.3 9.3c-.4-.9-1.3-1.3-2.3-1.3-1.3 0-2.3.7-2.3 1.8s.9 1.6 2.3 1.9c1.5.3 2.5.9 2.5 2.1 0 1.2-1.1 1.9-2.5 1.9-1.1 0-2.1-.5-2.5-1.5"/></svg></div><div class="pf-stxt"><div class="pf-sl">Dollars</div><div class="pf-ss">How the future shows its prices.</div></div><span class="pf-seg"><button type="button" class="rm-chip on">Future</button><button type="button" class="rm-chip">Today&rsquo;s</button></span></div><div class="pf-srow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 18.5l13-13"/><circle cx="7.6" cy="7.6" r="2.4"/><circle cx="16.4" cy="16.4" r="2.4"/></svg></div><div class="pf-stxt"><div class="pf-sl">Inflation assumption</div><div class="pf-ss">2.5% a year, baked into every future number.</div></div><span class="pf-jchip">2.5%</span></div><div class="pf-srow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l8.5 4.7L12 12.9 3.5 8.2z"/><path d="M3.5 13.2l8.5 4.7 8.5-4.7"/></svg></div><div class="pf-stxt"><div class="pf-sl">Withdrawal order</div><div class="pf-ss">Taxable first, Roth last. Tax-smart by default.</div></div><span class="pf-jchip">Auto</span></div></div>
     </section>
+    <div class="pf-reset-row"><button type="button" class="pf-reset">Reset profile</button></div>
   </main>
   <aside class="rail">
     <div class="pf-rail-eyebrow">Your story</div>
@@ -6628,7 +6709,9 @@ document.addEventListener('click', function(e){
     const amt=(row.querySelector('.amt')?.textContent || '').trim();
     const sectionTitle=row.closest('.acc')?.querySelector('h2')?.textContent || '';
     const isNew=row.classList.contains('acct-new');
-    const firstExpense = isNew && sectionTitle==='Expenses' && row.closest('.bucket')?.dataset.ftue==='1';
+    const _bk = row.closest('.bucket');
+    const _bkEmpty = _bk && _bk.querySelectorAll('.acct:not(.acct-new)').length===0;   // this bucket has no saved rows yet
+    const firstExpense = isNew && sectionTitle==='Expenses' && (_bk?.dataset.ftue==='1' || _bkEmpty);
     const titleText = nm || (firstExpense ? 'Add your first expense'
                  : sectionTitle==='Expenses' ? 'Add Expense'
                  : sectionTitle==='Monthly Income' ? 'Add income'
@@ -6872,14 +6955,14 @@ document.addEventListener('click', function(e){
     opts = opts || {};
     const h2=acc && acc.querySelector('h2'); if(!h2) return null;
     const cfg=SPAWN_SECTIONS[h2.textContent]; if(!cfg) return null;
-    let add=[...acc.querySelectorAll('.add-row')].find(a=> a.textContent.trim().toLowerCase()===cfg.cta);
+    let add=opts.addRow || [...acc.querySelectorAll('.add-row')].find(a=> a.textContent.trim().toLowerCase()===cfg.cta);
     if(!add) return null;
     const head=acc.querySelector('.acc-head');
     if(head && head.classList.contains('acc-collapsed')) head.click();
-    const empty=acc.querySelector('.flow-empty'); if(empty) empty.remove();   // first add clears the empty-state prompt
-    const row=newBlankRow(cfg.ty);
     const line=add.closest('.add-row-line');
     const bucket=(line||add).parentNode;
+    const empty=bucket.querySelector('.flow-empty'); if(empty) empty.remove();   // first add clears this bucket's empty-state prompt
+    const row=newBlankRow(cfg.ty);
     bucket.insertBefore(row, line||add);                                       // never inside the flex add-row line
     wireRowToggle(row, buildRowEditor, {chain:false});
     if(!reduce) row.animate([{opacity:0,transform:'translateY(-6px)'},{opacity:1,transform:'none'}],{duration:260,easing:'cubic-bezier(0.22,1,0.36,1)'});
@@ -6893,14 +6976,19 @@ document.addEventListener('click', function(e){
     });
     return row;
   }
-  // wire the direct CTA click for each spawnable section
+  // wire the direct CTA click for each spawnable section.
+  // Expenses now has several buckets, each with its own "Add a ... expense" row;
+  // any of them spawns a blank row + editor into that same bucket.
   document.querySelectorAll('.acc').forEach(acc=>{
     const h2=acc.querySelector('h2'); if(!h2) return;
     const cfg=SPAWN_SECTIONS[h2.textContent]; if(!cfg) return;
+    const isExpenses = h2.textContent==='Expenses';
     acc.querySelectorAll('.add-row').forEach(add=>{
-      if(add.textContent.trim().toLowerCase()!==cfg.cta) return;
+      const label=add.textContent.trim().toLowerCase();
+      const match = isExpenses ? /^add (a |an )?.*expense$/.test(label) : label===cfg.cta;
+      if(!match) return;
       add.style.cursor='pointer';
-      add.addEventListener('click', ()=> spawnBlankRow(acc, {scroll:true}));
+      add.addEventListener('click', ()=> spawnBlankRow(acc, {scroll:true, addRow:add}));
     });
   });
 
@@ -7608,16 +7696,100 @@ document.addEventListener('click', function(e){
   })();
 
   /* profile: anchor nav, scroll spy, live controls */
+  /* Account settings card: underline tabs swap the placeholder blocks */
+  (function(){
+    var card=document.getElementById('pf-sec-account'); if(!card) return;
+    card.addEventListener('click', function(e){
+      var t=e.target.closest('.pfa-tab'); if(!t) return;
+      card.querySelectorAll('.pfa-tab').forEach(function(x){ x.classList.toggle('active', x===t); x.setAttribute('aria-selected', x===t?'true':'false'); });
+      card.querySelectorAll('.pfa-panel').forEach(function(p){ p.hidden = p.dataset.pfap!==t.dataset.pfa; });
+    });
+  })();
+
+  /* person cards: Edit opens a structured editor for name, sex, and birthday */
+  (function(){
+    var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    function ageFrom(month, year){
+      var y=parseInt(year,10); if(!y || y<1900 || y>2026) return null;
+      var mi=MONTHS.indexOf(month); if(mi<0) mi=0;
+      return 2026 - y - (mi > 6 ? 1 : 0);   /* July 2026 */
+    }
+    function openEditor(card){
+      var ed=card.querySelector('.pf-p-editor');
+      var nm=card.querySelector('.pf-p-name').textContent.trim();
+      var months=MONTHS.map(function(m){ return '<option'+(m===card.dataset.bmonth?' selected':'')+'>'+m+'</option>'; }).join('');
+      var sexes=['Male','Female','Prefer not to say'].map(function(s){ return '<option'+(s===card.dataset.sex?' selected':'')+'>'+s+'</option>'; }).join('');
+      ed.innerHTML=
+        '<label class="pfe-f pfe-name"><span>Name</span><input type="text" class="pfe-nm" value="'+nm.replace(/"/g,'&quot;')+'"></label>'+
+        '<label class="pfe-f pfe-name"><span>Sex</span><select class="pfe-sex">'+sexes+'</select></label>'+
+        '<div class="pfe-row">'+
+          '<label class="pfe-f"><span>Birth month</span><select class="pfe-month">'+months+'</select></label>'+
+          '<label class="pfe-f"><span>Birth year</span><input type="text" class="pfe-year" inputmode="numeric" maxlength="4" value="'+(card.dataset.byear||'')+'"></label>'+
+        '</div>'+
+        '<div class="pfe-acts"><button type="button" class="pfg-cancel pfe-cancel">Cancel</button><button type="button" class="pfg-save pfe-save">Save</button></div>';
+      ed.hidden=false;
+      card.querySelector('.pf-p-edit').hidden=true;
+      var av0=card.querySelector('.pf-p-ava'); if(av0) av0.hidden=true;
+      var tx0=card.querySelector('.pf-p-txt'); if(tx0) tx0.hidden=true;
+      ed.querySelector('.pfe-nm').focus();
+    }
+    function closeEditor(card, save){
+      var ed=card.querySelector('.pf-p-editor');
+      if(save){
+        var nm=ed.querySelector('.pfe-nm').value.trim();
+        var sex=ed.querySelector('.pfe-sex').value;
+        var month=ed.querySelector('.pfe-month').value;
+        var year=ed.querySelector('.pfe-year').value.trim();
+        if(nm){
+          card.querySelector('.pf-p-name').textContent=nm;
+          var av=card.querySelector('.pf-p-ava'); if(av) av.textContent=(nm[0]||'').toUpperCase();
+        }
+        card.dataset.sex=sex; card.dataset.bmonth=month; card.dataset.byear=year;
+        var age=ageFrom(month, year);
+        if(age!==null){
+          var mt=card.querySelector('.pf-p-meta');
+          mt.textContent=mt.textContent.replace(/^\s*\d+/, String(age));
+        }
+      }
+      ed.hidden=true; ed.innerHTML='';
+      card.querySelector('.pf-p-edit').hidden=false;
+      var av1=card.querySelector('.pf-p-ava'); if(av1) av1.hidden=false;
+      var tx1=card.querySelector('.pf-p-txt'); if(tx1) tx1.hidden=false;
+    }
+    document.addEventListener('click', function(e){
+      var btn=e.target.closest('.pf-p-edit');
+      if(btn){ openEditor(btn.closest('.pf-person')); return; }
+      var sv=e.target.closest('.pfe-save');
+      if(sv){ closeEditor(sv.closest('.pf-person'), true); return; }
+      var cn=e.target.closest('.pfe-cancel');
+      if(cn){ closeEditor(cn.closest('.pf-person'), false); return; }
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key!=='Enter') return;
+      var f=e.target.closest && e.target.closest('.pf-p-editor input');
+      if(!f) return;
+      e.preventDefault();
+      closeEditor(f.closest('.pf-person'), true);
+    });
+  })();
+
   (function(){
     document.addEventListener('click', function(e){
       var it=e.target.closest('.pf-nav-item');
       if(it && it.dataset.target){ var el=document.getElementById(it.dataset.target); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); return; }
       var tg=e.target.closest('.pf-tgl');
       if(tg){ tg.classList.toggle('on'); tg.setAttribute('aria-checked', tg.classList.contains('on')?'true':'false'); return; }
+      var qh=e.target.closest('.pf-ask-q');
+      if(qh){ var ask=qh.closest('.pf-ask'); var seg=ask.querySelector('.pf-ask-seg');
+        var collapsed=ask.classList.toggle('pf-ask-collapsed');
+        qh.setAttribute('aria-expanded', collapsed?'false':'true');
+        seg.style.maxHeight = collapsed ? '0px' : (seg.scrollHeight + 'px');
+        return; }
       var sg=e.target.closest('.pf-seg .rm-chip');
-      if(sg){ sg.parentElement.querySelectorAll('.rm-chip').forEach(function(c){ c.classList.remove('on'); }); sg.classList.add('on'); }
+      if(sg){ sg.parentElement.querySelectorAll('.rm-chip').forEach(function(c){ c.classList.remove('on'); }); sg.classList.add('on');
+        var owner=sg.closest('.pf-ask'); if(owner){ var s=owner.querySelector('.pf-ask-seg'); s.style.maxHeight=s.scrollHeight+'px'; } }
     });
-    var ids=['pf-sec-profile','pf-sec-household','pf-sec-security','pf-sec-notifications','pf-sec-preferences'];
+    var ids=['pf-sec-profile','pf-sec-account','pf-sec-progress','pf-sec-security','pf-sec-notifications','pf-sec-preferences'];
     var spy=new IntersectionObserver(function(ents){
       ents.forEach(function(en){ if(!en.isIntersecting) return;
         document.querySelectorAll('.pf-nav-item').forEach(function(n){ n.classList.toggle('on', n.dataset.target===en.target.id); });
@@ -11383,8 +11555,6 @@ body.story-open{ overflow:hidden; }
   <button class="tm-item" role="menuitem" type="button" data-panel="advisor">Talk to a financial advisor</button>
   <button class="tm-item" role="menuitem" type="button" data-panel="community">Community</button>
   <button class="tm-item" role="menuitem" type="button" data-panel="help">Help center</button>
-  <div class="tm-div"></div>
-  <button class="tm-item" role="menuitem" type="button" data-tm="profile">Account settings</button>
   <div class="tm-div"></div>
   <button class="tm-item" role="menuitem" type="button" data-panel="releases">Release notes</button>
   <button class="tm-item" role="menuitem" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Log out</button>
