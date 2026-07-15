@@ -47,6 +47,10 @@ body.pushed .mroot{ transform:translateX(-24%); opacity:.5; pointer-events:none;
 .mhl-em{ color:#0E794E; font-style:italic; }
 .mhl-gold{ color:#FBBD04; font-style:normal; }
 .msubhead{ font-size:15px; color:var(--text-secondary); line-height:1.5; margin-top:8px; max-width:34ch; }
+#tabHome .msubhead{ max-width:none; }
+.mai-sub{ max-width:none; }
+.msubhead-today{ max-width:none; }
+.msubhead-opt{ max-width:none; }
 /* the What's-already-yours card */
 .mcard{ border:1px solid var(--hairline); border-radius:18px; padding:18px 16px 16px; margin-top:20px; background:var(--white); }
 .mcard-t{ font-size:19px; font-weight:600; letter-spacing:-0.2px; }
@@ -116,11 +120,6 @@ body.pushed .mroot{ transform:translateX(-24%); opacity:.5; pointer-events:none;
 .mh-faces .f1{ background:var(--teal); } .mh-faces .f2{ background:#0E794E; } .mh-faces .f3{ background:#5B8A72; }
 .mh-faces .f4{ background:#FBBD04; color:#10182C; }
 /* ===== Optimize tab ===== *//* ===== Optimize tab ===== */
-.mop-prog{ display:flex; align-items:center; gap:12px; margin-top:16px; }
-.mop-segs{ display:flex; gap:5px; flex:1; max-width:170px; }
-.mop-segs i{ display:block; flex:1; height:6px; border-radius:99px; background:#E9EBEE; }
-.mop-segs i.on{ background:var(--green); }
-.mop-lbl{ font-size:12.5px; color:var(--text-tertiary); white-space:nowrap; }
 .mop-cards{ margin-top:20px; display:flex; flex-direction:column; gap:12px; }
 .mop-card{ display:flex; align-items:center; gap:13px; text-align:left; width:100%;
   border:1px solid var(--hairline); border-radius:18px; background:var(--white);
@@ -442,7 +441,7 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
   </button>
 
   <section class="mh-sec">
-    <div class="mh-sec-head"><span class="mh-sec-t">Your next best moves</span></div>
+    <div class="mh-sec-head"><span class="mh-sec-t" style="color:var(--green-cta)">Your next best moves</span></div>
     <div class="mlist">
       <button class="mrow" type="button" data-go="opt-ss"><span class="mrow-txt"><span class="mrow-t">Claim Social Security at 70</span><span class="mrow-s" style="display:block">Guaranteed, inflation-adjusted, for life</span></span><span class="mrow-amt g">+$760/mo</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
       <button class="mrow" type="button" data-go="opt-tax"><span class="mrow-txt"><span class="mrow-t">Fill the December Roth window</span><span class="mrow-s" style="display:block">The first closes December 31, 2029</span></span><span class="mrow-amt g">$61,000</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
@@ -485,9 +484,9 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
 </div>
 
 <div class="mtab" id="tabToday" hidden>
-  <div class="mgreet" id="mgreet">Good afternoon, Marshall</div>
+  <div class="mgreet">Where you stand today</div>
   <h1 class="mhl">You&rsquo;ve done <em class="mhl-em">better</em> than you <em class="mhl-gold">think</em>.</h1>
-  <p class="msubhead">Fact, not forecast. Your linked accounts plus your inputs, as of today.</p>
+  <p class="msubhead msubhead-today">Fact, not forecast. Your real numbers, today.</p>
   <section class="mcard" id="mwhats">
     <div class="mcard-t">What&#8217;s already yours</div>
     <div class="mseg" role="tablist" aria-label="What&#8217;s already yours">
@@ -587,11 +586,7 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
 <div class="mtab" id="tabOptimize" hidden>
   <div class="mgreet">Your big opportunities</div>
   <h1 class="mhl"><em class="mhl-em">Between</em> the lines: <em class="mhl-gold">$412,000</em>.</h1>
-  <p class="msubhead">The same life, funded better. Every move to get there.</p>
-  <div class="mop-prog" aria-label="Two moves done, three to go">
-    <span class="mop-segs"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span>
-    <span class="mop-lbl">Two behind you &#183; three to go</span>
-  </div>
+  <p class="msubhead msubhead-opt">The same life, funded better.</p>
   <div class="mop-cards" id="mopCards">
     <button class="mop-card" type="button" data-op="ss">
       <span class="mop-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 4l9 5.5"/><path d="M5 10v7M9.7 10v7M14.3 10v7M19 10v7"/><path d="M3.5 20h17"/></svg></span>
@@ -699,9 +694,6 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
   'use strict';
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* greeting + countdown */
-  var h=new Date().getHours();
-  document.getElementById('mgreet').textContent=(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', Marshall';
 
   /* ===== the Today sections and their detail pages ===== */
   var LINKED='<span class="mlinked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>Connected</span>';
