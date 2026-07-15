@@ -408,7 +408,7 @@ nav.modes a.active .ic{opacity:1;}
 
 .bucket{margin-top:var(--s-6);}
 .acc-body > *:first-child{margin-top:var(--s-5);}
-.bucket-label{color:var(--green); font-size:16px; font-weight:600; margin:0 4px 8px;}
+.bucket-label{color:#9AA0AE; font-size:16px; font-weight:600; margin:0 4px 8px;}
 .acct{
   display:flex; align-items:center; justify-content:space-between; gap:var(--s-4);
   padding:14px 16px; border-bottom:1px solid var(--hairline);
@@ -782,6 +782,14 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 #storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, #wdrCtx p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
 #storyView .more{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:15px; font-weight:600; text-decoration:none; }
 #storyView .more:hover{ text-decoration:underline; }
+.fl-tip{ margin:18px 0 4px; padding:14px 16px; background:#F3FBF7; border-radius:14px; }
+.fl-tip-head{ display:flex; align-items:center; gap:9px; }
+.fl-tip-ava{ width:30px; height:30px; flex:none; border-radius:999px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.fl-tip-ava svg{ width:100%; height:100%; display:block; }
+.fl-tip-by{ font-size:12.5px; font-weight:600; color:var(--teal); }
+.fl-tip-say{ margin:10px 0 0; font-size:14px; line-height:1.5; color:var(--ink); max-width:none; }
+.fl-tip-cta{ display:inline-flex; align-items:center; gap:6px; margin-top:11px; color:var(--green-cta); font-size:13px; font-weight:600; cursor:pointer; text-decoration:none; }
+.fl-tip-cta:hover{ color:#0B5F3D; }
 .tax-links{ display:flex; flex-direction:column; gap:var(--s-3); }
 .tax-links a{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:16px; font-weight:600; text-decoration:none; }
 .tax-links a:hover{ text-decoration:underline; }
@@ -3938,6 +3946,11 @@ body.mpanel-open{ overflow:hidden; }
       <p>A 28% savings rate beats your target, with a healthy surplus and manageable debt.</p>
       <div class="tax-links">
         <a>Best use of surplus? <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="fl-tip">
+        <div class="fl-tip-head"><span class="fl-tip-ava"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#CDEBDD"/><path d="M6 34c1.8-6.2 7.2-9.6 14-9.6S32.2 27.8 34 34" fill="#0D3F4A"/><circle cx="20" cy="15.5" r="7.4" fill="#F2D9C2"/><path d="M12.7 13.6c.2-4.3 3.4-7.2 7.3-7.2s7.1 2.9 7.3 7.2c.9-.3 1.2-1.6 1-3C34.9 6 28.8 3.6 20 3.6S5.1 6 4.7 10.6c-.2 1.4.1 2.7 1 3z" fill="#3A2E27"/><path d="M12.9 15.2c-.9 0-1.5.7-1.4 1.7.1 1 .9 1.8 1.7 1.7M27.1 15.2c.9 0 1.5.7 1.4 1.7-.1 1-.9 1.8-1.7 1.7" fill="#F2D9C2"/><circle cx="16.6" cy="15.4" r="1.05" fill="#3A2E27"/><circle cx="23.4" cy="15.4" r="1.05" fill="#3A2E27"/><path d="M17.4 18.8c.9.7 3.3.7 4.2 0" stroke="#B4735A" stroke-width="1.1" stroke-linecap="round" fill="none"/></svg></span><span class="fl-tip-by">Tip from Renee Okafor, CFP&#174;</span></div>
+        <p class="fl-tip-say">At your surplus, a small automatic transfer into a Roth each month does more than a big one at year end. Steady beats heroic.</p>
+        <a class="fl-tip-cta">A Boldin advisor can set this up with you <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
 
       </div>
@@ -7873,12 +7886,19 @@ document.addEventListener('click', function(e){
         var owner=sg.closest('.pf-ask'); if(owner){ var s=owner.querySelector('.pf-ask-seg'); s.style.maxHeight=s.scrollHeight+'px'; } }
     });
     var ids=['pf-sec-profile','pf-sec-account','pf-sec-progress','pf-sec-security','pf-sec-notifications','pf-sec-preferences'];
+    function setActive(id){ document.querySelectorAll('.pf-nav-item').forEach(function(n){ n.classList.toggle('on', n.dataset.target===id); }); }
+    var visible={};
     var spy=new IntersectionObserver(function(ents){
-      ents.forEach(function(en){ if(!en.isIntersecting) return;
-        document.querySelectorAll('.pf-nav-item').forEach(function(n){ n.classList.toggle('on', n.dataset.target===en.target.id); });
-      });
+      ents.forEach(function(en){ visible[en.target.id]=en.isIntersecting; });
+      // near the top of the page, always keep the first item highlighted
+      if(window.scrollY < 140){ setActive(ids[0]); return; }
+      // otherwise highlight the topmost section currently in the detection band
+      var topmost=ids.find(function(id){ return visible[id]; });
+      if(topmost) setActive(topmost);
     }, {rootMargin:'-110px 0px -55% 0px', threshold:0});
     ids.forEach(function(id){ var el=document.getElementById(id); if(el) spy.observe(el); });
+    // guard the initial paint: if we boot at the top, the first item stays active
+    if(window.scrollY < 140) setActive(ids[0]);
   })();
 
   /* ============ Vision Board: the transport ============ */
