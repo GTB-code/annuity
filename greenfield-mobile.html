@@ -83,75 +83,39 @@ body.pushed .mroot{ transform:translateX(-24%); opacity:.5; pointer-events:none;
 .fin{ background:var(--teal); } .fout{ background:rgba(13,63,74,0.45); } .fkeep{ background:var(--green); }
 .mflow-v{ width:64px; flex:none; text-align:right; font:500 13.5px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; }
 
-/* ===== Home tab: the flagship ===== */
-.mh-hero{ display:flex; align-items:center; gap:18px; width:100%; text-align:left; margin-top:14px;
-  border:1px solid var(--hairline); border-radius:20px; background:var(--white); padding:18px 16px;
-  font-family:inherit; cursor:pointer; }
-.mh-hero:active{ background:#FAFBFC; transform:scale(.995); }
-.mh-ring{ position:relative; width:112px; height:112px; flex:none; }
-.mh-ring svg{ width:100%; height:100%; display:block; }
-.mh-track{ stroke:#EEF0F2; }
-.mh-arc{ stroke:#04B477; stroke-dasharray:326.7; stroke-dashoffset:326.7; }
-.mh-num{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; }
-.mh-num b{ font:700 34px 'DM Sans',sans-serif; letter-spacing:-1.2px; line-height:1; font-variant-numeric:tabular-nums; }
-.mh-num i{ font-style:normal; font-size:10.5px; color:var(--text-tertiary); margin-top:3px; }
-.mh-hero-txt{ flex:1; min-width:0; display:flex; flex-direction:column; gap:5px; }
-.mh-hero-t{ font-size:18.5px; font-weight:700; letter-spacing:-0.2px; line-height:1.25; }
-.mh-hero-s{ font-size:13px; color:var(--text-secondary); line-height:1.4; }
-.mh-hero-l{ display:inline-flex; align-items:center; gap:5px; margin-top:3px; color:var(--green-cta); font-size:13.5px; font-weight:600; }
-.mh-sec{ margin-top:28px; }
-.mh-sec-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px; }
+/* ===== Home: the Plan page's discipline. One scale: 33 / 19 / 17 / 13. ===== */
+.mh-sec{ margin-top:30px; }
+.mh-sec-head{ display:flex; align-items:baseline; justify-content:space-between; }
 .mh-sec-t{ font-size:19px; font-weight:600; letter-spacing:-0.2px; }
-.mh-pct{ font:600 13px 'DM Sans',sans-serif; color:var(--green-cta); }
-.mh-bar{ height:6px; border-radius:99px; background:#EEF0F2; margin:10px 0 4px; overflow:hidden; }
-.mh-bar i{ display:block; height:100%; width:82%; border-radius:99px; background:var(--green); transform-origin:left; }
-.mh-tasks{ margin-top:4px; }
-.mh-task{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:none; border:0;
-  border-bottom:1px solid #F1F2F4; padding:14px 2px; font-family:inherit; cursor:pointer; }
-.mh-task:last-child{ border-bottom:0; }
-.mh-task:active{ background:#FAFBFC; }
-.mh-task-txt{ flex:1; min-width:0; font-size:15px; font-weight:600; color:var(--ink); line-height:1.3; }
-.mh-task-s{ display:block; font-size:12.5px; font-weight:400; color:var(--text-tertiary); margin-top:2px; }
-.mh-gain{ flex:none; font-size:11.5px; font-weight:700; color:var(--green-cta); background:var(--mint); border-radius:999px; padding:4px 9px; white-space:nowrap; }
-.mh-gain.gold{ color:#7A5B00; background:#FFF3CC; }
-.mh-moves{ display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-top:10px; }
-.mh-move{ display:flex; flex-direction:column; gap:5px; text-align:left; border:1px solid var(--hairline); border-radius:16px;
-  background:var(--white); padding:15px 14px; font-family:inherit; cursor:pointer; }
-.mh-move:active{ background:#FAFBFC; transform:scale(.99); }
-.mh-move-v{ font:700 21px 'DM Sans',sans-serif; letter-spacing:-0.6px; color:var(--green-cta); font-variant-numeric:tabular-nums; }
-.mh-move-v i{ font-style:normal; font-size:11px; font-weight:600; color:var(--text-tertiary); margin-left:3px; letter-spacing:0; }
-.mh-move-t{ font-size:14.5px; font-weight:600; line-height:1.3; }
-.mh-move-s{ font-size:12px; color:var(--text-tertiary); line-height:1.4; }
-.mh-people{ margin-top:8px; }
-.mh-person{ display:flex; align-items:flex-start; gap:12px; padding:12px 0 6px; }
+.mh-meta{ font:500 13px 'DM Sans',sans-serif; color:var(--text-tertiary); font-variant-numeric:tabular-nums; }
+.mh-viz{ display:block; width:100%; margin:30px 0 2px; background:none; border:0; padding:0; font-family:inherit; cursor:pointer; }
+.mh-viz svg{ display:block; width:100%; height:auto; }
+.mh-viz:active{ transform:scale(.995); }
+.mh-sec .mlist{ margin-top:8px; }
+.mrow-amt.g{ color:var(--green-cta); font-weight:600; }
 .mh-ava{ width:38px; height:38px; flex:none; border-radius:999px; color:#FFFFFF; display:flex; align-items:center; justify-content:center;
   font-size:13px; font-weight:600; }
 .mh-ava.t{ background:var(--teal); } .mh-ava.g{ background:#0E794E; }
-.mh-person-txt{ font-size:13.5px; color:var(--text-secondary); line-height:1.45; }
-.mh-person-txt b{ display:block; font-size:15px; font-weight:600; color:var(--ink); margin-bottom:1px; }
-.mh-link{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:14px; font-weight:600;
-  cursor:pointer; margin:4px 0 10px 50px; }
-.mh-classes{ display:flex; gap:11px; margin-top:12px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+.mh-link{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:15px; font-weight:600; cursor:pointer; margin-top:14px; }
+.mh-classes{ display:flex; gap:11px; margin-top:14px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
   margin-left:-18px; margin-right:-18px; padding:0 18px 4px; }
 .mh-classes::-webkit-scrollbar{ display:none; }
 .mh-class{ flex:none; width:172px; display:flex; flex-direction:column; gap:8px; text-align:left;
-  border:1px solid var(--hairline); border-radius:16px; background:var(--white); padding:13px; font-family:inherit; cursor:pointer; }
+  border:1px solid var(--hairline); border-radius:16px; background:var(--white); padding:14px; font-family:inherit; cursor:pointer; }
 .mh-class:active{ background:#FAFBFC; }
 .mh-thumb{ width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center; color:#FFFFFF; }
 .mh-thumb.t{ background:var(--teal); } .mh-thumb.g{ background:#0E794E; } .mh-thumb.d{ background:#5B8A72; }
-.mh-class-t{ font-size:14.5px; font-weight:600; line-height:1.3; }
-.mh-class-m{ display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text-tertiary); }
+.mh-class-t{ font-size:15px; font-weight:600; line-height:1.35; }
+.mh-class-m{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--text-tertiary); }
 .mh-class-m .live{ width:7px; height:7px; border-radius:999px; background:#E5484D; display:inline-block; }
-.mh-comm{ display:flex; align-items:center; gap:12px; margin-top:16px; }
+.mh-comm{ display:flex; align-items:center; gap:13px; margin-top:18px; }
 .mh-faces{ display:flex; flex:none; }
 .mh-faces i{ width:28px; height:28px; border-radius:999px; border:2px solid var(--white); margin-left:-8px;
-  color:#FFFFFF; font-style:normal; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  color:#FFFFFF; font-style:normal; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; }
 .mh-faces i:first-child{ margin-left:0; }
 .mh-faces .f1{ background:var(--teal); } .mh-faces .f2{ background:#0E794E; } .mh-faces .f3{ background:#5B8A72; }
 .mh-faces .f4{ background:#FBBD04; color:#10182C; }
-.mh-comm-t{ font-size:13px; color:var(--text-secondary); line-height:1.45; }
-.mh-sec .mh-link:last-child{ margin-left:0; margin-bottom:0; }
-/* ===== Optimize tab ===== */
+/* ===== Optimize tab ===== *//* ===== Optimize tab ===== */
 .mop-prog{ display:flex; align-items:center; gap:12px; margin-top:16px; }
 .mop-segs{ display:flex; gap:5px; flex:1; max-width:170px; }
 .mop-segs i{ display:block; flex:1; height:6px; border-radius:99px; background:#E9EBEE; }
@@ -395,11 +359,17 @@ body.kb-open .mai-bar2{ transform:translateX(-50%) translateY(-138px); border-co
 .mnav{ position:fixed; left:50%; transform:translateX(-50%); bottom:calc(16px + env(safe-area-inset-bottom));
   width:calc(100% - 48px); max-width:400px; z-index:70;
   background:#F4F5F2; border:1px solid #ECEDEA; border-radius:999px;
-  display:flex; align-items:center; justify-content:space-around; padding:7px 10px; }
-.mnav button{ background:none; border:0; padding:5px 12px; cursor:pointer; color:#6E7268; display:flex; }
+  display:flex; align-items:center; justify-content:space-around; padding:7px 10px;
+  transform-origin:50% 100%; transition:transform .32s var(--push-ease); }
+body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
+.mnav button{ background:none; border:0; padding:6px 12px; cursor:pointer; color:#6E7268; display:flex; }
 .mnav button.on{ color:var(--green-cta); }
-.mnav svg{ display:block; }
+.mnav svg{ display:block; width:31px; height:31px; }
 
+/* the fade behind the nav: content scrolls away beneath it */
+.mnav-fade{ position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px;
+  height:calc(150px + env(safe-area-inset-bottom)); z-index:68; pointer-events:none;
+  background:linear-gradient(to top, #FFFFFF 0%, #FFFFFF 45%, rgba(255,255,255,0.9) 68%, rgba(255,255,255,0) 100%); }
 /* a light "coming next" toast for the other tabs */
 .mtoast{ position:fixed; left:50%; transform:translateX(-50%) translateY(8px); bottom:calc(92px + env(safe-area-inset-bottom));
   background:var(--ink); color:#FFFFFF; font-size:13.5px; font-weight:500; border-radius:999px; padding:9px 16px;
@@ -407,7 +377,7 @@ body.kb-open .mai-bar2{ transform:translateX(-50%) translateY(-138px); border-co
 .mtoast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
 @media (prefers-reduced-motion: reduce){
-  .mroot, .msub, .mtoast{ transition:none; }
+  .mroot, .msub, .mtoast, .mnav{ transition:none; }
 }
 </style>
 </head>
@@ -435,73 +405,55 @@ body.kb-open .mai-bar2{ transform:translateX(-50%) translateY(-138px); border-co
 <main class="mroot" id="mroot">
 <div class="mtab" id="tabHome">
   <div class="mgreet" id="mhGreet">Good afternoon, Marshall</div>
+  <h1 class="mhl">Confidence <em class="mhl-gold" id="mhNum">87</em>, on track for <em class="mhl-em">December 2028.</em></h1>
+  <p class="msubhead">Funded to age 99, peaking at $2.16M in 2056.</p>
 
-  <button class="mh-hero" type="button" id="mhHero" aria-label="Open your plan">
-    <span class="mh-ring">
-      <svg viewBox="0 0 120 120" aria-hidden="true">
-        <circle class="mh-track" cx="60" cy="60" r="52" fill="none" stroke-width="8"/>
-        <circle class="mh-arc" id="mhArc" cx="60" cy="60" r="52" fill="none" stroke-width="8" stroke-linecap="round" transform="rotate(-90 60 60)"/>
-      </svg>
-      <span class="mh-num"><b id="mhNum">0</b><i>confidence</i></span>
-    </span>
-    <span class="mh-hero-txt">
-      <span class="mh-hero-t">On track to retire December 2028</span>
-      <span class="mh-hero-s">Funded to age 99 &#183; peak $2.16M in 2056</span>
-      <span class="mh-hero-l">See the plan <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    </span>
+  <button class="mh-viz" id="mhViz" type="button" aria-label="See the plan">
+    <svg viewBox="0 0 360 196" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif" aria-hidden="true">
+      <defs>
+        <linearGradient id="mhLine" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#0D3F4A"/>
+          <stop offset="52%" stop-color="#0E794E"/>
+          <stop offset="78%" stop-color="#04B477"/>
+          <stop offset="100%" stop-color="#04B477"/>
+        </linearGradient>
+        <linearGradient id="mhArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#04B477" stop-opacity="0.26"/>
+          <stop offset="62%" stop-color="#04B477" stop-opacity="0.07"/>
+          <stop offset="100%" stop-color="#04B477" stop-opacity="0"/>
+        </linearGradient>
+        <radialGradient id="mhHalo">
+          <stop offset="0%" stop-color="#FBBD04" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#FBBD04" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <path id="mhAreaP" d="M8,140 C 60,128 100,112 140,88 C 180,64 216,44 252,38 C 278,34 300,44 320,60 C 334,72 346,82 352,92 L352,168 L8,168 Z" fill="url(#mhArea)" opacity="0"/>
+      <path id="mhLineP" d="M8,140 C 60,128 100,112 140,88 C 180,64 216,44 252,38 C 278,34 300,44 320,60 C 334,72 346,82 352,92" fill="none" stroke="url(#mhLine)" stroke-width="3" stroke-linecap="round" pathLength="1"/>
+      <line x1="8" y1="168" x2="352" y2="168" stroke="#E7E9EC" stroke-width="1.5"/>
+      <g id="mhPt" opacity="0">
+        <line x1="252" y1="44" x2="252" y2="168" stroke="#E7E9EC" stroke-width="1.2" stroke-dasharray="3 4"/>
+        <g class="mh-halo" style="transform-box:fill-box; transform-origin:center;"><circle cx="252" cy="38" r="20" fill="url(#mhHalo)"/></g>
+        <circle cx="252" cy="38" r="6" fill="#FBBD04" stroke="#FFFFFF" stroke-width="2.5"/>
+        <text x="252" y="18" font-size="12.5" font-weight="700" fill="#0E794E" text-anchor="middle">Peak $2.16M &#183; 2056</text>
+      </g>
+      <text x="8" y="188" font-size="11" fill="#9AA0AE">Today</text>
+      <text x="352" y="188" font-size="11" fill="#9AA0AE" text-anchor="end">Age 99</text>
+    </svg>
   </button>
 
   <section class="mh-sec">
-    <div class="mh-sec-head"><span class="mh-sec-t">Finish your picture</span><span class="mh-pct">82%</span></div>
-    <div class="mh-bar"><i id="mhBarFill"></i></div>
-    <div class="mh-tasks">
-      <button class="mh-task" type="button" data-go="expenses">
-        <span class="mh-task-txt">Add your recurring expenses<span class="mh-task-s">The plan can only be as sharp as what it sees</span></span>
-        <span class="mh-gain">+3 confidence</span>
-        <span class="mrow-chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span>
-      </button>
-      <button class="mh-task" type="button" data-go="income">
-        <span class="mh-task-txt">Confirm Lily&rsquo;s part-time end date<span class="mh-task-s">It shapes eight years of cash flow</span></span>
-        <span class="mh-gain">+1 confidence</span>
-        <span class="mrow-chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span>
-      </button>
-      <button class="mh-task" type="button" data-go="opt-ss">
-        <span class="mh-task-txt">Set your Social Security start<span class="mh-task-s">The one guaranteed 8% raise in America</span></span>
-        <span class="mh-gain gold">1 action</span>
-        <span class="mrow-chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span>
-      </button>
-    </div>
-  </section>
-
-  <section class="mh-sec">
     <div class="mh-sec-head"><span class="mh-sec-t">Your next best moves</span></div>
-    <div class="mh-moves">
-      <button class="mh-move" type="button" data-go="opt-ss">
-        <span class="mh-move-v">+$760<i>/mo</i></span>
-        <span class="mh-move-t">Claim Social Security at 70</span>
-        <span class="mh-move-s">Guaranteed, inflation-adjusted, for life</span>
-      </button>
-      <button class="mh-move" type="button" data-go="opt-tax">
-        <span class="mh-move-v">$61,000<i>lifetime</i></span>
-        <span class="mh-move-t">Fill the December Roth window</span>
-        <span class="mh-move-s">The first one closes December 31, 2029</span>
-      </button>
+    <div class="mlist">
+      <button class="mrow" type="button" data-go="opt-ss"><span class="mrow-txt"><span class="mrow-t">Claim Social Security at 70</span><span class="mrow-s" style="display:block">Guaranteed, inflation-adjusted, for life</span></span><span class="mrow-amt g">+$760/mo</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow" type="button" data-go="opt-tax"><span class="mrow-txt"><span class="mrow-t">Fill the December Roth window</span><span class="mrow-s" style="display:block">The first closes December 31, 2029</span></span><span class="mrow-amt g">$61,000</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
     </div>
   </section>
 
   <section class="mh-sec">
     <div class="mh-sec-head"><span class="mh-sec-t">Real people, when you want them</span></div>
-    <div class="mh-people">
-      <div class="mh-person">
-        <span class="mh-ava t">RO</span>
-        <span class="mh-person-txt"><b>Advice from a CFP&#174;</b>Renee Okafor is fee-only, fiduciary, and reads your plan before you meet.</span>
-      </div>
-      <a class="mh-link" data-toast="Booking lands next in the mobile build">Book a 20-minute intro <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <div class="mh-person">
-        <span class="mh-ava g">DP</span>
-        <span class="mh-person-txt"><b>Coaching</b>Eight-week cohorts with Devin Park that turn the plan into habits.</span>
-      </div>
-      <a class="mh-link" data-toast="Coaching signup lands next in the mobile build">See the next cohort <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <div class="mlist">
+      <button class="mrow" type="button" data-toast="Booking lands next in the mobile build"><span class="mh-ava t">RO</span><span class="mrow-txt"><span class="mrow-t">Advice from a CFP&#174;</span><span class="mrow-s" style="display:block">Renee Okafor reads your plan before you meet</span></span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow" type="button" data-toast="Coaching signup lands next in the mobile build"><span class="mh-ava g">DP</span><span class="mrow-txt"><span class="mrow-t">Coaching</span><span class="mrow-s" style="display:block">Eight-week cohorts that turn the plan into habits</span></span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
     </div>
   </section>
 
@@ -526,7 +478,7 @@ body.kb-open .mai-bar2{ transform:translateX(-50%) translateY(-138px); border-co
     </div>
     <div class="mh-comm">
       <span class="mh-faces"><i class="f1">D</i><i class="f2">P</i><i class="f3">T</i><i class="f4">+</i></span>
-      <span class="mh-comm-t">8,200 planners are in the Boldin community, comparing notes on exactly this.</span>
+      <span class="mrow-s">8,200 planners are in the Boldin community, comparing notes on exactly this.</span>
     </div>
     <a class="mh-link" data-toast="Community lands next in the mobile build">Join the conversation <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </section>
@@ -731,6 +683,7 @@ body.kb-open .mai-bar2{ transform:translateX(-50%) translateY(-138px); border-co
   <div class="msub-body" id="msubBody"></div>
 </section>
 
+<div class="mnav-fade" aria-hidden="true"></div>
 <nav class="mnav" id="mnav">
   <button data-tab="home" class="on" aria-label="Home"><svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2 3.6 10v10.3h5.9v-6.2h5v6.2h5.9V10z"/></svg></button>
   <button data-tab="today" aria-label="Today"><svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 5.5h15a1.5 1.5 0 0 1 1.5 1.5v10a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17V7a1.5 1.5 0 0 1 1.5-1.5z" opacity=".95"/><path d="M12 8.4c.4 0 .7.3.7.7v.3c.8.2 1.4.7 1.5 1.5h-1.2c-.1-.4-.5-.6-1-.6-.6 0-1 .3-1 .7 0 .3.3.5.9.7l.7.2c1.1.3 1.7.8 1.7 1.7 0 .9-.7 1.5-1.6 1.7v.3a.7.7 0 0 1-1.4 0v-.3c-.9-.2-1.6-.8-1.7-1.7h1.3c.1.5.5.7 1.1.7.6 0 1-.3 1-.7 0-.3-.3-.5-.9-.7l-.8-.2c-1-.3-1.6-.8-1.6-1.7 0-.8.6-1.4 1.5-1.6v-.3c0-.4.3-.7.8-.7z" fill="#F4F5F2"/></svg></button>
@@ -860,6 +813,25 @@ body.kb-open .mai-bar2{ transform:translateX(-50%) translateY(-138px); border-co
     push('<div class="msub-title">'+s.t+'</div><div class="msub-sub">'+s.s+'</div>'+s.body, false);
   });
 
+  /* the nav shrinks on scroll down, returns on scroll up */
+  (function(){
+    var navMini=false;
+    function setMini(m){ if(m!==navMini){ navMini=m; document.body.classList.toggle('nav-mini', m); } }
+    function watch(getY, target){
+      var last=getY();
+      target.addEventListener('scroll', function(){
+        var y=getY();
+        if(y<=12) setMini(false);
+        else if(y>last+4 && y>72) setMini(true);
+        else if(y<last-4) setMini(false);
+        last=y;
+      }, {passive:true});
+    }
+    watch(function(){ return window.scrollY; }, window);
+    var sb=document.getElementById('msubBody');
+    if(sb) watch(function(){ return sb.scrollTop; }, sb);
+  })();
+
   /* ===== bottom nav ===== */
   var toastT=null;
   function toast(msg){
@@ -899,29 +871,43 @@ body.kb-open .mai-bar2{ transform:translateX(-50%) translateY(-138px); border-co
     }
   }
   function drawHome(){
-    var arc=document.getElementById('mhArc'), num=document.getElementById('mhNum');
-    if(!arc) return;
-    var C=326.7, target=87, off=C*(1-target/100);
-    if(reduce || !arc.animate){
-      arc.style.strokeDashoffset=off; num.textContent=target;
-      return;
-    }
-    arc.animate([{strokeDashoffset:C},{strokeDashoffset:off}],
-      {duration:1000, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'both'});
+    var num=document.getElementById('mhNum'); if(!num) return;
+    var target=87;
+    if(reduce){ num.textContent=target; return; }
     var t0=null;
     function step(ts){
       if(!t0) t0=ts;
-      var p=Math.min(1,(ts-t0)/950);
+      var p=Math.min(1,(ts-t0)/900);
       var e=1-Math.pow(1-p,3);
       num.textContent=Math.round(target*e);
       if(p<1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
-    document.getElementById('mhBarFill').animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}],
-      {duration:700, delay:250, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
+    var line=document.getElementById('mhLineP');
+    if(line && line.animate){
+      line.style.strokeDasharray='1';
+      line.animate([{strokeDashoffset:1},{strokeDashoffset:0}],
+        {duration:950, delay:150, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
+      document.getElementById('mhAreaP').animate([{opacity:0},{opacity:1}],
+        {duration:600, delay:520, easing:'ease', fill:'both'});
+      var pt=document.getElementById('mhPt');
+      pt.animate([{opacity:0},{opacity:1}],{duration:350, delay:820, easing:'ease', fill:'both'});
+      pt.querySelector('circle[stroke]').animate(
+        [{transform:'scale(0.3)'},{transform:'scale(1)'}],
+        {duration:480, delay:820, easing:'cubic-bezier(0.22,1.4,0.36,1)', fill:'backwards',
+         composite:'replace'});
+      pt.querySelector('circle[stroke]').style.transformBox='fill-box';
+      pt.querySelector('circle[stroke]').style.transformOrigin='center';
+      var halo=document.querySelector('#mhViz .mh-halo');
+      halo.animate([{transform:'scale(1)', opacity:1},{transform:'scale(1.35)', opacity:0.35},{transform:'scale(1)', opacity:1}],
+        {duration:3000, delay:1400, iterations:Infinity, easing:'ease-in-out'});
+    } else {
+      document.getElementById('mhAreaP').style.opacity='1';
+      document.getElementById('mhPt').style.opacity='1';
+    }
     document.querySelectorAll('#tabHome .mh-sec').forEach(function(s,i){
-      s.animate([{opacity:0, transform:'translateY(10px)'},{opacity:1, transform:'none'}],
-        {duration:420, delay:160+i*90, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
+      if(s.animate) s.animate([{opacity:0, transform:'translateY(10px)'},{opacity:1, transform:'none'}],
+        {duration:420, delay:140+i*90, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
     });
   }
   function drawPlanChart(){
@@ -1018,10 +1004,10 @@ body.kb-open .mai-bar2{ transform:translateX(-50%) translateY(-138px); border-co
   /* ===== Home wiring ===== */
   (function(){
     setTimeout(drawHome, 350);
+    document.getElementById('mhViz').addEventListener('click', function(){ activateTab('plan'); });
     var gh=document.getElementById('mhGreet');
     var hh=new Date().getHours();
     gh.textContent=(hh<12?'Good morning':hh<18?'Good afternoon':'Good evening')+', Marshall';
-    document.getElementById('mhHero').addEventListener('click', function(){ activateTab('plan'); });
     document.getElementById('tabHome').addEventListener('click', function(e){
       var el=e.target.closest('[data-go]');
       if(el){
