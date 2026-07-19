@@ -3937,21 +3937,13 @@ body.mpanel-open{ overflow:hidden; }
     <!-- the docked graph view: update a balance, watch it land -->
     <div id="graphDock" aria-hidden="true">
       <div class="gd-head">
-        <span class="gd-title">Savings, live</span>
+        <span class="gd-title">Prism</span>
         <button class="gd-close" id="gdClose" type="button" aria-label="Collapse graphs"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6M3 3l7 7M21 3l-7 7M3 21l7-7M21 21l-7-7"/></svg></button>
       </div>
-      <div class="gd-card">
-        <div class="gd-lab">Savings to retirement <span class="gd-when">Dec 2028</span></div>
-        <svg id="gdBars" viewBox="0 0 420 216" xmlns="http://www.w3.org/2000/svg" font-family="inherit" aria-label="Projected savings to retirement, stacked by tax type"></svg>
-        <div class="gd-legend" id="gdLegend"></div>
-      </div>
-      <div class="gd-card">
-        <div class="gd-lab">Savings: tax allocations</div>
-        <div class="gd-ringwrap">
-          <svg id="gdRing" viewBox="0 0 190 190" xmlns="http://www.w3.org/2000/svg" aria-label="Savings by tax allocation"></svg>
-          <div class="gd-ringlegend" id="gdRingLegend"></div>
-        </div>
-      </div>
+      <div id="gdCards"></div>
+      <button class="gd-addrow" id="gdAdd" type="button">+ Add a visualization</button>
+      <div class="gd-gallery" id="gdGallery" hidden></div>
+      <a class="ctx-viewplan gd-viewplan" id="gdViewPlan" role="button">View updated plan <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <div class="gd-note">Assumes 6% growth on invested accounts and $1,000/mo saved.</div>
     </div>
 
@@ -8228,12 +8220,20 @@ document.addEventListener('click', function(e){
             '<rect x="15" y="3.8" width="4" height="10.4" rx="1" fill="#0D3F4A"/><rect x="15" y="0.7" width="4" height="2.5" rx="1" fill="#04B477"/>'+
           '</svg>See it on your graphs'+
           '<svg class="cgl-x" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-8 8M3 21l8-8"/></svg></a>'+
+        '<a class="ctx-graphdocked" id="ctxGraphDocked" role="button" aria-label="Collapse Prism, the docked graph view">'+
+          '<svg width="20" height="15" viewBox="0 0 20 15" aria-hidden="true">'+
+            '<rect x="1" y="8.2" width="4" height="6" rx="1" fill="#0D3F4A"/><rect x="1" y="5.2" width="4" height="2.4" rx="1" fill="#04B477"/>'+
+            '<rect x="8" y="6" width="4" height="8.2" rx="1" fill="#0D3F4A"/><rect x="8" y="2.9" width="4" height="2.5" rx="1" fill="#04B477"/>'+
+            '<rect x="15" y="3.8" width="4" height="10.4" rx="1" fill="#0D3F4A"/><rect x="15" y="0.7" width="4" height="2.5" rx="1" fill="#04B477"/>'+
+          '</svg>Prism<span class="cgd-chip">Docked</span></a>'+
         '<a class="ctx-viewplan">View updated plan <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>';
       const vp=railCtx.querySelector('.ctx-viewplan');
       const cms=[...railCtx.querySelectorAll('.cm')];
       if(vp) vp.addEventListener('click', (e)=>{ e.preventDefault(); pinned=false; railCtx.classList.remove('ctx-pinned'); showPlanView(); });
       const gl=railCtx.querySelector('#ctxGraphLink');
       if(gl) gl.addEventListener('click', (e)=>{ e.preventDefault(); if(window.__graphDock) window.__graphDock.expand(); });
+      const gd=railCtx.querySelector('#ctxGraphDocked');
+      if(gd) gd.addEventListener('click', (e)=>{ e.preventDefault(); if(window.__graphDock) window.__graphDock.collapse(); });
       if(document.body.classList.contains('graph-expanded') && window.__graphDock){
         setTimeout(()=>window.__graphDock.update(), 420);   // the saved balance lands on the graphs, live
       }
@@ -12107,7 +12107,7 @@ body.plan-view .rail:has(> #railCtx.ctx-pinned) :is(#storyView,#taxStoryView,#re
 body.graph-expanded .snap-seg{ flex-wrap:wrap; }
 body.graph-expanded .rail p,
 body.graph-expanded .rail .ctx-body{ max-width:52ch; }
-body.graph-expanded .rail{ max-height:calc(100vh - 118px); overflow-y:auto; scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; padding-right:6px; }
+body.graph-expanded .rail{ max-height:calc(100vh - 236px); overflow-y:auto; scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; padding-right:6px; padding-bottom:28px; }
 #graphDock{ display:none; }
 body.graph-expanded #graphDock{ display:block; animation:aiRise 340ms cubic-bezier(0.22,1,0.36,1) 60ms backwards; margin-top:18px; }
 .gd-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
@@ -12133,9 +12133,50 @@ body.graph-expanded #graphDock{ display:block; animation:aiRise 340ms cubic-bezi
 .gd-rl b{ color:var(--ink); font-weight:600; }
 .gd-rl .pct{ margin-left:auto; color:var(--text-tertiary); font-size:12px; }
 .gd-note{ font-size:12px; color:var(--text-tertiary); line-height:1.5; margin:2px 2px 0; }
+.gd-viewplan{ display:inline-flex; margin:2px 0 12px; }
+/* personal Prism: pin, edit, remove, add */
+.gd-card .gd-lab{ gap:8px; justify-content:flex-start; }
+.gd-title-t{ font-size:14px; font-weight:600; color:var(--text-secondary); }
+.gd-when{ margin-left:2px; }
+.gd-tools{ margin-left:auto; display:flex; align-items:center; gap:2px; }
+.gd-ic{ display:flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:8px;
+  border:0; background:none; color:#C2C7D0; cursor:pointer; }
+.gd-card:hover .gd-ic{ color:#9AA0AE; }
+.gd-ic:hover{ color:var(--ink); background:#F5F6F7; }
+.gd-pin.on{ color:var(--green); }
+.gd-card:hover .gd-pin.on, .gd-pin.on:hover{ color:var(--green); }
+.gd-edit-row{ display:flex; align-items:center; gap:8px; margin:2px 0 12px; }
+.gd-edit-row input{ flex:1; min-width:0; font-family:inherit; font-size:14px; font-weight:600; color:var(--ink);
+  border:1px solid var(--hairline); border-radius:9px; padding:8px 11px; outline:none; }
+.gd-edit-row input:focus{ border-color:#9FDFC6; }
+.gd-edit-done{ border:0; background:var(--green-cta,#0E794E); color:#fff; font-family:inherit; font-size:13px;
+  font-weight:600; border-radius:999px; padding:8px 15px; cursor:pointer; }
+.gd-addrow{ display:block; width:100%; text-align:center; font-family:inherit; font-size:14px; font-weight:600;
+  color:var(--green-cta,#0E794E); background:none; border:1.5px dashed #D5DAD7; border-radius:12px;
+  padding:12px 0; cursor:pointer; margin:0 0 14px; }
+.gd-addrow:hover{ border-color:#9FDFC6; background:#FAFDFB; }
+.gd-gallery{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:-6px 0 14px; }
+.gd-gallery[hidden]{ display:none; }
+.gd-gal{ display:flex; align-items:center; gap:9px; border:1px solid var(--hairline); border-radius:11px;
+  background:#fff; padding:10px 12px; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600;
+  color:var(--ink); text-align:left; }
+.gd-gal:hover{ border-color:#9FDFC6; background:#FAFDFB; }
+.gd-gal svg{ flex:none; }
+.gd-card.gd-in{ animation:aiRise 340ms cubic-bezier(0.22,1,0.36,1) backwards; }
+.gd-empty{ font-size:13px; color:var(--text-tertiary); text-align:center; padding:14px 0 18px; }
+body.graph-expanded #railCtx .ctx-viewplan,
+body.graph-expanded #railCtx .ctx-graphlink{ display:none; }
+.ctx-graphdocked{ display:none; align-items:center; gap:8px; margin:14px 0 2px;
+  color:var(--ink); font-size:14.5px; font-weight:600; cursor:pointer; text-decoration:none; }
+body.graph-expanded #railCtx .ctx-graphdocked{ display:flex; }
+.cgd-chip{ font-size:11.5px; font-weight:700; color:#0E794E; background:#E9F7F0; border-radius:999px; padding:3px 9px; margin-left:1px; }
+.ctx-graphdocked:hover .cgd-chip{ background:#DDF2E7; }
 @media (max-width:1240px){ .gd-ringwrap{ grid-template-columns:1fr; justify-items:center; } .gd-ringlegend{ width:100%; } }
 .gd-bar-seg{ transform-box:fill-box; transform-origin:bottom; }
 #graphDock.gd-anim .gd-bar-seg{ animation:gdGrow .55s cubic-bezier(0.22,1,0.36,1) backwards; }
+.gd-flow-bar{ transform-box:fill-box; transform-origin:left; }
+#graphDock.gd-anim .gd-flow-bar{ animation:gdFlow .6s cubic-bezier(0.22,1,0.36,1) backwards; }
+@keyframes gdFlow{ from{ transform:scaleX(0); } }
 @keyframes gdGrow{ from{ transform:scaleY(0); } }
 #graphDock.gd-anim .gd-ringseg{ transition:stroke-dashoffset .6s cubic-bezier(0.22,1,0.36,1); }
 .ctx-graphlink{ display:flex; align-items:center; gap:8px; margin:14px 0 2px; color:var(--green-cta,#0E794E);
@@ -13577,17 +13618,18 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
 </script>
 <!-- ===================== END AI-EXPAND TEST ===================== -->
 <script>
-/* ===== the docked graph view engine: balances in, pictures out ===== */
+/* ===== Prism engine: your balances in, your pictures out — add, edit, pin ===== */
 (function(){
   var dock=document.getElementById('graphDock'); if(!dock) return;
   var COLORS={ def:'#0D3F4A', tax:'#04B477', cash:'#9FDFC6', free:'#FBBD04' };
   var NAMES={ def:'Tax-deferred', tax:'Taxable', cash:'Cash', free:'Tax-free' };
   var ORDER=['def','tax','cash','free'];
   var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   function money(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
-  function moneyK(n){ return n>=1e6 ? ('$'+(n/1e6).toFixed(n%1e6?1:0)+'M') : ('$'+Math.round(n/1e3)+'K'); }
+  function moneyK(n){ return n>=1e6 ? ('$'+(n/1e6).toFixed(n%1e6?2:0)+'M') : ('$'+Math.round(n/1e3)+'K'); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
 
+  /* ---------- live data, read from the page ---------- */
   function readBuckets(){
     var b={ cash:0, tax:0, def:0, free:0 };
     document.querySelectorAll('.bucket[data-bucket="taxable"] .acct').forEach(function(r){
@@ -13598,14 +13640,11 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
       else b.tax+=amt;
     });
     var wf=document.getElementById('wfCard');
-    if(wf){
-      var bal=0;
+    if(wf){ var bal=0;
       wf.querySelectorAll('.field').forEach(function(f){
         var lab=((f.querySelector('label')||{}).textContent||'').toLowerCase();
-        if(lab.indexOf('balance')>-1){ bal=parseFloat((((f.querySelector('.vtext')||{}).textContent)||'').replace(/[^0-9.]/g,''))||0; }
-      });
-      b.cash+=bal;
-    }
+        if(lab.indexOf('balance')>-1){ bal=parseFloat((((f.querySelector('.vtext')||{}).textContent)||'').replace(/[^0-9.]/g,''))||0; } });
+      b.cash+=bal; }
     document.querySelectorAll('.bucket[data-bucket="deferred"] .acct').forEach(function(r){
       var ty=((r.querySelector('.ty')||{}).textContent||'').toLowerCase();
       var amt=parseFloat((((r.querySelector('.amt')||{}).textContent)||'').replace(/[^0-9.]/g,''))||0;
@@ -13613,111 +13652,265 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
     });
     return b;
   }
-
-  /* project a bucket to time t (years): growth on invested, monthly saving split */
-  var GROW={ def:0.06, tax:0.06, free:0.06, cash:0.0 };
-  var SAVE={ def:600, tax:250, free:0, cash:150 };   /* $1,000/mo, split */
-  function proj(b, t){
-    var out={};
-    ORDER.forEach(function(k){ out[k]= b[k]*Math.pow(1+GROW[k], t) + SAVE[k]*12*t; });
-    return out;
+  function readIncome(){
+    var m=0;
+    document.querySelectorAll('.acct').forEach(function(r){
+      if(/Employment/i.test(((r.querySelector('.ty')||{}).textContent)||''))
+        m+=parseFloat((((r.querySelector('.amt')||{}).textContent)||'').replace(/[^0-9.]/g,''))||0;
+    });
+    return m||5585;
   }
+  function readDebts(){
+    var rows=0, found=false;
+    document.querySelectorAll('.acc').forEach(function(acc){
+      if(!/Debts/i.test(((acc.querySelector('h2')||{}).textContent)||'')) return;
+      acc.querySelectorAll('.acct').forEach(function(r){
+        found=true;
+        rows+=parseFloat((((r.querySelector('.amt')||{}).textContent)||'').replace(/[^0-9.]/g,''))||0; });
+    });
+    return found ? rows+312000 : 332550;   /* rows + the mortgage behind the plan */
+  }
+  function readNW(){
+    var el=document.getElementById('nwFig');
+    if(el){ var m=(el.textContent||'').match(/\$([0-9.]+)M/); if(m) return parseFloat(m[1])*1e6; }
+    return 1139200;
+  }
+  var GROW={ def:0.06, tax:0.06, free:0.06, cash:0.0 };
+  var SAVE={ def:600, tax:250, free:0, cash:150 };
+  function proj(b, t){ var o={}; ORDER.forEach(function(k){ o[k]=b[k]*Math.pow(1+GROW[k],t)+SAVE[k]*12*t; }); return o; }
   var PERIODS=[ {lab:'Now',t:0},{lab:"Jul '26",t:0.5},{lab:"Jan '27",t:1},{lab:"Jul '27",t:1.5},{lab:"Jan '28",t:2},{lab:"Dec '28",t:2.92} ];
 
-  function renderBars(b){
-    var svg=document.getElementById('gdBars');
-    var W=420,H=216, padL=50,padR=8,padT=16,padB=26, pw=W-padL-padR, ph=H-padT-padB;
-    var cols=PERIODS.map(function(p){ return proj(b,p.t); });
-    var maxT=0; cols.forEach(function(c){ var s=0; ORDER.forEach(function(k){ s+=c[k]; }); if(s>maxT) maxT=s; });
-    var yMax=Math.ceil(maxT/50000)*50000 || 50000;
-    var slot=pw/PERIODS.length, barW=Math.min(38, slot*0.56);
-    var s='';
-    /* gridlines + axis labels */
-    [0,0.5,1].forEach(function(f){
-      var y=padT+ph-(f*ph);
-      s+='<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y.toFixed(1)+'" stroke="#EEF0F2" stroke-width="1"/>';
-      s+='<text x="'+(padL-8)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#9AA0AE" text-anchor="end">'+moneyK(yMax*f)+'</text>';
-    });
-    cols.forEach(function(c,i){
-      var x=padL+i*slot+(slot-barW)/2, y=padT+ph, tot=0, d=0;
-      ORDER.forEach(function(k){
-        if(c[k]<=0) return;
-        var hgt=c[k]/yMax*ph; y-=hgt; tot+=c[k];
-        s+='<rect class="gd-bar-seg" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+Math.max(hgt-1.2,0).toFixed(1)+'" rx="2.5" fill="'+COLORS[k]+'" style="animation-delay:'+(60+i*55+d*40)+'ms"/>';
-        d++;
-      });
-      s+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(H-8)+'" font-size="11" fill="#6E7480" text-anchor="middle">'+PERIODS[i].lab+'</text>';
-      if(i===cols.length-1){
-        s+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(y-7).toFixed(1)+'" font-size="12.5" font-weight="700" fill="#10182C" text-anchor="middle">'+moneyK(tot)+'</text>';
-      }
-    });
-    svg.innerHTML=s;
-    var lg=document.getElementById('gdLegend');
-    lg.innerHTML=ORDER.filter(function(k){ return b[k]>0; }).map(function(k){
-      return '<span class="gd-li"><i style="background:'+COLORS[k]+'"></i>'+NAMES[k]+' <b>'+money(b[k])+'</b></span>';
-    }).join('');
-  }
+  /* ---------- icons ---------- */
+  var I={
+    pin:'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 3l7 7-4 1-3.5 6L12 20l-3.2-3.2L4 21l-1-1 4.2-4.8L4 12l3-1.5L13 7l1-4z"/></svg>',
+    pen:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3.5l3.5 3.5L8 19.5 3.5 20.5 4.5 16z"/></svg>',
+    x:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    gBars:'<svg width="18" height="14" viewBox="0 0 20 15"><rect x="1" y="8" width="4" height="6" rx="1" fill="#0D3F4A"/><rect x="1" y="5" width="4" height="2.4" rx="1" fill="#04B477"/><rect x="8" y="6" width="4" height="8" rx="1" fill="#0D3F4A"/><rect x="8" y="3" width="4" height="2.5" rx="1" fill="#04B477"/><rect x="15" y="4" width="4" height="10" rx="1" fill="#0D3F4A"/><rect x="15" y="1" width="4" height="2.5" rx="1" fill="#04B477"/></svg>',
+    gRing:'<svg width="16" height="16" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#0D3F4A" stroke-width="4.6" stroke-dasharray="29 15" transform="rotate(-90 10 10)"/><circle cx="10" cy="10" r="7" fill="none" stroke="#04B477" stroke-width="4.6" stroke-dasharray="12 32" stroke-dashoffset="-29" transform="rotate(-90 10 10)"/></svg>',
+    gLine:'<svg width="18" height="14" viewBox="0 0 20 15" fill="none"><path d="M1 12.5C5 12 7 9 10 7s6-4.5 9-5.5" stroke="#04B477" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    gDebt:'<svg width="18" height="14" viewBox="0 0 20 15"><rect x="1" y="2" width="4" height="12" rx="1" fill="#0D3F4A"/><rect x="8" y="6" width="4" height="8" rx="1" fill="#0D3F4A"/><rect x="15" y="9.4" width="4" height="4.6" rx="1" fill="#04B477"/></svg>',
+    gFlow:'<svg width="18" height="14" viewBox="0 0 20 15"><rect x="1" y="2" width="16" height="4.4" rx="2.2" fill="#04B477"/><rect x="1" y="8.6" width="12.4" height="4.4" rx="2.2" fill="#0D3F4A"/></svg>'
+  };
 
-  function renderRing(b){
-    var svg=document.getElementById('gdRing');
-    var cx=95,cy=95,r=66,sw=26, C=2*Math.PI*r, gap=2.4;
-    var total=0; ORDER.forEach(function(k){ total+=b[k]; });
-    var s='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#F2F3F5" stroke-width="'+sw+'"/>';
-    var off=0, segs=[];
-    ORDER.forEach(function(k){
-      if(b[k]<=0) return;
-      var L=b[k]/total*C;
-      segs.push({k:k, L:L, off:off});
-      off+=L;
+  /* ---------- the visualization library ---------- */
+  var VIZ={
+    bars:{ name:'Savings to retirement', when:'Dec 2028', icon:I.gBars,
+      body:'<svg class="gd-svg" viewBox="0 0 420 216" xmlns="http://www.w3.org/2000/svg" aria-label="Projected savings to retirement, stacked by tax type"></svg><div class="gd-legend"></div>',
+      render:function(card,d){
+        var svg=card.querySelector('.gd-svg');
+        var W=420,H=216,padL=50,padR=8,padT=16,padB=26,pw=W-padL-padR,ph=H-padT-padB;
+        var cols=PERIODS.map(function(p){ return proj(d.b,p.t); });
+        var maxT=0; cols.forEach(function(c){ var s=0; ORDER.forEach(function(k){ s+=c[k]; }); if(s>maxT) maxT=s; });
+        var yMax=Math.ceil(maxT/50000)*50000||50000, slot=pw/PERIODS.length, barW=Math.min(38,slot*0.56), s='';
+        [0,0.5,1].forEach(function(f){ var y=padT+ph-f*ph;
+          s+='<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y.toFixed(1)+'" stroke="#EEF0F2"/>';
+          s+='<text x="'+(padL-8)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#9AA0AE" text-anchor="end">'+moneyK(yMax*f)+'</text>'; });
+        cols.forEach(function(c,i){ var x=padL+i*slot+(slot-barW)/2, y=padT+ph, tot=0, k2=0;
+          ORDER.forEach(function(k){ if(c[k]<=0) return;
+            var hg=c[k]/yMax*ph; y-=hg; tot+=c[k];
+            s+='<rect class="gd-bar-seg" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+Math.max(hg-1.2,0).toFixed(1)+'" rx="2.5" fill="'+COLORS[k]+'" style="animation-delay:'+(60+i*55+k2*40)+'ms"/>'; k2++; });
+          s+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(H-8)+'" font-size="11" fill="#6E7480" text-anchor="middle">'+PERIODS[i].lab+'</text>';
+          if(i===cols.length-1) s+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(y-7).toFixed(1)+'" font-size="12.5" font-weight="700" fill="#10182C" text-anchor="middle">'+moneyK(tot)+'</text>'; });
+        svg.innerHTML=s;
+        card.querySelector('.gd-legend').innerHTML=ORDER.filter(function(k){ return d.b[k]>0; }).map(function(k){
+          return '<span class="gd-li"><i style="background:'+COLORS[k]+'"></i>'+NAMES[k]+' <b>'+money(d.b[k])+'</b></span>'; }).join('');
+      }},
+    ring:{ name:'Savings: tax allocations', icon:I.gRing,
+      body:'<div class="gd-ringwrap"><svg class="gd-svg" viewBox="0 0 190 190" xmlns="http://www.w3.org/2000/svg" aria-label="Savings by tax allocation"></svg><div class="gd-ringlegend"></div></div>',
+      render:function(card,d){
+        var svg=card.querySelector('.gd-svg');
+        var cx=95,cy=95,r=66,sw=26,C=2*Math.PI*r,gap=2.4,total=0;
+        ORDER.forEach(function(k){ total+=d.b[k]; });
+        var s='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#F2F3F5" stroke-width="'+sw+'"/>', off=0;
+        ORDER.forEach(function(k,i){ if(d.b[k]<=0) return;
+          var L=d.b[k]/total*C, Ld=Math.max(L-gap,0.5);
+          s+='<circle class="gd-ringseg" cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+COLORS[k]+'" stroke-width="'+sw+'" stroke-dasharray="'+Ld.toFixed(2)+' '+(C-Ld).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 '+cx+' '+cy+')" style="transition-delay:'+(i*70)+'ms"/>';
+          off+=L; });
+        s+='<text x="'+cx+'" y="'+(cy-2)+'" font-size="22" font-weight="700" fill="#10182C" text-anchor="middle" letter-spacing="-0.4" font-variant-numeric="tabular-nums">'+money(total)+'</text>';
+        s+='<text x="'+cx+'" y="'+(cy+17)+'" font-size="10.5" fill="#6E7480" text-anchor="middle">across all accounts</text>';
+        svg.innerHTML=s;
+        if(!reduce){ svg.querySelectorAll('.gd-ringseg').forEach(function(c){
+          var da=c.getAttribute('stroke-dasharray');
+          c.setAttribute('stroke-dasharray','0 '+C.toFixed(2));
+          requestAnimationFrame(function(){ requestAnimationFrame(function(){
+            c.style.transition='stroke-dasharray .65s cubic-bezier(0.22,1,0.36,1)';
+            c.setAttribute('stroke-dasharray',da); }); }); }); }
+        card.querySelector('.gd-ringlegend').innerHTML=ORDER.filter(function(k){ return d.b[k]>0; }).map(function(k){
+          return '<span class="gd-rl"><i style="background:'+COLORS[k]+'"></i>'+NAMES[k]+' <b>'+money(d.b[k])+'</b><span class="pct">'+Math.round(d.b[k]/total*100)+'%</span></span>'; }).join('');
+      }},
+    networth:{ name:'Net worth over time', when:'to 2033', icon:I.gLine,
+      body:'<svg class="gd-svg" viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg" aria-label="Projected net worth over time"></svg>',
+      render:function(card,d){
+        var svg=card.querySelector('.gd-svg');
+        var W=420,H=200,padL=56,padR=44,padT=18,padB=24,pw=W-padL-padR,ph=H-padT-padB;
+        var yrs=8, pts=[];
+        for(var i=0;i<=yrs;i++){ pts.push(d.nw*Math.pow(1.055,i)+12000*i); }
+        var yMax=Math.ceil(pts[yrs]/250000)*250000;
+        function X(i){ return padL+i/yrs*pw; } function Y(v){ return padT+ph-(v/yMax)*ph; }
+        var line='M'+X(0).toFixed(1)+' '+Y(pts[0]).toFixed(1);
+        pts.forEach(function(v,i){ if(i) line+=' L'+X(i).toFixed(1)+' '+Y(v).toFixed(1); });
+        var s='';
+        [0,0.5,1].forEach(function(f){ var y=padT+ph-f*ph;
+          s+='<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y.toFixed(1)+'" stroke="#EEF0F2"/>';
+          s+='<text x="'+(padL-8)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#9AA0AE" text-anchor="end">'+moneyK(yMax*f)+'</text>'; });
+        s+='<path class="gd-area" d="'+line+' L'+X(yrs).toFixed(1)+' '+(padT+ph)+' L'+X(0).toFixed(1)+' '+(padT+ph)+' Z" fill="rgba(4,180,119,0.10)"/>';
+        s+='<path class="gd-line" d="'+line+'" fill="none" stroke="#04B477" stroke-width="2.6" stroke-linecap="round" pathLength="1"/>';
+        s+='<circle cx="'+X(yrs).toFixed(1)+'" cy="'+Y(pts[yrs]).toFixed(1)+'" r="4" fill="#04B477"/>';
+        s+='<text x="'+(X(yrs)+8).toFixed(1)+'" y="'+(Y(pts[yrs])+4).toFixed(1)+'" font-size="12" font-weight="700" fill="#10182C">'+moneyK(pts[yrs])+'</text>';
+        [0,4,8].forEach(function(i){ s+='<text x="'+X(i).toFixed(1)+'" y="'+(H-6)+'" font-size="11" fill="#6E7480" text-anchor="middle">'+(2026+i)+'</text>'; });
+        svg.innerHTML=s;
+        if(!reduce){ var p=svg.querySelector('.gd-line');
+          p.style.strokeDasharray='1'; p.style.strokeDashoffset='1';
+          requestAnimationFrame(function(){ requestAnimationFrame(function(){
+            p.style.transition='stroke-dashoffset .8s cubic-bezier(0.22,1,0.36,1)'; p.style.strokeDashoffset='0'; }); }); }
+      }},
+    debt:{ name:'Debt paydown', when:'to 2031', icon:I.gDebt,
+      body:'<svg class="gd-svg" viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg" aria-label="Debt paydown over time"></svg>',
+      render:function(card,d){
+        var svg=card.querySelector('.gd-svg');
+        var W=420,H=200,padL=56,padR=8,padT=18,padB=24,pw=W-padL-padR,ph=H-padT-padB;
+        var D=d.debt, seq=[];
+        for(var i=0;i<6;i++){
+          var v=D-9500*i;                       /* mortgage principal */
+          if(i>=1) v-=2150;                     /* the card, cleared */
+          v-=Math.min(18400, 18400*(i/2));      /* the car, gone by 2028 */
+          seq.push(Math.max(v,0));
+        }
+        var yMax=Math.ceil(seq[0]/100000)*100000, slot=pw/6, barW=Math.min(40,slot*0.56), s='';
+        [0,0.5,1].forEach(function(f){ var y=padT+ph-f*ph;
+          s+='<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y.toFixed(1)+'" stroke="#EEF0F2"/>';
+          s+='<text x="'+(padL-8)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#9AA0AE" text-anchor="end">'+moneyK(yMax*f)+'</text>'; });
+        seq.forEach(function(v,i){ var x=padL+i*slot+(slot-barW)/2, hg=v/yMax*ph, y=padT+ph-hg;
+          s+='<rect class="gd-bar-seg" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+hg.toFixed(1)+'" rx="3" fill="'+(i===5?'#04B477':'#0D3F4A')+'" style="animation-delay:'+(60+i*60)+'ms"/>';
+          s+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(H-6)+'" font-size="11" fill="#6E7480" text-anchor="middle">'+(2026+i)+'</text>';
+          if(i===0||i===5) s+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(y-7).toFixed(1)+'" font-size="12" font-weight="700" fill="#10182C" text-anchor="middle">'+moneyK(v)+'</text>'; });
+        svg.innerHTML=s;
+      }},
+    cashflow:{ name:'Cash flow, monthly', icon:I.gFlow,
+      body:'<svg class="gd-svg" viewBox="0 0 420 128" xmlns="http://www.w3.org/2000/svg" aria-label="Monthly income versus expenses"></svg>',
+      render:function(card,d){
+        var svg=card.querySelector('.gd-svg');
+        var W=420,padL=92,padR=70,pw=W-padL-padR;
+        var inc=d.inc, exp=4585, mx=Math.max(inc,exp);
+        function row(y,label,v,col,delay){
+          return '<text x="'+(padL-10)+'" y="'+(y+15)+'" font-size="12.5" fill="#6E7480" text-anchor="end">'+label+'</text>'+
+            '<rect x="'+padL+'" y="'+y+'" width="'+(pw).toFixed(1)+'" height="22" rx="11" fill="#F2F3F5"/>'+
+            '<rect class="gd-flow-bar" x="'+padL+'" y="'+y+'" width="'+(v/mx*pw).toFixed(1)+'" height="22" rx="11" fill="'+col+'" style="animation-delay:'+delay+'ms"/>'+
+            '<text x="'+(padL+pw+10)+'" y="'+(y+15)+'" font-size="13" font-weight="700" fill="#10182C" font-variant-numeric="tabular-nums">'+money(v)+'</text>';
+        }
+        var s=row(18,'Income',inc,'#04B477',80)+row(56,'Expenses',exp,'#0D3F4A',180);
+        s+='<text x="'+padL+'" y="112" font-size="13.5" font-weight="700" fill="#0E794E">'+(inc-exp>=0?'+':'')+money(inc-exp).replace('$','$')+' /mo surplus</text>';
+        svg.innerHTML=s;
+      }}
+  };
+
+  /* ---------- personal state ---------- */
+  var uidN=0;
+  function mk(viz){ return { uid:'c'+(++uidN), viz:viz, title:VIZ[viz].name, pinned:false }; }
+  var PRISM={ cards:[ mk('bars'), mk('ring') ] };
+
+  function data(){ return { b:readBuckets(), inc:readIncome(), debt:readDebts(), nw:readNW() }; }
+
+  function renderDock(newUid){
+    var host=document.getElementById('gdCards');
+    var sorted=PRISM.cards.slice().sort(function(a,b){ return (b.pinned?1:0)-(a.pinned?1:0); });
+    host.innerHTML=sorted.map(function(c){
+      var v=VIZ[c.viz];
+      return '<div class="gd-card'+(c.uid===newUid?' gd-in':'')+'" data-uid="'+c.uid+'">'+
+        '<div class="gd-lab">'+
+          '<button class="gd-ic gd-pin'+(c.pinned?' on':'')+'" type="button" title="'+(c.pinned?'Unpin':'Pin to top')+'" aria-label="'+(c.pinned?'Unpin':'Pin to top')+'" aria-pressed="'+(!!c.pinned)+'">'+I.pin+'</button>'+
+          '<span class="gd-title-t">'+esc(c.title)+'</span>'+
+          (v.when?'<span class="gd-when">'+v.when+'</span>':'')+
+          '<span class="gd-tools">'+
+            '<button class="gd-ic gd-edit" type="button" title="Rename" aria-label="Rename">'+I.pen+'</button>'+
+            '<button class="gd-ic gd-rm" type="button" title="Remove" aria-label="Remove">'+I.x+'</button>'+
+          '</span>'+
+        '</div>'+v.body+'</div>';
+    }).join('') || '<div class="gd-empty">Nothing here yet. Add a visualization below.</div>';
+    var d=data();
+    dock.classList.remove('gd-anim'); void dock.offsetWidth; dock.classList.add('gd-anim');
+    sorted.forEach(function(c){
+      var card=host.querySelector('.gd-card[data-uid="'+c.uid+'"]');
+      if(card) VIZ[c.viz].render(card, d);
     });
-    segs.forEach(function(g,i){
-      var L=Math.max(g.L-gap, 0.5);
-      s+='<circle class="gd-ringseg" cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+COLORS[g.k]+'" stroke-width="'+sw+'"'+
-        ' stroke-dasharray="'+L.toFixed(2)+' '+(C-L).toFixed(2)+'"'+
-        ' stroke-dashoffset="'+(-g.off).toFixed(2)+'"'+
-        ' transform="rotate(-90 '+cx+' '+cy+')" style="transition-delay:'+(i*70)+'ms"/>';
-    });
-    s+='<text x="'+cx+'" y="'+(cy-2)+'" font-size="22" font-weight="700" fill="#10182C" text-anchor="middle" letter-spacing="-0.4" font-variant-numeric="tabular-nums">'+money(total)+'</text>';
-    s+='<text x="'+cx+'" y="'+(cy+17)+'" font-size="10.5" fill="#6E7480" text-anchor="middle">across all accounts</text>';
-    svg.innerHTML=s;
-    if(!reduce){
-      svg.querySelectorAll('.gd-ringseg').forEach(function(c){
-        var da=c.getAttribute('stroke-dasharray');
-        c.setAttribute('stroke-dasharray','0 '+C.toFixed(2));
-        requestAnimationFrame(function(){ requestAnimationFrame(function(){
-          c.style.transition='stroke-dasharray .65s cubic-bezier(0.22,1,0.36,1)';
-          c.setAttribute('stroke-dasharray',da);
-        }); });
-      });
+    var addBtn=document.getElementById('gdAdd');
+    addBtn.style.display = PRISM.cards.length>=Object.keys(VIZ).length ? 'none' : '';
+  }
+  function renderGallery(){
+    var g=document.getElementById('gdGallery');
+    var used={}; PRISM.cards.forEach(function(c){ used[c.viz]=1; });
+    var avail=Object.keys(VIZ).filter(function(k){ return !used[k]; });
+    g.innerHTML=avail.map(function(k){
+      return '<button class="gd-gal" type="button" data-viz="'+k+'">'+VIZ[k].icon+esc(VIZ[k].name)+'</button>'; }).join('');
+  }
+  function card2state(el){ var uid=el.dataset.uid; for(var i=0;i<PRISM.cards.length;i++){ if(PRISM.cards[i].uid===uid) return PRISM.cards[i]; } return null; }
+
+  /* ---------- delegation: pin, edit, remove, add ---------- */
+  dock.addEventListener('click', function(e){
+    var pin=e.target.closest('.gd-pin');
+    if(pin){ var c=card2state(pin.closest('.gd-card')); if(c){ c.pinned=!c.pinned; renderDock(); } return; }
+    var rm=e.target.closest('.gd-rm');
+    if(rm){ var cr=rm.closest('.gd-card'); var st=card2state(cr);
+      PRISM.cards=PRISM.cards.filter(function(x){ return x!==st; });
+      renderDock(); if(!document.getElementById('gdGallery').hidden) renderGallery();
+      return; }
+    var edb=e.target.closest('.gd-edit');
+    if(edb){ var cd=edb.closest('.gd-card');
+      var open=cd.querySelector('.gd-edit-row');
+      dock.querySelectorAll('.gd-edit-row').forEach(function(r){ r.remove(); });
+      if(open) return;                                     /* it was open: toggle closed */
+      var stc=card2state(cd);
+      var row=document.createElement('div'); row.className='gd-edit-row';
+      row.innerHTML='<input type="text" maxlength="42" value="'+esc(stc.title)+'" aria-label="Visualization name"><button class="gd-edit-done" type="button">Done</button>';
+      cd.querySelector('.gd-lab').after(row);
+      var inp=row.querySelector('input'); inp.focus(); inp.select();
+      return; }
+    var done=e.target.closest('.gd-edit-done');
+    if(done){ var cd2=done.closest('.gd-card'); var stt=card2state(cd2);
+      var v=cd2.querySelector('.gd-edit-row input').value.trim();
+      if(v) stt.title=v;
+      renderDock(); return; }
+    if(e.target.closest('#gdAdd')){ var g=document.getElementById('gdGallery');
+      if(g.hidden){ renderGallery(); g.hidden=false; } else g.hidden=true;
+      return; }
+    var gal=e.target.closest('.gd-gal');
+    if(gal){ var nc=mk(gal.dataset.viz);
+      PRISM.cards.push(nc);
+      document.getElementById('gdGallery').hidden=true;
+      renderDock(nc.uid);
+      return; }
+  });
+  dock.addEventListener('keydown', function(e){
+    if(e.key==='Enter' && e.target.matches('.gd-edit-row input')){
+      e.preventDefault();
+      var cd=e.target.closest('.gd-card'), st=card2state(cd);
+      var v=e.target.value.trim(); if(v) st.title=v;
+      renderDock();
     }
-    var rl=document.getElementById('gdRingLegend');
-    rl.innerHTML=ORDER.filter(function(k){ return b[k]>0; }).map(function(k){
-      return '<span class="gd-rl"><i style="background:'+COLORS[k]+'"></i>'+NAMES[k]+' <b>'+money(b[k])+'</b><span class="pct">'+Math.round(b[k]/total*100)+'%</span></span>';
-    }).join('');
-  }
+  });
 
-  function render(){
-    var b=readBuckets();
-    dock.classList.remove('gd-anim');
-    void dock.offsetWidth;
-    dock.classList.add('gd-anim');
-    renderBars(b); renderRing(b);
-  }
-
+  /* ---------- public API (unchanged) ---------- */
   window.__graphDock={
     expand: function(){
       document.body.classList.remove('ai-expanded','ai-fullscreen');
       document.body.classList.add('graph-expanded');
       dock.setAttribute('aria-hidden','false');
-      render();
+      document.getElementById('gdGallery').hidden=true;
+      renderDock();
     },
     collapse: function(){
       document.body.classList.remove('graph-expanded');
       dock.setAttribute('aria-hidden','true');
     },
-    update: function(){ if(document.body.classList.contains('graph-expanded')) render(); },
+    update: function(){ if(document.body.classList.contains('graph-expanded')) renderDock(); },
     isOpen: function(){ return document.body.classList.contains('graph-expanded'); }
   };
   document.getElementById('gdClose').addEventListener('click', function(){ window.__graphDock.collapse(); });
+  document.getElementById('gdViewPlan').addEventListener('click', function(e){
+    e.preventDefault();
+    var vp=document.querySelector('#railCtx .ctx-viewplan');
+    if(vp){ vp.click(); }
+    else if(typeof showPlanView==='function'){ showPlanView(); }
+  });
 })();
 </script>
