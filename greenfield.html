@@ -207,6 +207,7 @@ nav.modes a.active .ic{opacity:1;}
   padding:8px 16px 5px;
 }
 .ps-ring{position:relative; width:34px; height:34px; flex:none; cursor:pointer;}
+.ps-mini-ring{ cursor:pointer; }
 .ps-ring svg{transform:rotate(-90deg); display:block;}
 .ps-ring .track{stroke:#D9DBDF; fill:none;}
 .ps-ring .arc{stroke:var(--green); fill:none; stroke-linecap:round;
@@ -845,6 +846,8 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .snap-stats{ display:flex; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; gap:var(--s-4);
   margin-bottom:56px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
 .snap-stats::-webkit-scrollbar{ display:none; }
+.snap-stats.fade-more{ -webkit-mask-image:linear-gradient(90deg, #000 calc(100% - 56px), transparent 100%);
+  mask-image:linear-gradient(90deg, #000 calc(100% - 56px), transparent 100%); }
 .snap-stats .snap-stat{ flex:0 0 calc((100% - 32px)/3.22); scroll-snap-align:start; min-width:0; }
 .snap-stats .snap-stat .lab, .snap-stats .snap-stat .sub{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .snap-stat .sub .up-g{ color:var(--green-cta,#0E794E); font-weight:600; }
@@ -949,6 +952,71 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .sxbk-done .wh{ font-size:16px; font-weight:600; color:var(--ink); }
 .sxbk-done .em{ font-size:14.5px; color:var(--text-secondary); line-height:1.55; max-width:42ch; margin:14px auto 22px; }
 .sxbk-done .sxbk-cta{ max-width:280px; margin:0 auto; }
+/* ===== the goal composer: a dream assembling itself ===== */
+.snap-stat.stat-goal{ flex-basis:calc(((100% - 32px)/3.22)*2 + 16px); display:flex; flex-direction:column;
+  background:linear-gradient(135deg, #F3FBF7 0%, #FFFFFF 55%, #FFFDF6 100%); }
+.gx-dots{ display:inline-flex; gap:3.5px; margin-left:6px; vertical-align:1px; }
+.gx-dots i{ width:7px; height:7px; border-radius:999px; }
+.gx-dots i:nth-child(1){ background:#04B477; } .gx-dots i:nth-child(2){ background:#FBBD04; } .gx-dots i:nth-child(3){ background:#0D3F4A; }
+.gx-card-t{ font-size:18px; font-weight:700; color:var(--ink); line-height:1.25; margin-top:6px; letter-spacing:-0.2px; }
+.gx-card-s{ font-size:13.5px; color:var(--text-secondary); line-height:1.45; margin-top:4px; }
+.gx-lab{ font-size:13px; font-weight:600; color:var(--text-tertiary); margin:24px 0 10px; }
+.gx-sparks{ display:flex; flex-wrap:wrap; gap:9px; }
+.gx-spark{ border:1px solid var(--hairline); border-radius:999px; background:#fff; padding:9px 15px;
+  font:600 14px 'DM Sans',sans-serif; color:var(--ink); cursor:pointer; transition:border-color .2s ease, background .2s ease; }
+.gx-spark:hover{ background:#FAFBFB; }
+.gx-spark.on{ border-color:#0E794E; box-shadow:inset 0 0 0 1px #0E794E; color:#0E794E; background:#F3FBF7; }
+.gx-name{ width:100%; box-sizing:border-box; margin-top:14px; border:0; border-bottom:2px solid var(--hairline);
+  font:600 22px 'DM Sans',sans-serif; color:var(--ink); padding:8px 2px 10px; outline:none; background:transparent; letter-spacing:-0.2px; }
+.gx-name:focus{ border-bottom-color:#0E794E; }
+.gx-name::placeholder{ color:#B7BCC6; font-weight:500; }
+.gx-two{ display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+.gx-big{ font-size:24px; font-weight:800; color:var(--ink); letter-spacing:-0.5px; font-variant-numeric:tabular-nums; margin-bottom:8px; }
+.gx-slider{ width:100%; appearance:none; -webkit-appearance:none; height:6px; border-radius:999px;
+  background:linear-gradient(90deg,#0E794E var(--fill,53%),#E7E9EC var(--fill,53%)); outline:none; margin:6px 0 2px; }
+.gx-slider::-webkit-slider-thumb{ appearance:none; -webkit-appearance:none; width:26px; height:26px; border-radius:999px; background:#fff; border:3px solid #0E794E; cursor:pointer; }
+.gx-slider::-moz-range-thumb{ width:22px; height:22px; border-radius:999px; background:#fff; border:3px solid #0E794E; cursor:pointer; }
+.gx-years{ display:flex; flex-wrap:wrap; gap:8px; }
+.gx-year{ border:1px solid var(--hairline); border-radius:12px; background:#fff; padding:9px 0; width:64px; text-align:center;
+  font:700 14.5px 'DM Sans',sans-serif; color:var(--ink); cursor:pointer; font-variant-numeric:tabular-nums; }
+.gx-year.on{ border-color:#0E794E; box-shadow:inset 0 0 0 1px #0E794E; color:#0E794E; }
+.gx-pace{ margin-top:20px; padding:13px 16px; border:1px solid var(--hairline); border-radius:14px; background:#FAFCFB;
+  font-size:15px; color:var(--ink); line-height:1.5; }
+.gx-pace b{ font-variant-numeric:tabular-nums; }
+.gx-pace .warn{ display:block; font-size:12.5px; color:#8A6D00; margin-top:3px; }
+.gx-miles{ margin-top:8px; }
+.gx-mile-track{ position:relative; height:2px; background:#EAECEF; margin:26px 8px 10px; }
+.gx-mile-track i{ position:absolute; top:50%; width:13px; height:13px; border-radius:999px; background:#04B477;
+  border:2.5px solid #fff; box-sizing:border-box; transform:translate(-50%,-50%); }
+.gx-mile-track i:nth-child(2){ background:#FBBD04; } .gx-mile-track i:nth-child(3){ background:#1B6B5C; } .gx-mile-track i:nth-child(4){ background:#0E794E; width:16px; height:16px; }
+.gx-mile-labs{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+.gx-mile-labs div{ text-align:center; }
+.gx-mile-labs .t{ font-size:12.5px; font-weight:700; color:var(--ink); }
+.gx-mile-labs .d{ font-size:11.5px; color:var(--text-tertiary); margin-top:1px; font-variant-numeric:tabular-nums; }
+.gx-help-row{ display:flex; align-items:center; gap:13px; padding:12px 2px; border-bottom:1px solid var(--hairline); }
+.gx-help-row:last-of-type{ border-bottom:0; }
+.gx-help-row .t{ flex:1; font-size:14.5px; font-weight:600; color:var(--ink); }
+.gx-help-row .t small{ display:block; font-size:12.5px; font-weight:400; color:var(--text-secondary); margin-top:1px; }
+.gx-tog{ flex:none; width:44px; height:26px; border-radius:999px; border:0; background:#D9DDE3; position:relative; cursor:pointer; transition:background .2s ease; }
+.gx-tog::after{ content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:999px; background:#fff; transition:left .2s ease; }
+.gx-tog.on{ background:#0E794E; }
+.gx-tog.on::after{ left:21px; }
+.gx-sum{ margin:16px auto 20px; max-width:380px; border:1px solid var(--hairline); border-radius:16px; padding:16px 18px; text-align:left; }
+.gx-sum .nm{ font-size:18px; font-weight:700; color:var(--ink); }
+.gx-sum .ln{ font-size:14px; color:var(--text-secondary); margin-top:4px; font-variant-numeric:tabular-nums; }
+/* ===== how the score is calculated ===== */
+.gxs-row{ display:flex; align-items:center; gap:13px; padding:12px 0; border-bottom:1px solid var(--hairline); }
+.gxs-row:last-of-type{ border-bottom:0; }
+.gxs-n{ flex:0 0 226px; min-width:0; }
+.gxs-n .t{ font-size:14.5px; font-weight:700; color:var(--ink); }
+.gxs-n .s{ font-size:12.5px; color:var(--text-secondary); line-height:1.4; margin-top:1px; }
+.gxs-w{ flex:none; font-size:11px; font-weight:800; color:var(--text-secondary); background:#F1F3F5; border-radius:999px; padding:3px 8px; font-variant-numeric:tabular-nums; }
+.gxs-bar{ flex:1; height:7px; border-radius:999px; background:#F0F2F3; overflow:hidden; }
+.gxs-bar i{ display:block; height:100%; border-radius:999px; background:#04B477; width:0; transition:width .8s cubic-bezier(0.22,1,0.36,1); }
+.gxs-row.warn .gxs-bar i{ background:#FBBD04; }
+.gxs-v{ flex:0 0 34px; text-align:right; font-size:14px; font-weight:800; color:var(--ink); font-variant-numeric:tabular-nums; }
+.gxs-row.warn .gxs-v{ color:#8A6D00; }
+.gxs-note{ font-size:13.5px; color:var(--text-tertiary); line-height:1.55; margin-top:16px; max-width:58ch; }
 /* ===== the family plan recent: one plan, every voice ===== */
 .fam-card{ border:1px solid var(--hairline); border-radius:18px; padding:18px 20px; margin-top:6px; background:#fff; }
 .fam-eyebrow{ font-size:12.5px; font-weight:700; letter-spacing:.4px; color:#0E794E; margin-bottom:10px; }
@@ -2440,6 +2508,62 @@ body[data-page="signup"] .layout.page{ display:none !important; }
 .bud-seg{display:flex;border:1px solid var(--hairline);border-radius:999px;background:var(--sand);padding:4px;}
 .bud-seg button{flex:1;min-height:48px;font:600 15px var(--font);color:var(--text-secondary);background:transparent;border:none;border-radius:999px;cursor:pointer;transition:all var(--dur-fast) var(--ease-out);white-space:nowrap;padding:0 8px;}
 .bud-seg button.active{background:var(--white);color:var(--ink);border:1px solid var(--hairline-strong);}
+/* expense provenance: where each number came from */
+.bud-src{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;border-radius:999px;padding:2.5px 10px;white-space:nowrap;}
+.bud-src.plaid{color:#1B6B5C;background:#F0F7F5;}
+.bud-src.man{color:var(--text-tertiary);background:var(--white);border:1px solid var(--hairline);}
+.bud-src svg{flex:none;}
+.bud-srcbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:28px 0 4px;}
+.bud-srcseg{flex:none;padding:3px;background:var(--white);}
+.bud-srcseg button{flex:none;min-height:42px;padding:0 18px;font-size:14.5px;}
+.bud-srcsum{font-size:13.5px;color:var(--text-tertiary);}
+.budget-table td.srcc{vertical-align:middle;}
+.budget-table .bud-src{font-size:11.5px;padding:2.5px 8px;gap:4px;}
+.bud-src.syncc{color:#5B6472;background:#F1F3F5;}
+.bud-srcbar-tbl{margin:0 0 16px;}
+/* ===== day zero: email, password, nothing else. the plan sleeps until the first answer ===== */
+body.day-zero #snapshotView .snap-chartwrap,
+body.day-zero #snapshotView .snap-stats,
+body.day-zero #snapshotView .snap-headline,
+body.day-zero #snapshotView .rm-head,
+body.day-zero .rail,
+body.day-zero .side{ filter:grayscale(1) opacity(0.34); pointer-events:none; transition:filter 1.1s ease; }
+body.dz-waking #snapshotView .snap-chartwrap,
+body.dz-waking #snapshotView .snap-stats,
+body.dz-waking #snapshotView .snap-headline,
+body.dz-waking #snapshotView .rm-head,
+body.dz-waking .rail,
+body.dz-waking .side{ filter:grayscale(0) opacity(1); }
+body.day-zero #psNum{ display:none; }
+.dz-q{ display:none; }
+body.day-zero .dz-q{ display:flex; align-items:center; justify-content:center; position:absolute; inset:0;
+  font:700 15px 'DM Sans',sans-serif; color:#9AA0AA; }
+.dz-strip{ display:none; }
+body.day-zero .dz-strip{ display:flex; align-items:center; gap:10px; margin:0 0 18px; font-size:13.5px; color:var(--text-tertiary); }
+.dz-strip .dot{ width:7px; height:7px; border-radius:999px; background:#04B477; flex:none; }
+.dz-strip b{ color:var(--ink); font-weight:600; }
+.dz-hero{ display:none; }
+body.day-zero .dz-hero{ display:block; position:relative; z-index:5; border:1px solid var(--hairline); border-radius:22px;
+  background:linear-gradient(135deg, #F3FBF7 0%, #FFFFFF 60%); padding:30px 32px 28px; margin:0 0 34px; }
+.dz-eyebrow{ font-size:12.5px; font-weight:700; letter-spacing:.4px; color:#0E794E; margin-bottom:10px; }
+.dz-h{ font-size:27px; font-weight:700; letter-spacing:-0.5px; color:var(--ink); line-height:1.2; }
+.dz-sub{ font-size:15.5px; color:var(--text-secondary); line-height:1.55; margin-top:8px; max-width:52ch; }
+.dz-ask{ display:flex; align-items:flex-end; gap:16px; margin-top:22px; flex-wrap:wrap; }
+.dz-ask label{ display:block; font-size:13px; font-weight:600; color:var(--text-tertiary); margin-bottom:7px; }
+.dz-ask input{ width:150px; border:0; border-bottom:2.5px solid var(--hairline-strong); background:transparent; outline:none;
+  font:700 34px 'DM Sans',sans-serif; color:var(--ink); padding:2px 2px 6px; letter-spacing:-0.5px; }
+.dz-ask input:focus{ border-bottom-color:#0E794E; }
+.dz-ask input::placeholder{ color:#C9CDD4; }
+.dz-go{ border:0; border-radius:999px; background:#0E794E; color:#fff; font:700 16px 'DM Sans',sans-serif;
+  padding:14px 26px; cursor:pointer; margin-bottom:4px; }
+.dz-hint{ font-size:13px; color:var(--text-tertiary); margin-top:14px; }
+.dz-watermark{ display:none; }
+body.day-zero .dz-watermark{ display:block; position:absolute; left:50%; top:42%; transform:translate(-50%,-50%);
+  z-index:4; font-size:14.5px; font-weight:600; color:#8B919C; background:rgba(255,255,255,0.86);
+  border:1px solid var(--hairline); border-radius:999px; padding:9px 18px; white-space:nowrap; }
+body.dz-waking .dz-hero{ opacity:0; transform:translateY(-8px); transition:opacity .5s ease, transform .5s ease; }
+body.dz-waking .dz-watermark, body.dz-waking .dz-q{ opacity:0; transition:opacity .4s ease; }
+@media (prefers-reduced-motion:reduce){ body.day-zero *, body.dz-waking *{ transition:none !important; } }
 .bud-toggle-row{display:flex;align-items:center;justify-content:space-between;min-height:56px;}
 .bud-toggle-row .tr-label{font-size:16px;font-weight:500;color:var(--ink);}
 .bud-toggle-row .tr-help{font-size:14px;color:var(--text-secondary);margin-top:2px;}
@@ -3474,12 +3598,12 @@ body.mpanel-open{ overflow:hidden; }
         <!-- OPEN -->
         <div class="ps-open-view">
           <div class="ps-head">
-            <div class="ps-ring" id="ring">
+            <div class="ps-ring" id="ring" role="button" tabindex="0" aria-label="How your Plan Score is calculated" title="How is this calculated?">
               <svg width="34" height="34" viewBox="0 0 34 34">
                 <circle class="track" cx="17" cy="17" r="14" stroke-width="2.5"/>
                 <circle class="arc" id="ringArc" cx="17" cy="17" r="14" stroke-width="2.5"/>
               </svg>
-              <div class="ps-num" id="psNum" style="font-size:14px;"></div>
+              <div class="ps-num" id="psNum" style="font-size:14px;"></div><div class="dz-q" aria-hidden="true">?</div>
             </div>
             <div class="ps-tabs" id="tabs"></div>
             <button class="ps-toggle" id="collapseBtn" aria-label="Collapse">
@@ -3514,7 +3638,7 @@ body.mpanel-open{ overflow:hidden; }
 
         <!-- CLOSED -->
         <div class="ps-closed" id="closedView" style="display:none;">
-          <div class="ps-mini-ring">
+          <div class="ps-mini-ring" id="miniRing" role="button" tabindex="0" aria-label="How your Plan Score is calculated" title="How is this calculated?">
             <svg width="38" height="38" viewBox="0 0 38 38">
               <circle class="track" cx="19" cy="19" r="15" stroke-width="3.5"/>
               <circle class="arc" id="miniArc" cx="19" cy="19" r="15" stroke-width="3.5"/>
@@ -3714,6 +3838,18 @@ body.mpanel-open{ overflow:hidden; }
 
     <!-- ===== Snapshot (Plan) view — shown when My Financial Plan is selected ===== -->
     <section id="snapshotView" aria-label="Plan snapshot">
+      <div class="dz-strip"><span class="dot"></span><span><b>marshall.hartwell@gmail.com</b> &middot; account created two minutes ago &middot; nothing else entered</span></div>
+      <div class="dz-hero">
+        <div class="dz-eyebrow">Day zero</div>
+        <div class="dz-h">We know your email. That&rsquo;s it.</div>
+        <div class="dz-sub">Everything on this page is what a plan looks like. It is asleep, drawn from a typical American household. One answer starts making it yours.</div>
+        <div class="dz-ask">
+          <div><label for="dzAge">How old are you?</label>
+          <input id="dzAge" type="text" inputmode="numeric" maxlength="2" placeholder="61" autocomplete="off"></div>
+          <button type="button" class="dz-go" id="dzGo">Wake up my plan</button>
+        </div>
+        <div class="dz-hint">No forms, no upload, nothing to link yet. Every answer you give redraws this page.</div>
+      </div>
       <h2 class="snap-headline" data-lens="snapshot">Retire in <span class="yrs">8 years</span> on <span class="amt">$7,200</span> a month.</h2>
       <h2 class="snap-headline" data-lens="tax">One conversion saves <span class="amt">$430</span> a <span class="yrs">month.</span></h2>
       <h2 class="snap-headline" data-lens="retirement"><span class="amt">$1.14M</span> working toward your <span class="yrs">retirement.</span></h2>
@@ -3903,6 +4039,20 @@ body.mpanel-open{ overflow:hidden; }
           <div class="snap-stat stat-up up-teal" data-key="bookcoach" role="button" tabindex="0"><div class="lab">Retirement Coaching</div><div class="tip">30 minutes with a Boldin certified coach.</div><div class="up-cta">Book a session</div></div>
         </div>
 
+        <div class="vision-board" id="visionBoard">
+          <div class="vb-head"><div class="vb-title">The life all of this is <em>for</em>.</div><div class="vb-sub">Six things you&rsquo;ve already made affordable. Click one, and go there.</div></div>
+          <div class="vb-grid">
+            <button type="button" class="vb-tile" data-vb="lake" style="grid-column:span 2;height:206px" aria-label="Open: Mornings on the lake"><svg id="vbsc-lake" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9C4"/><stop offset=".55" stop-color="#FFC493"/><stop offset="1" stop-color="#F2997E"/></linearGradient><radialGradient id="snL" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF3D6"/><stop offset=".55" stop-color="#FFD9A0" stop-opacity=".85"/><stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/></radialGradient><linearGradient id="waL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E7375"/><stop offset="1" stop-color="#1F484E"/></linearGradient></defs><rect width="400" height="150" fill="url(#skL)"/><circle cx="258" cy="112" r="64" fill="url(#snL)"/><circle cx="258" cy="112" r="26" fill="#FFE7BC"/><path d="M0 118 L70 84 L128 112 L196 90 L260 116 L330 96 L400 118 V150 H0 Z" fill="#B96E5E" opacity=".38"/><path d="M0 132 L90 106 L170 128 L262 108 L340 128 L400 118 V152 H0 Z" fill="#7E5560" opacity=".5"/><rect y="148" width="400" height="112" fill="url(#waL)"/><rect x="216" y="164" width="84" height="4" rx="2" fill="#FFCF9E" opacity=".55"/><rect x="238" y="178" width="46" height="3.4" rx="1.7" fill="#FFCF9E" opacity=".4"/><rect x="226" y="192" width="64" height="3.4" rx="1.7" fill="#FFCF9E" opacity=".28"/><path d="M18 206 h150 v10 H18 z" fill="#21363B"/><rect x="34" y="216" width="7" height="30" fill="#21363B"/><rect x="98" y="216" width="7" height="34" fill="#21363B"/><rect x="152" y="216" width="7" height="38" fill="#21363B"/><rect x="58" y="192" width="10" height="14" rx="2" fill="#21363B"/><rect x="76" y="192" width="10" height="14" rx="2" fill="#21363B"/><path d="M63 186 c-3-5 3-7 0-12 M81 186 c-3-5 3-7 0-12" stroke="#FFF6E6" stroke-width="2" fill="none" stroke-linecap="round" opacity=".75"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>Mornings on the lake</b><span class="vb-chip">In the plan &middot; 2032</span></span></button>
+            <button type="button" class="vb-tile" data-vb="kyoto" style="grid-column:span 1;height:206px" aria-label="Open: Kyoto, in blossom"><svg id="vbsc-kyoto" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skK" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3EC"/><stop offset="1" stop-color="#FDF4F0"/></linearGradient></defs><rect width="400" height="260" fill="url(#skK)"/><circle cx="330" cy="58" r="26" fill="#F9D3DE"/><circle cx="86" cy="66" r="58" fill="#F2BFD2" opacity=".9"/><circle cx="158" cy="42" r="44" fill="#EFB0C8" opacity=".85"/><circle cx="36" cy="120" r="40" fill="#F5CBDB" opacity=".85"/><circle cx="360" cy="150" r="46" fill="#F2BFD2" opacity=".8"/><circle cx="396" cy="96" r="38" fill="#EFB0C8" opacity=".75"/><g fill="#F3C3D3"><circle cx="140" cy="128" r="3.4"/><circle cx="188" cy="96" r="2.6"/><circle cx="228" cy="140" r="3"/><circle cx="112" cy="170" r="2.6"/><circle cx="270" cy="106" r="2.4"/><circle cx="206" cy="188" r="2.8"/></g><rect y="216" width="400" height="44" fill="#EBD9DC"/><g fill="#5E3A44"><rect x="168" y="96" width="12" height="132"/><rect x="252" y="96" width="12" height="132"/><path d="M150 96 h132 l8 -14 h-148 z"/><rect x="158" y="112" width="116" height="10"/></g></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>Kyoto, in blossom</b><span class="vb-chip">Funded &middot; $6,800</span></span></button>
+            <button type="button" class="vb-tile" data-vb="shop" style="grid-column:span 1;height:164px" aria-label="Open: The woodshop"><svg id="vbsc-shop" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A4E66"/><stop offset="1" stop-color="#1E2C40"/></linearGradient><radialGradient id="glS" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFCE85"/><stop offset="1" stop-color="#FFCE85" stop-opacity="0"/></radialGradient></defs><rect width="400" height="260" fill="url(#skS)"/><circle cx="330" cy="52" r="15" fill="#F5EFDD" opacity=".9"/><circle cx="323" cy="48" r="13" fill="#2A3B52"/><g fill="#F5EFDD" opacity=".8"><circle cx="60" cy="40" r="1.6"/><circle cx="120" cy="70" r="1.2"/><circle cx="210" cy="34" r="1.4"/><circle cx="282" cy="88" r="1.1"/><circle cx="376" cy="120" r="1.3"/></g><path d="M330 210 l0 -66 m0 66 c-26 0 -40 -20 -40 -38 c0 -22 18 -38 40 -40 c22 2 40 18 40 40 c0 18 -14 38 -40 38" fill="#101B28"/><rect y="208" width="400" height="52" fill="#15222F"/><path d="M60 208 V130 l70 -40 70 40 v78 z" fill="#0F1A26"/><circle cx="130" cy="160" r="52" fill="url(#glS)" opacity=".85"/><rect x="106" y="140" width="48" height="42" rx="4" fill="#FFC87A"/><path d="M130 140 v42 M106 161 h48" stroke="#0F1A26" stroke-width="4"/><path d="M96 208 c40 12 68 12 118 0 v18 c-50 10 -78 10 -118 0 z" fill="#FFC87A" opacity=".16"/><path d="M172 118 c4 -10 -6 -12 -2 -22 c3 -8 -4 -10 -2 -18" stroke="#8FA0B5" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".55"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>The woodshop</b><span class="vb-chip">Funded &middot; $4,200</span></span></button>
+            <button type="button" class="vb-tile" data-vb="kids" style="grid-column:span 1;height:164px" aria-label="Open: A month of grandkids"><svg id="vbsc-kids" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFE3F5"/><stop offset="1" stop-color="#EAF7FD"/></linearGradient></defs><rect width="400" height="170" fill="url(#skG)"/><circle cx="70" cy="52" r="30" fill="#FFF0C9"/><path d="M0 150 h400 v34 H0 z" fill="#7FC2D4"/><path d="M0 150 q50 8 100 0 t100 0 t100 0 t100 0 v10 H0 z" fill="#A9DAE6"/><rect y="184" width="400" height="76" fill="#F2E3C2"/><path d="M262 46 l30 24 -30 24 -30 -24 z" fill="#F2B34C"/><path d="M262 46 l30 24 -30 24 z" fill="#E89A33"/><path d="M262 94 c-6 14 8 18 2 32 c-5 12 6 16 2 28 c-3 9 4 12 2 20" stroke="#C98A3C" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M266 174 l-4 8 6 -2 -2 8" stroke="#E89A33" stroke-width="2.4" fill="none" stroke-linecap="round"/><g fill="#2E5F63"><circle cx="252" cy="196" r="7"/><path d="M245 204 h14 l-2 26 h-10 z"/><circle cx="286" cy="202" r="5.6"/><path d="M280.5 208 h11 l-1.6 20 h-7.8 z"/></g><path d="M258 206 q4 -14 6 -30" stroke="#2E5F63" stroke-width="2" fill="none" stroke-linecap="round"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>A month of grandkids</b><span class="vb-chip">Every July &middot; $2,400</span></span></button>
+            <button type="button" class="vb-tile" data-vb="garden" style="grid-column:span 1;height:164px" aria-label="Open: The garden year"><svg id="vbsc-garden" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAF6E7"/><stop offset="1" stop-color="#D8EFD4"/></linearGradient></defs><rect width="400" height="150" fill="url(#skR)"/><circle cx="322" cy="52" r="30" fill="#FFF3C9"/><path d="M0 118 L80 96 L180 116 L290 98 L400 116 V150 H0 Z" fill="#A7CBA0" opacity=".7"/><rect y="146" width="400" height="114" fill="#8FBF8A"/><g stroke="#5E9E6F" stroke-width="12" fill="none" opacity=".85"><path d="M-20 258 Q200 168 420 258"/><path d="M-20 300 Q200 190 420 300"/></g><g stroke="#4C8A5E" stroke-width="12" fill="none" opacity=".7"><path d="M-20 278 Q200 178 420 278"/></g><g stroke="#2E6E4E" stroke-width="3" fill="none" stroke-linecap="round"><path d="M150 210 v-20 m0 8 c-8 -2 -12 -8 -12 -14 c8 0 12 6 12 14 m0 -6 c8 -2 12 -8 12 -14 c-8 0 -12 6 -12 14"/><path d="M236 224 v-16 m0 6 c-7 -2 -10 -7 -10 -12 c7 0 10 5 10 12 m0 -5 c7 -2 10 -7 10 -12 c-7 0 -10 5 -10 12"/></g><g fill="#7A5A3A"><rect x="60" y="150" width="6" height="52"/></g><ellipse cx="63" cy="146" rx="17" ry="6" fill="#E3C989"/><circle cx="63" cy="138" r="10" fill="#E3C989"/><path d="M46 146 h34" stroke="#C9A75E" stroke-width="3"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>The garden year</b><span class="vb-chip">$60 / mo</span></span></button>
+            <button type="button" class="vb-tile" data-vb="tue" style="grid-column:span 1;height:142px" aria-label="Open: The first Tuesday"><svg id="vbsc-tue" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFEBC9"/><stop offset="1" stop-color="#FFCE9E"/></linearGradient><radialGradient id="snT" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF6DE"/><stop offset=".6" stop-color="#FFDFA6" stop-opacity=".9"/><stop offset="1" stop-color="#FFDFA6" stop-opacity="0"/></radialGradient></defs><rect width="400" height="188" fill="url(#skT)"/><circle cx="200" cy="176" r="96" fill="url(#snT)"/><path d="M148 184 a52 52 0 0 1 104 0 z" fill="#FFE7B4"/><rect y="184" width="400" height="76" fill="#3E6E5F"/><path d="M120 236 h44 l14 -50 M120 236 l-12 -50 m6 22 h48 m-44 28 v14 m36 -14 v14" stroke="#22423C" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M250 236 h44 l14 -50 M250 236 l-12 -50 m6 22 h48 m-44 28 v14 m36 -14 v14" stroke="#22423C" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M118 246 h70 M248 246 h70" stroke="#2C5347" stroke-width="5" opacity=".6" stroke-linecap="round"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>The first Tuesday</b><span class="vb-chip">Dec 2028 &middot; Free</span></span></button>
+            <div class="vb-quote" style="grid-column:span 2;height:142px"><span>You didn&rsquo;t save a number.<br>You saved <em>mornings like these</em>.</span></div>
+            <button type="button" class="vb-add" style="grid-column:span 3" aria-label="Create your own dream"><span class="vb-add-i">+</span><span class="vb-add-t"><b>Add your own dream</b><span>Name it, and the plan prices it on the spot.</span></span></button>
+          </div>
+        </div>
+
         <div class="snap-fanwrap" id="retFan" aria-label="Simulated projected savings, 1,000 futures">
           <div class="fan-lab">Simulated projected savings</div>
           <svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" role="img">
@@ -3924,20 +4074,6 @@ body.mpanel-open{ overflow:hidden; }
             <text class="snap-axis" x="700" y="242" text-anchor="end">2056</text>
           </svg>
           <div class="fan-legend"><span><i class="sw-avg"></i>Average path</span><span><i class="sw-mc"></i>1,000 futures</span><span><i class="sw-med"></i>Median</span></div>
-        </div>
-
-        <div class="vision-board" id="visionBoard">
-          <div class="vb-head"><div class="vb-title">The life all of this is <em>for</em>.</div><div class="vb-sub">Six things you&rsquo;ve already made affordable. Click one, and go there.</div></div>
-          <div class="vb-grid">
-            <button type="button" class="vb-tile" data-vb="lake" style="grid-column:span 2;height:206px" aria-label="Open: Mornings on the lake"><svg id="vbsc-lake" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9C4"/><stop offset=".55" stop-color="#FFC493"/><stop offset="1" stop-color="#F2997E"/></linearGradient><radialGradient id="snL" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF3D6"/><stop offset=".55" stop-color="#FFD9A0" stop-opacity=".85"/><stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/></radialGradient><linearGradient id="waL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E7375"/><stop offset="1" stop-color="#1F484E"/></linearGradient></defs><rect width="400" height="150" fill="url(#skL)"/><circle cx="258" cy="112" r="64" fill="url(#snL)"/><circle cx="258" cy="112" r="26" fill="#FFE7BC"/><path d="M0 118 L70 84 L128 112 L196 90 L260 116 L330 96 L400 118 V150 H0 Z" fill="#B96E5E" opacity=".38"/><path d="M0 132 L90 106 L170 128 L262 108 L340 128 L400 118 V152 H0 Z" fill="#7E5560" opacity=".5"/><rect y="148" width="400" height="112" fill="url(#waL)"/><rect x="216" y="164" width="84" height="4" rx="2" fill="#FFCF9E" opacity=".55"/><rect x="238" y="178" width="46" height="3.4" rx="1.7" fill="#FFCF9E" opacity=".4"/><rect x="226" y="192" width="64" height="3.4" rx="1.7" fill="#FFCF9E" opacity=".28"/><path d="M18 206 h150 v10 H18 z" fill="#21363B"/><rect x="34" y="216" width="7" height="30" fill="#21363B"/><rect x="98" y="216" width="7" height="34" fill="#21363B"/><rect x="152" y="216" width="7" height="38" fill="#21363B"/><rect x="58" y="192" width="10" height="14" rx="2" fill="#21363B"/><rect x="76" y="192" width="10" height="14" rx="2" fill="#21363B"/><path d="M63 186 c-3-5 3-7 0-12 M81 186 c-3-5 3-7 0-12" stroke="#FFF6E6" stroke-width="2" fill="none" stroke-linecap="round" opacity=".75"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>Mornings on the lake</b><span class="vb-chip">In the plan &middot; 2032</span></span></button>
-            <button type="button" class="vb-tile" data-vb="kyoto" style="grid-column:span 1;height:206px" aria-label="Open: Kyoto, in blossom"><svg id="vbsc-kyoto" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skK" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3EC"/><stop offset="1" stop-color="#FDF4F0"/></linearGradient></defs><rect width="400" height="260" fill="url(#skK)"/><circle cx="330" cy="58" r="26" fill="#F9D3DE"/><circle cx="86" cy="66" r="58" fill="#F2BFD2" opacity=".9"/><circle cx="158" cy="42" r="44" fill="#EFB0C8" opacity=".85"/><circle cx="36" cy="120" r="40" fill="#F5CBDB" opacity=".85"/><circle cx="360" cy="150" r="46" fill="#F2BFD2" opacity=".8"/><circle cx="396" cy="96" r="38" fill="#EFB0C8" opacity=".75"/><g fill="#F3C3D3"><circle cx="140" cy="128" r="3.4"/><circle cx="188" cy="96" r="2.6"/><circle cx="228" cy="140" r="3"/><circle cx="112" cy="170" r="2.6"/><circle cx="270" cy="106" r="2.4"/><circle cx="206" cy="188" r="2.8"/></g><rect y="216" width="400" height="44" fill="#EBD9DC"/><g fill="#5E3A44"><rect x="168" y="96" width="12" height="132"/><rect x="252" y="96" width="12" height="132"/><path d="M150 96 h132 l8 -14 h-148 z"/><rect x="158" y="112" width="116" height="10"/></g></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>Kyoto, in blossom</b><span class="vb-chip">Funded &middot; $6,800</span></span></button>
-            <button type="button" class="vb-tile" data-vb="shop" style="grid-column:span 1;height:164px" aria-label="Open: The woodshop"><svg id="vbsc-shop" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A4E66"/><stop offset="1" stop-color="#1E2C40"/></linearGradient><radialGradient id="glS" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFCE85"/><stop offset="1" stop-color="#FFCE85" stop-opacity="0"/></radialGradient></defs><rect width="400" height="260" fill="url(#skS)"/><circle cx="330" cy="52" r="15" fill="#F5EFDD" opacity=".9"/><circle cx="323" cy="48" r="13" fill="#2A3B52"/><g fill="#F5EFDD" opacity=".8"><circle cx="60" cy="40" r="1.6"/><circle cx="120" cy="70" r="1.2"/><circle cx="210" cy="34" r="1.4"/><circle cx="282" cy="88" r="1.1"/><circle cx="376" cy="120" r="1.3"/></g><path d="M330 210 l0 -66 m0 66 c-26 0 -40 -20 -40 -38 c0 -22 18 -38 40 -40 c22 2 40 18 40 40 c0 18 -14 38 -40 38" fill="#101B28"/><rect y="208" width="400" height="52" fill="#15222F"/><path d="M60 208 V130 l70 -40 70 40 v78 z" fill="#0F1A26"/><circle cx="130" cy="160" r="52" fill="url(#glS)" opacity=".85"/><rect x="106" y="140" width="48" height="42" rx="4" fill="#FFC87A"/><path d="M130 140 v42 M106 161 h48" stroke="#0F1A26" stroke-width="4"/><path d="M96 208 c40 12 68 12 118 0 v18 c-50 10 -78 10 -118 0 z" fill="#FFC87A" opacity=".16"/><path d="M172 118 c4 -10 -6 -12 -2 -22 c3 -8 -4 -10 -2 -18" stroke="#8FA0B5" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".55"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>The woodshop</b><span class="vb-chip">Funded &middot; $4,200</span></span></button>
-            <button type="button" class="vb-tile" data-vb="kids" style="grid-column:span 1;height:164px" aria-label="Open: A month of grandkids"><svg id="vbsc-kids" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFE3F5"/><stop offset="1" stop-color="#EAF7FD"/></linearGradient></defs><rect width="400" height="170" fill="url(#skG)"/><circle cx="70" cy="52" r="30" fill="#FFF0C9"/><path d="M0 150 h400 v34 H0 z" fill="#7FC2D4"/><path d="M0 150 q50 8 100 0 t100 0 t100 0 t100 0 v10 H0 z" fill="#A9DAE6"/><rect y="184" width="400" height="76" fill="#F2E3C2"/><path d="M262 46 l30 24 -30 24 -30 -24 z" fill="#F2B34C"/><path d="M262 46 l30 24 -30 24 z" fill="#E89A33"/><path d="M262 94 c-6 14 8 18 2 32 c-5 12 6 16 2 28 c-3 9 4 12 2 20" stroke="#C98A3C" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M266 174 l-4 8 6 -2 -2 8" stroke="#E89A33" stroke-width="2.4" fill="none" stroke-linecap="round"/><g fill="#2E5F63"><circle cx="252" cy="196" r="7"/><path d="M245 204 h14 l-2 26 h-10 z"/><circle cx="286" cy="202" r="5.6"/><path d="M280.5 208 h11 l-1.6 20 h-7.8 z"/></g><path d="M258 206 q4 -14 6 -30" stroke="#2E5F63" stroke-width="2" fill="none" stroke-linecap="round"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>A month of grandkids</b><span class="vb-chip">Every July &middot; $2,400</span></span></button>
-            <button type="button" class="vb-tile" data-vb="garden" style="grid-column:span 1;height:164px" aria-label="Open: The garden year"><svg id="vbsc-garden" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAF6E7"/><stop offset="1" stop-color="#D8EFD4"/></linearGradient></defs><rect width="400" height="150" fill="url(#skR)"/><circle cx="322" cy="52" r="30" fill="#FFF3C9"/><path d="M0 118 L80 96 L180 116 L290 98 L400 116 V150 H0 Z" fill="#A7CBA0" opacity=".7"/><rect y="146" width="400" height="114" fill="#8FBF8A"/><g stroke="#5E9E6F" stroke-width="12" fill="none" opacity=".85"><path d="M-20 258 Q200 168 420 258"/><path d="M-20 300 Q200 190 420 300"/></g><g stroke="#4C8A5E" stroke-width="12" fill="none" opacity=".7"><path d="M-20 278 Q200 178 420 278"/></g><g stroke="#2E6E4E" stroke-width="3" fill="none" stroke-linecap="round"><path d="M150 210 v-20 m0 8 c-8 -2 -12 -8 -12 -14 c8 0 12 6 12 14 m0 -6 c8 -2 12 -8 12 -14 c-8 0 -12 6 -12 14"/><path d="M236 224 v-16 m0 6 c-7 -2 -10 -7 -10 -12 c7 0 10 5 10 12 m0 -5 c7 -2 10 -7 10 -12 c-7 0 -10 5 -10 12"/></g><g fill="#7A5A3A"><rect x="60" y="150" width="6" height="52"/></g><ellipse cx="63" cy="146" rx="17" ry="6" fill="#E3C989"/><circle cx="63" cy="138" r="10" fill="#E3C989"/><path d="M46 146 h34" stroke="#C9A75E" stroke-width="3"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>The garden year</b><span class="vb-chip">$60 / mo</span></span></button>
-            <button type="button" class="vb-tile" data-vb="tue" style="grid-column:span 1;height:142px" aria-label="Open: The first Tuesday"><svg id="vbsc-tue" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="skT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFEBC9"/><stop offset="1" stop-color="#FFCE9E"/></linearGradient><radialGradient id="snT" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF6DE"/><stop offset=".6" stop-color="#FFDFA6" stop-opacity=".9"/><stop offset="1" stop-color="#FFDFA6" stop-opacity="0"/></radialGradient></defs><rect width="400" height="188" fill="url(#skT)"/><circle cx="200" cy="176" r="96" fill="url(#snT)"/><path d="M148 184 a52 52 0 0 1 104 0 z" fill="#FFE7B4"/><rect y="184" width="400" height="76" fill="#3E6E5F"/><path d="M120 236 h44 l14 -50 M120 236 l-12 -50 m6 22 h48 m-44 28 v14 m36 -14 v14" stroke="#22423C" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M250 236 h44 l14 -50 M250 236 l-12 -50 m6 22 h48 m-44 28 v14 m36 -14 v14" stroke="#22423C" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M118 246 h70 M248 246 h70" stroke="#2C5347" stroke-width="5" opacity=".6" stroke-linecap="round"/></svg><span class="vb-scrim" aria-hidden="true"></span><span class="vb-cap"><b>The first Tuesday</b><span class="vb-chip">Dec 2028 &middot; Free</span></span></button>
-            <div class="vb-quote" style="grid-column:span 2;height:142px"><span>You didn&rsquo;t save a number.<br>You saved <em>mornings like these</em>.</span></div>
-            <button type="button" class="vb-add" style="grid-column:span 3" aria-label="Create your own dream"><span class="vb-add-i">+</span><span class="vb-add-t"><b>Add your own dream</b><span>Name it, and the plan prices it on the spot.</span></span></button>
-          </div>
         </div>
 
         <div class="ret-paytitle">Retirement paycheck</div>
@@ -4053,6 +4189,7 @@ body.mpanel-open{ overflow:hidden; }
       <!-- Financial Life lens -->
       <div class="lens-body" data-lens="fl">
         <div class="snap-stats">
+          <div class="snap-stat stat-goal" data-key="newgoal" role="button" tabindex="0"><div class="lab">Your goals <span class="gx-dots"><i></i><i></i><i></i></span></div><div class="gx-card-t">Name the next dream.</div><div class="gx-card-s">Cabin, Portugal, a wedding to host. Give it a number and a date.</div><div class="lrn-cta">Create a goal</div></div>
           <div class="snap-stat" data-key="networth" role="button" tabindex="0"><div class="lab">Net Worth</div><div class="fig">$1.14M</div><div class="sub">Assets minus debts</div></div>
           <div class="snap-stat" data-key="surplus" role="button" tabindex="0"><div class="lab">Surplus</div><div class="fig">$3,450 mo</div><div class="sub">After expenses</div></div>
           <div class="snap-stat" data-key="saverate" role="button" tabindex="0"><div class="lab">Savings Rate</div><div class="fig">28%</div><div class="sub">Above target</div></div>
@@ -5371,6 +5508,14 @@ body.mpanel-open{ overflow:hidden; }
         </div>
       </div>
       <div id="budTable" hidden></div>
+      <div class="bud-srcbar">
+        <div class="bud-seg bud-srcseg" role="tablist" aria-label="Filter by source">
+          <button type="button" class="active" data-src="all" onclick="BUD.srcPick(this)">All</button>
+          <button type="button" data-src="plaid" onclick="BUD.srcPick(this)">Imported</button>
+          <button type="button" data-src="manual" onclick="BUD.srcPick(this)">Entered by you</button>
+        </div>
+        <div class="bud-srcsum"></div>
+      </div>
       <div id="sections"></div>
       <div class="bud-take">
         <div class="bud-take-t">Take your budget with you</div>
@@ -6621,7 +6766,41 @@ document.addEventListener('click', function(e){
       openView.animate([{opacity:0, transform:'translateY(3px)'},{opacity:1, transform:'none'}], {duration:280, easing:'cubic-bezier(0.22,1,0.36,1)'});
     }
   }
-  document.getElementById('ring').addEventListener('click', ()=> showMessage(true));
+  /* day zero: arrive with #zero in the URL and the plan is asleep */
+  (function(){
+    if(location.hash.indexOf('zero')===-1) return;
+    document.body.classList.add('day-zero');
+    var wrap=document.querySelector('.lens-body[data-lens="snapshot"] .snap-chartwrap');
+    if(wrap && !wrap.querySelector('.dz-watermark')){
+      wrap.style.position='relative';
+      var wm=document.createElement('div'); wm.className='dz-watermark';
+      wm.textContent='A typical plan\u2019s shape. Yours replaces it.';
+      wrap.appendChild(wm);
+    }
+    function wake(){
+      var v=parseInt(document.getElementById('dzAge').value,10);
+      if(isNaN(v)||v<18||v>99){ document.getElementById('dzAge').focus(); return; }
+      var strip=document.querySelector('.dz-strip span:last-child');
+      if(strip) strip.innerHTML='<b>1 answer in</b> \u00b7 age '+v+' \u00b7 the plan is waking up';
+      document.body.classList.add('dz-waking');
+      setTimeout(function(){
+        document.body.classList.remove('day-zero','dz-waking');
+        if(history.replaceState) history.replaceState(null,'',location.pathname+location.search);
+        var n=document.getElementById('psNum');
+        if(n){ n.style.transition='none'; }
+      }, 1150);
+    }
+    document.getElementById('dzGo').addEventListener('click', wake);
+    document.getElementById('dzAge').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); wake(); } });
+    setTimeout(function(){ document.getElementById('dzAge').focus(); }, 600);
+  })();
+  document.getElementById('ring').addEventListener('click', ()=> (window.openScorePanel ? openScorePanel('scorehow') : showMessage(true)));
+  document.getElementById('ring').addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); window.openScorePanel && openScorePanel('scorehow'); } });
+  const miniRingEl=document.getElementById('miniRing');
+  if(miniRingEl){
+    miniRingEl.addEventListener('click', (e)=>{ e.stopPropagation(); window.openScorePanel && openScorePanel('scorehow'); });
+    miniRingEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.stopPropagation(); window.openScorePanel && openScorePanel('scorehow'); } });
+  }
   document.getElementById('msgClose').addEventListener('click', ()=> showMessage(false));
 
   /* ---------- load sequence: "Your plan is taking shape" first, then morph into the bars ---------- */
@@ -9493,6 +9672,36 @@ let nextId = 27;
 /* ---- helpers ---- */
 const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
 const monthly = e => ({must: e.must * FREQ_FACTOR[e.freq], like: e.like * FREQ_FACTOR[e.freq]});
+/* provenance: which expenses arrived through Plaid, and from where.
+   parsed aggregates carry the transaction count behind the number. */
+const EXP_SRC = {
+  1:['Chase Checking'], 2:['Chase Checking'], 4:['Chase Checking'], 5:['Chase Checking'],
+  6:['Wells Fargo Visa'], 7:['Chase Checking'], 8:['Wells Fargo Visa',11],
+  10:['Wells Fargo Visa',14], 11:['Wells Fargo Visa',9], 13:['Chase Checking'],
+  15:['Wells Fargo Visa',4], 19:['Wells Fargo Visa',6], 20:['Chase Checking'],
+  21:['Chase Checking'], 22:['Chase Checking']
+};
+expenses.forEach(e => {
+  const s = EXP_SRC[e.id];
+  if(s){ e.src='plaid'; e.inst=s[0]; e.txn=s[1]||0; }
+});
+let srcFilter='all';
+const srcMatch = e => srcFilter==='all'
+  || (srcFilter==='plaid' ? e.src==='plaid' : (!e.synced && e.src!=='plaid'));
+function renderSrcSum(){
+  const im = expenses.filter(e=>e.src==='plaid');
+  const man = expenses.filter(e=>!e.synced && e.src!=='plaid');
+  const insts = [...new Set(im.map(e=>e.inst))].length;
+  document.querySelectorAll('.bud-srcsum').forEach(el=>{
+    el.textContent = im.length+' imported from '+insts+' linked accounts \u00b7 '+man.length+' entered by hand';
+  });
+}
+function srcPick(btn){
+  srcFilter=btn.dataset.src;
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
+  const tbl=document.getElementById('budTable');
+  if(tbl && !tbl.hidden){ renderTable(); renderSrcSum(); } else { renderSections(); }
+}
 const catExpenses = key => expenses.filter(e => e.cat === key);
 const catMonthly = key => catExpenses(key).reduce((a,e)=>{const m=monthly(e);a.must+=m.must;a.like+=m.like;return a;},{must:0,like:0});
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -9510,14 +9719,16 @@ function renderNav(){
   nav.innerHTML = CATEGORIES.map(c=>`<li data-nav="${c.key}" class="${c.key===activeKey?'active':''}">${c.name}</li>`).join('');
 }
 function renderSections(){
+  document.querySelectorAll('.bud-srcseg button').forEach(b=>b.classList.toggle('active', b.dataset.src===srcFilter));
   const wrap = document.getElementById('sections');
   wrap.innerHTML = CATEGORIES.map(c=>{
-    const rows = catExpenses(c.key);
+    const rows = catExpenses(c.key).filter(srcMatch);
+    if(srcFilter!=='all' && !rows.length) return '';
     const m = catMonthly(c.key);
     const body = rows.length
       ? rows.map(rowHtml).join('')
       : `<div class="bud-empty">Nothing here yet.</div>`;
-    const adder = c.synced
+    const adder = srcFilter!=='all' ? '' : c.synced
       ? `<div class="bud-empty" style="padding-top:14px">These payments sync from the debt section of your plan. Edit them there and they update here.</div>`
       : `<button class="bud-add" onclick="BUD.openComposer('${c.key}')">
            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -9530,6 +9741,7 @@ function renderSections(){
       ${adder}
     </section>`;
   }).join('');
+  renderSrcSum();
 }
 function rowHtml(e){
   const meta = [];
@@ -9537,6 +9749,8 @@ function rowHtml(e){
   meta.push(`<span>${e.freq}</span>`);
   if(e.ded) meta.push(`<span class="bud-ded">Deductible</span>`);
   if(e.synced) meta.push(`<span class="bud-sync">Synced from your plan</span>`);
+  else if(e.src==='plaid') meta.push(`<span class="bud-src plaid" title="Imported and parsed from your linked account"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>${esc(e.inst)}${e.txn?` &middot; ${e.txn} transactions`:''}</span>`);
+  else meta.push(`<span class="bud-src man" title="Entered by hand"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>Entered by you</span>`);
   const amtCell = (field)=> e.synced
     ? `<div class="bud-amt-cell"><span class="bud-amt" style="cursor:default">${fmt(e[field])}</span></div>`
     : `<div class="bud-amt-cell"><button class="bud-amt" onclick="BUD.inlineAmt(this,${e.id},'${field}')">${fmt(e[field])}</button></div>`;
@@ -9826,17 +10040,25 @@ function renderTable(){
   const money=v=>'$'+Math.round(v).toLocaleString('en-US');
   const FREQS=['Monthly','Quarterly','Twice a year','Annually'];
   const opts=(list,cur)=>list.map(o=>'<option'+(o===cur?' selected':'')+'>'+escT(o)+'</option>').join('');
+  const shortInst = s => s==='Chase Checking' ? 'Chase' : s==='Wells Fargo Visa' ? 'WF Visa' : escT(s);
+  const srcCell = e => e.synced
+    ? '<td class="srcc"><span class="bud-src syncc" title="Synced from the debt section of your plan">Plan</span></td>'
+    : (e.src==='plaid'
+      ? '<td class="srcc"><span class="bud-src plaid" title="Imported through '+escT(e.inst)+(e.txn?', parsed from '+e.txn+' transactions':'')+'"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>'+shortInst(e.inst)+'</span></td>'
+      : '<td class="srcc"><span class="bud-src man" title="Entered by hand"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>You</span></td>');
   let prevCat=null;
   const rows=expenses.map((e,i)=>{
+    if(!srcMatch(e)) return '';
     const cat=CATEGORIES.find(c=>c.key===e.cat)||CATEGORIES[0];
     const subs=['\u2014'].concat(cat.suggests||[]);
     if(e.sub && !subs.includes(e.sub)) subs.push(e.sub);
-    const gap=(prevCat!==null && e.cat!==prevCat)?'<tr class="cat-gap" aria-hidden="true"><td colspan="9"></td></tr>':'';
+    const gap=(prevCat!==null && e.cat!==prevCat)?'<tr class="cat-gap" aria-hidden="true"><td colspan="10"></td></tr>':'';
     prevCat=e.cat;
     return gap+'<tr data-ei="'+i+'">'+
       '<td><select class="field f-cat">'+opts(CATEGORIES.map(c=>c.name),cat.name)+'</select></td>'+
       '<td><select class="field f-sub">'+opts(subs, e.sub||'\u2014')+'</select></td>'+
       '<td><input class="field f-label" value="'+escT(e.label)+'"></td>'+
+      srcCell(e)+
       '<td><select class="field f-freq">'+opts(FREQS,e.freq)+'</select></td>'+
       '<td class="num"><input class="field num f-must" value="'+money(e.must)+'"></td>'+
       '<td class="num"><input class="field num f-like" value="'+money(e.like)+'"></td>'+
@@ -9845,22 +10067,27 @@ function renderTable(){
       '<td><input class="field f-end" value="'+escT(e.end||'Ongoing')+'"></td>'+
     '</tr>';
   }).join('');
-  el.innerHTML=
+  const srcBar='<div class="bud-srcbar bud-srcbar-tbl">'+
+    '<div class="bud-seg bud-srcseg" role="tablist" aria-label="Filter by source">'+
+    ['all','plaid','manual'].map(k=>'<button type="button" class="'+(srcFilter===k?'active':'')+'" data-src="'+k+'" onclick="BUD.srcPick(this)">'+(k==='all'?'All':k==='plaid'?'Imported':'Entered by you')+'</button>').join('')+
+    '</div><div class="bud-srcsum"></div></div>';
+  el.innerHTML=srcBar+
    '<table class="budget-table"><colgroup>'+
-   '<col style="width:178px"><col style="width:142px"><col style="width:200px"><col style="width:122px">'+
-   '<col style="width:96px"><col style="width:96px"><col style="width:86px"><col style="width:98px"><col style="width:98px">'+
+   '<col style="width:160px"><col style="width:126px"><col style="width:170px"><col style="width:100px"><col style="width:112px">'+
+   '<col style="width:96px"><col style="width:96px"><col style="width:80px"><col style="width:88px"><col style="width:88px">'+
    '</colgroup><thead><tr>'+
-   '<th>Category</th><th>Sub category</th><th>Label</th><th>Frequency</th>'+
+   '<th>Category</th><th>Sub category</th><th>Label</th><th>Source</th><th>Frequency</th>'+
    '<th class="num">Must spend</th><th class="num">Like to spend</th><th>Deductible</th>'+
    '<th>Start</th><th>End</th>'+
    '</tr></thead><tbody id="budTbody">'+rows+
-   '<tr class="bud-add-tr"><td colspan="9"><button type="button" class="bud-addrow" onclick="BUD.addTableRow()">'+
-   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add expense</button></td></tr>'+
-   '<tr class="total-row"><td></td><td></td><td>Monthly total</td><td class="meta">per month</td>'+
+   (srcFilter==='all' ? '<tr class="bud-add-tr"><td colspan="10"><button type="button" class="bud-addrow" onclick="BUD.addTableRow()">'+
+   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add expense</button></td></tr>' : '')+
+   '<tr class="total-row"><td></td><td></td><td>Monthly total</td><td></td><td class="meta">per month</td>'+
    '<td class="num" id="footMust"></td><td class="num" id="footLike"></td><td></td><td></td><td></td></tr>'+
    '</tbody></table>'+
    '<p class="footnote">Marshall and Lily, retiring December 2028. Amounts shown per period. Must Spend covers essentials, Like to Spend adds room for the life you want.</p>';
 
+  renderSrcSum();
   const p=v=>parseFloat(String(v).replace(/[^0-9.]/g,''))||0;
   function recalc(){
     let m=0,l=0;
@@ -9926,7 +10153,7 @@ function switchView(v){
   if(v==='table'){ renderTable(); tbl.hidden=false; secs.style.display='none'; if(lay) lay.classList.add('bud-tablemode'); }
   else { tbl.hidden=true; secs.style.display=''; if(lay) lay.classList.remove('bud-tablemode'); render(); }
 }
-window.BUD = {toggleEditor, inlineAmt, openComposer, useSuggestion, commitComposer, saveEditor, deleteExpense, downloadCSV, segPick, closeBudget, switchView, addTableRow, addExpenseTop};
+window.BUD = {toggleEditor, inlineAmt, openComposer, useSuggestion, commitComposer, saveEditor, deleteExpense, downloadCSV, segPick, srcPick, closeBudget, switchView, addTableRow, addExpenseTop};
 render();
 })();
 </script>
@@ -10567,6 +10794,89 @@ function xBookPanel(kind){
     }
   };
 }
+function gxPanel(){
+  var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function monthsTo(year){ return Math.max(6,(year-2026)*12+4); }   /* Aug 2026 -> Dec of year */
+  function dateAt(frac, year){ var m=Math.round(monthsTo(year)*frac); var d=new Date(2026,7+m,1); return MO[d.getMonth()]+' '+d.getFullYear(); }
+  function fm(n){ return '$'+n.toLocaleString('en-US'); }
+  return {
+    noCount:true,
+    custom:function(){
+      var sparks=['A lake cabin','Six months in Portugal','Host a wedding','The grandkids\u2019 college','A kitchen worth cooking in'];
+      return xHead('Create a goal','Name the next dream','A name, a number, and a date. We will carry it from there.')+
+        '<div class="gx-lab">Start from a spark</div>'+
+        '<div class="gx-sparks">'+sparks.map(function(s){ return '<button type="button" class="gx-spark" data-spark="'+s+'">'+s+'</button>'; }).join('')+
+        '<button type="button" class="gx-spark" data-spark="">Your own\u2026</button></div>'+
+        '<input type="text" class="gx-name" id="gxName" placeholder="Name the dream" maxlength="48" aria-label="Goal name">'+
+        '<div class="gx-lab">Give it a shape</div>'+
+        '<div class="gx-two"><div><div class="gx-big" id="gxAmt">$85,000</div>'+
+        '<input type="range" class="gx-slider" id="gxSlide" min="5000" max="150000" step="2500" value="85000" aria-label="Goal amount"></div>'+
+        '<div><div class="gx-lab" style="margin:0 0 10px">By when?</div><div class="gx-years">'+
+        [2028,2029,2030,2031,2032,2033].map(function(y,i){ return '<button type="button" class="gx-year'+(y===2031?' on':'')+'" data-y="'+y+'">'+y+'</button>'; }).join('')+'</div></div></div>'+
+        '<div class="gx-pace" id="gxPace"></div>'+
+        '<div class="gx-lab">The milestones, drafted for you</div>'+
+        '<div class="gx-miles"><div class="gx-mile-track"><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i><i style="left:100%"></i></div>'+
+        '<div class="gx-mile-labs" id="gxMiles"></div></div>'+
+        '<div class="gx-lab">The first three steps</div>'+
+        '<div class="gx-steps">'+
+        '<button type="button" class="sxtl-act"><span class="ic"><svg class="pl" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8.5v7M8.5 12h7"/></svg><svg class="ck" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="t">Open a bucket just for this goal</span><span class="tag">Add to plan</span></button> '+
+        '<button type="button" class="sxtl-act"><span class="ic"><svg class="pl" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8.5v7M8.5 12h7"/></svg><svg class="ck" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="t">Set the <b id="gxStepAmt">$1,180</b>&nbsp;automatic transfer</span><span class="tag">Add to plan</span></button> '+
+        '<button type="button" class="sxtl-act"><span class="ic"><svg class="pl" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8.5v7M8.5 12h7"/></svg><svg class="ck" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="t">Pin it to the vision board</span><span class="tag">Add to plan</span></button></div>'+
+        '<div class="gx-lab">Ways we will help</div><div class="gx-help">'+
+        '<div class="gx-help-row"><div class="t">A nudge on payday<small>The 1st and the 15th, right when the money lands.</small></div><button type="button" class="gx-tog on" aria-label="Toggle payday nudge"></button></div>'+
+        '<div class="gx-help-row"><div class="t">A note at every milestone<small>Four small celebrations between here and funded.</small></div><button type="button" class="gx-tog on" aria-label="Toggle milestone notes"></button></div>'+
+        '<div class="gx-help-row"><div class="t">Share it with Lily<small>Two hands on it. She sees the goal, cheers the milestones.</small></div><button type="button" class="gx-tog" aria-label="Toggle share with Lily"></button></div>'+
+        '<div class="gx-help-row"><div class="t">Watch for windfalls<small>When the surplus runs ahead, we suggest sending some here.</small></div><button type="button" class="gx-tog" aria-label="Toggle windfall watch"></button></div></div>'+
+        '<button type="button" class="sxbk-cta" id="gxCreate" style="margin-top:26px">Name it to create it</button>';
+    },
+    after:function(card){
+      var amt=85000, yr=2031;
+      var nameEl=card.querySelector('#gxName'), slide=card.querySelector('#gxSlide');
+      function pace(){ return Math.ceil(amt/monthsTo(yr)/10)*10; }
+      function recompute(){
+        card.querySelector('#gxAmt').textContent=fm(amt);
+        slide.style.setProperty('--fill', ((amt-5000)/(150000-5000)*100).toFixed(1)+'%');
+        var p=pace();
+        card.querySelector('#gxPace').innerHTML='<b>'+fm(p)+' a month</b> gets there by December '+yr+'.'+
+          (p>3450 ? '<span class="warn">Above your current $3,450 surplus. Worth a talk, maybe with Lily.</span>' : '');
+        card.querySelector('#gxStepAmt').textContent=fm(p);
+        var names=['First quarter','Halfway','Three quarters','Funded'];
+        card.querySelector('#gxMiles').innerHTML=[0.25,0.5,0.75,1].map(function(f,i){
+          return '<div><div class="t">'+names[i]+'</div><div class="d">'+dateAt(f,yr)+'</div></div>'; }).join('');
+        var go=card.querySelector('#gxCreate'), named=nameEl.value.trim().length>1;
+        go.classList.toggle('ready', named);
+        go.textContent = named ? 'Create this goal' : 'Name it to create it';
+      }
+      card.addEventListener('click', function(e){
+        var sp=e.target.closest('.gx-spark');
+        if(sp){ card.querySelectorAll('.gx-spark').forEach(function(x){ x.classList.toggle('on', x===sp); });
+          if(sp.dataset.spark){ nameEl.value=sp.dataset.spark; } else { nameEl.value=''; nameEl.focus(); }
+          recompute(); return; }
+        var yb=e.target.closest('.gx-year');
+        if(yb){ yr=parseInt(yb.dataset.y,10);
+          card.querySelectorAll('.gx-year').forEach(function(x){ x.classList.toggle('on', x===yb); }); recompute(); return; }
+        var tg=e.target.closest('.gx-tog'); if(tg){ tg.classList.toggle('on'); return; }
+        var st=e.target.closest('.gx-steps .sxtl-act');
+        if(st){ var on=st.classList.toggle('done'); st.querySelector('.tag').textContent=on?'In your plan':'Add to plan'; return; }
+        var go=e.target.closest('#gxCreate');
+        if(go && go.classList.contains('ready')){
+          var nm=nameEl.value.trim(), p=pace(), helps=card.querySelectorAll('.gx-tog.on').length;
+          card.innerHTML=xHead('Create a goal','','')+
+            '<div class="sxbk-done"><div class="sxbk-check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>'+
+            '<h3>The dream has a plan.</h3>'+
+            '<div class="gx-sum"><div class="nm">'+nm.replace(/</g,'&lt;')+'</div>'+
+            '<div class="ln">'+fm(amt)+' by December '+yr+' &middot; '+fm(p)+' a month</div>'+
+            '<div class="ln">Four milestones &middot; '+helps+' helpers on duty</div></div>'+
+            '<div class="em">It lands on your vision board tonight. The first nudge arrives on payday.</div>'+
+            '<button type="button" class="sxbk-cta ready" data-sx-close>Done</button></div>';
+        }
+      });
+      nameEl.addEventListener('input', recompute);
+      slide.addEventListener('input', function(){ amt=parseInt(slide.value,10); recompute(); });
+      recompute();
+    }
+  };
+}
 const XPANEL={
   tl:{ noCount:true,
     custom:function(){
@@ -10676,8 +10986,57 @@ const XPANEL={
       });
     } }
 };
+XPANEL.scorehow={
+  noCount:true,
+  custom:function(){
+    /* the live score, straight from the widget; the parts scale so the math lands on it */
+    var s=parseInt((document.getElementById('psNum')||{}).textContent,10);
+    if(isNaN(s)) s=parseInt((document.getElementById('miniNum')||{}).textContent,10);
+    if(isNaN(s)||s<1) s=87;
+    var W=[40,20,15,15,10], B=[92,94,75,86,71];
+    var V=B.map(function(b){ return Math.max(4, Math.min(99, Math.round(b*s/87))); });
+    /* close the rounding gap on the heaviest part so the weighted sum matches the widget */
+    var rest=0; for(var q=1;q<5;q++) rest+=W[q]*V[q]/100;
+    V[0]=Math.max(4, Math.min(99, Math.round((s-rest)/(W[0]/100))));
+    var parts=[
+      ['Funding through 99','1,000 simulated futures, counted every night',40,V[0],''],
+      ['Retirement income coverage','Social Security, the pension, and the portfolio against the paycheck you need',20,V[1],''],
+      ['Cash cushion','4.3 months on hand; six is the calm number',15,V[2],''],
+      ['Tax efficiency','The Roth Decembers are doing their work',15,V[3],''],
+      ['Protection and estate basics','Insurance solid; the wills are still unsigned',10,V[4],'']
+    ].map(function(p){ if(p[3]<76) p[4]='warn'; return p; });
+    var movers=[
+      ['+3','Sign the wills and name beneficiaries'],
+      ['+2','Grow the cash cushion to six months'],
+      ['+1','Give the $3,450 surplus a job']
+    ];
+    return xHead('Your Plan Score',String(s),'A weekly read on whether the plan holds. Here is exactly how it adds up.')+
+      '<div class="gx-lab">Five parts, weighted</div>'+
+      parts.map(function(p){
+        return '<div class="gxs-row'+(p[4]?' warn':'')+'"><div class="gxs-n"><div class="t">'+p[0]+'</div><div class="s">'+p[1]+'</div></div>'+
+          '<span class="gxs-w">'+p[2]+'%</span><span class="gxs-bar"><i data-w="'+p[3]+'"></i></span><span class="gxs-v">'+p[3]+'</span></div>';
+      }).join('')+
+      '<div class="gxs-note">Each part is scored out of 100, then weighted by how much it decides whether the money lasts. We re-run the math every night; the score moves the moment your plan does.</div>'+
+      '<div class="gx-lab">What moves it most</div>'+
+      '<div class="gxs-movers">'+movers.map(function(m){
+        return '<button type="button" class="sxtl-act" data-pts="'+m[0]+' pts" style="margin-right:8px"><span class="ic"><svg class="pl" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8.5v7M8.5 12h7"/></svg><svg class="ck" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="t">'+m[1]+'</span><span class="tag">'+m[0]+' pts</span></button>';
+      }).join('')+'</div>';
+  },
+  after:function(card){
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      card.querySelectorAll('.gxs-bar i').forEach(function(i){ i.style.width=i.dataset.w+'%'; });
+    }); });
+    card.querySelector('.gxs-movers').addEventListener('click', function(e){
+      var a=e.target.closest('.sxtl-act'); if(!a) return;
+      var on=a.classList.toggle('done');
+      a.querySelector('.tag').textContent = on ? 'In your plan' : a.dataset.pts;
+    });
+  }
+};
+XPANEL.newgoal=gxPanel();
 XPANEL.bookcfp=xBookPanel('bookcfp');
 XPANEL.bookcoach=xBookPanel('bookcoach');
+window.openScorePanel=openPanel;   /* distinct name: window.openPanel is taken by another subsystem */
 function openPanel(key){
   const d=DETAIL[key] || XPANEL[key]; if(!d) return;
   lastFocus=document.activeElement;
@@ -10763,6 +11122,13 @@ function closePanel(){
   openKey=null;
   if(lastFocus && lastFocus.focus) lastFocus.focus();
 }
+/* soft right edge: fade the peeking card while there is more to scroll */
+document.querySelectorAll('.snap-stats').forEach(function(sc){
+  function upd(){ sc.classList.toggle('fade-more', sc.scrollWidth - sc.clientWidth - sc.scrollLeft > 6); }
+  sc.addEventListener('scroll', upd, {passive:true});
+  if(window.ResizeObserver) new ResizeObserver(upd).observe(sc);
+  upd();
+});
 const tlWrap=document.querySelector('.lens-body[data-lens="snapshot"] .snap-chartwrap');
 if(tlWrap){ tlWrap.setAttribute('title','Open the ultimate timeline');
   tlWrap.addEventListener('click', e=>{ if(e.target.closest('.rm-dd, .rm-filter, .rm-menu, .rm-fmenu')) return; openPanel('tl'); }); }
