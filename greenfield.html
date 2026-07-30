@@ -958,7 +958,7 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .gx-dots{ display:inline-flex; gap:3.5px; margin-left:6px; vertical-align:1px; }
 .gx-dots i{ width:7px; height:7px; border-radius:999px; }
 .gx-dots i:nth-child(1){ background:#04B477; } .gx-dots i:nth-child(2){ background:#FBBD04; } .gx-dots i:nth-child(3){ background:#0D3F4A; }
-.gx-card-t{ font-size:18px; font-weight:700; color:var(--ink); line-height:1.25; margin-top:6px; letter-spacing:-0.2px; }
+.gx-card-t{ font-size:18px; font-weight:700; color:var(--ink); line-height:1.25; margin-top:4px; letter-spacing:-0.2px; }
 .gx-card-s{ font-size:13.5px; color:var(--text-secondary); line-height:1.45; margin-top:4px; }
 .gx-lab{ font-size:13px; font-weight:600; color:var(--text-tertiary); margin:24px 0 10px; }
 .gx-sparks{ display:flex; flex-wrap:wrap; gap:9px; }
@@ -1004,6 +1004,98 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .gx-sum{ margin:16px auto 20px; max-width:380px; border:1px solid var(--hairline); border-radius:16px; padding:16px 18px; text-align:left; }
 .gx-sum .nm{ font-size:18px; font-weight:700; color:var(--ink); }
 .gx-sum .ln{ font-size:14px; color:var(--text-secondary); margin-top:4px; font-variant-numeric:tabular-nums; }
+/* ===== rate assumptions: the dials behind every number ===== */
+.ra-sec{ font-size:15.5px; font-weight:700; color:var(--ink); margin:26px 0 4px; letter-spacing:-0.1px; }
+.ra-row{ padding:18px 0 16px; border-bottom:1px solid var(--hairline); }
+.ra-row:last-of-type{ border-bottom:0; }
+.ra-head{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.ra-name{ flex:1; min-width:220px; font-size:16.5px; font-weight:600; color:var(--ink); }
+.ra-sel{ flex:none; min-width:230px; height:44px; border:1px solid var(--hairline-strong); border-radius:12px;
+  background:#fff; color:var(--ink); font:600 15px 'DM Sans',sans-serif; padding:0 38px 0 14px; cursor:pointer;
+  appearance:none; -webkit-appearance:none;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235B6472' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 13px center; }
+.ra-sel:focus{ outline:none; border-color:#0E794E; }
+.ra-custom{ display:none; align-items:center; gap:9px; margin-top:12px; }
+.ra-row.customing .ra-custom{ display:flex; }
+.ra-custom label{ font-size:13px; font-weight:600; color:var(--text-tertiary); }
+.ra-custom input{ width:88px; height:42px; border:1px solid var(--hairline-strong); border-radius:12px;
+  font:700 16px 'DM Sans',sans-serif; color:var(--ink); text-align:right; padding:0 10px; outline:none; }
+.ra-custom input:focus{ border-color:#0E794E; }
+.ra-custom span{ font-size:15px; font-weight:700; color:var(--text-secondary); }
+.ra-insp-toggle{ display:inline-flex; align-items:center; gap:6px; margin-top:12px; border:0; background:none;
+  color:#0E794E; font:600 13.5px 'DM Sans',sans-serif; cursor:pointer; padding:2px 0; }
+.ra-insp-toggle svg{ transition:transform .22s ease; }
+.ra-insp-toggle[aria-expanded="true"] svg{ transform:rotate(180deg); }
+.ra-insp{ margin-top:10px; border:1px solid var(--hairline); border-radius:14px; background:#FAFCFB; padding:14px 17px; }
+.ra-touch{ font-size:14px; color:var(--text-secondary); line-height:1.55; }
+.ra-effect{ font-size:14.5px; color:var(--ink); line-height:1.55; margin-top:8px; }
+.ra-effect b{ font-variant-numeric:tabular-nums; }
+.ra-ed{ padding:2px 2px 6px; }
+.ra-edlab{ display:block; font:600 13px 'DM Sans',sans-serif; color:var(--text-tertiary); margin:6px 0 8px; }
+.ra-ed .ra-sel{ width:100%; }
+.ra-ed .ra-custom{ margin-top:12px; }
+.ra-ed.customing .ra-custom{ display:flex; }
+.ra-ed .ra-insp{ margin-top:14px; }
+.ra-trio{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding-top:6px; }
+.ra-trio.ra-solo{ grid-template-columns:minmax(0,300px); }
+.ra-trio .ra-inwrap{ cursor:default; border:none; background:transparent; padding:0; height:auto; }
+.ra-trio .ra-inwrap input{ pointer-events:none; height:auto; font-size:20px; letter-spacing:-0.2px; width:auto; flex:none; }
+.ra-trio .ra-inwrap i{ font-size:16px; }
+.ra-setrow{ display:flex; align-items:center; gap:14px; margin:2px 0 16px; }
+.rag{ padding:16px 0 18px; border-bottom:1px solid var(--hairline); }
+.rag:last-child{ border-bottom:0; padding-bottom:6px; }
+.rag:first-child{ padding-top:4px; }
+.rag-head{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:12px; }
+.rag-nm{ font-size:16px; font-weight:600; color:var(--ink); }
+.rag .ra-setrow{ margin:0; }
+.rag.ra-cust-on .ra-trio{ display:none; }
+.rag.ra-cust-on .ra-custf{ display:block; }
+.ra-setrow label{ font-size:14px; font-weight:600; color:var(--text-secondary); flex:none; }
+.ra-setrow .ra-set{ min-width:0; width:auto; }
+.ra-custf{ display:none; max-width:150px; margin-top:2px; }
+.ra-ed.ra-cust-on .ra-custf{ display:block; }
+.ra-ed.ra-cust-on .ra-trio{ display:none; }
+.ra-f label{ display:block; font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:7px; }
+.ra-inwrap{ display:flex; align-items:center; gap:4px; border:1px solid var(--hairline-strong); border-radius:12px;
+  background:var(--white); padding:0 14px; height:52px; cursor:text; transition:border-color var(--dur-fast) var(--ease-out); }
+.ra-inwrap input{ height:100%; }
+.ra-inwrap:focus-within{ border-color:#0E794E; }
+.ra-inwrap input{ border:none; outline:none; background:transparent; width:100%; min-width:0;
+  font:600 17px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; color:var(--ink);
+  -moz-appearance:textfield; appearance:textfield; }
+.ra-inwrap input::-webkit-outer-spin-button, .ra-inwrap input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+.ra-inwrap i{ font-style:normal; font-size:15px; color:var(--text-secondary); flex:none; }
+@media (max-width:900px){ .ra-trio{ grid-template-columns:1fr; } }
+.acct .ra-val{ font-size:17px; font-weight:500; font-variant-numeric:tabular-nums; color:var(--ink); }
+.acct .es-val{ font-size:17px; font-weight:500; font-variant-numeric:tabular-nums; color:var(--ink); }
+.es-ed{ padding:2px 2px 6px; }
+.es-doc{ display:flex; align-items:flex-start; gap:14px; padding:13px 2px; border-bottom:1px solid var(--hairline); cursor:pointer; }
+.es-doc:last-of-type{ border-bottom:0; }
+.es-doc input{ position:absolute; opacity:0; width:0; height:0; }
+.es-box{ width:24px; height:24px; flex:none; margin-top:1px; border-radius:7px; border:1.5px solid var(--hairline-strong);
+  background:var(--white); color:#fff; display:flex; align-items:center; justify-content:center;
+  transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.es-box svg{ width:14px; height:14px; opacity:0; transition:opacity var(--dur-fast) var(--ease-out); }
+.es-doc.on .es-box{ background:#0E794E; border-color:#0E794E; }
+.es-doc.on .es-box svg{ opacity:1; }
+.es-doc:hover .es-box{ border-color:#0E794E; }
+.es-txt{ min-width:0; }
+.es-nm{ display:block; font-size:16px; font-weight:600; color:var(--ink); line-height:1.35; }
+.es-why{ display:block; font-size:14px; color:var(--text-secondary); line-height:1.45; margin-top:2px; }
+.es-doc.on .es-nm{ color:var(--text-secondary); }
+.es-sum{ margin-top:14px; font-size:14px; color:var(--text-secondary); line-height:1.5; }
+.acct .el-val{ font-size:17px; font-weight:500; font-variant-numeric:tabular-nums; color:var(--ink); }
+.el-ed{ padding:2px 2px 6px; }
+.el-f{ max-width:300px; }
+.el-cmp{ display:flex; align-items:stretch; gap:12px; margin-top:18px; }
+.el-cell{ flex:1; border:1px solid var(--hairline); background:var(--white); border-radius:14px; padding:14px 16px; }
+.el-k{ display:block; font-size:13px; color:var(--text-tertiary,#9AA0AE); }
+.el-cell b{ display:block; margin-top:5px; font:600 21px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; color:var(--text-secondary); letter-spacing:-0.2px; }
+.el-arrow{ align-self:center; flex:none; width:20px; height:20px; color:var(--text-tertiary,#9AA0AE); }
+.el-arrow svg{ width:20px; height:20px; display:block; }
+.el-diff{ margin-top:12px; font-size:14px; color:var(--text-secondary); line-height:1.5; }
+@media (max-width:900px){ .el-cmp{ flex-direction:column; } .el-arrow{ transform:rotate(90deg); align-self:flex-start; margin-left:16px; } }
 /* ===== how the score is calculated ===== */
 .gxs-row{ display:flex; align-items:center; gap:13px; padding:12px 0; border-bottom:1px solid var(--hairline); }
 .gxs-row:last-of-type{ border-bottom:0; }
@@ -2521,6 +2613,7 @@ body[data-page="signup"] .layout.page{ display:none !important; }
 .budget-table .bud-src{font-size:11.5px;padding:2.5px 8px;gap:4px;}
 .bud-src.syncc{color:#5B6472;background:#F1F3F5;}
 .bud-srcbar-tbl{margin:0 0 16px;}
+
 /* ===== day zero: email, password, nothing else. the plan sleeps until the first answer ===== */
 body.day-zero #snapshotView .snap-chartwrap,
 body.day-zero #snapshotView .snap-stats,
@@ -2564,6 +2657,22 @@ body.day-zero .dz-watermark{ display:block; position:absolute; left:50%; top:42%
 body.dz-waking .dz-hero{ opacity:0; transform:translateY(-8px); transition:opacity .5s ease, transform .5s ease; }
 body.dz-waking .dz-watermark, body.dz-waking .dz-q{ opacity:0; transition:opacity .4s ease; }
 @media (prefers-reduced-motion:reduce){ body.day-zero *, body.dz-waking *{ transition:none !important; } }
+/* day one: awake, in color, and honestly empty. one answer in, everything else waiting. */
+body.day-one .dz-strip{ display:flex; }
+body.day-one .rail{ display:none; }
+body.day-one .dz-watermark{ display:block; }
+body.day-one #snapshotView .snap-chartwrap{ position:relative; }
+body.day-one #snapshotView .snap-chartwrap::before{ content:''; position:absolute; inset:0; background:rgba(255,255,255,0.92); z-index:3; }
+body.day-one #snapshotView .snap-stat{ pointer-events:none; }
+body.day-one #snapshotView .snap-stat .fig{ color:#9AA0AA; }
+body.day-one #snapshotView .stat-up,
+body.day-one #snapshotView .stat-learn,
+body.day-one #snapshotView .stat-goal,
+body.day-one #snapshotView #retFan,
+body.day-one #snapshotView #visionBoard,
+body.day-one #snapshotView .vb-head,
+body.day-one #snapshotView .ret-paytitle,
+body.day-one #snapshotView .ret-paycheck{ display:none; }
 .bud-toggle-row{display:flex;align-items:center;justify-content:space-between;min-height:56px;}
 .bud-toggle-row .tr-label{font-size:16px;font-weight:500;color:var(--ink);}
 .bud-toggle-row .tr-help{font-size:14px;color:var(--text-secondary);margin-top:2px;}
@@ -3695,7 +3804,7 @@ body.mpanel-open{ overflow:hidden; }
                   <button class="ec-menu-item ec-menu-delete" id="ecDelete" role="menuitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>Delete</button>
                 </div>
               </div>
-              <button class="ec-toggle" id="ecToggle" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              <button class="ec-toggle" id="ecToggle" aria-label="Collapse"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
             </div>
           </div>
           <div class="plaid-cta" id="plaidCta">
@@ -3822,6 +3931,42 @@ body.mpanel-open{ overflow:hidden; }
         </div>
       </div>
     </div>
+
+    <div class="acc start-collapsed" id="rates-block">
+      <div class="acc-head acc-collapsed">
+        <div>
+          <h2>Rate Assumptions</h2>
+          <div class="sub">Inflation and Appreciation</div>
+        </div>
+        <div class="assets-actions">
+          <button class="btn-collapse" aria-label="Expand" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="acc-body" id="ratesBody" style="height:0;opacity:0;overflow:hidden;">
+        <div class="bucket">
+          <div class="acct row-clickable ra-all" role="button" tabindex="0"><div><div class="nm">Inflation and appreciation</div><div class="ty">General, medical, Social Security, and housing</div></div><div class="ra-val">Historical</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc start-collapsed" id="estate-block">
+      <div class="acc-head acc-collapsed">
+        <div>
+          <h2>Estate Planning</h2>
+          <div class="sub">The documents that speak when you can&rsquo;t</div>
+        </div>
+        <div class="assets-actions">
+          <button class="btn-collapse" aria-label="Expand" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="acc-body" id="estateBody" style="height:0;opacity:0;overflow:hidden;">
+        <div class="bucket">
+          <div class="acct row-clickable el-acct" role="button" tabindex="0"><div><div class="nm">Financial legacy</div><div class="ty">What you plan to leave behind</div></div><div class="el-val">$500K</div></div>
+          <div class="acct row-clickable es-acct" role="button" tabindex="0"><div><div class="nm">Estate planning documents</div><div class="ty">Check off what you already have in place</div></div><div class="es-val">1 of 6</div></div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- ===== Compare view — a dedicated page for plan differences ===== -->
     <section id="compareView" aria-label="Compare plans">
@@ -4189,7 +4334,7 @@ body.mpanel-open{ overflow:hidden; }
       <!-- Financial Life lens -->
       <div class="lens-body" data-lens="fl">
         <div class="snap-stats">
-          <div class="snap-stat stat-goal" data-key="newgoal" role="button" tabindex="0"><div class="lab">Your goals <span class="gx-dots"><i></i><i></i><i></i></span></div><div class="gx-card-t">Name the next dream.</div><div class="gx-card-s">Cabin, Portugal, a wedding to host. Give it a number and a date.</div><div class="lrn-cta">Create a goal</div></div>
+          <div class="snap-stat stat-goal" data-key="newgoal" role="button" tabindex="0"><div class="lab">Your goals <span class="gx-dots"><i></i><i></i><i></i></span></div><div class="gx-card-t">Name the next dream.</div><div class="lrn-cta">Create a goal</div></div>
           <div class="snap-stat" data-key="networth" role="button" tabindex="0"><div class="lab">Net Worth</div><div class="fig">$1.14M</div><div class="sub">Assets minus debts</div></div>
           <div class="snap-stat" data-key="surplus" role="button" tabindex="0"><div class="lab">Surplus</div><div class="fig">$3,450 mo</div><div class="sub">After expenses</div></div>
           <div class="snap-stat" data-key="saverate" role="button" tabindex="0"><div class="lab">Savings Rate</div><div class="fig">28%</div><div class="sub">Above target</div></div>
@@ -6766,28 +6911,71 @@ document.addEventListener('click', function(e){
       openView.animate([{opacity:0, transform:'translateY(3px)'},{opacity:1, transform:'none'}], {duration:280, easing:'cubic-bezier(0.22,1,0.36,1)'});
     }
   }
-  /* day zero: arrive with #zero in the URL and the plan is asleep */
+  /* day zero: type the word "zero" anywhere on the page (or arrive with #zero in the URL) */
   (function(){
-    if(location.hash.indexOf('zero')===-1) return;
-    document.body.classList.add('day-zero');
-    var wrap=document.querySelector('.lens-body[data-lens="snapshot"] .snap-chartwrap');
-    if(wrap && !wrap.querySelector('.dz-watermark')){
-      wrap.style.position='relative';
-      var wm=document.createElement('div'); wm.className='dz-watermark';
-      wm.textContent='A typical plan\u2019s shape. Yours replaces it.';
-      wrap.appendChild(wm);
+    function dzEnter(){
+      dzRefill();
+      document.body.classList.remove('dz-waking');
+      document.body.classList.add('day-zero');
+      var inp=document.getElementById('dzAge'); if(inp) inp.value='';
+      var strip=document.querySelector('.dz-strip span:last-child');
+      if(strip) strip.innerHTML='<b>marshall.hartwell@gmail.com</b> \u00b7 account created two minutes ago \u00b7 nothing else entered';
+      var wrap=document.querySelector('.lens-body[data-lens="snapshot"] .snap-chartwrap');
+      if(wrap && !wrap.querySelector('.dz-watermark')){
+        wrap.style.position='relative';
+        var wm=document.createElement('div'); wm.className='dz-watermark';
+        wm.textContent='A typical plan\u2019s shape. Yours replaces it.';
+        wrap.appendChild(wm);
+      }
+      window.scrollTo({top:0, behavior:'auto'});
+      setTimeout(function(){ var i=document.getElementById('dzAge'); if(i) i.focus(); }, 500);
+    }
+    /* the demo trigger: the typed word, listened for outside of inputs */
+    var seq='';
+    document.addEventListener('keydown', function(e){
+      var t=e.target;
+      if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable)) return;
+      if(e.key && e.key.length===1){ seq=(seq+e.key.toLowerCase()).slice(-4); if(seq==='zero'){ seq=''; dzEnter(); } }
+    });
+    if(location.hash.indexOf('zero')!==-1) dzEnter();
+    function dzEmpty(age){
+      /* the born plan: every figure waits, reversibly */
+      document.querySelectorAll('#snapshotView .snap-stat').forEach(function(s){
+        var f=s.querySelector('.fig'), sb=s.querySelector('.sub');
+        if(f){ if(f.dataset.dzFig===undefined) f.dataset.dzFig=f.innerHTML; f.textContent='?'; }
+        if(sb){ if(sb.dataset.dzSub===undefined) sb.dataset.dzSub=sb.innerHTML; sb.textContent='Waiting on you'; }
+      });
+      document.querySelectorAll('#snapshotView .snap-headline').forEach(function(hd){
+        if(hd.dataset.dzH===undefined) hd.dataset.dzH=hd.innerHTML;
+        hd.innerHTML='You are <span class="amt">'+age+'</span>. The rest is a blank page.';
+      });
+      document.querySelectorAll('#snapshotView .snap-sub').forEach(function(su){
+        if(su.dataset.dzS===undefined) su.dataset.dzS=su.innerHTML;
+        su.textContent='One answer in. Every card below is waiting for its number.';
+      });
+      var wm=document.querySelector('.dz-watermark');
+      if(wm) wm.textContent='Your first account draws this line.';
+      document.body.classList.add('day-one');
+    }
+    function dzRefill(){
+      document.querySelectorAll('#snapshotView .snap-stat .fig').forEach(function(f){ if(f.dataset.dzFig!==undefined) f.innerHTML=f.dataset.dzFig; });
+      document.querySelectorAll('#snapshotView .snap-stat .sub').forEach(function(sb){ if(sb.dataset.dzSub!==undefined) sb.innerHTML=sb.dataset.dzSub; });
+      document.querySelectorAll('#snapshotView .snap-headline').forEach(function(hd){ if(hd.dataset.dzH!==undefined) hd.innerHTML=hd.dataset.dzH; });
+      document.querySelectorAll('#snapshotView .snap-sub').forEach(function(su){ if(su.dataset.dzS!==undefined) su.innerHTML=su.dataset.dzS; });
+      var wm=document.querySelector('.dz-watermark');
+      if(wm) wm.textContent='A typical plan\u2019s shape. Yours replaces it.';
+      document.body.classList.remove('day-one');
     }
     function wake(){
       var v=parseInt(document.getElementById('dzAge').value,10);
       if(isNaN(v)||v<18||v>99){ document.getElementById('dzAge').focus(); return; }
       var strip=document.querySelector('.dz-strip span:last-child');
-      if(strip) strip.innerHTML='<b>1 answer in</b> \u00b7 age '+v+' \u00b7 the plan is waking up';
+      if(strip) strip.innerHTML='<b>1 answer in</b> \u00b7 age '+v+' \u00b7 everything below is yours to fill';
+      dzEmpty(v);
       document.body.classList.add('dz-waking');
       setTimeout(function(){
         document.body.classList.remove('day-zero','dz-waking');
         if(history.replaceState) history.replaceState(null,'',location.pathname+location.search);
-        var n=document.getElementById('psNum');
-        if(n){ n.style.transition='none'; }
       }, 1150);
     }
     document.getElementById('dzGo').addEventListener('click', wake);
@@ -7154,7 +7342,7 @@ document.addEventListener('click', function(e){
   const accordions={};
   const accKeyByTitle={
     'profile':'profile','assets':'assets','debts':'debts','monthly income':'income',
-    'home & real estate':'home','expenses':'expenses','money flows':'flows'
+    'home & real estate':'home','expenses':'expenses','money flows':'flows','rate assumptions':'rates','estate planning':'estate'
   };
   let _botSpacer=null;
   function ensureBottomSpacer(){
@@ -7304,7 +7492,7 @@ document.addEventListener('click', function(e){
   // clickable rows -> inline field editor (sections other than Assets)
   const ICON_KEBAB='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>';
   const ICON_TRASH='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
-  const ICON_CLOSE='<svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const ICON_CLOSE='<svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>';   /* the circle chevron: collapse, not cancel */
   const ICON_UNLINK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 14.8l-2 2a4 4 0 0 1-5.7-5.7l2.5-2.5a4 4 0 0 1 5.7 0M14.8 9.2l2-2a4 4 0 0 1 5.7 5.7l-2.5 2.5a4 4 0 0 1-5.7 0M4 4l16 16"/></svg>';
   function acctNamePH(sectionTitle){
     const t=(sectionTitle||'').toLowerCase();
@@ -7344,7 +7532,146 @@ document.addEventListener('click', function(e){
     return '<div class="field"><label>'+label+'</label><div class="val">'+
       '<select class="vselect">'+opts.map(o=>'<option'+(o===cur?' selected':'')+'>'+o+'</option>').join('')+'</select></div></div>';
   }
+  const RA_CFG={
+    gen:{ label:'General inflation rate', pess:3.8, avg:2.5, opt:2.0 },
+    med:{ label:'Medical inflation rate', pess:6.5, avg:5.5, opt:4.5 },
+    ss:{ label:'Social Security cost of living adjustment', pess:2.0, avg:2.4, opt:2.8 },
+    home:{ label:'Housing appreciation rate', pess:2.5, avg:3.5, opt:4.5 }
+  };
+  function raPct(r){ return (Math.round(r*10)/10)+'%'; }
+  function buildRatesEditor(row){
+    const KEYS=['gen','med','ss','home'];
+    const F=[['pess','Pessimistic'],['avg','Average'],['opt','Optimistic']];
+    KEYS.forEach(k=>{ const a=RA_CFG[k]; if(a.mode===undefined) a.mode='trio'; if(a.cust===undefined) a.cust=a.avg; });
+    const ed=document.createElement('div');
+    ed.className='row-editor';
+    ed.innerHTML=
+      '<div class="edit-card">'+
+        '<div class="ecTitle">'+
+          '<div class="ec-head"><span class="ecTitleText">Rate assumptions</span></div>'+
+          '<div class="ec-actions"><button class="ec-toggle" type="button" aria-label="Collapse">'+ICON_CLOSE+'</button></div>'+
+        '</div>'+
+        '<div class="ra-ed">'+
+          KEYS.map(k=>{ const a=RA_CFG[k];
+            return '<div class="rag'+(a.mode==='custom'?' ra-cust-on':'')+'" data-ra="'+k+'">'+
+              '<div class="rag-head"><span class="rag-nm">'+a.label+'</span>'+
+                '<span class="ra-setrow"><label>Assumption set</label>'+
+                  '<select class="ra-sel ra-set" aria-label="Assumption set for '+a.label+'">'+
+                    '<option value="trio"'+(a.mode==='trio'?' selected':'')+'>Historical</option>'+
+                    '<option value="custom"'+(a.mode==='custom'?' selected':'')+'>Custom</option>'+
+                  '</select></span></div>'+
+              '<div class="ra-trio">'+
+                F.map(f=>
+                  '<div class="ra-f" data-raf="'+f[0]+'">'+
+                    '<label>'+f[1]+'</label>'+
+                    '<span class="ra-inwrap"><input type="number" value="'+a[f[0]]+'" readonly tabindex="-1" aria-label="'+f[1]+' '+a.label+', fixed historical rate"><i>%</i></span>'+
+                  '</div>').join('')+
+              '</div>'+
+              '<div class="ra-f ra-custf"><label>Rate</label>'+
+                '<span class="ra-inwrap"><input type="number" min="0" max="15" step="0.1" value="'+a.cust+'" aria-label="Custom '+a.label+'"><i>%</i></span></div>'+
+            '</div>'; }).join('')+
+        '</div>'+
+      '</div>';
+    ed.querySelectorAll('.ra-trio input').forEach(i=>{ i.style.width=(String(i.value).length+0.4)+'ch'; });
+    ed.querySelectorAll('.ra-inwrap').forEach(w=> w.addEventListener('click', ()=>{ const i=w.querySelector('input'); if(i && !i.readOnly && document.activeElement!==i){ i.focus(); i.select(); } }));
+    function rowVal(){
+      const rv=row.querySelector('.ra-val');
+      if(rv) rv.textContent = KEYS.every(k=>RA_CFG[k].mode==='trio') ? 'Historical' : 'Custom';
+    }
+    ed.querySelectorAll('.rag').forEach(g=>{
+      const a=RA_CFG[g.dataset.ra], custInp=g.querySelector('.ra-custf input');
+      g.querySelector('.ra-set').addEventListener('change', (e)=>{
+        a.mode=e.target.value;
+        g.classList.toggle('ra-cust-on', a.mode==='custom');
+        if(a.mode==='custom'){ custInp.focus(); custInp.select(); }
+        rowVal();
+      });
+      custInp.addEventListener('input', ()=>{ a.cust=parseFloat(custInp.value)||0; });
+    });
+    return ed;
+  }
+
+  const ES_DOCS=[
+    ['will','Last Will and Testament','Who gets what, and who makes it happen.',false],
+    ['loi','Letters of Instruction','The unofficial map: accounts, passwords, wishes.',false],
+    ['fpoa','Financial Power of Attorney','Someone to handle money matters if you cannot.',false],
+    ['trust','A Living Trust','Keeps the house and accounts out of probate.',false],
+    ['mpoa','Medical Power of Attorney','Someone to speak for your care if you cannot.',false],
+    ['bene','Beneficiary Designations','Set on your 401(k)s and IRAs. These outrank the will.',true]
+  ];
+  function esCount(){ return ES_DOCS.filter(d=>d[3]).length; }
+  function buildEstateEditor(row){
+    const ed=document.createElement('div');
+    ed.className='row-editor';
+    ed.innerHTML=
+      '<div class="edit-card">'+
+        '<div class="ecTitle">'+
+          '<div class="ec-head"><span class="ecTitleText">Estate planning documents</span></div>'+
+          '<div class="ec-actions"><button class="ec-toggle" type="button" aria-label="Collapse">'+ICON_CLOSE+'</button></div>'+
+        '</div>'+
+        '<div class="es-ed">'+
+          ES_DOCS.map(d=>
+            '<label class="es-doc'+(d[3]?' on':'')+'" data-es="'+d[0]+'">'+
+              '<input type="checkbox"'+(d[3]?' checked':'')+' aria-label="'+d[1]+'">'+
+              '<span class="es-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+
+              '<span class="es-txt"><span class="es-nm">'+d[1]+'</span><span class="es-why">'+d[2]+'</span></span>'+
+            '</label>').join('')+
+          '<div class="es-sum"></div>'+
+        '</div>'+
+      '</div>';
+    const sum=ed.querySelector('.es-sum');
+    function paint(){
+      const n=esCount();
+      sum.textContent = n===6 ? 'All six in place. Your plan speaks for itself.'
+        : n+' of 6 in place. Each one you add closes a door on probate court.';
+      const rv=row.querySelector('.es-val'); if(rv) rv.textContent=n+' of 6';
+    }
+    ed.querySelectorAll('.es-doc input').forEach(inp=>{
+      inp.addEventListener('change', ()=>{
+        const lab=inp.closest('.es-doc'), d=ES_DOCS.find(x=>x[0]===lab.dataset.es);
+        if(d) d[3]=inp.checked;
+        lab.classList.toggle('on', inp.checked);
+        paint();
+      });
+    });
+    paint();
+    return ed;
+  }
+  const EL_CFG={ amt:500000, year:2059 };   // the plan runs to Lily's 92, in 2059
+  function elMoney(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function elShort(n){ return n>=1e6 ? '$'+(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M' : '$'+Math.round(n/1000)+'K'; }
+  function buildLegacyEditor(row){
+    const ed=document.createElement('div');
+    ed.className='row-editor';
+    ed.innerHTML=
+      '<div class="edit-card">'+
+        '<div class="ecTitle">'+
+          '<div class="ec-head"><span class="ecTitleText">Financial legacy</span></div>'+
+          '<div class="ec-actions"><button class="ec-toggle" type="button" aria-label="Collapse">'+ICON_CLOSE+'</button></div>'+
+        '</div>'+
+        '<div class="el-ed">'+
+          '<div class="ra-f el-f"><label>Legacy goal, in future dollars</label>'+
+            '<span class="ra-inwrap"><i>$</i><input type="text" inputmode="numeric" value="'+EL_CFG.amt.toLocaleString('en-US')+'" aria-label="Legacy goal in future dollars"></span></div>'+
+
+        '</div>'+
+      '</div>';
+    const inp=ed.querySelector('.el-f input');
+    ed.querySelectorAll('.ra-inwrap').forEach(w=> w.addEventListener('click', ()=>{ const i=w.querySelector('input'); if(i && document.activeElement!==i) i.focus(); }));
+    function paint(){
+      const rv=row.querySelector('.el-val'); if(rv) rv.textContent=elShort(EL_CFG.amt);
+    }
+    inp.addEventListener('input', ()=>{
+      EL_CFG.amt=parseFloat(inp.value.replace(/[^0-9.]/g,''))||0;
+      paint();
+    });
+    inp.addEventListener('blur', ()=>{ if(EL_CFG.amt>0) inp.value=EL_CFG.amt.toLocaleString('en-US'); });
+    paint();
+    return ed;
+  }
   function buildRowEditor(row){
+    if(row.classList.contains('ra-all')) return buildRatesEditor(row);
+    if(row.classList.contains('es-acct')) return buildEstateEditor(row);
+    if(row.classList.contains('el-acct')) return buildLegacyEditor(row);
     let nm=(row.querySelector('.nm')?.textContent || '').trim();
     const ty=(row.querySelector('.ty')?.textContent || '').trim();
     const amt=(row.querySelector('.amt')?.textContent || '').trim();
@@ -7373,7 +7700,7 @@ document.addEventListener('click', function(e){
               '<button class="ec-kebab" type="button" aria-label="More options" aria-haspopup="true" aria-expanded="false">'+ICON_KEBAB+'</button>'+
               '<div class="ec-menu" role="menu" hidden>'+(row.querySelector('.acct-linked') ? '<button class="ec-menu-item ec-menu-disconnect" type="button" role="menuitem">'+ICON_UNLINK+'Disconnect account</button>' : '')+'<button class="ec-menu-item ec-menu-delete" type="button" role="menuitem">'+ICON_TRASH+'Delete</button></div>'+
             '</div>'+
-            '<button class="ec-toggle" type="button" aria-label="Close">'+ICON_CLOSE+'</button>'+
+            '<button class="ec-toggle" type="button" aria-label="Collapse">'+ICON_CLOSE+'</button>'+
           '</div>'+
         '</div>'+
         '<div class="ec-body">'+
@@ -7747,7 +8074,7 @@ document.addEventListener('click', function(e){
       '<div class="edit-card">'+
         '<div class="ecTitle">'+
           '<div class="ec-head"><span class="ecTitleText">'+title+'</span></div>'+
-          '<div class="ec-actions"><button class="ec-toggle" type="button" aria-label="Close">'+ICON_CLOSE+'</button></div>'+
+          '<div class="ec-actions"><button class="ec-toggle" type="button" aria-label="Collapse">'+ICON_CLOSE+'</button></div>'+
         '</div>'+
         '<div class="ec-body">'+
           fields.map(f=> fieldHTML(f[0], f[1], false)).join('')+
@@ -8702,14 +9029,15 @@ document.addEventListener('click', function(e){
       income:   {eyebrow:'Monthly Income',     figure:'$5,585',   body:"The paychecks that fund the life you're building. Capture every source and your retirement number snaps into focus."},
       home:     {eyebrow:'Home & Real Estate', figure:'$905,000', body:"More than walls, it's equity ready to work for you. Knowing its value turns someday into a real plan."},
       expenses: {eyebrow:'Expenses',           figure:'$4,585',   body:"What life costs each month, and the key to making it last. Small tweaks here can add years of comfortable spending."},
-      flows:    {eyebrow:'Money Flows',        figure:'Not set',  body:"Your money in motion, in now and out later. Add your first contribution or withdrawal and your plan projects it across the years ahead."}
+      flows:    {eyebrow:'Money Flows',        figure:'Not set',  body:"Your money in motion, in now and out later. Add your first contribution or withdrawal and your plan projects it across the years ahead."},
+      rates:    {eyebrow:'How rate assumptions work', figure:'', body:"Your financial projections are shaped by key rate assumptions, including inflation and appreciation rates."}
     };
     let active='taxable';
     function render(key){
       const c=content[key]; if(!c) return;
       railCtx.innerHTML =
         '<div class="ctx-eyebrow">'+c.eyebrow+'</div>'+
-        '<div class="ctx-figure">'+c.figure+'</div>'+
+        (c.figure ? '<div class="ctx-figure">'+c.figure+'</div>' : '')+
         '<p class="ctx-body" data-type>'+c.body+'</p>';
     }
     function typeBody(done){
@@ -8798,7 +9126,7 @@ document.addEventListener('click', function(e){
     }
     function unpin(){ pinned=false; active=null; railCtx.classList.remove('ctx-pinned'); }
     _rail = { showEffect, unpin };
-    const titleToCtx = {'profile':'profile','debts':'debts','monthly income':'income','home & real estate':'home','expenses':'expenses','money flows':'flows'};
+    const titleToCtx = {'profile':'profile','debts':'debts','monthly income':'income','home & real estate':'home','expenses':'expenses','money flows':'flows','rate assumptions':'rates','estate planning':'estate'};
     let currentKey = active;
     const io = new IntersectionObserver((entries)=>{
       // track what's in the middle band, but don't change the rail yet
@@ -13073,6 +13401,33 @@ body.graph-expanded .ut-bar{ flex-direction:column; align-items:flex-start; gap:
 body.graph-expanded .flx-two{ grid-template-columns:1fr; }
 body.graph-expanded .flx-bs{ grid-template-columns:1fr; gap:26px; }
 body.graph-expanded .rail > *:not(#graphDock):not(#railCtx){ display:none !important; }
+/* ===== EXPERIMENT: tri-column ask-right (CSS half; JS half sits by __graphDock).
+   delete both fenced blocks to revert. Prism open + a question asked: the ask doc
+   opens at the far right beside the Prism, the left nav folds. never four columns. */
+body.tri-cols.graph-expanded.ai-expanded .layout{ grid-template-columns:0px 440px 896px; max-width:1380px; justify-content:start; }
+body.tri-cols.graph-expanded.ai-expanded .side{ width:0; min-width:0; padding:0; margin:0; opacity:0; overflow:hidden; pointer-events:none; }
+body.tri-cols.graph-expanded.ai-expanded .rail{ display:grid !important; grid-template-columns:470px 400px; column-gap:26px; align-items:start; width:auto !important; max-width:none !important; }
+body.tri-cols .rail > .tri-left:not(#_x):not(#_y),
+body.tri-cols .rail > .tri-right:not(#_x):not(#_y){ display:block !important; min-width:0; }
+body.tri-cols .tri-left > #graphDock{ display:block !important; width:auto !important; max-width:none !important; }
+body.tri-cols .tri-left > #railCtx{ display:block; }
+body.tri-cols .tri-left{ position:sticky; top:84px; max-height:calc(100vh - 100px); overflow-y:auto;
+  padding-right:8px; scrollbar-gutter:stable; scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; }
+body.tri-cols .tri-left::-webkit-scrollbar{ width:8px; }
+body.tri-cols .tri-left::-webkit-scrollbar-thumb{ background:#D9DDE3; border-radius:4px; }
+body.tri-cols .tri-right{ border-left:1px solid var(--hairline); padding-left:26px; padding-bottom:104px; }
+/* the askbar is placed over the ask column by the JS half (measured, resize-aware) */
+body.tri-cols .ps-wrap{ display:none !important; }   /* the score steps back in the three panel view */
+/* the widget was the opaque shield under the fixed header; with it hidden, the shield returns as a body skirt */
+body.tri-cols::before{ content:''; position:fixed; top:0; left:0; right:0; height:73px; background:#fff; z-index:59; pointer-events:none; }
+body.tri-cols::after{ content:''; position:fixed; top:73px; left:0; right:0; height:32px;
+  background:linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0) 100%); z-index:59; pointer-events:none; }
+body.tri-cols .dock{ background:none; }   /* the page-wide fade would wash under the Prism */
+body.tri-cols .dock .askbar::before{ content:''; position:absolute; left:-27px; right:-16px; bottom:-24px; height:150px;
+  background:linear-gradient(to top, #FFFFFF 0%, #FFFFFF 46%, rgba(255,255,255,0.88) 70%, rgba(255,255,255,0) 100%);
+  z-index:-1; pointer-events:none; }   /* the fade lives only under the ai chat column */
+body.tri-cols .dock .askbar{ position:relative; }   /* anchors the ::before; the JS pin overrides to fixed */
+/* ===== end EXPERIMENT CSS ===== */
 body.plan-view #railCtx.ctx-pinned{ display:block; }
 body.plan-view .rail:has(> #railCtx.ctx-pinned) :is(#storyView,#taxStoryView,#retStoryView,#flStoryView){ display:none !important; }
 body.graph-expanded .snap-seg{ flex-wrap:wrap; }
@@ -15358,6 +15713,56 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
       svg.innerHTML=s;
     });
   };
+  /* ===== EXPERIMENT: tri-column ask-right (JS half). delete with the CSS fence to revert. ===== */
+  (function(){
+    var undoKids=null, triRail=null;
+    function getRail(){ return document.querySelector('.layout.page .rail.rail-ai-host') || document.querySelector('.rail.rail-ai-host'); }
+    function applyTri(){
+      var rail=getRail(); if(!rail) return;
+      if(triRail && triRail!==rail && undoKids){ triRail=null; undoKids=null; }
+      triRail=rail;
+      var on=document.body.classList.contains('graph-expanded') && document.body.classList.contains('ai-expanded');
+      if(on && !undoKids){
+        undoKids=[].slice.call(rail.children);
+        var L=document.createElement('div'); L.className='tri-left';
+        var R=document.createElement('div'); R.className='tri-right';
+        undoKids.forEach(function(k){ (k.id==='graphDock'||k.id==='railCtx' ? L : R).appendChild(k); });
+        rail.appendChild(L); rail.appendChild(R);
+        document.body.classList.add('tri-cols');
+      } else if(!on && undoKids){
+        var L=rail.querySelector(':scope > .tri-left'), R=rail.querySelector(':scope > .tri-right');
+        undoKids.forEach(function(k){ rail.appendChild(k); });
+        if(L) L.remove(); if(R) R.remove();
+        undoKids=null;
+        document.body.classList.remove('tri-cols');
+      }
+    }
+    var askEl=document.querySelector('.dock .askbar');
+    function placeAsk(){
+      if(!askEl) return;
+      if(!document.body.classList.contains('tri-cols')){
+        askEl.style.position=''; askEl.style.left=''; askEl.style.width=''; askEl.style.bottom=''; askEl.style.zIndex='';
+        return;
+      }
+      var R=document.querySelector('.tri-right'); if(!R) return;
+      var r=R.getBoundingClientRect();
+      askEl.style.position='fixed';
+      askEl.style.left=Math.round(r.left+26)+'px';
+      askEl.style.width=Math.round(r.width-26)+'px';
+      askEl.style.bottom='24px';
+      askEl.style.zIndex='80';
+    }
+    function applyBoth(){ applyTri(); requestAnimationFrame(placeAsk); }
+    new MutationObserver(applyBoth).observe(document.body, { attributes:true, attributeFilter:['class'] });
+    window.addEventListener('resize', placeAsk);
+    /* the askbar's flight animation clears inline styles when it lands; re-pin the moment that happens */
+    if(askEl) new MutationObserver(function(){
+      if(document.body.classList.contains('tri-cols') && askEl.style.position!=='fixed') placeAsk();
+    }).observe(askEl, { attributes:true, attributeFilter:['style'] });
+    applyBoth();
+    window.__tri={ apply:applyBoth, getRail:getRail };
+  })();
+  /* ===== end EXPERIMENT JS ===== */
   window.__graphDock={
     expand: function(){
       document.body.classList.remove('ai-expanded','ai-fullscreen');
