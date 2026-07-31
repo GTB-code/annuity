@@ -13211,7 +13211,7 @@ body.story-open{ overflow:hidden; }
 body.fire-page .opt-index .center > *:not(.opt-grid){ display:none; }
 body.fire-page .opt-index .opt-grid > *:not(.fire-card){ display:none; }
 .opt-card.fire-card{ display:none; }
-body.fire-page .opt-card.fire-card{ display:block; border:none; border-radius:0; padding-left:0; padding-right:0; min-height:0; }
+body.fire-page .opt-card.fire-card{ display:block; border:none; border-radius:0; padding-left:0; padding-right:0; padding-top:0; min-height:0; }
 body.fire-page .opt-index .side > *:not(.fire-side){ display:none; }
 .fire-side{ display:none; }
 body.fire-page .fire-side{ display:block; }
@@ -13337,7 +13337,7 @@ body.fire-page .fire-side{ display:block; }
     const card=document.createElement('section');
     card.className='opt-card opt-wide fire-card'; card.dataset.opt='fire'; card.id='fireCard';
     card.innerHTML=
-      '<h2 class="snap-headline">The day work becomes <span class="yrs">optional</span>.</h2>'+
+      '<h2 class="snap-headline">The day <span class="yrs">work</span> becomes <span class="amt">optional</span>.</h2>'+
       '<p class="pf-sub snap-sub">Your number, your date, and the levers that move it.</p>'+
       '<div class="fd-grid">'+
         '<div class="fd-card fd-hero" data-fs="num">'+
