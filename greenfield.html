@@ -6854,6 +6854,7 @@ document.addEventListener('click', function(e){
       setTimeout(()=> piece.remove(), dur+delay+80);
     }
   }
+  window.dropConfetti=dropConfetti;
 
   /* ---------- collapse / expand (accordion: header stays, body collapses) ---------- */
   function setOpen(open){
@@ -13136,88 +13137,132 @@ body.story-open{ overflow:hidden; }
   }
 })();
 </script>
-<!-- FIRE-PAGE BEGIN (fenced feature: Financial Independence) -->
+
+
+
+
+<!-- FIRE-PAGE BEGIN (fenced: Financial Independence dashboard + inspirational rail) -->
 <style>
 .fire-new{ display:inline-block; margin-left:8px; padding:2px 8px; border-radius:999px; background:#E7F5EE; color:#0E794E;
   font-size:11px; font-weight:700; letter-spacing:0.2px; vertical-align:2px; }
-#fireView{ position:fixed; inset:0; z-index:1800; background:#FFFFFF; overflow-y:auto; display:none;
-  font-family:'ES Klarheit Grotesk','DM Sans',system-ui,sans-serif; }
-#fireView.on{ display:block; }
-body.fire-open{ overflow:hidden; }
-.fv-top{ position:sticky; top:0; z-index:5; background:rgba(255,255,255,0.94); backdrop-filter:blur(8px);
-  display:flex; align-items:center; gap:16px; padding:18px 34px; border-bottom:1px solid var(--hairline,#ECEDEF); }
-.fv-back{ font-size:15.5px; font-weight:600; color:var(--text-secondary,#5B6472); cursor:pointer; white-space:nowrap; }
-.fv-back:hover{ color:var(--ink,#10182C); }
-.fv-title{ font-size:16px; font-weight:700; color:var(--ink,#10182C); }
-.fv-shell{ display:grid; grid-template-columns:216px minmax(0,860px); gap:56px; max-width:1180px; margin:0 auto; padding:26px 34px 120px; }
-.fv-anchors{ position:sticky; top:92px; align-self:start; display:flex; flex-direction:column; gap:2px; }
-.fv-anchors .fa-k{ font-size:12.5px; font-weight:700; color:var(--text-tertiary,#9AA0AE); letter-spacing:0.4px; margin:0 0 10px 12px; }
-.fv-a{ display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px; font-size:15px; font-weight:500;
-  color:var(--text-secondary,#5B6472); cursor:pointer; }
-.fv-a i{ width:6px; height:6px; border-radius:999px; background:#D7DADF; flex:none; font-style:normal; }
-.fv-a:hover{ background:#F6F7F8; }
-.fv-a.on{ color:var(--ink,#10182C); font-weight:600; }
-.fv-a.on i{ background:#0E794E; }
-.fv-sec{ padding:74px 0 10px; border-bottom:1px solid var(--hairline,#ECEDEF); }
-.fv-sec:last-child{ border-bottom:0; }
-.fv-eyebrow{ font-size:13.5px; font-weight:700; color:#0E794E; letter-spacing:0.3px; margin-bottom:14px; }
-.fv-h{ font-size:34px; font-weight:600; color:var(--ink,#10182C); letter-spacing:-0.6px; line-height:1.12; margin:0 0 14px; }
-.fv-p{ font-size:18px; line-height:1.6; color:var(--text-secondary,#5B6472); max-width:640px; margin:0 0 10px; }
-.fv-p b{ color:var(--ink,#10182C); font-weight:600; }
-.fire-big{ font-size:96px; font-weight:600; letter-spacing:-3px; color:var(--ink,#10182C);
-  font-variant-numeric:tabular-nums; line-height:1.02; margin:26px 0 8px; }
-.fire-big .cents{ font-size:40px; letter-spacing:-1px; color:var(--text-tertiary,#9AA0AE); }
-.fire-vs{ display:flex; gap:14px; margin:30px 0 26px; max-width:640px; }
-.fire-vs .c{ flex:1; border:1px solid var(--hairline,#ECEDEF); border-radius:16px; padding:18px 20px; }
-.fire-vs .c.you{ border-color:#0E794E; background:#F4FBF7; }
-.fire-vs .k{ font-size:13.5px; color:var(--text-tertiary,#9AA0AE); font-weight:600; }
-.fire-vs .v{ font-size:27px; font-weight:600; color:var(--ink,#10182C); margin-top:6px; font-variant-numeric:tabular-nums; letter-spacing:-0.5px; }
-.fire-vs .s{ font-size:13.5px; color:var(--text-secondary,#5B6472); margin-top:4px; line-height:1.4; }
-.fire-date{ font-size:56px; font-weight:600; letter-spacing:-1.4px; color:var(--ink,#10182C); margin:22px 0 4px; font-variant-numeric:tabular-nums; }
-.fire-dow{ font-size:19px; color:var(--text-secondary,#5B6472); margin-bottom:26px; }
-.fire-prog{ max-width:640px; margin:8px 0 30px; }
-.fire-prog .bar{ height:14px; border-radius:999px; background:#F0F1F3; overflow:hidden; }
+.onav-item .fire-new{ position:absolute; top:-8px; right:-13px; margin:0; padding:1px 5px; font-size:9px; line-height:13px; letter-spacing:0.3px; }
+.onav-item[data-opt="fire"]{ white-space:nowrap; }
+.opt-card.fire-card{ padding-bottom:10px; }
+.fd-grid{ display:flex; flex-direction:column; gap:12px; margin-top:16px; }
+.fd-card{ border:1px solid var(--hairline); border-radius:16px; padding:17px 19px 16px; min-width:0; }
+.fd-duo{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.fd-k{ font-size:13px; font-weight:700; color:var(--text-tertiary,#9AA0AE); letter-spacing:0.2px; }
+.fd-line{ font-size:14px; color:var(--text-secondary); line-height:1.5; margin-top:10px; }
+.fd-line b{ color:var(--ink); font-weight:600; }
+.fd-hero{ position:relative; }
+.fd-hero .fd-chip{ position:absolute; top:15px; right:17px; font-size:12.5px; font-weight:700; color:#0E794E; background:#E7F5EE; border-radius:999px; padding:4px 11px; }
+.fire-big{ font-size:52px; font-weight:600; letter-spacing:-1.6px; color:var(--ink);
+  font-variant-numeric:tabular-nums; line-height:1.04; margin:10px 0 12px; }
+.fire-prog .bar{ height:11px; border-radius:999px; background:#F0F1F3; overflow:hidden; }
 .fire-prog .bar i{ display:block; height:100%; border-radius:999px; background:#0E794E; width:0; transition:width 1.4s cubic-bezier(0.22,1,0.36,1); }
-.fire-prog .cap{ display:flex; justify-content:space-between; font-size:14px; color:var(--text-secondary,#5B6472); margin-top:9px; font-variant-numeric:tabular-nums; }
-#fireTl{ display:block; width:100%; max-width:680px; height:auto; margin:6px 0 14px; }
-.fire-flav{ display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin:26px 0 18px; }
-.ff-c{ border:1px solid var(--hairline,#ECEDEF); border-radius:16px; padding:16px 15px 15px; min-width:0; }
-.ff-c.you{ border-color:#0E794E; background:#F4FBF7; }
-.ff-c .nm{ font-size:14.5px; font-weight:700; color:var(--ink,#10182C); }
-.ff-c .amt{ font-size:21px; font-weight:600; color:var(--ink,#10182C); margin-top:9px; letter-spacing:-0.4px; font-variant-numeric:tabular-nums; }
-.ff-c .when{ font-size:13px; color:var(--text-secondary,#5B6472); margin-top:5px; line-height:1.35; }
-.ff-c .when.got{ color:#0E794E; font-weight:700; }
-.ff-c .vibe{ font-size:12.5px; color:var(--text-tertiary,#9AA0AE); margin-top:8px; line-height:1.4; }
-.fire-lev{ max-width:640px; margin-top:24px; }
-.fl-row{ display:flex; align-items:center; gap:18px; padding:15px 0; border-bottom:1px solid var(--hairline,#ECEDEF); }
+.fire-prog .cap{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-secondary); margin-top:7px; font-variant-numeric:tabular-nums; }
+.fd-vs{ margin-top:12px; }
+.fd-vs .r{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--hairline); }
+.fd-vs .r:last-child{ border-bottom:0; }
+.fd-vs .l{ font-size:13.5px; color:var(--text-secondary); }
+.fd-vs .v{ font-size:19px; font-weight:600; color:var(--text-tertiary,#9AA0AE); font-variant-numeric:tabular-nums; letter-spacing:-0.3px; }
+.fd-vs .r.you .l{ color:var(--ink); font-weight:600; }
+.fd-vs .r.you .v{ color:#0E794E; }
+.fd-delta{ margin-top:10px; font-size:13px; font-weight:700; color:#0E794E; }
+.fire-pct{ margin:34px 0 4px; }
+.fire-pct .bar{ position:relative; height:11px; border-radius:999px; background:linear-gradient(90deg,#F0F1F3,#E7E9EC); }
+.fire-pct .you{ position:absolute; top:-27px; transform:translateX(-50%); font-size:12px; font-weight:700; color:#0E794E; white-space:nowrap; }
+.fire-pct .dot{ position:absolute; top:50%; transform:translate(-50%,-50%); width:18px; height:18px; border-radius:999px; background:#0E794E; border:4px solid #fff; outline:1px solid var(--hairline); }
+.fire-pct .cap{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-tertiary,#9AA0AE); margin-top:8px; }
+.fire-flav{ display:grid; grid-template-columns:repeat(5,1fr); gap:9px; margin-top:12px; }
+.ff-c{ border:1px solid var(--hairline); border-radius:13px; padding:11px 10px 10px; min-width:0; }
+.ff-c.you .nm{ color:#0E794E; }
+.ff-c.you:not(.sel){ border-color:var(--hairline); background:var(--white); }
+.ff-c .nm{ font-size:12.5px; font-weight:700; color:var(--ink); }
+.ff-c .amt{ font-size:15.5px; font-weight:600; color:var(--ink); margin-top:6px; letter-spacing:-0.3px; font-variant-numeric:tabular-nums; }
+.ff-c .when{ font-size:11.5px; color:var(--text-secondary); margin-top:3px; line-height:1.3; }
+.ff-c .when .got{ color:#0E794E; font-weight:700; }
+.fire-lev{ margin-top:4px; }
+.fl-row{ display:flex; align-items:center; gap:13px; padding:11px 0; border-bottom:1px solid var(--hairline); }
 .fl-row:last-of-type{ border-bottom:0; }
-.fl-row label{ flex:none; width:230px; font-size:15.5px; font-weight:600; color:var(--ink,#10182C); }
-.fl-row label small{ display:block; font-size:13px; color:var(--text-tertiary,#9AA0AE); font-weight:500; margin-top:2px; }
-.fl-row input[type=range]{ -webkit-appearance:none; appearance:none; flex:1; height:40px; background:transparent; cursor:pointer; margin:0; }
+.fl-row label{ flex:none; width:158px; font-size:13.5px; font-weight:600; color:var(--ink); }
+.fl-row input[type=range]{ -webkit-appearance:none; appearance:none; flex:1; height:36px; background:transparent; cursor:pointer; margin:0; }
 .fl-row input[type=range]::-webkit-slider-runnable-track{ height:7px; border-radius:999px; background:#E9EBEE; }
-.fl-row input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:26px; height:26px; margin-top:-9.5px; border-radius:999px; background:#FFFFFF; border:3px solid #0E794E; }
-.fl-row .fl-v{ flex:none; width:92px; text-align:right; font-size:16px; font-weight:600; color:var(--ink,#10182C); font-variant-numeric:tabular-nums; }
-.fire-read{ display:flex; gap:14px; margin-top:24px; max-width:640px; }
-.fire-read .c{ flex:1; border:1px solid var(--hairline,#ECEDEF); border-radius:16px; padding:16px 20px; }
-.fire-read .k{ font-size:13.5px; color:var(--text-tertiary,#9AA0AE); font-weight:600; }
-.fire-read .v{ font-size:24px; font-weight:600; color:var(--ink,#10182C); margin-top:6px; font-variant-numeric:tabular-nums; letter-spacing:-0.4px; }
-.fire-read .d{ font-size:13.5px; margin-top:4px; font-weight:600; }
+.fl-row input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:23px; height:23px; margin-top:-8px; border-radius:999px; background:#FFFFFF; border:3px solid #0E794E; }
+.fl-row .fl-v{ flex:none; width:74px; text-align:right; font-size:14px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
+.fire-read{ display:flex; gap:11px; margin-top:13px; }
+.fire-read .c{ flex:1; border:1px solid var(--hairline); border-radius:13px; padding:11px 14px; min-width:0; }
+.fire-read .k{ font-size:12px; color:var(--text-tertiary,#9AA0AE); font-weight:600; }
+.fire-read .v{ font-size:19px; font-weight:600; color:var(--ink); margin-top:4px; font-variant-numeric:tabular-nums; letter-spacing:-0.3px; }
+.fire-read .d{ font-size:12px; margin-top:2px; font-weight:600; }
 .fire-read .d.up{ color:#0E794E; } .fire-read .d.dn{ color:#8A6D00; } .fire-read .d.flat{ color:var(--text-tertiary,#9AA0AE); }
-.fire-note{ font-size:15px; color:var(--text-secondary,#5B6472); background:#FAFAF7; border:1px solid #F0EFE8; border-radius:14px;
-  padding:14px 18px; margin-top:22px; max-width:640px; line-height:1.55; }
-.fire-pct{ max-width:640px; margin:26px 0 8px; }
-.fire-pct .bar{ position:relative; height:14px; border-radius:999px; background:linear-gradient(90deg,#F0F1F3,#E7E9EC); }
-.fire-pct .you{ position:absolute; top:-34px; transform:translateX(-50%); font-size:13.5px; font-weight:700; color:#0E794E; white-space:nowrap; }
-.fire-pct .dot{ position:absolute; top:50%; transform:translate(-50%,-50%); width:22px; height:22px; border-radius:999px; background:#0E794E; border:4px solid #fff; outline:1px solid var(--hairline,#ECEDEF); }
-.fire-pct .cap{ display:flex; justify-content:space-between; font-size:13px; color:var(--text-tertiary,#9AA0AE); margin-top:10px; }
-.fire-days{ font-size:76px; font-weight:600; letter-spacing:-2.2px; color:var(--ink,#10182C); font-variant-numeric:tabular-nums; margin:22px 0 4px; }
-.fire-ctas{ display:flex; gap:30px; margin-top:30px; }
-.fire-ctas a{ font-size:16px; font-weight:700; color:#0E794E; text-decoration:none; cursor:pointer; }
+.fd-secret{ margin-top:12px; font-size:12.5px; color:var(--text-secondary); line-height:1.5; }
+.fd-secret b{ color:var(--ink); }
+.fd-free-row{ display:flex; align-items:center; gap:22px; margin-top:6px; }
+.fire-days{ font-size:44px; font-weight:600; letter-spacing:-1.2px; color:var(--ink); font-variant-numeric:tabular-nums; flex:none; }
+.fd-free-sub{ font-size:13.5px; color:var(--text-secondary); line-height:1.5; }
+.fd-free-sub b{ color:var(--ink); }
+#fireTl{ display:block; width:100%; height:auto; margin:12px 0 2px; }
+.fire-ctas{ display:flex; gap:24px; margin-top:12px; }
+.fire-ctas a{ font-size:14.5px; font-weight:700; color:#0E794E; text-decoration:none; cursor:pointer; }
 .fire-ctas a::after{ content:' \2197'; }
-@media (max-width:980px){ .fv-shell{ grid-template-columns:1fr; } .fv-anchors{ display:none; } .fire-flav{ grid-template-columns:repeat(2,1fr); } .fire-big{ font-size:64px; } }
+
+/* FI as its own page; the walkthrough shows only while inside it */
+body.fire-page .opt-index .center > *:not(.opt-grid){ display:none; }
+body.fire-page .opt-index .opt-grid > *:not(.fire-card){ display:none; }
+.opt-card.fire-card{ display:none; }
+body.fire-page .opt-card.fire-card{ display:block; border:none; border-radius:0; padding-left:0; padding-right:0; min-height:0; }
+body.fire-page .opt-index .side > *:not(.fire-side){ display:none; }
+.fire-side{ display:none; }
+body.fire-page .fire-side{ display:block; }
+.fire-side h1{ font-size:23px; font-weight:600; color:var(--ink); margin:0 0 14px; cursor:pointer; }
+#fireNav{ list-style:none; padding:0; margin:0; }
+#fireNav li{ font:500 16px 'ES Klarheit Grotesk','DM Sans',sans-serif; color:var(--text-secondary); padding:7px 12px 7px 8px; border-radius:10px; cursor:pointer; margin:2px 0; }
+#fireNav li:hover{ background:#F6F7F8; }
+#fireNav li.active{ font-weight:600; color:#0E794E; background:#F6F7F8; }
+
+.ff-c[data-amt]{ cursor:pointer; transition:border-color 140ms ease, background 140ms ease; }
+.ff-c[data-amt]:hover{ border-color:#0E794E; }
+.ff-c.sel{ border-color:#0E794E; background:#F4FBF7; }
+.ff-c.ff-info{ cursor:default; }
+.fd-vs .r[data-amt]{ cursor:pointer; border-radius:9px; transition:background 140ms ease; }
+.fd-vs .r[data-amt]:hover{ background:#F6F7F8; }
+.fd-vs .r.sel{ background:#F4FBF7; }
+.fd-free-row{ cursor:pointer; }
+
+.fd-kr{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+.fd-kr .fd-k{ margin:0; }
+.fd-try{ font-size:13.5px; font-weight:700; color:#0E794E; white-space:nowrap; }
+
+.fdw-row{ display:flex; justify-content:space-between; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid var(--hairline); }
+.fdw-row:last-of-type{ border-bottom:0; }
+.fdw-l{ font-size:15.5px; font-weight:600; color:var(--ink); }
+.fdw-sub{ font-size:13.5px; color:var(--text-secondary); margin-top:2px; line-height:1.45; }
+.fdw-chip{ flex:none; font-size:13.5px; font-weight:700; color:#0E794E; background:#E7F5EE; border-radius:999px; padding:5px 12px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.fdw-adv{ display:flex; justify-content:space-between; align-items:center; gap:14px; margin-top:14px; padding:14px 16px; border:1px solid var(--hairline); border-radius:14px; }
+.fdw-book{ flex:none; font-size:15px; font-weight:700; color:#0E794E; cursor:pointer; white-space:nowrap; }
+.fdw-book::after{ content:' \2197'; }
+
+.fd-dials{ display:grid; grid-template-columns:1.1fr 0.9fr 1.2fr; gap:16px; margin:16px 0 16px; align-items:start; }
+.fd-dial-hero .fire-big{ margin:2px 0 2px; white-space:nowrap; }
+.fd-dial-hero .fd-ds{ white-space:normal; }
+.fd-dial{ border-left:1px solid var(--hairline); padding-left:16px; min-width:0; }
+.fd-dial:first-child{ border-left:0; padding-left:0; }
+.fd-dk{ font-size:13px; font-weight:600; color:var(--text-tertiary,#9AA0AE); }
+.fd-dial .fd-dv{ font-size:23px; font-weight:600; color:var(--ink); margin-top:6px; letter-spacing:-0.4px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.fd-ds{ font-size:13px; color:var(--text-secondary); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.fd-prog{ height:8px; border-radius:999px; background:#F0F1F3; overflow:hidden; margin-top:12px; }
+.fd-prog i{ display:block; height:100%; border-radius:999px; background:#0E794E; width:0; transition:width .9s cubic-bezier(0.22,1,0.36,1); }
+.fd-two{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:stretch; }
+.fd-col{ display:flex; flex-direction:column; gap:12px; }
+.fd-two .fl-row{ flex-wrap:wrap; row-gap:6px; }
+.fd-two .fl-row label{ width:calc(100% - 100px); font-size:13.5px; }
+.fd-two .fl-row .fl-v{ width:86px; order:2; }
+.fd-two .fl-row input[type=range]{ order:3; flex:1 1 100%; min-width:0; }
+#fireTlWrap{ margin-top:4px; }
 </style>
 <script>
-/* FIRE page: the walkthrough. Deterministic engine, canon figures. */
+/* FIRE dashboard: the whole story at a glance. */
 (function(){
   const F={ port:1140000, pmt:3450, r:5.8, spend:8850, ss:3940,
             ssStart:new Date(2035,11,1), start:new Date(2026,6,1), horizon:new Date(2059,5,1), retire:new Date(2028,11,1) };
@@ -13226,197 +13271,266 @@ body.fire-open{ overflow:hidden; }
   const moneyK=n=> n>=1e6 ? '$'+(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M' : '$'+Math.round(n/1000)+'K';
   const MOS=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const DOW=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
-  // your number moves as time passes: the portfolio must also carry Social Security until the checks start
+  const SPARK='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
   function solve(spend,pmt,r){
-    let p=F.port; const d=new Date(F.start); let m=0;
-    for(; m<600; m++){
+    let p=F.port; const d=new Date(F.start);
+    for(let m=0; m<600; m++){
       const bridge=Math.max(0,(F.ssStart-d)/MS_MO);
       const target=(spend-F.ss)*300 + bridge*F.ss;
-      if(p>=target) return { date:new Date(d), num:target, p };
+      if(p>=target) return { date:new Date(d), num:target };
       p=p*(1+r/100/12)+pmt; d.setMonth(d.getMonth()+1);
     }
-    return { date:null, num:(spend-F.ss)*300, p };
+    return { date:null, num:(spend-F.ss)*300 };
   }
-  // the internet's version: 25x spending, no Social Security, no calendar
   function naive(spend){ return spend*300; }
-  // when does the portfolio simply reach a fixed amount at current pace
   function reach(amount){
     let p=F.port; const d=new Date(F.start);
     if(p>=amount) return { got:true };
-    for(let m=0;m<720;m++){ p=p*(1+F.r/100/12)+F.pmt; d.setMonth(d.getMonth()+1); if(p>=amount) return { got:false, year:d.getFullYear() }; }
+    for(let m=0;m<720;m++){ p=p*(1+F.r/100/12)+F.pmt; d.setMonth(d.getMonth()+1); if(p>=amount) return { got:false, year:d.getFullYear(), date:new Date(d) }; }
     return { got:false, year:null };
   }
-
   const BASE=solve(F.spend,F.pmt,F.r);
 
-  /* ---- entry: the Optimize rail ---- */
-  function addNav(){
+  const RAIL={
+    num:{ h:'The number', b:'Most people never learn theirs. You just did. Everything after this moment is strategy, not mystery.' },
+    flavors:{ h:'The flavors', b:'Lean is already yours. Let that settle. The question was never whether you can be free. It is how wide you want the door.' },
+    levers:{ h:'The levers', b:'You are not waiting on the market. Two of the three levers are in your hands, and the biggest one is dinner at home.' },
+    faster:{ h:'Get there faster', b:'Three moves, all yours to make. The spending cut is the quiet giant: every dollar works both sides of the ledger.', cta:true },
+    free:{ h:'The freedom', b:'Ten thousand mornings. Enough to learn the piano, walk the Camino twice, and still waste a decade of Tuesdays beautifully.', cta:true }
+  };
+  const optCtx=()=>document.getElementById('optCtx');
+  let savedRail=null, curRail='';
+  function typeWords(p,text){
+    p.innerHTML=text.split(' ').map(w=>'<span class="tok">'+w+'</span>').join(' ');
+    p.querySelectorAll('.tok').forEach((t,i)=> setTimeout(()=>t.classList.add('show'), 60+i*26));
+  }
+  function railSet(k){
+    const o=optCtx(); if(!o || curRail===k) return; curRail=k;
+    if(savedRail===null) savedRail=o.innerHTML;
+    const c=RAIL[k];
+    o.innerHTML='<div class="story-head">'+c.h+' <span class="spk">'+SPARK+'</span></div><p class="ctx-body"></p>'+
+      (c.cta?'<div class="tax-links"><a class="ctx-cta" data-goto="plan" style="opacity:1">Stress test it in your plan <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>':'');
+    typeWords(o.querySelector('.ctx-body'), c.b);
+  }
+  function railRestore(){ const o=optCtx(); if(!o || curRail==='') return; curRail=''; if(savedRail!==null) o.innerHTML=savedRail; }
+  function tlSvg(fi){
+    const y0=2026, y1=2059, X=x=>34+(x-y0)/(y1-y0)*500;
+    const fiY=fi.getFullYear()+fi.getMonth()/12;
+    const marks=[[2026.5,'Today'],[2028.9,'Retire'],[fiY,'Independence'],[2035.9,'Social Security'],[2059,'Lily is 92']];
+    return '<svg id="fireTl" viewBox="0 0 568 84" xmlns="http://www.w3.org/2000/svg" aria-label="Timeline to independence">'+
+      '<rect x="'+X(fiY)+'" y="34" width="'+(X(y1)-X(fiY))+'" height="8" rx="4" fill="#DDF0E6"/>'+
+      '<rect x="34" y="34" width="'+(X(fiY)-34)+'" height="8" rx="4" fill="#F0F1F3"/>'+
+      marks.map((mk,i)=>{ const x=X(mk[0]), key=mk[1]==='Independence';
+        return '<circle cx="'+x+'" cy="38" r="'+(key?7:4.5)+'" fill="'+(key?'#0E794E':'#FFFFFF')+'" stroke="'+(key?'#0E794E':'#C6CBD3')+'" stroke-width="2.5"/>'+
+          '<text x="'+Math.min(Math.max(x,34),540)+'" y="'+(i%2? 18:70)+'" text-anchor="middle" font-size="11.5" font-weight="'+(key?700:500)+'" fill="'+(key?'#0E794E':'#5B6472')+'">'+mk[1]+'</text>'; }).join('')+
+    '</svg>';
+  }
+  function buildCard(){
+    const naiveN=naive(F.spend), delta=naiveN-BASE.num;
+    const fi=BASE.date, pct=Math.round(F.port/BASE.num*100);
+    const days=Math.round((F.horizon-fi)/864e5), tues=Math.floor(days/7);
+    const gapMo=Math.round((fi-F.retire)/MS_MO);
+    const flav=[
+      { nm:'Lean', spend:40000/12 },{ nm:'Coast', coast:true },{ nm:'Yours', you:true },
+      { nm:'Chubby', spend:150000/12 },{ nm:'Fat', spend:200000/12 }
+    ];
+    const card=document.createElement('section');
+    card.className='opt-card opt-wide fire-card'; card.dataset.opt='fire'; card.id='fireCard';
+    card.innerHTML=
+      '<h2 class="snap-headline">The day work becomes <span class="yrs">optional</span>.</h2>'+
+      '<p class="pf-sub snap-sub">Your number, your date, and the levers that move it.</p>'+
+      '<div class="fd-grid">'+
+        '<div class="fd-card fd-hero" data-fs="num">'+
+          '<div class="fd-k">Your FIRE number</div><div class="fd-chip" id="cmdChip">'+pct+'% there</div>'+
+          '<div class="fire-big"><span id="cmdNum" data-count="'+Math.round(BASE.num)+'">$0</span></div>'+
+          '<div class="fire-prog"><div class="bar"><i id="cmdBar" data-prog="'+pct+'"></i></div>'+
+            '<div class="cap"><span>'+moneyK(F.port)+' today</span><span id="cmdTarget">'+moneyK(BASE.num)+'</span></div></div>'+
+          '<div class="fd-line" id="cmdLine">Crossing <b>'+MOS[fi.getMonth()]+' '+fi.getDate()+', '+fi.getFullYear()+'</b> &middot; a '+DOW[fi.getDay()]+' &middot; '+Math.round((fi-F.start)/(365.25*864e5))+' years away</div>'+
+        '</div>'+
+        '<div class="fd-card" data-fs="flavors"><div class="fd-kr"><div class="fd-k">The flavors, priced for your household</div><span class="fd-try">Tap one to try it on</span></div>'+
+          '<div class="fire-flav">'+
+            flav.map(f=>{
+              if(f.you) return '<div class="ff-c you sel" data-amt="'+Math.round(BASE.num)+'" data-nm="Yours" role="button" tabindex="0"><div class="nm">Yours</div><div class="amt">'+moneyK(BASE.num)+'</div><div class="when">'+MOS[fi.getMonth()].slice(0,3)+' '+fi.getFullYear()+'</div></div>';
+              if(f.coast){ const cn=BASE.num/Math.pow(1+F.r/100,(fi-F.start)/(365.25*864e5));
+                return '<div class="ff-c" data-amt="'+Math.round(cn)+'" data-nm="Coast" role="button" tabindex="0"><div class="nm">Coast</div><div class="amt">'+moneyK(cn)+'</div><div class="when">Stop saving here; growth finishes</div></div>'; }
+              const n=naive(f.spend), r=reach(n);
+              const when=r.got ? '<span class="got">Already yours &#10003;</span>' : (r.year? 'Around '+r.year : 'Beyond this plan');
+              return '<div class="ff-c" data-amt="'+Math.round(n)+'" data-nm="'+f.nm+'" role="button" tabindex="0"><div class="nm">'+f.nm+'</div><div class="amt">'+moneyK(n)+'</div><div class="when">'+when+'</div></div>'; }).join('')+
+          '</div>'+
+          '<div class="fd-line">By the internet&rsquo;s own rules, <b>Lean is already yours</b>.</div>'+
+        '</div>'+
+        '<div class="fd-card" data-fs="levers"><div class="fd-kr"><div class="fd-k">The levers</div><span class="fd-try">Every gauge above follows</span></div>'+
+            '<div class="fire-lev">'+
+              '<div class="fl-row"><label>Monthly spending later</label><input type="range" id="flSpend" min="6000" max="12000" step="50" value="'+F.spend+'"><span class="fl-v" id="flSpendV"></span></div>'+
+              '<div class="fl-row"><label>Monthly saving now</label><input type="range" id="flSave" min="1000" max="6000" step="50" value="'+F.pmt+'"><span class="fl-v" id="flSaveV"></span></div>'+
+              '<div class="fl-row"><label>Growth</label><input type="range" id="flGrow" min="4" max="8" step="0.1" value="'+F.r+'"><span class="fl-v" id="flGrowV"></span></div>'+
+            '</div>'+
+            '<div class="fd-secret"><b>The quiet secret:</b> a dollar of spending cut moves your date about twice as far as a dollar saved. It counts twice.</div>'+
+          '</div>'+
+        '<div class="fd-card"><div class="fd-k">The internet vs your life</div>'+
+              '<div class="fd-vs">'+
+                '<div class="r" data-amt="'+Math.round(naiveN)+'" data-nm="The internet&rsquo;s math" role="button" tabindex="0"><span class="l">25&times; spending, no Social Security</span><span class="v">'+moneyK(naiveN)+'</span></div>'+
+                '<div class="r you sel" data-amt="'+Math.round(BASE.num)+'" data-nm="Yours" role="button" tabindex="0"><span class="l">With Marshall&rsquo;s '+money(F.ss)+' a month from 70</span><span class="v">'+moneyK(BASE.num)+'</span></div>'+
+              '</div>'+
+              '<div class="fd-delta">'+money(delta)+' you never needed</div>'+
+            '</div>'+
+        '<div class="fd-card"><div class="fd-k">You are here</div>'+
+              '<div class="fire-pct"><div class="bar"><span class="you" style="left:88%">You</span><span class="dot" style="left:88%"></span></div>'+
+              '<div class="cap"><span>$0</span><span>Households 55&ndash;64</span><span>Top 1%</span></div></div>'+
+              '<div class="fd-line">Ahead of <b>88%</b> of American households your age. The typical one holds <b>$364K</b>.</div>'+
+        '</div>'+
+        '<div class="fd-card" data-fs="faster"><div class="fd-k">Ways to get there faster</div>'+
+            (function(){
+              const mo=alt=>{ const a=solve.apply(null,alt).date; return a&&BASE.date? Math.max(0,Math.round((BASE.date-a)/MS_MO)) : 0; };
+              const rows=[
+                ['Cut $500 of monthly spending','It counts twice: less to need, and more saved.', mo([F.spend-500,F.pmt,F.r])],
+                ['Max the super catch-up, ages 60 to 63','An extra $35,750 a year while the window is open.', mo([F.spend,F.pmt+2979,F.r])],
+                ['Save $500 more each month','Skip the lifestyle creep; the date moves quietly.', mo([F.spend,F.pmt+500,F.r])]
+              ];
+              return rows.map(r=>
+                '<div class="fdw-row"><div><div class="fdw-l">'+r[0]+'</div><div class="fdw-sub">'+r[1]+'</div></div>'+
+                '<span class="fdw-chip">'+r[2]+(r[2]===1?' month':' months')+' sooner</span></div>').join('');
+            })()+
+            '<div class="fdw-adv"><div><div class="fdw-l">Prefer a human?</div><div class="fdw-sub">Pressure test the whole thing with a Boldin advisor.</div></div>'+
+              '<a class="fdw-book" data-fire-cta="coach" role="button" tabindex="0">Book time with an advisor</a></div>'+
+          '</div>'+
+        '<div class="fd-card" data-fs="free"><div class="fd-k">What the number buys</div>'+
+            '<div class="fd-free-row"><div class="fire-days"><span data-count="'+days+'">0</span></div>'+
+              '<div class="fd-free-sub">mornings that answer to no one, from independence to Lily&rsquo;s ninety-second year. Including <b>'+tues.toLocaleString('en-US')+' slow Tuesdays</b>, which everyone knows are the best ones.</div></div>'+
+            '<div id="fireTlWrap">'+tlSvg(fi)+'</div>'+
+            '<div class="fire-ctas"><a data-fire-cta="plan">Stress test this in your plan</a><a data-fire-cta="coach">Walk through it with a coach</a></div>'+
+        '</div>'+
+      '</div>';
+    /* one state, many gauges: everything paints the command band */
+    const cN=card.querySelector('#cmdNum'), cChip=card.querySelector('#cmdChip'),
+          cB=card.querySelector('#cmdBar'), cT=card.querySelector('#cmdTarget'),
+          cL=card.querySelector('#cmdLine'), tlWrap=card.querySelector('#fireTlWrap');
+    function tweenTo(el, target){
+      const from=parseFloat(el.textContent.replace(/[^0-9.]/g,''))||0, t0=performance.now(), D=650;
+      (function tk(t){ const q=Math.min(1,(t-t0)/D), e=1-Math.pow(1-q,3);
+        el.textContent='$'+Math.round(from+(target-from)*e).toLocaleString('en-US');
+        if(q<1) requestAnimationFrame(tk); })(t0);
+    }
+    function paintCmd(num, date, got, label, sub){
+      tweenTo(cN, num);
+      const p=Math.min(100, Math.round(F.port/num*100));
+      cChip.textContent=p+'% there'; cB.style.width=p+'%'; cT.textContent=moneyK(num);
+      const tag = label && label!=='Base case' ? '<b>'+label+'</b> &middot; ' : '';
+      if(got) cL.innerHTML=tag+'<b>Already crossed.</b> You could stop today at this spend.';
+      else if(date){ const yrs=Math.round((date-F.start)/(365.25*864e5));
+        cL.innerHTML=tag+'Crossing <b>'+MOS[date.getMonth()]+' '+date.getDate()+', '+date.getFullYear()+'</b> &middot; a '+DOW[date.getDay()]+' &middot; '+(yrs<1?'under a year':yrs+' years')+' away'+(sub && label==='Custom levers' ? ' &middot; '+sub : ''); }
+      else cL.innerHTML=tag+'Beyond this plan&rsquo;s horizon at the current pace.';
+      if(tlWrap) tlWrap.innerHTML=tlSvg(date||fi);
+    }
+    const taps=[...card.querySelectorAll('.ff-c[data-amt], .fd-vs .r[data-amt]')];
+    taps.forEach(t=> t.addEventListener('click', ()=>{
+      taps.forEach(x=>x.classList.toggle('sel', +x.dataset.amt===+t.dataset.amt));
+      const amt=+t.dataset.amt, r=reach(amt), base=Math.abs(amt-BASE.num)<1;
+      paintCmd(amt, base?fi:(r.date||null), !base && r.got, t.dataset.nm,
+        base?'your plan today':'tap Yours to return');
+      if(t.dataset.nm==='Lean' && r.got && window.dropConfetti) window.dropConfetti();   /* already free: it rains */
+    }));
+    /* the levers drive the same gauges */
+    const S=id=>card.querySelector('#'+id);
+    function lever(){
+      const sp=+S('flSpend').value, sv=+S('flSave').value, gr=+S('flGrow').value;
+      S('flSpendV').textContent=money(sp); S('flSaveV').textContent=money(sv); S('flGrowV').textContent=gr.toFixed(1)+'%';
+      const r=solve(sp,sv,gr);
+      const base = sp===F.spend && sv===F.pmt && Math.abs(gr-F.r)<0.05;
+      let sub='your plan today';
+      if(!base && r.date && BASE.date){ const mo=Math.round((r.date-BASE.date)/MS_MO);
+        sub = mo===0 ? 'right on base' : '<b>'+Math.abs(mo)+(Math.abs(mo)===1?' month':' months')+' '+(mo<0?'sooner':'later')+'</b>'; }
+      else if(!base && !r.date) sub='pull the levers back';
+      paintCmd(r.num, r.date, false, base?'Base case':'Custom levers', sub);
+      taps.forEach(x=>x.classList.toggle('sel', base && +x.dataset.amt===Math.round(BASE.num)));
+    }
+    ['flSpend','flSave','flGrow'].forEach(id=> S(id).addEventListener('input', lever));
+    S('flSpendV').textContent=money(F.spend); S('flSaveV').textContent=money(F.pmt); S('flGrowV').textContent=F.r.toFixed(1)+'%';
+    /* the freedom figure cycles its unit */
+    const daysEl=card.querySelector('.fd-free-row .fire-days span'), freeSub=card.querySelector('.fd-free-sub');
+    const units=[
+      [days, 'mornings that answer to no one, from independence to Lily&rsquo;s ninety-second year.'],
+      [tues, 'slow Tuesdays, which everyone knows are the best ones.'],
+      [Math.round(days/365.25), 'whole summers. Every single one of them yours.']
+    ];
+    let ui=0;
+    card.querySelector('.fd-free-row').addEventListener('click', ()=>{
+      ui=(ui+1)%units.length;
+      const [n,txt]=units[ui];
+      const t0=performance.now(), from=parseFloat(daysEl.textContent.replace(/[^0-9]/g,''))||0, D=520;
+      (function tk(t){ const q=Math.min(1,(t-t0)/D), e=1-Math.pow(1-q,3);
+        daysEl.textContent=Math.round(from+(n-from)*e).toLocaleString('en-US');
+        if(q<1) requestAnimationFrame(tk); })(t0);
+      freeSub.innerHTML=txt+' <b>Tap for another way to count it.</b>';
+    });
+    return card;
+
+  }
+  function init(){
     const onav=document.querySelector('.onav');
     if(!onav || onav.querySelector('[data-opt="fire"]')) return;
     const it=document.createElement('div');
     it.className='onav-item'; it.dataset.opt='fire';
     it.innerHTML='<span class="onav-lbl">Financial Independence<span class="fire-new">New</span></span>';
-    it.addEventListener('click', openFire);
-    onav.appendChild(it);
-  }
-
-  let built=false;
-  function openFire(){ build(); document.getElementById('fireView').classList.add('on'); document.body.classList.add('fire-open'); wake(); }
-  function closeFire(){ document.getElementById('fireView').classList.remove('on'); document.body.classList.remove('fire-open'); }
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.getElementById('fireView')?.classList.contains('on')) closeFire(); });
-
-  function tlSvg(fi){
-    const y0=2026, y1=2059, X=x=>40+(x-y0)/(y1-y0)*600;
-    const fiY=fi.getFullYear()+fi.getMonth()/12;
-    const marks=[[2026.5,'Today'],[2028.9,'Retire'],[fiY,'Independence'],[2035.9,'Social Security'],[2059,'Lily is 92']];
-    return '<svg id="fireTl" viewBox="0 0 680 96" xmlns="http://www.w3.org/2000/svg" aria-label="Timeline to independence">'+
-      '<rect x="'+X(fiY)+'" y="40" width="'+(X(y1)-X(fiY))+'" height="8" rx="4" fill="#DDF0E6"/>'+
-      '<rect x="40" y="40" width="600" height="8" rx="4" fill="none" stroke="#ECEDEF"/>'+
-      '<rect x="40" y="40" width="'+(X(fiY)-40)+'" height="8" rx="4" fill="#F0F1F3"/>'+
-      marks.map((mk,i)=>{ const x=X(mk[0]), key=mk[1]==='Independence';
-        return '<circle cx="'+x+'" cy="44" r="'+(key?8:5.5)+'" fill="'+(key?'#0E794E':'#FFFFFF')+'" stroke="'+(key?'#0E794E':'#C6CBD3')+'" stroke-width="2.5"/>'+
-          '<text x="'+x+'" y="'+(i%2? 22:78)+'" text-anchor="middle" font-size="12.5" font-weight="'+(key?700:500)+'" fill="'+(key?'#0E794E':'#5B6472')+'">'+mk[1]+'</text>'; }).join('')+
-    '</svg>';
-  }
-  function build(){
-    if(built) return; built=true;
-    const naiveN=naive(F.spend), delta=naiveN-BASE.num;
-    const fi=BASE.date, pct=Math.round(F.port/BASE.num*100);
-    const days=Math.round((F.horizon-fi)/864e5), tues=Math.floor(days/7);
-    const flav=[
-      { nm:'Lean', spend:40000/12, vibe:'Paid-off simplicity. $40K a year.' },
-      { nm:'Coast', coast:true, vibe:'Stop saving. Let growth finish the job.' },
-      { nm:'Yours', you:true, vibe:'Your spending, your Social Security, your calendar.' },
-      { nm:'Chubby', spend:150000/12, vibe:'Comfort with cushions. $150K a year.' },
-      { nm:'Fat', spend:200000/12, vibe:'First class, both of you. $200K a year.' }
-    ];
-    const v=document.createElement('div'); v.id='fireView';
-    v.innerHTML=
-      '<div class="fv-top"><span class="fv-back" role="button" tabindex="0">&#8249; Optimize</span>'+
-        '<span class="fv-title">Financial Independence</span><span class="fire-new">New</span></div>'+
-      '<div class="fv-shell">'+
-        '<nav class="fv-anchors"><div class="fa-k">The walkthrough</div>'+
-          [['num','The number'],['date','The date'],['flavors','The flavors'],['levers','The levers'],['compare','You vs America'],['free','The freedom']]
-            .map(a=>'<div class="fv-a" data-fa="'+a[0]+'"><i></i>'+a[1]+'</div>').join('')+
-        '</nav>'+
-        '<main>'+
-        '<section class="fv-sec" id="fire-num" style="padding-top:34px">'+
-          '<div class="fv-eyebrow">Chapter one</div>'+
-          '<h2 class="fv-h">There is a number where work becomes optional.</h2>'+
-          '<p class="fv-p">Not a feeling. Not an age. A number. The internet computes it with one blunt rule. Boldin computes it with your actual life: Marshall&rsquo;s Social Security, your real spending, and the calendar.</p>'+
-          '<div class="fire-big"><span data-count="'+Math.round(BASE.num)+'">$0</span></div>'+
-          '<p class="fv-p" style="margin-top:2px">Yours. Counted properly.</p>'+
-          '<div class="fire-vs">'+
-            '<div class="c"><div class="k">The internet&rsquo;s math</div><div class="v">'+money(naiveN)+'</div><div class="s">25&times; spending. No Social Security. No calendar.</div></div>'+
-            '<div class="c you"><div class="k">Your number, with your life counted</div><div class="v">'+money(BASE.num)+'</div><div class="s">Social Security carries '+money(F.ss)+' a month from age 70, so your portfolio doesn&rsquo;t have to.</div></div>'+
-          '</div>'+
-          '<p class="fv-p">Generic calculators overshoot your number by <b>'+money(delta)+'</b>. That is not a rounding error. That is years of your life handed back.</p>'+
-        '</section>'+
-        '<section class="fv-sec" id="fire-date">'+
-          '<div class="fv-eyebrow">Chapter two</div>'+
-          '<h2 class="fv-h">Numbers are abstract. Dates are personal.</h2>'+
-          '<p class="fv-p">At your current pace, your portfolio crosses the line on a specific day.</p>'+
-          '<div class="fire-date">'+MOS[fi.getMonth()]+' '+fi.getDate()+', '+fi.getFullYear()+'</div>'+
-          '<div class="fire-dow">That&rsquo;s a '+DOW[fi.getDay()]+'.</div>'+
-          '<div class="fire-prog"><div class="bar"><i data-prog="'+pct+'"></i></div>'+
-            '<div class="cap"><span>'+moneyK(F.port)+' today</span><span><b style="color:var(--ink)">'+pct+'% of the way there</b></span><span>'+moneyK(BASE.num)+'</span></div></div>'+
-          tlSvg(fi)+
-          '<p class="fv-p">You plan to retire in December 2028. Independence lands about '+Math.round((fi-F.retire)/MS_MO)+' months later. The next chapter is about closing that gap.</p>'+
-        '</section>'+
-        '<section class="fv-sec" id="fire-flavors">'+
-          '<div class="fv-eyebrow">Chapter three</div>'+
-          '<h2 class="fv-h">The internet has flavors. You have a fit.</h2>'+
-          '<p class="fv-p">Every FIRE forum argues about these. Here is each one, priced for your household, with the year you&rsquo;d reach it at your current pace.</p>'+
-          '<div class="fire-flav">'+
-            flav.map(f=>{
-              if(f.you) return '<div class="ff-c you"><div class="nm">'+f.nm+'</div><div class="amt">'+moneyK(BASE.num)+'</div><div class="when">'+MOS[fi.getMonth()].slice(0,3)+' '+fi.getFullYear()+'</div><div class="vibe">'+f.vibe+'</div></div>';
-              if(f.coast){ return '<div class="ff-c"><div class="nm">'+f.nm+'</div><div class="amt">'+Math.min(99,Math.round(F.port/(BASE.num/Math.pow(1+F.r/100,(fi.getFullYear()-2026)))*100))+'% coasted</div><div class="when">Growth alone nearly carries you</div><div class="vibe">'+f.vibe+'</div></div>'; }
-              const n=naive(f.spend), r=reach(n);
-              const when=r.got ? '<span class="got">Already yours &#10003;</span>' : (r.year? 'Around '+r.year : 'Beyond this plan');
-              return '<div class="ff-c"><div class="nm">'+f.nm+'</div><div class="amt">'+moneyK(n)+'</div><div class="when">'+when+'</div><div class="vibe">'+f.vibe+'</div></div>'; }).join('')+
-          '</div>'+
-          '<p class="fv-p">Read that first card again. By the internet&rsquo;s own rules, <b>you are already financially independent</b> at the lean tier. Everything from here is about the size of the life, not the fact of the freedom.</p>'+
-        '</section>'+
-        '<section class="fv-sec" id="fire-levers">'+
-          '<div class="fv-eyebrow">Chapter four</div>'+
-          '<h2 class="fv-h">The date is not a verdict. It has levers.</h2>'+
-          '<p class="fv-p">Pull them. Watch the day move.</p>'+
-          '<div class="fire-lev">'+
-            '<div class="fl-row"><label>Monthly spending later<small>What retirement costs, per month</small></label><input type="range" id="flSpend" min="6000" max="12000" step="50" value="'+F.spend+'"><span class="fl-v" id="flSpendV"></span></div>'+
-            '<div class="fl-row"><label>Monthly saving now<small>What you put away until then</small></label><input type="range" id="flSave" min="1000" max="6000" step="50" value="'+F.pmt+'"><span class="fl-v" id="flSaveV"></span></div>'+
-            '<div class="fl-row"><label>Growth<small>Average annual return</small></label><input type="range" id="flGrow" min="4" max="8" step="0.1" value="'+F.r+'"><span class="fl-v" id="flGrowV"></span></div>'+
-          '</div>'+
-          '<div class="fire-read">'+
-            '<div class="c"><div class="k">Your number becomes</div><div class="v" id="flNum"></div><div class="d" id="flNumD"></div></div>'+
-            '<div class="c"><div class="k">Your day becomes</div><div class="v" id="flDate"></div><div class="d" id="flDateD"></div></div>'+
-          '</div>'+
-          '<div class="fire-note"><b style="color:var(--ink)">The quiet secret:</b> a dollar of spending cut moves your date roughly twice as far as a dollar of saving added. Less to save for, and more saved. It counts twice.</div>'+
-        '</section>'+
-        '<section class="fv-sec" id="fire-compare">'+
-          '<div class="fv-eyebrow">Chapter five</div>'+
-          '<h2 class="fv-h">You are further along than almost everyone.</h2>'+
-          '<p class="fv-p">The typical American household aged 55 to 64 holds about <b>$364,000</b>. You hold '+moneyK(F.port)+'.</p>'+
-          '<div class="fire-pct"><div class="bar"><span class="you" style="left:88%">You &middot; ahead of 88%</span><span class="dot" style="left:88%"></span></div>'+
-          '<div class="cap"><span>$0</span><span>American households, 55&ndash;64</span><span>Top 1%</span></div></div>'+
-          '<p class="fv-p" style="margin-top:22px">Percentiles are not the point. But if you have quietly wondered whether you are behind: you are not. You are eleven chapters into a book most people never start.</p>'+
-        '</section>'+
-        '<section class="fv-sec" id="fire-free">'+
-          '<div class="fv-eyebrow">Chapter six</div>'+
-          '<h2 class="fv-h">What the number actually buys.</h2>'+
-          '<p class="fv-p">From your independence day to the end of the plan, in Lily&rsquo;s ninety-second year, the calendar hands you back:</p>'+
-          '<div class="fire-days"><span data-count="'+days+'">0</span></div>'+
-          '<p class="fv-p" style="margin-top:2px">mornings that answer to no one. Including <b>'+tues.toLocaleString('en-US')+' slow Tuesdays</b>, which everyone knows are the best ones.</p>'+
-          '<div class="fire-ctas"><a data-fire-cta="plan">Stress test this in your plan</a><a data-fire-cta="coach">Walk through it with a coach</a></div>'+
-        '</section>'+
-        '</main>'+
-      '</div>';
-    document.body.appendChild(v);
-    v.querySelector('.fv-back').addEventListener('click', closeFire);
-    /* anchors: click scrolls, scroll spies */
-    v.querySelectorAll('.fv-a').forEach(a=> a.addEventListener('click', ()=>{
-      v.querySelector('#fire-'+a.dataset.fa).scrollIntoView({behavior:'smooth', block:'start'}); }));
-    const spy=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){
-      const k=e.target.id.replace('fire-','');
-      v.querySelectorAll('.fv-a').forEach(x=>x.classList.toggle('on', x.dataset.fa===k)); } }); },
-      { root:v, rootMargin:'-38% 0px -55% 0px', threshold:0 });
-    v.querySelectorAll('.fv-sec').forEach(s=>spy.observe(s));
-    /* levers */
-    const S=id=>v.querySelector('#'+id);
-    function lever(){
-      const sp=+S('flSpend').value, sv=+S('flSave').value, gr=+S('flGrow').value;
-      S('flSpendV').textContent=money(sp); S('flSaveV').textContent=money(sv); S('flGrowV').textContent=gr.toFixed(1)+'%';
-      const r=solve(sp,sv,gr);
-      S('flNum').textContent=moneyK(r.num);
-      S('flDate').textContent= r.date ? MOS[r.date.getMonth()].slice(0,3)+' '+r.date.getFullYear() : 'Out of range';
-      const dn=r.num-BASE.num, dNum=S('flNumD');
-      dNum.textContent = dn===0 ? 'your base case' : (dn<0? moneyK(-dn)+' less to need' : moneyK(dn)+' more to need');
-      dNum.className='d '+(dn<0?'up':dn>0?'dn':'flat');
-      const dd=S('flDateD');
-      if(r.date){ const mo=Math.round((r.date-BASE.date)/MS_MO);
-        dd.textContent = mo===0 ? 'right on your base case' : Math.abs(mo)+(Math.abs(mo)===1?' month ':' months ')+(mo<0?'sooner':'later');
-        dd.className='d '+(mo<0?'up':mo>0?'dn':'flat'); }
-      else { dd.textContent='pull the levers back'; dd.className='d dn'; }
-    }
-    ['flSpend','flSave','flGrow'].forEach(id=> S(id).addEventListener('input', lever));
-    lever();
-    v.querySelectorAll('[data-fire-cta]').forEach(a=> a.addEventListener('click', ()=>{
-      closeFire();
-      if(a.dataset.fireCta==='coach' && window.openScorePanel){ try{ openScorePanel('bookcoach'); }catch(e){} } }));
-  }
-  /* count-ups + progress fire once, on first open */
-  function wake(){
-    const v=document.getElementById('fireView');
-    v.querySelectorAll('[data-count]').forEach(el=>{
-      if(el.dataset.done) return; el.dataset.done=1;
-      const target=+el.dataset.count, isMoney=el.textContent.trim().startsWith('$'), t0=performance.now(), D=1400;
-      (function tick(t){ const k=Math.min(1,(t-t0)/D), e=1-Math.pow(1-k,3);
-        el.textContent=(isMoney?'$':'')+Math.round(target*e).toLocaleString('en-US');
-        if(k<1) requestAnimationFrame(tick); })(t0);
+    onav.insertBefore(it, onav.firstElementChild);
+    const firstCard=document.querySelector('.opt-card');
+    if(!firstCard) return;
+    const card=buildCard();
+    firstCard.parentElement.insertBefore(card, firstCard);
+    it.addEventListener('click', ()=>{
+      document.querySelectorAll('.onav-item').forEach(x=>x.classList.remove('active'));
+      it.classList.add('active');
+      document.body.classList.add('fire-page');
+      document.querySelector('.topnav nav.modes a[data-view="optimize"]')?.click();
+      requestAnimationFrame(()=> card.scrollIntoView({behavior:'auto', block:'start'}));
     });
-    v.querySelectorAll('[data-prog]').forEach(b=>{ requestAnimationFrame(()=> b.style.width=b.dataset.prog+'%'); });
+    /* any other rail item hands the grid back */
+    onav.addEventListener('click', e=>{
+      const item=e.target.closest('.onav-item');
+      if(item && item.dataset.opt!=='fire') document.body.classList.remove('fire-page');
+    }, true);
+    /* the detail rail: back arrow, title, anchors, the house way */
+    const side=onav.closest('.side') || onav.parentElement;
+    const fside=document.createElement('div');
+    fside.className='fire-side';
+    fside.innerHTML='<button class="bud-back" type="button"><span aria-hidden="true">&#8592;</span> Optimize</button>'+
+      '<h1 role="button" tabindex="0" title="Back to top">Financial independence</h1>'+
+      '<ul id="fireNav">'+
+        [['num','The number'],['flavors','The flavors'],['levers','The levers'],['faster','Get there faster'],['free','The freedom']]
+          .map((a,i)=>'<li data-nav="'+a[0]+'"'+(i===0?' class="active"':'')+'>'+a[1]+'</li>').join('')+
+      '</ul>';
+    side.appendChild(fside);
+    fside.querySelector('.bud-back').addEventListener('click', ()=>{
+      document.body.classList.remove('fire-page');
+      it.classList.remove('active');
+      document.getElementById('oli')?.scrollIntoView({behavior:'auto', block:'start'});
+    });
+    fside.querySelector('h1').addEventListener('click', ()=> card.scrollIntoView({behavior:'smooth', block:'start'}));
+    fside.querySelectorAll('#fireNav li').forEach(li=> li.addEventListener('click', ()=>{
+      fside.querySelectorAll('#fireNav li').forEach(x=>x.classList.toggle('active', x===li));
+      card.querySelector('[data-fs="'+li.dataset.nav+'"]').scrollIntoView({behavior:'smooth', block:'center'}); }));
+    const spy=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ railSet(e.target.dataset.fs);
+      document.querySelectorAll('#fireNav li').forEach(x=>x.classList.toggle('active', x.dataset.nav===e.target.dataset.fs)); } }); },
+      { rootMargin:'-32% 0px -50% 0px', threshold:0 });
+    card.querySelectorAll('[data-fs]').forEach(s=>spy.observe(s));
+    new IntersectionObserver(es=>{ es.forEach(e=>{ if(!e.isIntersecting) railRestore(); }); },
+      { rootMargin:'-12% 0px -12% 0px', threshold:0 }).observe(card);
+    const wakeIO=new IntersectionObserver(es=>{ es.forEach(e=>{ if(!e.isIntersecting) return;
+      e.target.querySelectorAll('[data-count]').forEach(el=>{
+        if(el.dataset.done) return; el.dataset.done=1;
+        const target=+el.dataset.count, isMoney=el.textContent.trim().startsWith('$'), t0=performance.now(), D=1400;
+        (function tick(t){ const k=Math.min(1,(t-t0)/D), z=1-Math.pow(1-k,3);
+          el.textContent=(isMoney?'$':'')+Math.round(target*z).toLocaleString('en-US');
+          if(k<1) requestAnimationFrame(tick); })(t0); });
+      e.target.querySelectorAll('[data-prog]').forEach(b=>{ if(!b.dataset.done){ b.dataset.done=1; requestAnimationFrame(()=> b.style.width=b.dataset.prog+'%'); } });
+    }); }, { threshold:0.3 });
+    card.querySelectorAll('.fd-card').forEach(s=>wakeIO.observe(s));
+
+    card.querySelectorAll('[data-fire-cta]').forEach(a=> a.addEventListener('click', ()=>{
+      if(a.dataset.fireCta==='coach'){ if(window.openScorePanel){ try{ openScorePanel('bookcoach'); }catch(e){} } }
+      else { const nav=document.querySelector('.topnav nav.modes a[data-view="plan"]'); if(nav) nav.click(); } }));
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', addNav); else addNav();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>
 <!-- FIRE-PAGE END -->
