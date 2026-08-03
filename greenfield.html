@@ -846,6 +846,9 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .snap-stats{ display:flex; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; gap:var(--s-4); padding-top:3px; margin-top:-3px;
   margin-bottom:56px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
 .snap-stats::-webkit-scrollbar{ display:none; }
+.snap-stats{ user-select:none; }
+.snap-stats.snap-dragging{ scroll-snap-type:none; cursor:grabbing; }
+.snap-stats.snap-dragging .snap-stat{ cursor:grabbing; }
 .snap-stats.fade-more{ -webkit-mask-image:linear-gradient(90deg, #000 calc(100% - 56px), transparent 100%);
   mask-image:linear-gradient(90deg, #000 calc(100% - 56px), transparent 100%); }
 .snap-stats .snap-stat{ flex:0 0 calc((100% - 32px)/3.22); scroll-snap-align:start; min-width:0; }
@@ -13145,6 +13148,37 @@ body.story-open{ overflow:hidden; }
 
 
 
+<!-- CAROUSEL-DRAG BEGIN: grab the track, see the hidden cards -->
+<script>
+(function(){
+  function arm(track){
+    let down=false, dragging=false, sx=0, sl=0;
+    track.addEventListener('mousedown', e=>{
+      if(e.button!==0) return;
+      down=true; dragging=false; sx=e.pageX; sl=track.scrollLeft;
+    });
+    window.addEventListener('mousemove', e=>{
+      if(!down) return;
+      const dx=e.pageX-sx;
+      if(!dragging && Math.abs(dx)>6){ dragging=true; track.classList.add('snap-dragging'); }
+      if(dragging){ track.scrollLeft=sl-dx; e.preventDefault(); }
+    });
+    window.addEventListener('mouseup', ()=>{
+      if(!down) return; down=false;
+      if(dragging){
+        track.classList.remove('snap-dragging');
+        setTimeout(()=>{ dragging=false; }, 0);
+      }
+    });
+    track.addEventListener('click', e=>{
+      if(dragging){ e.stopPropagation(); e.preventDefault(); }
+    }, true);
+  }
+  function boot(){ document.querySelectorAll('.snap-stats').forEach(arm); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+<!-- CAROUSEL-DRAG END -->
 <!-- FIRE-PAGE BEGIN (fenced: Financial Independence dashboard + inspirational rail) -->
 <style>
 .fire-new{ display:inline-block; margin-left:8px; padding:2px 8px; border-radius:999px; background:#E7F5EE; color:#0E794E;
