@@ -851,7 +851,7 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .snap-stats .snap-stat{ flex:0 0 calc((100% - 32px)/3.22); scroll-snap-align:start; min-width:0; }
 .snap-stats .snap-stat .lab, .snap-stats .snap-stat .sub{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 /* every card is a door; a chevron says so (ported from the mweb 3-block carousel) */
-.snap-stats .snap-stat, .stat-cards .stat-card{ position:relative; }
+.snap-stats .snap-stat, .stat-cards .stat-card{ position:relative; cursor:pointer; }
 .snap-stats .snap-stat::after, .stat-cards .stat-card::after{ content:''; position:absolute; top:12px; right:12px;
   width:13px; height:13px; pointer-events:none; opacity:.8;
   background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M9 6l6 6-6 6' stroke='%23A6ACB8' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
