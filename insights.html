@@ -3567,7 +3567,7 @@ body.mpanel-open{ overflow:hidden; }
     <div class="side-divider" role="presentation"></div>
 
     <div id="sideNav">
-      <div class="group-label" id="myMoneyLabel"><span class="grp-t">Future Money</span><button type="button" class="grp-chev" data-grp-chev="in" aria-label="Collapse Future Money" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <div class="group-label" id="myMoneyLabel"><span class="grp-t">Plan inputs</span><button type="button" class="grp-chev" data-grp-chev="in" aria-label="Collapse plan inputs" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
       <ul data-grp="in">
         <li data-key="assets"><span class="nav-dot done" aria-hidden="true"></span>Assets</li>
         <li data-key="debts"><span class="nav-dot done" aria-hidden="true"></span>Debts</li>
@@ -3587,7 +3587,7 @@ body.mpanel-open{ overflow:hidden; }
       <button type="button" class="nav-more" data-grp="in" data-more="in">7 more</button>
 
       <div class="side-divider ins-div" role="presentation"></div>
-      <div class="group-label ins-lab"><span class="grp-t">Insights</span><button type="button" class="grp-chev" data-grp-chev="out" aria-label="Collapse Outputs" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <div class="group-label ins-lab"><span class="grp-t">Plan outputs</span><button type="button" class="grp-chev" data-grp-chev="out" aria-label="Collapse plan outputs" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
       <ul class="ins-nav" data-grp="out">
         <li data-ins="flow">Cash Flow</li>
         <li data-ins="safe">Spending Guardrails</li>
@@ -9801,7 +9801,7 @@ document.addEventListener('click', function(e){
     const sideH1 = document.querySelector('[data-page="plan"] .side h1');
     if(sideH1){ const t=sideH1.querySelector('.side-top-t'); (t||sideH1).textContent = (view==='today') ? 'Today' : 'Plan'; }
     const moneyLbl = document.getElementById('myMoneyLabel');
-    if(moneyLbl){ const mt=moneyLbl.querySelector('.grp-t'); (mt||moneyLbl).textContent = (view==='today') ? 'My Money' : 'Future Money'; }
+    if(moneyLbl){ const mt=moneyLbl.querySelector('.grp-t'); (mt||moneyLbl).textContent = (view==='today') ? 'My Money' : 'Plan inputs'; }
     modeLinks.forEach(a=>a.classList.remove('active'));
     if(clickedLink && clickedLink.matches && clickedLink.matches('.topnav nav.modes a')){
       clickedLink.classList.add('active');
@@ -16569,17 +16569,59 @@ body.ins-open .layout.page.ins-layout.on{ display:grid; }
 body.ins-open .layout.page[data-page="plan"].on{ display:none; }
 /* vertical rhythm inside an insight. Spacing only: no colour, type, border or radius. */
 .ins-layout .alo-sec + .alo-sec{ margin-top:var(--s-16); }
-.ins-layout .opt-grid{ margin-bottom:var(--s-8); }
+.ins-layout .opt-grid{ margin-top:var(--s-8); margin-bottom:0; }
+/* key figures: the shell's own stat tile, side by side */
+.ins-stats{ display:flex; gap:var(--s-4); margin-top:var(--s-6); }
+.ins-stats .snap-stat{ flex:1 1 0; min-width:0; }
+.ins-stats .snap-stat .lab{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* opening a page: everything arrives in reading order, once */
+@keyframes insRise{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+@keyframes skRib{ from{ opacity:0; } to{ opacity:1; } }
+@keyframes skNode{ from{ opacity:0; transform:scaleY(.18); } to{ opacity:1; transform:none; } }
+@keyframes skLab{ from{ opacity:0; transform:translateY(5px); } to{ opacity:1; transform:none; } }
+.sk-rib{ animation:skRib 620ms cubic-bezier(.22,1,.36,1) both; }
+.sk-node, .sk-lab{ transform-box:fill-box; transform-origin:center; }
+.sk-node{ animation:skNode 560ms cubic-bezier(.22,1,.36,1) both; }
+.sk-lab{ animation:skLab 460ms cubic-bezier(.22,1,.36,1) both; }
+@media (prefers-reduced-motion:reduce){
+  .sk-rib, .sk-node, .sk-lab{ animation:none; }
+}
 .ins-layout .opt-card{ cursor:default; }
+/* a lone stat is one full-width box that hugs its content, not half a grid */
+.ins-layout .opt-grid.one{ grid-template-columns:1fr; }
+.ins-layout .opt-grid.one .opt-card{ min-height:0; }
+/* an empty legend slot takes no room */
+.ins-plot .gd-legend:empty{ display:none; }
 /* the plot is unboxed: whitespace does the separating */
 .ins-plot{ margin:var(--s-8) 0 0; }
+/* the lead plot sits directly under the sub-headline, which already spaces it */
+.ins-layout .alo-sec:first-of-type > .ins-plot:first-child{ margin-top:0; }
+.ins-layout .alo-sec:first-of-type > .ins-plot:first-child .snap-chartwrap{ margin-top:0; }
+/* the horizon control: the existing .fl-row slider, its own full-width row */
+.ins-range-head{ display:flex; align-items:baseline; gap:9px; }
+.ins-range-head .fl-v{ width:auto; }
+.ins-plot .fl-row.ins-range{ padding:0; border-bottom:0; margin-top:var(--s-3); }
+.ins-plot .fl-row.ins-range input[type=range]{ flex:1 1 100%; height:22px; }
+.ins-plot .fl-row.ins-range input[type=range]::-webkit-slider-runnable-track{
+  background:linear-gradient(90deg,#0E794E var(--p,100%),#E9EBEE var(--p,100%)); }
+.ins-plot .fl-row.ins-range input[type=range]::-moz-range-track{
+  background:linear-gradient(90deg,#0E794E var(--p,100%),#E9EBEE var(--p,100%)); }
+/* the plot's tools sit under the graph, so nothing but the chart is above it */
+.ins-plot .ins-plot-foot{ margin:var(--s-2) 0 0; }
+.ins-pager{ display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s-6);
+  margin-top:var(--s-12); padding-top:var(--s-6); border-top:1px solid var(--hairline); }
+.ins-pager .ins-pager-side{ display:flex; flex-direction:column; gap:var(--s-2); min-width:0; }
+.ins-pager .ins-pager-side.is-next{ text-align:right; align-items:flex-end; }
+.ins-pager .ret-seclabel{ margin:0; }
+.ins-pager .ret-card-link{ cursor:pointer; }
 .ins-plot .snap-chartwrap{ margin:var(--s-6) 0 var(--s-5); }
 .ins-plot + .alo-cap, .ins-plot + p, .ins-plot + .opt-card{ margin-top:var(--s-8); }
 .ins-layout .alo-rows{ margin-top:var(--s-2); }
 .ins-layout .alo-trades{ margin-top:var(--s-2); }
 .ins-layout .alo-rows + .alo-cap, .ins-layout .alo-trades + .alo-cap{ margin-top:var(--s-6); }
 .ins-layout .ret-seclabel{ margin-top:var(--s-10); }
-.ins-layout .alo-top{ margin-bottom:calc(var(--s-8) * -1); }
+.ins-layout .alo-top{ margin-bottom:calc(var(--s-12) * -1); }
 .ins-layout .ins-tablewrap{ margin-top:var(--s-6); }
 .ins-layout .ret-card-link{ display:inline-block; margin-top:var(--s-5); }
 body.ins-open .topnav{ background:var(--white); }
@@ -16601,16 +16643,21 @@ body.ins-max{ overflow:hidden; }
 body.ins-max .dock{ z-index:96; }
 /* two columns: the charts and the table on the left, the summary and Ask anything on the right.
    Same move the tri-column Prism view makes, so the ask bar lands in its own column. */
+/* the overlay is not the whole window: it is the width of the app's three
+   columns, so the content lands where the columns already are */
+body.ins-max .pm-inner{ max-width:1116px; }
+body.ins-max .dock .dock-inner{ max-width:1116px; }
+body.ins-max .pm-head{ padding-left:max(30px, calc((100% - 1116px) / 2));
+  padding-right:max(30px, calc((100% - 1116px) / 2)); }
 body.ins-max .pm-inner{ display:grid; grid-template-columns:minmax(0,1fr) 340px;
   column-gap:var(--s-8); align-items:start; }
 body.ins-max #insMaxGrid, body.ins-max #insMaxTableWrap{ grid-column:1; }
 body.ins-max #insMaxPair{ grid-column:2; grid-row:1 / span 2; position:sticky; top:0; }
-body.ins-max #insMaxPair .opt-grid{ grid-template-columns:1fr; gap:var(--s-4); }
-body.ins-max #insMaxPair .opt-card{ min-height:0; }
+body.ins-max #insMaxPair .ins-stats{ flex-direction:column; margin-top:0; }
 body.ins-max .pm-card{ border:0; background:none; padding:0; }
 body.ins-max .pm-grid{ row-gap:var(--s-16); }   /* stacked, so no equal-height floor */
 body.ins-max .dock .dock-inner{ grid-template-columns:minmax(0,1fr) 340px; gap:var(--s-8);
-  max-width:1240px; padding:0; }   /* matches .pm-inner so the bar sits in the right column */
+  padding:0; }   /* matches .pm-inner so the bar sits in the right column */
 body.ins-max .dock .askbar{ grid-column:2; justify-self:stretch; max-width:none; }
 @media (max-width:1180px){
   body.ins-max .pm-inner, body.ins-max .dock .dock-inner{ grid-template-columns:minmax(0,1fr); }
@@ -16788,7 +16835,102 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     });
   }
 
+  /* ---------- money flow: sources, the total, the uses ----------
+     Three columns, so no allocation is invented: every source feeds the trunk
+     and the trunk feeds every use. Nodes are directly labelled, so no legend. */
+  function fade(hex, a){
+    var n=parseInt(hex.slice(1),16);
+    return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')';
+  }
+  function drawSankey(svg, W, H, spec){
+    /* the entrance plays once per opening, not on every drag of the horizon */
+    var AN = !reduce && svg.dataset.sk!=='1'; svg.dataset.sk='1';
+    var anim=function(cls, ms){ return AN ? ' class="'+cls+'" style="animation-delay:'+ms+'ms"' : ''; };
+    /* the arms run the full width; the labels live inside their own band */
+    var NW=6, T=26, B=H-12, padL=spec.padL||10, padR=spec.padR||10;
+    var nz=function(d){ return d.v>0; };
+    var inn=spec.inn.filter(nz), out=spec.out.filter(nz);
+    var tot=inn.reduce(function(t,d){ return t+d.v; },0);
+    /* one band-height budget for both columns, so a dollar is the same
+       thickness on either side; the leftover height goes into the gaps */
+    var GAP=15, span=(B-T)-GAP*(Math.max(inn.length,out.length)-1);
+    function lay(list){
+      var gap=list.length>1 ? ((B-T)-span)/(list.length-1) : 0, y=T, o=[];
+      list.forEach(function(d){ var h=Math.max(3, span*d.v/tot); o.push({d:d,y:y,h:h}); y+=h+gap; });
+      return {items:o, span:span};
+    }
+    var A=lay(inn), C=lay(out);
+    var xA=padL, xT=W/2-NW/2, xC=W-padR-NW;
+    var g='';
+    var tTop=T+((B-T)-span)/2;
+    function ribbon(x0,y0,x1,y1,h0,h1,fill,at){
+      var cx0=x0+(x1-x0)*0.42, cx1=x0+(x1-x0)*0.58;
+      return '<path'+(at||'')+' d="M'+x0+' '+y0.toFixed(1)+' C'+cx0+' '+y0.toFixed(1)+' '+cx1+' '+y1.toFixed(1)+' '+x1+' '+y1.toFixed(1)
+        +' L'+x1+' '+(y1+h1).toFixed(1)+' C'+cx1+' '+(y1+h1).toFixed(1)+' '+cx0+' '+(y0+h0).toFixed(1)+' '+x0+' '+(y0+h0).toFixed(1)
+        +' Z" fill="'+fill+'"/>';
+    }
+    var acc=tTop;
+    A.items.forEach(function(it,i){
+      g+=ribbon(xA+NW, it.y, xT, acc, it.h, it.h, fade(it.d.c,0.30), anim('sk-rib', 180+i*70)); acc+=it.h;
+    });
+    acc=tTop;
+    C.items.forEach(function(it,i){
+      g+=ribbon(xT+NW, acc, xC, it.y, it.h, it.h, fade(it.d.c,0.22), anim('sk-rib', 430+i*70)); acc+=it.h;
+    });
+    /* nodes and their labels */
+    g+='<rect'+anim('sk-node',120)+' x="'+xT+'" y="'+tTop.toFixed(1)+'" width="'+NW+'" height="'+span.toFixed(1)+'" rx="2" fill="'+SOHO.ink+'"/>'
+     + '<text'+anim('sk-lab',700)+' x="'+(W/2)+'" y="13" text-anchor="middle" font-size="12.5" font-weight="600" fill="#7A8290">'
+     + spec.trunk+' '+big(tot)+'</text>';
+    /* labels sit inside their band: two lines where it is tall enough, one line
+       where it is not. A single forward pass keeps neighbours from touching. */
+    function column(items, x, anchor){
+      var boxes=items.map(function(it){
+        var two=it.h>=34, bh=two?22:15;
+        return {it:it, two:two, bh:bh, top:it.y+it.h/2-bh/2};
+      });
+      for(var i=1;i<boxes.length;i++){
+        var min=boxes[i-1].top+boxes[i-1].bh+5;
+        if(boxes[i].top<min) boxes[i].top=min;
+      }
+      var last=boxes[boxes.length-1];
+      if(last && last.top+last.bh>B){
+        var over=last.top+last.bh-B;
+        for(var j=boxes.length-1;j>=0 && over>0;j--){
+          var room=boxes[j].top-(j?boxes[j-1].top+boxes[j-1].bh+5:T);
+          var cut=Math.min(room, over); boxes[j].top-=cut; over-=cut;
+        }
+      }
+      var base=anchor?430:180;
+      return boxes.map(function(bx,i){
+        var it=bx.it, nm=it.d.n, v=big(it.d.v), t=bx.top, nd=anim('sk-node',base+i*70), lb=anim('sk-lab',base+260+i*70);
+        var r='<rect'+nd+' x="'+(anchor?xC:xA)+'" y="'+it.y.toFixed(1)+'" width="'+NW
+          +'" height="'+it.h.toFixed(1)+'" rx="2" fill="'+it.d.c+'"/>';
+        if(bx.two){
+          return r+'<text'+lb+' x="'+x+'" y="'+(t+9).toFixed(1)+'"'+anchor+' font-size="13" font-weight="600" fill="#10182C">'+nm+'</text>'
+            +'<text'+lb+' x="'+x+'" y="'+(t+24).toFixed(1)+'"'+anchor+' font-size="12.5" fill="#7A8290">'+v+'</text>';
+        }
+        return r+'<text'+lb+' x="'+x+'" y="'+(t+12).toFixed(1)+'"'+anchor+' font-size="13" font-weight="600" fill="#10182C">'
+          + nm +' <tspan font-weight="400" fill="#7A8290">'+v+'</tspan></text>';
+      }).join('');
+    }
+    g+=column(A.items, xA+NW+12, '');
+    g+=column(C.items, xC-12, ' text-anchor="end"');
+    svg.innerHTML=g;
+    return null;
+  }
+
   /* ---------- small markup helpers, all existing classes ---------- */
+  /* the lead plot: the headline is already the answer, so the first chart on a
+     page opens with just its unit note and the full-screen affordance. */
+  function lead(key, title, when, svgH, ctrl, below){
+    return '<div class="ins-plot" data-card="'+key+'">'
+      +'<div class="snap-chartwrap" data-wrap="'+key+'"><svg class="snap-chart" data-chart="'+key+'" viewBox="0 0 660 '+(svgH||250)+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+title+'"></svg></div>'
+      +'<div class="gd-legend" data-legend="'+key+'"></div>'
+      +'<div class="gd-lab ins-plot-foot">'+(ctrl||'')
+      +'<span class="gd-tools"><button class="ins-max-btn" type="button" data-ins-max="'+key+'">'+FSICON+'Full screen</button></span></div>'
+      +(below||'')
+      +'</div>';
+  }
   function card(key, title, when, svgH){
     return '<div class="ins-plot" data-card="'+key+'">'
       +'<div class="gd-lab"><span class="gd-title-t">'+title+'</span>'
@@ -16813,11 +16955,12 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     }).join('')+'</div>';
   }
   function pair(list){
-    return '<div class="opt-grid'+(list.length===1?' one':'')+'">'+list.map(function(p){
-      return '<div class="opt-card">'
-        +'<div class="opt-card-t">'+p.lab+(p.chip?' <span class="alo-chip hot">'+p.chip+'</span>':'')+'</div>'
-        +(p.sub?'<div class="opt-card-sub">'+p.sub+'</div>':'')
-        +'<div class="opt-card-num"><div class="opt-card-amt">'+p.fig+'</div></div></div>';
+    return '<div class="ins-stats">'+list.map(function(p){
+      return '<div class="snap-stat">'
+        +'<div class="lab">'+p.lab+'</div>'
+        +'<div class="fig" data-count>'+p.fig+'</div>'
+        +(p.sub||p.chip?'<div class="sub">'+(p.sub||p.chip)+'</div>':'')
+        +'</div>';
     }).join('')+'</div>';
   }
   function sec(id, h, note, body){
@@ -16919,9 +17062,27 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
               {k:'ss',c:SOHO.olive,n:'Social Security'},
               {k:'pensionOther',c:SOHO.plum,n:'Pension and other'},
               {k:'draw',c:SOHO.clay,n:'From savings'}];
+  /* the flow Sankey's window: now through whatever horizon you pull it to */
+  var AGE0=1967, SANK={to:YRN};
+  function ageAt(y){ return y-AGE0; }
+
   var CHARTS={
     flow:  function(){ return {rows:M, series:IN_SER, line:{k:'spend',c:SOHO.ink,w:2.4}, scrubK:'spend',
              ticks:[0,11,22,33], label:function(r){ return r.y+' · spending '+money(r.spend); }}; },
+    flowin: function(){
+      var w=M.filter(function(r){ return r.y<=SANK.to; });
+      var sp=sum(w,'spend'), left=sum(w,'surplus');
+      return {type:'sankey', trunk:'Every dollar, '+YR0+' to '+SANK.to+' &middot;',
+        inn:[{n:'Work and consulting',c:SOHO.teal,v:sum(w,'workAll')},
+             {n:'Social Security',c:SOHO.olive,v:sum(w,'ss')},
+             {n:'Pension and lakehouse',c:SOHO.plum,v:sum(w,'pensionOther')},
+             {n:'From savings',c:SOHO.clay,v:sum(w,'draw')}],
+        out:[{n:'Everyday living',c:SOHO.mute,v:sp*0.477},
+             {n:'Housing',c:SOHO.mute,v:sp*0.240},
+             {n:'Healthcare',c:SOHO.mute,v:sp*0.170},
+             {n:'Taxes',c:SOHO.mute,v:sp*0.113},
+             {n:'Left over',c:SOHO.olive,v:left}]};
+    },
     flowgap: 'diverge',
     safe:  function(){ return {rows:RETIRED, padR:14, floor:4800, top:9600, zero:false,
              line:{k:'permo',c:SOHO.olive}, band:{lo:5850,hi:8400,labels:['Safe ceiling $8,400','Floor $5,850']},
@@ -16949,13 +17110,17 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
   { k:'flow', t:'Cash Flow', short:'Cash Flow',
     hl:'Four streams replace <span class="yrs">one paycheck</span>.',
     sub:'Where the money comes from, where it goes, what is left over.',
-    nav:['The two eras','Where it comes from','Surplus and gaps'],
-    build:function(){ return sec('flow-a','The two eras','2028 is the hinge',
-        '<p>One paycheck of <b>'+money(147600)+'</b> a year carries you to 2028. After that four smaller '
-        +'streams take over and savings covers the difference, deepest in <b>'+deepest.y+'</b> at <b>'+money(deepest.draw)+'</b>.</p>'
-        + card('flow','Income by source, against what you spend','Today’s dollars',280))
+    nav:['In and out','Where it comes from','Surplus and gaps'],
+    build:function(){ return sec('flow-a','','',
+        lead('flowin','Where every dollar comes from and where it goes','',340,
+          '<span class="ins-range-head"><label class="gd-when" for="insTo">Now through</label>'
+          +'<span class="fl-v" id="insToV">'+YRN+' &middot; age '+ageAt(YRN)+'</span></span>',
+          '<div class="fl-row ins-range"><input type="range" id="insTo" style="--p:100%" min="'+(YR0+4)+'" max="'+YRN+'" step="1" value="'+YRN+'" aria-label="Show the plan from now through this year"></div>')
+        + '<p class="alo-cap">After 2028 the paycheck stops and four smaller streams take over; savings covers what they miss, '
+        +'deepest in <b>'+deepest.y+'</b> at <b>'+money(deepest.draw)+'</b>.</p>')
       + sec('flow-b','Where it comes from','Retirement, per month &middot; was Income &amp; Expenses',
-          rows([{n:'Social Security',c:SOHO.olive,v:'<b>$5,000</b> / mo',chip:'Both filed',tone:'ok'},
+          card('flow','Income by source, against what you spend','Today’s dollars',280)
+        + rows([{n:'Social Security',c:SOHO.olive,v:'<b>$5,000</b> / mo',chip:'Both filed',tone:'ok'},
                 {n:'Pension',c:SOHO.plum,v:'<b>$1,800</b> / mo',chip:'For life'},
                 {n:'Consulting',c:SOHO.teal,v:'<b>$3,000</b> / mo',chip:'2029 to 2033'},
                 {n:'The lakehouse',c:SOHO.plum,v:'<b>$400</b> / mo',chip:'Net of costs'},
@@ -16967,13 +17132,14 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
         + act('Your move',[{t:'Check the bridge years in your plan',goto:'plan'}],
             ['Can my savings absorb the bridge years?','What if I consult two more years?'])
         + deeper('flow','Every year, and every line item')); },
-    ctx:{'flow-a':['The hinge','Until 2028 one paycheck does all the work. After it stops, four smaller streams carry you and savings fills what they miss.'],
+    ctx:{'flow-a':['In and out','Your streams and your savings on one side, five uses on the other. Pull the horizon to see any window from today out to age 92.'],
          'flow-b':['Four streams','Social Security and the pension are the floor, for life. Consulting bridges five years. Savings only covers the difference.'],
          'flow-c':['The shock absorber','The bridge years lean on savings, then the checks nearly cover you. Every gap here is already inside your 87% confidence.']},
     fs:{ pair:[['Guaranteed income, both checks on',guarPct+'% of spending',true],
                ['Drawn from savings across the plan',big(sum(M,'draw')),false],
                ['Deepest year',deepest.y+' · '+money(deepest.draw),false]],
-         cards:[['Income by source, against what you spend','flow',960,380],
+         cards:[['Where every dollar comes from and where it goes','flowin',960,420],
+                ['Income by source, against what you spend','flow',960,380],
                 ['What is left after everything is paid','flowgap',960,300]],
          note:'Bars are income by source, stacked. The dark line is what you spend. Where the line sits above the bars, savings covers the difference.',
          cols:['Year','Work','Consulting','Social Security','Pension and lakehouse','Spending','Surplus or gap'],
@@ -16985,12 +17151,11 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     hl:'You can spend <span class="amt">$8,400</span> a month.',
     sub:'The most you can spend and still reach 92 with money left.',
     nav:['The number','When you adjust','What raises it'],
-    build:function(){ return sec('safe-a','The number','Retirement to 92, in today’s dollars',
-        pair([{lab:'Safe spending target',fig:'$8,400',sub:'Sustained through retirement'},
+    build:function(){ return sec('safe-a','','',
+        lead('safe','Monthly spending against your guardrails','',250)
+        + pair([{lab:'Safe spending target',fig:'$8,400',sub:'Sustained through retirement'},
               {lab:'Your planned spend',chip:'Review expenses',fig:'$6,323',plain:true,sub:'What your budget adds up to'}])
-        + '<p>That is <b>$2,077</b> a month you could spend and still finish the plan with money left, about '
-        +'<b>$24,900</b> a year. Most people find this out too late to enjoy it.</p>'
-        + card('safe','Monthly spending against your guardrails','Today’s dollars',250))
+        + '<p class="alo-cap">That is <b>$2,077</b> a month, about <b>$24,900</b> a year, you could spend and still finish the plan with money left.</p>')
       + sec('safe-b','When you adjust','Driven by your balance, not the market',
           trades([{t:'If savings fall to $1.10M',s:'A long drawdown, not a bad month',v:'Spend $8,362',tone:'sell'},
                   {t:'Projected balance, 2029',s:'What the plan expects',v:'Spend $8,400'},
@@ -17018,12 +17183,11 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     hl:'<span class="amt">87</span> of 100 futures still have money.',
     sub:'A thousand runs of your plan, through good markets and bad.',
     nav:['The odds','Through a bad run','Your goals'],
-    build:function(){ return sec('last-a','The odds','A thousand runs of your plan',
-        pair([{lab:'Chance of funding every year to 92',fig:'87%'}])
-        + '<p>In 1,000 simulations of your plan, <b>870</b> reached age 92 without running out. The 130 that did not '
-        +'were front-loaded with bad markets in the bridge years, when savings is doing the most work.</p>'
-        + card('last','Projected savings, against a poor run of markets','',260)
-        + '<div class="gd-legend">'+legend([{c:SOHO.teal,n:'Projected savings'},{c:SOHO.mute,n:'Poor outcome'}])+'</div>')
+    build:function(){ return sec('last-a','','',
+        lead('last','Projected savings, against a poor run of markets','',260)
+        + '<div class="gd-legend">'+legend([{c:SOHO.teal,n:'Projected savings'},{c:SOHO.mute,n:'Poor outcome'}])+'</div>'
+        + pair([{lab:'Chance of funding every year to 92',fig:'87%'}])
+        + '<p class="alo-cap">Of 1,000 runs, <b>870</b> reached age 92 with money left; the 130 that did not hit bad markets in the bridge years.</p>')
       + sec('last-b','Through a bad run','Where the risk actually sits',
           rows([{n:'Bad markets 2029 to 2034',v:'confidence <b>71%</b>',chip:'The real risk',tone:'hot'},
                 {n:'Bad markets after 2040',v:'confidence <b>84%</b>',chip:'Absorbed'},
@@ -17050,11 +17214,10 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     hl:'<span class="amt">$1.14M</span> today, <span class="yrs">and climbing</span>.',
     sub:'Everything you own, minus everything you owe, now and ahead.',
     nav:['Today','What you own','How it is taxed'],
-    build:function(){ return sec('worth-a','Today','Everything you own, less what you owe',
-        pair([{lab:'Net worth today, up $8,200 since January',fig:'$1.14M'}])
-        + '<p>The house is <b>$905,000</b> of it and the mortgage takes <b>$333,000</b> back. Your net worth peaks around '
-        +'<b>'+peak.y+'</b> at about <b>'+big(peak.net)+'</b>, then flattens as savings does its job.</p>'
-        + card('worth','Projected net worth','Today’s dollars',260))
+    build:function(){ return sec('worth-a','','',
+        lead('worth','Projected net worth','',260)
+        + pair([{lab:'Net worth today, up $8,200 since January',fig:'$1.14M'}])
+        + '<p class="alo-cap">The house is <b>$905,000</b> of it and the mortgage takes <b>$333,000</b> back, peaking around <b>'+peak.y+'</b> at <b>'+big(peak.net)+'</b>.</p>')
       + sec('worth-b','What you own','Today',
           rows([{n:'Home',c:SOHO.teal,v:'<b>$905,000</b>',chip:'72% of assets'},
                 {n:'Retirement accounts',c:SOHO.olive,v:'<b>$310,000</b>',chip:'Tax deferred'},
@@ -17084,13 +17247,12 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     hl:'You need <span class="amt">'+big(at(2029).need)+'</span>. You will have <span class="yrs">more</span>.',
     sub:'What the plan asks of your savings, and what your savings can do.',
     nav:['Have and need','Where growth comes from','By account'],
-    build:function(){ return sec('sav-a','Have and need','At retirement, in today’s dollars',
-        pair([{lab:'What you need at retirement',fig:big(at(2029).need),sub:'Today’s value of the years the streams miss'},
+    build:function(){ return sec('sav-a','','',
+        lead('savings','What you have, against what you need','',260)
+        + '<div class="gd-legend">'+legend([{c:SOHO.teal,n:'What you have'},{c:SOHO.clay,n:'What you need'}])+'</div>'
+        + pair([{lab:'What you need at retirement',fig:big(at(2029).need),sub:'Today’s value of the years the streams miss'},
               {lab:'What you will have',fig:big(at(2029).bal),plain:true,sub:'Projected, 2029'}])
-        + '<p>You cross your number <b>before</b> you retire and stay above it for the whole plan. Savings peaks around <b>'
-        +peak.y+'</b> at <b>'+big(peak.bal)+'</b>, which is the year the plan stops needing to grow.</p>'
-        + card('savings','What you have, against what you need','Today’s dollars',260)
-        + '<div class="gd-legend">'+legend([{c:SOHO.teal,n:'What you have'},{c:SOHO.clay,n:'What you need'}])+'</div>')
+        + '<p class="alo-cap">You cross your number <b>before</b> you retire and stay above it, peaking around <b>'+peak.y+'</b> at <b>'+big(peak.bal)+'</b>.</p>')
       + sec('sav-b','Where growth comes from','Across the plan',
           rows([{n:'Investment returns',v:'<b>'+big(sum(M,'surplus')*2.3)+'</b>',chip:'4.2% real'},
                 {n:'Surplus you add',v:'<b>'+big(sum(M,'surplus'))+'</b>',chip:'2035 to '+firstGap.y},
@@ -17118,12 +17280,11 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     hl:'Your withdrawal rate is <span class="amt">1.1%</span>.',
     sub:'Which accounts pay you, in what order, and how much they can stand.',
     nav:['The rate','Three strategies','Your order'],
-    build:function(){ return sec('draw-a','The rate','Of savings, across retirement',
-        pair([{lab:'Average withdrawal rate',fig:'1.1%',sub:'Across retirement'},
+    build:function(){ return sec('draw-a','','',
+        lead('draw','Savings balance through retirement','',250)
+        + pair([{lab:'Average withdrawal rate',fig:'1.1%',sub:'Across retirement'},
               {lab:'Out of money date',fig:'Never',plain:true,sub:'On average assumptions'}])
-        + '<p>You are drawing far less than your savings can stand. A <b>4%</b> rate is the usual rule of thumb, and yours is '
-        +'about a quarter of that, which is the same finding as your safe spending ceiling seen from the other side.</p>'
-        + card('draw','Savings balance through retirement','Spending needs strategy',250))
+        + '<p class="alo-cap">A <b>4%</b> rate is the usual rule of thumb, and yours is about a quarter of that.</p>')
       + sec('draw-b','Three strategies','The same plan, three rules',
           trades([{t:'Spending needs',s:'Withdraw what the budget requires. Your current rule',v:big(STRAT.need.e)+' left',tone:'buy'},
                   {t:'Fixed 4% of balance',s:'A rule of thumb, ignores what you actually spend',v:big(STRAT.fix.e)+' left'},
@@ -17151,11 +17312,11 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     hl:'<span class="amt">'+big(lifeTax)+'</span> in tax, <span class="yrs">across the plan</span>.',
     sub:'What you will pay, when you will pay it, and where the room is.',
     nav:['The bill','Where it goes','The window'],
-    build:function(){ return sec('tax-a','The bill','Now to age 92',
-        pair([{lab:'Estimated tax from now to age 92',fig:''+big(lifeTax)+''}])
-        + '<p>The bill is front-loaded: <b>'+big(sum(M.filter(function(r){return r.y<=RET;}),'tax'))
-        +'</b> of it lands in the three years you are still working. After 2028 your taxable income drops by more than half.</p>'
-        + card('taxes','Estimated tax by year','Today’s dollars',250))
+    build:function(){ return sec('tax-a','','',
+        lead('taxes','Estimated tax by year','',250)
+        + pair([{lab:'Estimated tax from now to age 92',fig:''+big(lifeTax)+''}])
+        + '<p class="alo-cap">It is front-loaded: <b>'+big(sum(M.filter(function(r){return r.y<=RET;}),'tax'))
+        +'</b> lands in the three years you are still working.</p>')
       + sec('tax-b','Where it goes','Across the plan',
           rows([{n:'Federal income tax',v:'<b>'+big(lifeTax*0.52)+'</b>',chip:'52%'},
                 {n:'FICA, while working',v:'<b>'+big(lifeTax*0.35)+'</b>',chip:'Ends 2028'},
@@ -17184,11 +17345,11 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     hl:'They start in <span class="amt">2036</span>, <span class="yrs">at 75</span>.',
     sub:'What the government makes you withdraw, and what it costs you.',
     nav:['When and how much','Which accounts','What it costs'],
-    build:function(){ return sec('rmd-a','When and how much','Starting at 75',
-        pair([{lab:'First required distribution, at age 75',fig:'2036'}])
-        + '<p>Your first required distribution is about <b>'+money(at(2036).rmd)+'</b>, rising to <b>'+money(at(2050).rmd)
-        +'</b> by 2050 as the divisor shrinks. You have <b>7</b> years before they begin.</p>'
-        + card('rmd','Required distributions by year','Estimated',250))
+    build:function(){ return sec('rmd-a','','',
+        lead('rmd','Required distributions by year','',250)
+        + pair([{lab:'First required distribution, at age 75',fig:'2036'}])
+        + '<p class="alo-cap">The first is about <b>'+money(at(2036).rmd)+'</b>, rising to <b>'+money(at(2050).rmd)
+        +'</b> by 2050 as the divisor shrinks.</p>')
       + sec('rmd-b','Which accounts','Three of them',
           rows([{n:'Pre-tax 401(k)',v:'<b>$185,000</b>',chip:'RMD at 75'},
                 {n:'Traditional IRA',v:'<b>$85,000</b>',chip:'RMD at 75'},
@@ -17218,11 +17379,11 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     hl:'You are <span class="yrs">not</span> modeled to pay a surcharge.',
     sub:'The Medicare premium surcharge, and how close your income gets to it.',
     nav:['The answer','How close you get','What would change it'],
-    build:function(){ return sec('irmaa-a','The answer','Your income against the threshold',
-        pair([{lab:'IRMAA surcharge across the whole plan',fig:'$0'}])
-        + '<p>Your highest modeled income is <b>'+money(magiPeak.magi)+'</b> in <b>'+magiPeak.y+'</b>, which is <b>'
-        +money(IRMAA1-magiPeak.magi)+'</b> under the first surcharge threshold of '+money(IRMAA1)+'. Nothing to do here, and that is the useful answer.</p>'
-        + card('irmaa','Your income against the first threshold','Modified AGI',250))
+    build:function(){ return sec('irmaa-a','','',
+        lead('irmaa','Your income against the first threshold','',250)
+        + pair([{lab:'IRMAA surcharge across the whole plan',fig:'$0'}])
+        + '<p class="alo-cap">Your highest modeled income is <b>'+money(magiPeak.magi)+'</b> in <b>'+magiPeak.y+'</b>, <b>'
+        +money(IRMAA1-magiPeak.magi)+'</b> under the first threshold.</p>')
       + sec('irmaa-b','How close you get','The margin, year by year',
           rows([{n:'Highest income year',v:'<b>'+money(magiPeak.magi)+'</b> in '+magiPeak.y,chip:'Under',tone:'ok'},
                 {n:'First surcharge threshold',v:'<b>'+money(IRMAA1)+'</b>',chip:'Married filing jointly'},
@@ -17251,13 +17412,33 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
   var BY={}; INS.forEach(function(o){ BY[o.k]=o; });
 
   var PFX={flow:'flow',safe:'safe',last:'last',worth:'worth',savings:'sav',draw:'draw',taxes:'tax',rmd:'rmd',irmaa:'irmaa'};
-  var OWNER={flowgap:'flow'};
+  var OWNER={flowgap:'flow', flowin:'flow'};
   var LEGENDS={ flow: legend(IN_SER.concat([{c:SOHO.ink,n:'Spending'}])),
                 flowgap: legend([{c:SOHO.olive,n:'Surplus, added to savings'},{c:SOHO.clay,n:'Gap, covered by savings'}]),
                 safe: legend([{c:SOHO.olive,n:'Your spending'},{c:'#C8D8B4',n:'Safe band, $5,850 to $8,400'}]) };
 
+  /* one dispatch, shared by the page and its full screen */
+  function paintChart(svg, W, H, key){
+    if(CHARTS[key]==='diverge') return drawDiverge(svg, W, H, RETIRED, 'surplus', 'draw');
+    var spec=CHARTS[key]();
+    return spec.type==='sankey' ? drawSankey(svg, W, H, spec) : draw(svg, W, H, spec);
+  }
+
   /* ---------- build the nine pages ---------- */
   var host=document.getElementById('insPages');
+  /* the page ends with the two it sits between: back on the left, on on the right */
+  function nextLink(k){
+    var ks=INS.map(function(o){ return o.k; }), i=ks.indexOf(k), n=INS.length;
+    var prev=INS[(i-1+n)%n], next=INS[(i+1)%n];
+    return '<nav class="ins-pager" aria-label="More insights">'
+      +'<div class="ins-pager-side"><div class="ret-seclabel">Previous</div>'
+      +'<a class="ret-card-link" role="button" tabindex="0" data-ins-next="'+prev.k+'">'
+      +'<span aria-hidden="true">&larr;</span> '+prev.t+'</a></div>'
+      +'<div class="ins-pager-side is-next"><div class="ret-seclabel">Next</div>'
+      +'<a class="ret-card-link" role="button" tabindex="0" data-ins-next="'+next.k+'">'
+      + next.t+' <span aria-hidden="true">&rarr;</span></a></div>'
+      +'</nav>';
+  }
   function hopList(k){
     var others=INS.filter(function(o){ return o.k!==k; });
     return '<ul class="ins-nav ins-hop" data-grp="hop">'
@@ -17286,6 +17467,7 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
       +'<main class="center">'
       +'<div class="alo-top"><h2 class="snap-headline ins-headline">'+o.hl+'</h2><p class="bud-sub">'+o.sub+'</p></div>'
       + o.build()
+      + nextLink(o.k)
       +'<div class="alo-bottom-spacer"></div>'
       +'</main>'
       +'<aside class="rail">'
@@ -17293,7 +17475,6 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
       +'<div class="story-head" data-ctx-head>&nbsp;'+SPARK+'</div>'
       +'<p class="ctx-body" data-ctx-body></p>'
       +'<div class="tax-links">'
-      +'<a data-ins-max="'+o.k+'">See it full screen '+ARROW+'</a>'
       +'<a data-goto="plan">Back to your plan '+ARROW+'</a>'
       +'</div></div></aside>';
     host.appendChild(el);
@@ -17307,15 +17488,69 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     var page=document.querySelector('.ins-layout[data-ins="'+k+'"]'); if(!page) return;
     page.querySelectorAll('[data-chart]').forEach(function(svg){
       var key=svg.dataset.chart, wrap=svg.closest('.ins-chartwrap');
+      svg.dataset.sk='';   /* the Sankey entrance replays each time the page opens */
       var vb=svg.viewBox.baseVal, W=vb.width, H=vb.height;
-      var pts = (CHARTS[key]==='diverge')
-        ? drawDiverge(svg, W, H, RETIRED, 'surplus', 'draw')
-        : draw(svg, W, H, CHARTS[key]());
+      var pts = paintChart(svg, W, H, key);
       if(wrap){ wrap._pts=pts; bindScrub(wrap); }
       var card=svg.closest('.ins-plot');
       if(card && !reduce){ card.classList.remove('ins-anim'); void card.offsetWidth; card.classList.add('ins-anim'); }
     });
   }
+
+  /* ---------- opening a page: it arrives in reading order ---------- */
+  function countUp(el){
+    var txt=(el.dataset.fig || el.textContent).trim();
+    el.dataset.fig=txt;
+    var m=txt.match(/^([^0-9-]*)(-?[\d,.]+)(.*)$/);
+    if(!m){ return; }
+    var pre=m[1], suf=m[3], raw=m[2], dec=(raw.split('.')[1]||'').length;
+    var end=parseFloat(raw.replace(/,/g,'')); if(!isFinite(end)) return;
+    var grp=raw.indexOf(',')>=0, t0=0, DUR=760;
+    function fmt(v){
+      var n=dec ? v.toFixed(dec) : String(Math.round(v));
+      if(grp){ var pt=n.split('.'); pt[0]=pt[0].replace(/\B(?=(\d{3})+(?!\d))/g,','); n=pt.join('.'); }
+      return pre+n+suf;
+    }
+    function step(t){
+      if(!t0) t0=t;
+      var k=Math.min(1,(t-t0)/DUR), e=1-Math.pow(1-k,3);
+      el.textContent=fmt(end*e);
+      if(k<1) requestAnimationFrame(step); else el.textContent=txt;
+    }
+    el.textContent=fmt(0);
+    requestAnimationFrame(step);
+  }
+  function choreograph(page){
+    var items=[], sub=page.querySelector('.bud-sub');
+    if(sub) items.push(sub);
+    page.querySelectorAll('.center .alo-sec').forEach(function(sec){
+      [].forEach.call(sec.children, function(el){ items.push(el); });
+    });
+    items.slice(0,7).forEach(function(el,i){
+      var d=90+i*90;
+      el.style.animation='none'; void el.offsetWidth;
+      el.style.animation='insRise 560ms cubic-bezier(.22,1,.36,1) '+d+'ms both';
+    });
+    var figs=page.querySelectorAll('.ins-stats .fig[data-count]');
+    figs.forEach(function(f,i){ setTimeout(function(){ countUp(f); }, 320+i*110); });
+    /* the shell's own stat-tile sub reveal, once the figure has landed */
+    page.querySelectorAll('.ins-stats .sub').forEach(function(el,i){
+      el.classList.remove('in');
+      setTimeout(function(){ el.classList.add('in'); }, 620+i*110);
+    });
+  }
+
+  /* ---------- the Sankey's horizon: now through the year you pull it to ---------- */
+  document.addEventListener('input', function(e){
+    var r=e.target; if(!r || r.id!=='insTo') return;
+    SANK.to=+r.value;
+    var v=document.getElementById('insToV');
+    if(v) v.innerHTML=SANK.to+' &middot; age '+ageAt(SANK.to);
+    r.style.setProperty('--p', ((SANK.to-(+r.min))/((+r.max)-(+r.min))*100)+'%');
+    document.querySelectorAll('[data-chart="flowin"]').forEach(function(svg){
+      var vb=svg.viewBox.baseVal; paintChart(svg, vb.width, vb.height, 'flowin');
+    });
+  });
 
   /* ---------- rail: contextual, one story per section ---------- */
   function revealCtx(panel){
@@ -17384,6 +17619,7 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     var li=document.querySelector('#sideNav .ins-nav li[data-ins="'+k+'"]');
     if(li) li.classList.add('active');
     renderCharts(k);
+    if(lay && !reduce) choreograph(lay);
     var hd=lay && lay.querySelector('.ins-headline');
     if(hd && !reduce){
       hd.style.transition='none';
@@ -17399,6 +17635,8 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     var ping=document.getElementById('insAiPing'); if(ping) ping.click();
   }
   document.addEventListener('click', function(e){
+    var nx=e.target.closest && e.target.closest('[data-ins-next]');
+    if(nx){ e.preventDefault(); open(nx.dataset.insNext); window.scrollTo({top:0,behavior:'auto'}); return; }
     var li=e.target.closest && e.target.closest('[data-ins]');
     if(!li || li.tagName!=='LI' || li.hasAttribute('aria-disabled')) return;
     open(li.dataset.ins);
@@ -17451,6 +17689,9 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     document.getElementById('insMaxPair').innerHTML=pair(d.pair.map(function(p){
       return {lab:p[0], fig:p[1]};
     }));
+    document.querySelectorAll('#insMaxPair .sub').forEach(function(el,i){
+      setTimeout(function(){ el.classList.add('in'); }, 120+i*90);
+    });
     document.getElementById('insMaxGrid').innerHTML=d.cards.map(function(c,i){
       return '<div class="pm-card'+(d.cards.length===1?' pm-solo':'')+'"><div class="pm-ct">'+c[0]+'</div>'
         +'<div class="snap-chartwrap" id="fsWrap'+i+'"><svg class="snap-chart" id="fsChart'+i+'" viewBox="0 0 '+c[2]+' '+c[3]+'" xmlns="http://www.w3.org/2000/svg"></svg></div>'
@@ -17458,7 +17699,7 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     }).join('')+'<div class="alo-cap" style="grid-column:1/-1;max-width:80ch;margin-top:var(--s-5)">'+d.note+'</div>';
     d.cards.forEach(function(c,i){
       var svg=document.getElementById('fsChart'+i), wrap=document.getElementById('fsWrap'+i);
-      var pts = (CHARTS[c[1]]==='diverge') ? drawDiverge(svg,c[2],c[3],RETIRED,'surplus','draw') : draw(svg,c[2],c[3],CHARTS[c[1]]());
+      var pts = paintChart(svg, c[2], c[3], c[1]);
       wrap._pts=pts; bindScrub(wrap);
     });
     var rws=d.rws();
@@ -17614,10 +17855,14 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
 .stress-layout .fl-row label{ width:auto; flex:1 1 auto; font-size:15px; font-weight:500; color:var(--text-secondary); }
 .stress-layout .fl-row .fl-v{ width:auto; font-size:15px; }
 .stress-layout .fl-row input[type=range]{ order:3; flex:1 1 100%; height:22px; }
-.stress-layout .fl-row input[type=range]::-webkit-slider-runnable-track{ height:3px; }
-.stress-layout .fl-row input[type=range]::-webkit-slider-thumb{ width:13px; height:13px; margin-top:-5px; border-width:2px; }
-.stress-layout .fl-row input[type=range]::-moz-range-track{ height:3px; border-radius:999px; background:#E9EBEE; }
-.stress-layout .fl-row input[type=range]::-moz-range-thumb{ width:13px; height:13px; border-radius:999px; background:#FFFFFF; border:2px solid #0E794E; }
+.stress-layout .fl-row input[type=range]::-webkit-slider-runnable-track,
+.ins-plot .fl-row input[type=range]::-webkit-slider-runnable-track{ height:3px; }
+.stress-layout .fl-row input[type=range]::-webkit-slider-thumb,
+.ins-plot .fl-row input[type=range]::-webkit-slider-thumb{ width:13px; height:13px; margin-top:-5px; border-width:2px; }
+.stress-layout .fl-row input[type=range]::-moz-range-track,
+.ins-plot .fl-row input[type=range]::-moz-range-track{ height:3px; border-radius:999px; background:#E9EBEE; }
+.stress-layout .fl-row input[type=range]::-moz-range-thumb,
+.ins-plot .fl-row input[type=range]::-moz-range-thumb{ width:13px; height:13px; border-radius:999px; background:#FFFFFF; border:2px solid #0E794E; }
 .st-lab{ font-size:15px; color:var(--text-secondary); }
 
 /* scenario chart marks */
@@ -17642,7 +17887,7 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
   <aside class="side">
     <button class="bud-back" type="button" data-stress-back><span aria-hidden="true">&larr;</span> Optimize</button>
     <h1>Stress test</h1>
-    <p class="st-lab" style="margin:0 0 var(--s-6)">Pull a slider. See what it costs.</p>
+    <p class="st-lab" style="margin:0 0 var(--s-6)">Pull one. See the cost.</p>
 
     <div class="fl-row">
       <label for="st_ret">Retirement age</label>
@@ -17691,7 +17936,7 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
       </div>
 
       <div class="st-histhead"><div class="ret-seclabel">Change history</div>
-        <a class="ret-card-link" role="button" tabindex="0" data-stress-reset>Reset to your plan</a></div>
+        <a class="ret-card-link" role="button" tabindex="0" data-stress-reset>Undo all changes</a></div>
       <div class="snap-chips" id="stHist"></div>
     </section>
     <div class="alo-bottom-spacer"></div>
@@ -17702,7 +17947,7 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
       <div class="story-head" data-ctx-head>Nothing is saved <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
       <p class="ctx-body" data-ctx-body id="stStory">Pull a slider and the whole plan replays. Your real plan is untouched until you choose to keep a scenario.</p>
       <div class="tax-links">
-        <a data-stress-keep>Keep this scenario <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a data-stress-keep>Save this to my plan <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a data-goto="plan">Back to your plan <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
     </div>
@@ -17910,7 +18155,7 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
     if(e.target.closest && e.target.closest('[data-stress-reset]')){ reset(); return; }
     if(e.target.closest && e.target.closest('[data-stress-keep]')){
       var a=e.target.closest('[data-stress-keep]');
-      a.textContent='Scenario kept';
+      a.textContent='Saved to your plan';
       return;
     }
   });
