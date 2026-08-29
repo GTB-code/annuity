@@ -1246,9 +1246,9 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .snap-cta:hover{ filter:brightness(1.06); }
 
 #optCtx .ctx-body{ margin-bottom:0; }
-#storyView .story-head, #taxStoryView .story-head, #retStoryView .story-head, #flStoryView .story-head, #homeCtx .story-head, #optCtx .story-head, #budCtx .story-head, #aloCtx .story-head, #socCtx .story-head, #taxCtx .story-head, #wdrCtx .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); letter-spacing:0; margin-bottom:var(--s-4); white-space:nowrap; }
-#storyView .story-head .spk, #taxStoryView .story-head .spk, #retStoryView .story-head .spk, #flStoryView .story-head .spk, #homeCtx .story-head .spk, #optCtx .story-head .spk, #budCtx .story-head .spk, #aloCtx .story-head .spk, #socCtx .story-head .spk, #taxCtx .story-head .spk, #wdrCtx .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
-#storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, #wdrCtx p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
+#storyView .story-head, #taxStoryView .story-head, #retStoryView .story-head, #flStoryView .story-head, #homeCtx .story-head, #optCtx .story-head, #budCtx .story-head, #aloCtx .story-head, #socCtx .story-head, #taxCtx .story-head, .side-ctx[data-ins-ctx] .story-head, #wdrCtx .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); letter-spacing:0; margin-bottom:var(--s-4); white-space:nowrap; }
+#storyView .story-head .spk, #taxStoryView .story-head .spk, #retStoryView .story-head .spk, #flStoryView .story-head .spk, #homeCtx .story-head .spk, #optCtx .story-head .spk, #budCtx .story-head .spk, #aloCtx .story-head .spk, #socCtx .story-head .spk, #taxCtx .story-head .spk, .side-ctx[data-ins-ctx] .story-head .spk, #wdrCtx .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
+#storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, .side-ctx[data-ins-ctx] p, #wdrCtx p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
 #storyView .more{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:15px; font-weight:600; text-decoration:none; }
 #storyView .more:hover{ text-decoration:underline; }
 .fl-tip{ margin:18px 0 4px; padding:14px 16px; background:#F3FBF7; border-radius:14px; }
@@ -3567,23 +3567,39 @@ body.mpanel-open{ overflow:hidden; }
     <div class="side-divider" role="presentation"></div>
 
     <div id="sideNav">
-      <div class="group-label" id="myMoneyLabel">Future Money</div>
-      <ul>
+      <div class="group-label" id="myMoneyLabel"><span class="grp-t">Plan inputs</span><button type="button" class="grp-chev" data-grp-chev="in" aria-label="Collapse plan inputs" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <ul data-grp="in">
         <li data-key="assets"><span class="nav-dot done" aria-hidden="true"></span>Assets</li>
         <li data-key="debts"><span class="nav-dot done" aria-hidden="true"></span>Debts</li>
         <li data-key="income"><span class="nav-dot done" aria-hidden="true"></span>Monthly Income</li>
-        <li data-key="home"><span class="nav-dot done" aria-hidden="true"></span>Home &amp; Real Estate</li>
-        <li data-key="expenses"><span class="nav-dot" aria-hidden="true"></span>Expenses</li>
-        <li data-key="flows"><span class="nav-dot" aria-hidden="true"></span>Money Flows</li>
+        <li class="nav-extra" data-grp="in" data-key="home"><span class="nav-dot done" aria-hidden="true"></span>Home &amp; Real Estate</li>
+        <li class="nav-extra" data-grp="in" data-key="expenses"><span class="nav-dot" aria-hidden="true"></span>Expenses</li>
+        <li class="nav-extra" data-grp="in" data-key="flows"><span class="nav-dot" aria-hidden="true"></span>Money Flows</li>
       </ul>
-      <ul>
+      <ul class="nav-extra" data-grp="in">
         <li data-key="withdrawal"><span class="nav-dot done" aria-hidden="true"></span>Withdrawal Strategy</li>
         <li data-key="tax"><span class="nav-dot" aria-hidden="true"></span>Tax Planning</li>
         <li data-key="estate"><span class="nav-dot" aria-hidden="true"></span>Estate Planning</li>
       </ul>
-      <ul>
+      <ul class="nav-extra" data-grp="in">
         <li data-key="rates"><span class="nav-dot done" aria-hidden="true"></span>Rate Assumptions</li>
       </ul>
+      <button type="button" class="nav-more" data-grp="in" data-more="in">7 more</button>
+
+      <div class="side-divider ins-div" role="presentation"></div>
+      <div class="group-label ins-lab"><span class="grp-t">Plan outputs</span><button type="button" class="grp-chev" data-grp-chev="out" aria-label="Collapse plan outputs" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <ul class="ins-nav" data-grp="out">
+        <li data-ins="flow">Cash Flow</li>
+        <li data-ins="safe">Spending Guardrails</li>
+        <li data-ins="last">Chance of Success</li>
+        <li class="nav-extra" data-grp="out" data-ins="worth">Net Worth</li>
+        <li class="nav-extra" data-grp="out" data-ins="savings">Savings</li>
+        <li class="nav-extra" data-grp="out" data-ins="draw">Retirement Withdrawals</li>
+        <li class="nav-extra" data-grp="out" data-ins="taxes">Taxes</li>
+        <li class="nav-extra" data-grp="out" data-ins="rmd">Required Distributions</li>
+        <li class="nav-extra" data-grp="out" data-ins="irmaa">IRMAA</li>
+      </ul>
+      <button type="button" class="nav-more" data-grp="out" data-more="out">6 more</button>
       <a class="side-download" role="button" tabindex="0">Download Plan <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a class="side-download sd-today" role="button" tabindex="0">Download TrueView <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
@@ -4034,7 +4050,7 @@ body.mpanel-open{ overflow:hidden; }
 
         <div class="snap-ultra">
         <div class="rm-head snap-uhead">
-          <button type="button" class="rm-dd" aria-haspopup="listbox" aria-expanded="false"><span class="rm-dd-l">Portfolio</span><svg class="caret" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="rm-dd" aria-haspopup="listbox" aria-expanded="false"><span class="rm-dd-l">Summary</span><svg class="caret" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <button type="button" class="rm-filter" aria-label="Filters"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="rm-menu" hidden></div><div class="rm-fmenu" hidden></div>
@@ -5467,6 +5483,7 @@ body.mpanel-open{ overflow:hidden; }
   <aside class="side">
     <h1>Optimize</h1>
     <div class="onav">
+      <div class="onav-item" data-opt="stress">Stress Test</div>
       <div class="onav-item" data-opt="alloc">Asset Allocation</div>
       <div class="onav-item" data-opt="budget">Detailed Budgeter</div>
       <div class="onav-item" data-opt="ss"><span class="onav-lbl">Social Security<span class="onav-alert" aria-label="1 action needed">1</span></span></div>
@@ -9784,7 +9801,7 @@ document.addEventListener('click', function(e){
     const sideH1 = document.querySelector('[data-page="plan"] .side h1');
     if(sideH1){ const t=sideH1.querySelector('.side-top-t'); (t||sideH1).textContent = (view==='today') ? 'Today' : 'Plan'; }
     const moneyLbl = document.getElementById('myMoneyLabel');
-    if(moneyLbl) moneyLbl.textContent = (view==='today') ? 'My Money' : 'Future Money';
+    if(moneyLbl){ const mt=moneyLbl.querySelector('.grp-t'); (mt||moneyLbl).textContent = (view==='today') ? 'My Money' : 'Plan inputs'; }
     modeLinks.forEach(a=>a.classList.remove('active'));
     if(clickedLink && clickedLink.matches && clickedLink.matches('.topnav nav.modes a')){
       clickedLink.classList.add('active');
@@ -9944,6 +9961,7 @@ document.addEventListener('click', function(e){
   /* initial page state — the prototype opens on the Plan page
      (a #hash set before reload, e.g. by the trial CTA, overrides the landing view) */
   const _startView = (location.hash||'').replace('#','');
+  window.__bootHash = _startView;                 /* kept for deep links resolved later (insights) */
   showView(pageFor[_startView] ? _startView : 'plan');
   if(_startView){ try{ history.replaceState(null, '', location.pathname); }catch(e){} }
 })();
@@ -11686,7 +11704,7 @@ function select(i){
   nodeEls.forEach((g,k)=>g.classList.toggle('sel',k===i));
   const n=NODES[i];
   const MINI='<svg class="card-mini" viewBox="0 0 240 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
-    '<path class="cm-fade" d="M6 36 L226 26 L226 8 L6 34 Z" fill="rgba(4,180,119,0.10)"/>'+
+    '<path class="cm-fade" d="M6 36 L226 26 L226 8 L6 34 Z" fill="rgba(74,153,196,0.12)"/>'+
     '<path d="M6 34 C 90 30, 160 28, 226 26" fill="none" stroke="#C9CDD6" stroke-width="1.8" stroke-dasharray="3.5 4.5"/>'+
     '<path class="cm-line" d="M6 34 C 90 26, 160 16, 226 8" fill="none" stroke="#04B477" stroke-width="2.4" stroke-linecap="round" pathLength="1"/>'+
     '</svg>';
@@ -11992,9 +12010,9 @@ function wdrBandChart(){
   const spend=[6323,6323,6450,6580,6580,6320,6180,6390,6620,6810,6810,7040,7220,7220,7400];
   const line=spend.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
   svg.innerHTML=
-   '<rect x="'+pL+'" y="'+Y(8400)+'" width="'+(W-pL-pR)+'" height="'+(Y(5850)-Y(8400))+'" rx="10" fill="rgba(4,180,119,0.07)"/>'+
-   '<line x1="'+pL+'" x2="'+(W-pR)+'" y1="'+Y(8400)+'" y2="'+Y(8400)+'" stroke="#BFE6D4" stroke-width="1.5"/>'+
-   '<line x1="'+pL+'" x2="'+(W-pR)+'" y1="'+Y(5850)+'" y2="'+Y(5850)+'" stroke="#BFE6D4" stroke-width="1.5"/>'+
+   '<rect x="'+pL+'" y="'+Y(8400)+'" width="'+(W-pL-pR)+'" height="'+(Y(5850)-Y(8400))+'" rx="10" fill="rgba(147,179,110,0.12)"/>'+
+   '<line x1="'+pL+'" x2="'+(W-pR)+'" y1="'+Y(8400)+'" y2="'+Y(8400)+'" stroke="#C8D8B4" stroke-width="1.5"/>'+
+   '<line x1="'+pL+'" x2="'+(W-pR)+'" y1="'+Y(5850)+'" y2="'+Y(5850)+'" stroke="#C8D8B4" stroke-width="1.5"/>'+
    '<text x="'+(W-pR+8)+'" y="'+(Y(8400)+4)+'" font-size="12" fill="#9AA0AE">$8,400</text>'+
    '<text x="'+(W-pR+8)+'" y="'+(Y(5850)+4)+'" font-size="12" fill="#9AA0AE">$5,850</text>'+
    '<path d="'+line+'" fill="none" stroke="#04B477" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'+
@@ -13574,6 +13592,176 @@ body.fire-page .fire-side{ display:block; }
 </script>
 <!-- FIRE-PAGE END -->
 
+<!-- CONNECT-ACCOUNT BEGIN (fenced: Meld/Plaid linking from Assets, Debts, Home & Real Estate) -->
+<style>
+.cx-link{ display:inline-block; margin:6px 2px 12px; font-size:14.5px; font-weight:700; color:#0E794E; cursor:pointer; }
+.cx-link::after{ content:' \2197'; }
+.cx-scrim{ position:fixed; inset:0; z-index:70; background:rgba(16,24,44,0.28); opacity:0; transition:opacity 240ms ease; }
+.cx-scrim.on{ opacity:1; }
+.cx-sheet{ position:fixed; left:50%; top:50%; transform:translate(-50%,-48%); z-index:71; width:430px; max-width:calc(100vw - 32px);
+  background:#fff; border:1px solid rgba(16,24,44,0.16); border-radius:16px; padding:24px 26px; opacity:0;
+  transition:opacity 260ms ease, transform 260ms cubic-bezier(0.22,1,0.36,1); }
+.cx-sheet.on{ opacity:1; transform:translate(-50%,-50%); }
+.cx-x{ position:absolute; top:14px; right:14px; width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+  background:#fff; border:1px solid rgba(16,24,44,0.16); border-radius:999px; color:#8B90A0; cursor:pointer; }
+.cx-x:hover{ background:#F6F7F8; color:#10182C; }
+.cx-h{ font-size:20px; font-weight:700; color:#10182C; letter-spacing:-0.2px; padding-right:30px; }
+.cx-s{ font-size:14.5px; color:#47495A; line-height:1.5; margin-top:5px; }
+.cx-search{ width:100%; height:44px; border:1px solid rgba(16,24,44,0.16); border-radius:10px; padding:0 14px; margin-top:16px;
+  font:inherit; font-size:15.5px; color:#10182C; box-sizing:border-box; }
+.cx-search::placeholder{ color:#B7BCC6; }
+.cx-search:focus{ outline:none; border-color:#0E794E; }
+.cx-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+.cx-inst{ display:flex; align-items:center; gap:10px; border:1px solid rgba(16,24,44,0.12); border-radius:12px; padding:12px 13px;
+  background:#fff; cursor:pointer; font:inherit; text-align:left; transition:border-color 140ms ease, background 140ms ease; }
+.cx-inst:hover{ border-color:#CDE8DB; background:#FCFEFD; }
+.cx-mono{ width:30px; height:30px; border-radius:999px; background:#F0F6F3; color:#0E794E; font-size:13px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex:none; }
+.cx-inst .nm{ font-size:14.5px; font-weight:600; color:#10182C; line-height:1.25; }
+.cx-foot{ display:flex; align-items:center; justify-content:center; gap:7px; margin-top:18px; font-size:12.5px; color:#8B90A0; }
+.cx-busy{ display:flex; flex-direction:column; align-items:center; gap:14px; padding:34px 0 26px; }
+.cx-spin{ width:26px; height:26px; border-radius:50%; border:2.5px solid #E3E5EA; border-top-color:#0E794E; animation:cxspin 800ms linear infinite; }
+@keyframes cxspin{ to{ transform:rotate(360deg); } }
+.cx-busy .t{ font-size:15px; color:#47495A; }
+.cx-found{ margin-top:14px; }
+.cx-acct{ display:flex; align-items:center; gap:12px; padding:12px 2px; border-bottom:1px solid rgba(16,24,44,0.10); cursor:pointer; }
+.cx-acct:last-of-type{ border-bottom:0; }
+.cx-check{ width:20px; height:20px; border-radius:6px; border:1.5px solid rgba(16,24,44,0.25); flex:none; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; }
+.cx-acct.sel .cx-check{ background:#0E794E; border-color:#0E794E; }
+.cx-acct .nm{ font-size:15.5px; font-weight:600; color:#10182C; flex:1; }
+.cx-acct .ty{ font-size:13px; color:#8B90A0; display:block; font-weight:400; margin-top:1px; }
+.cx-acct .amt{ font-size:15.5px; font-weight:600; color:#10182C; font-variant-numeric:tabular-nums; }
+.cx-add{ width:100%; height:48px; margin-top:16px; background:#0E794E; color:#fff; font:inherit; font-size:16.5px; font-weight:600;
+  border:none; border-radius:12px; cursor:pointer; }
+.cx-add:hover{ background:#0B6340; }
+.cx-add:disabled{ opacity:0.4; cursor:default; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var SECTIONS={ 'Assets':1, 'Debts':1, 'Home & Real Estate':1 };
+  var INSTS=['Chase','Fidelity','Vanguard','Bank of America','Charles Schwab','Wells Fargo'];
+  var FOUND={
+    'Assets':[ ['Total Checking','Cash','$12,400'], ['Savings','Cash','$31,200'], ['Brokerage','Taxable','$86,300'] ],
+    'Debts':[ ['Freedom card','Credit card','$2,150'], ['Auto loan','4.9% APR','$18,400'] ],
+    'Home & Real Estate':[ ['Home loan','Mortgage \u00b7 6.1%','$310,000'] ]
+  };
+  var scrim=null, sheet=null, ctx=null;   /* ctx={section, bucket, blankRow} */
+  function close(){
+    if(sheet){ var s=sheet, sc=scrim; sheet=null; scrim=null;
+      s.classList.remove('on'); sc.classList.remove('on');
+      setTimeout(function(){ s.remove(); sc.remove(); }, 280); }
+    document.removeEventListener('keydown', onEsc);
+    ctx=null;
+  }
+  function onEsc(e){ if(e.key==='Escape') close(); }
+  function open(section, bucket, blankRow){
+    ctx={ section:section, bucket:bucket, blankRow:blankRow };
+    scrim=document.createElement('div'); scrim.className='cx-scrim';
+    sheet=document.createElement('div'); sheet.className='cx-sheet';
+    document.body.appendChild(scrim); document.body.appendChild(sheet);
+    scrim.addEventListener('click', close);
+    document.addEventListener('keydown', onEsc);
+    stepPick();
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ scrim.classList.add('on'); sheet.classList.add('on'); }); });
+  }
+  function frame(inner){
+    sheet.innerHTML='<button class="cx-x" type="button" aria-label="Close">'+
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>'+inner;
+    sheet.querySelector('.cx-x').addEventListener('click', close);
+  }
+  function stepPick(){
+    frame('<div class="cx-h">Connect an account</div>'+
+      '<div class="cx-s">Your balances arrive in seconds and stay current, updated nightly.</div>'+
+      '<input class="cx-search" type="text" placeholder="Search 12,000 institutions">'+
+      '<div class="cx-grid">'+INSTS.map(function(n){
+        var mono=n.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2);
+        return '<button class="cx-inst" type="button" data-inst="'+n+'"><span class="cx-mono">'+mono+'</span><span class="nm">'+n+'</span></button>';
+      }).join('')+'</div>'+
+      '<div class="cx-foot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg> Bank-grade encryption &middot; Powered by Plaid or Meld</div>');
+    sheet.querySelectorAll('.cx-inst').forEach(function(b){
+      b.addEventListener('click', function(){ stepBusy(b.dataset.inst); });
+    });
+    var inp=sheet.querySelector('.cx-search');
+    inp.addEventListener('input', function(){
+      var q=inp.value.toLowerCase();
+      sheet.querySelectorAll('.cx-inst').forEach(function(b){ b.style.display = b.dataset.inst.toLowerCase().indexOf(q)>-1 ? '' : 'none'; });
+    });
+  }
+  function stepBusy(inst){
+    frame('<div class="cx-h">Connect an account</div>'+
+      '<div class="cx-busy"><div class="cx-spin"></div><div class="t">Talking to '+inst+'&hellip;</div></div>');
+    setTimeout(function(){ if(sheet) stepFound(inst); }, 1400);
+  }
+  function stepFound(inst){
+    var rows=FOUND[ctx.section]||FOUND['Assets'];
+    frame('<div class="cx-h">'+rows.length+(rows.length===1?' account':' accounts')+' at '+inst+'</div>'+
+      '<div class="cx-s">Pick what belongs in your plan. Balances stay in sync.</div>'+
+      '<div class="cx-found">'+rows.map(function(r,i){
+        return '<div class="cx-acct sel" data-i="'+i+'"><span class="cx-check">\u2713</span><span class="nm">'+r[0]+'<span class="ty">'+r[1]+'</span></span><span class="amt">'+r[2]+'</span></div>';
+      }).join('')+'</div>'+
+      '<button class="cx-add" type="button"></button>');
+    var btn=sheet.querySelector('.cx-add');
+    function paint(){
+      var n=sheet.querySelectorAll('.cx-acct.sel').length;
+      btn.textContent = n ? 'Add '+n+(n===1?' account':' accounts') : 'Pick at least one';
+      btn.disabled = !n;
+    }
+    sheet.querySelectorAll('.cx-acct').forEach(function(row){
+      row.addEventListener('click', function(){ row.classList.toggle('sel'); paint(); });
+    });
+    paint();
+    btn.addEventListener('click', function(){
+      var picked=[].slice.call(sheet.querySelectorAll('.cx-acct.sel')).map(function(r){ return rows[+r.dataset.i]; });
+      landRows(picked);
+      close();
+    });
+  }
+  function landRows(picked){
+    if(!ctx || !ctx.bucket) return;
+    /* the abandoned ghost row steps aside for the real thing */
+    if(ctx.blankRow){
+      var ed=ctx.blankRow.nextElementSibling;
+      if(ed && ed.classList && !ed.classList.contains('acct')) ed.remove();
+      ctx.blankRow.remove();
+    }
+    var anchor=ctx.bucket.querySelector('.add-row-line') || ctx.bucket.querySelector('.add-row');
+    picked.forEach(function(r, k){
+      var row=document.createElement('div');
+      row.className='acct';
+      row.innerHTML='<div><div class="nm">'+r[0]+'</div><div class="ty">'+r[1]+'</div></div><div class="amt">'+r[2]+'</div>';
+      ctx.bucket.insertBefore(row, anchor);
+      row.animate([{opacity:0,transform:'translateY(-6px)'},{opacity:1,transform:'none'}],
+        {duration:280, delay:k*90, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
+    });
+  }
+  /* the link appears whenever an add begins in a connectable section */
+  document.addEventListener('click', function(e){
+    var add=e.target.closest('.add-row'); if(!add) return;
+    var acc=add.closest('.acc'); var h2=acc && acc.querySelector('h2');
+    var section=h2 && h2.textContent.trim();
+    if(!section || !SECTIONS[section]) return;
+    setTimeout(function(){
+      var line=add.closest('.add-row-line');
+      var bucket=(line||add).parentNode;
+      var blank=bucket.querySelector('.acct-new');
+      if(!blank || bucket.querySelector('.cx-link')) return;
+      var ed=blank.nextElementSibling;
+      var after=(ed && !ed.classList.contains('acct')) ? ed : blank;
+      var link=document.createElement('span');
+      link.className='cx-link';
+      link.textContent='Or connect your institution instead';
+      after.insertAdjacentElement('afterend', link);
+      link.addEventListener('click', function(ev){
+        ev.stopPropagation();
+        link.remove();
+        open(section, bucket, blank);
+      });
+    }, 420);
+  }, true);
+})();
+</script>
+<!-- CONNECT-ACCOUNT END -->
 </body>
 
 
@@ -13927,11 +14115,11 @@ body.graph-expanded #graphDock{ display:block; animation:aiRise 340ms cubic-bezi
 .gd-addrow:hover{ border-color:#9FDFC6; background:#FAFDFB; }
 .gd-gallery{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:-26px 0 38px; }
 .gd-gallery[hidden]{ display:none; }
-.gd-gal{ display:flex; align-items:center; gap:9px; border:1px solid var(--hairline); border-radius:11px;
+.ins-max-btn, .gd-gal{ display:flex; align-items:center; gap:9px; border:1px solid var(--hairline); border-radius:11px;
   background:#fff; padding:10px 12px; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600;
   color:var(--ink); text-align:left; }
-.gd-gal:hover{ border-color:#9FDFC6; background:#FAFDFB; }
-.gd-gal svg{ flex:none; }
+.ins-max-btn:hover, .gd-gal:hover{ border-color:#9FDFC6; background:#FAFDFB; }
+.ins-max-btn svg, .gd-gal svg{ flex:none; }
 .gd-card.gd-in{ animation:aiRise 340ms cubic-bezier(0.22,1,0.36,1) backwards; }
 .gd-empty{ font-size:13px; color:var(--text-tertiary); text-align:center; padding:14px 0 18px; }
 body.graph-expanded #railCtx .ctx-viewplan,
@@ -14259,9 +14447,9 @@ body.ai-expanded .rail-ai-host .rail-ai-chat{ display:flex; flex-direction:colum
 .aic-trade .buy{ color:#0E794E; } .aic-trade .sell{ color:#B23A6B; }
 .aic-trade .amt{ font-family:"DM Sans",sans-serif; font-variant-numeric:tabular-nums; color:var(--ink); font-weight:600; text-align:right; min-width:66px; }
 .aic-chips{ position:fixed; z-index:150; display:flex; flex-direction:row; flex-wrap:wrap; gap:8px; align-items:flex-end; align-content:flex-end; }
-.aic-chip{ font-size:15px; color:var(--ink); border:1px solid var(--hairline); border-radius:999px; padding:9px 14px; cursor:pointer; background:var(--white);
+.ins-q, .aic-chip{ font-size:15px; color:var(--ink); border:1px solid var(--hairline); border-radius:999px; padding:9px 14px; cursor:pointer; background:var(--white);
   transition:border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out); }
-.aic-chip:hover{ border-color:var(--hairline-strong); background:#FCFCFC; }
+.ins-q:hover, .aic-chip:hover{ border-color:var(--hairline-strong); background:#FCFCFC; }
 .aic-think{ display:inline-flex; gap:4px; padding:4px 0; }
 .aic-think span{ width:6px; height:6px; border-radius:999px; background:#C9CCD3; animation:aicDot 1s ease-in-out infinite; }
 .aic-think span:nth-child(2){ animation-delay:.15s; } .aic-think span:nth-child(3){ animation-delay:.3s; }
@@ -15263,7 +15451,7 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
   }
   /* ---------- ULTRA: flagship interactive infographic (Plan snapshot) ---------- */
   var ULTRA={ view:'portfolio', range:'to92', dollars:'future' };
-  var U_VIEWS=[['portfolio','Portfolio'],['networth','Net worth'],['cashflow','Cash flow'],['confidence','Confidence']];
+  var U_VIEWS=[['portfolio','Summary'],['networth','Net worth'],['cashflow','Cash flow'],['confidence','Confidence']];
   var U_RANGES=[['y10','10 years'],['y20','20 years'],['to92','To age 92']];
   var U_DOLLARS=[['future','Future dollars'],['real',"Today's dollars"]];
   function uLerp(keys, y){
@@ -16047,7 +16235,7 @@ body.prism-max #prismMax{ display:flex; }
         [0,0.5,1].forEach(function(f){ var y=padT+ph-f*ph;
           s+='<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y.toFixed(1)+'" stroke="#EEF0F2"/>';
           s+='<text x="'+(padL-8)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#9AA0AE" text-anchor="end">'+moneyK(yMax*f)+'</text>'; });
-        s+='<path class="gd-area" d="'+line+' L'+X(yrs).toFixed(1)+' '+(padT+ph)+' L'+X(0).toFixed(1)+' '+(padT+ph)+' Z" fill="rgba(4,180,119,0.10)"/>';
+        s+='<path class="gd-area" d="'+line+' L'+X(yrs).toFixed(1)+' '+(padT+ph)+' L'+X(0).toFixed(1)+' '+(padT+ph)+' Z" fill="rgba(74,153,196,0.12)"/>';
         s+='<path class="gd-line" d="'+line+'" fill="none" stroke="#04B477" stroke-width="2.6" stroke-linecap="round" pathLength="1"/>';
         s+='<circle cx="'+X(yrs).toFixed(1)+'" cy="'+Y(pts[yrs]).toFixed(1)+'" r="4" fill="#04B477"/>';
         s+='<text x="'+(X(yrs)+8).toFixed(1)+'" y="'+(Y(pts[yrs])+4).toFixed(1)+'" font-size="12" font-weight="700" fill="#10182C">'+moneyK(pts[yrs])+'</text>';
@@ -16334,3 +16522,1645 @@ body.prism-max #prismMax{ display:flex; }
   });
 })();
 </script>
+
+<!-- ===================== INSIGHTS (Outputs) ===================== -->
+<style id="insCSS">
+/* Structure and state only. Every visual (cards, rows, chips, rails, tables, charts)
+   comes from the components already in this file. */
+
+/* left rail: the Insights group */
+.side .group-label.ins-lab{ margin-top:var(--s-5); }
+.side ul.ins-nav{ margin-top:0; }
+.side .ins-div{ margin-top:var(--s-5); }
+body[data-view="today"] #sideNav .ins-lab,
+body[data-view="today"] #sideNav .ins-nav,
+body[data-view="today"] #sideNav [data-more="out"],
+body[data-view="today"] #sideNav .ins-div{ display:none; }
+.side .group-label{ display:flex; align-items:center; gap:8px; width:100%;
+  user-select:none; padding:0 4px 0 2px; margin-bottom:8px; border-radius:10px; }
+.side .group-label .grp-t{ cursor:pointer; transition:color var(--dur-fast) var(--ease-out); }
+.side .group-label .grp-t:hover{ color:var(--ink); }
+.grp-chev{ display:flex; align-items:center; justify-content:center; width:26px; height:26px;
+  margin-left:auto; flex:none; padding:0; border:0; background:none; border-radius:8px;
+  color:#9A9CA6; cursor:pointer;
+  transition:background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.grp-chev svg{ width:15px; height:15px; transition:transform 300ms var(--ease-out); transform:rotate(180deg); }
+.grp-chev:hover{ background:#F6F7F8; color:var(--ink); }
+#sideNav.in-shut [data-grp-chev="in"] svg,
+#sideNav.out-shut [data-grp-chev="out"] svg{ transform:none; }
+@media (prefers-reduced-motion:reduce){ .grp-chev svg{ transition:none; } }
+#sideNav.in-shut [data-grp="in"], #sideNav.out-shut [data-grp="out"]{ display:none; }
+#sideNav .nav-more{ display:none; }
+body[data-view="plan"] #sideNav .nav-more{ display:flex; }
+body[data-view="plan"] #sideNav.in-clipped [data-grp="in"].nav-extra,
+body[data-view="plan"] #sideNav.out-clipped [data-grp="out"].nav-extra{ display:none; }
+.nav-more{ align-items:center; gap:6px; margin:2px 0 0; padding:7px 12px 7px 30px;
+  font-size:15px; font-weight:500; color:var(--text-secondary); background:none; border:0;
+  font-family:inherit; text-align:left; border-radius:10px; cursor:pointer; width:100%;
+  transition:background var(--dur-fast) var(--ease-out), color var(--dur-fast); }
+.nav-more:hover{ background:#F6F7F8; color:var(--green-cta); }
+.side ul.ins-nav li{ padding-left:30px; }
+.ins-hop .nav-extra{ display:none; }
+.ins-hop.hop-open .nav-extra{ display:flex; }
+
+/* the insight page, same show/hide contract as the Optimize sub-views */
+.layout.page.ins-layout.on{ display:none; }
+body.ins-open .layout.page.ins-layout.on{ display:grid; }
+body.ins-open .layout.page[data-page="plan"].on{ display:none; }
+/* vertical rhythm inside an insight. Spacing only: no colour, type, border or radius. */
+.ins-layout .alo-sec + .alo-sec{ margin-top:var(--s-16); }
+.ins-layout .opt-grid{ margin-top:var(--s-8); margin-bottom:0; }
+/* key figures: the shell's own stat tile, side by side */
+.ins-stats{ display:flex; gap:var(--s-4); margin-top:var(--s-6); }
+.ins-stats .snap-stat{ flex:1 1 0; min-width:0; }
+.ins-stats .snap-stat .lab{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* opening a page: everything arrives in reading order, once */
+@keyframes insRise{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+@keyframes skRib{ from{ opacity:0; } to{ opacity:1; } }
+@keyframes skNode{ from{ opacity:0; transform:scaleY(.18); } to{ opacity:1; transform:none; } }
+@keyframes skLab{ from{ opacity:0; transform:translateY(5px); } to{ opacity:1; transform:none; } }
+.sk-rib{ animation:skRib 620ms cubic-bezier(.22,1,.36,1) both; }
+.sk-node, .sk-lab{ transform-box:fill-box; transform-origin:center; }
+.sk-node{ animation:skNode 560ms cubic-bezier(.22,1,.36,1) both; }
+.sk-lab{ animation:skLab 460ms cubic-bezier(.22,1,.36,1) both; }
+@media (prefers-reduced-motion:reduce){
+  .sk-rib, .sk-node, .sk-lab{ animation:none; }
+}
+.ins-layout .opt-card{ cursor:default; }
+/* a lone stat is one full-width box that hugs its content, not half a grid */
+.ins-layout .opt-grid.one{ grid-template-columns:1fr; }
+.ins-layout .opt-grid.one .opt-card{ min-height:0; }
+/* an empty legend slot takes no room */
+.ins-plot .gd-legend:empty{ display:none; }
+/* the plot is unboxed: whitespace does the separating */
+.ins-plot{ margin:var(--s-8) 0 0; }
+/* the lead plot sits directly under the sub-headline, which already spaces it */
+.ins-layout .alo-sec:first-of-type > .ins-plot:first-child{ margin-top:0; }
+.ins-layout .alo-sec:first-of-type > .ins-plot:first-child .snap-chartwrap{ margin-top:0; }
+/* the horizon control: the existing .fl-row slider, its own full-width row */
+.ins-range-head{ display:flex; align-items:baseline; gap:9px; }
+.ins-range-head .fl-v{ width:auto; }
+.ins-plot .fl-row.ins-range{ padding:0; border-bottom:0; margin-top:var(--s-3); }
+.ins-plot .fl-row.ins-range input[type=range]{ flex:1 1 100%; height:22px; }
+.ins-plot .fl-row.ins-range input[type=range]::-webkit-slider-runnable-track{
+  background:linear-gradient(90deg,#0E794E var(--p,100%),#E9EBEE var(--p,100%)); }
+.ins-plot .fl-row.ins-range input[type=range]::-moz-range-track{
+  background:linear-gradient(90deg,#0E794E var(--p,100%),#E9EBEE var(--p,100%)); }
+/* the plot's tools sit under the graph, so nothing but the chart is above it */
+.ins-plot .ins-plot-foot{ margin:var(--s-2) 0 0; }
+.ins-pager{ display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s-6);
+  margin-top:var(--s-12); padding-top:var(--s-6); border-top:1px solid var(--hairline); }
+.ins-pager .ins-pager-side{ display:flex; flex-direction:column; gap:var(--s-2); min-width:0; }
+.ins-pager .ins-pager-side.is-next{ text-align:right; align-items:flex-end; }
+.ins-pager .ret-seclabel{ margin:0; }
+.ins-pager .ret-card-link{ cursor:pointer; }
+.ins-plot .snap-chartwrap{ margin:var(--s-6) 0 var(--s-5); }
+.ins-plot + .alo-cap, .ins-plot + p, .ins-plot + .opt-card{ margin-top:var(--s-8); }
+.ins-layout .alo-rows{ margin-top:var(--s-2); }
+.ins-layout .alo-trades{ margin-top:var(--s-2); }
+.ins-layout .alo-rows + .alo-cap, .ins-layout .alo-trades + .alo-cap{ margin-top:var(--s-6); }
+.ins-layout .ret-seclabel{ margin-top:var(--s-10); }
+.ins-layout .alo-top{ margin-bottom:calc(var(--s-12) * -1); }
+.ins-layout .ins-tablewrap{ margin-top:var(--s-6); }
+.ins-layout .ret-card-link{ display:inline-block; margin-top:var(--s-5); }
+body.ins-open .topnav{ background:var(--white); }
+body.ins-open .topnav::after{ content:''; position:absolute; left:0; right:0; top:100%; height:18px;
+  background:linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 55%, rgba(255,255,255,0) 100%); pointer-events:none; }
+
+/* chart draw-in, the same motion the Prism cards use */
+.ins-bar{ transform-box:fill-box; transform-origin:bottom; }
+.ins-plot.ins-anim .ins-bar{ animation:insGrow .6s cubic-bezier(0.22,1,0.36,1) backwards; }
+@keyframes insGrow{ from{ transform:scaleY(0); } }
+.ins-plot.ins-anim .ins-line{ animation:insDraw 900ms cubic-bezier(.4,0,.2,1) backwards; }
+@keyframes insDraw{ from{ stroke-dashoffset:var(--len); } }
+@media (prefers-reduced-motion:reduce){ .ins-plot.ins-anim .ins-bar, .ins-plot.ins-anim .ins-line{ animation:none; } }
+
+/* full screen: the Prism deep dive, per insight */
+#insMax{ position:fixed; inset:0; z-index:90; background:var(--white); display:none; flex-direction:column; }
+body.ins-max #insMax{ display:flex; }
+body.ins-max{ overflow:hidden; }
+body.ins-max .dock{ z-index:96; }
+/* two columns: the charts and the table on the left, the summary and Ask anything on the right.
+   Same move the tri-column Prism view makes, so the ask bar lands in its own column. */
+/* the overlay is not the whole window: it is the width of the app's three
+   columns, so the content lands where the columns already are */
+body.ins-max .pm-inner{ max-width:1116px; }
+body.ins-max .dock .dock-inner{ max-width:1116px; }
+body.ins-max .pm-head{ padding-left:max(30px, calc((100% - 1116px) / 2));
+  padding-right:max(30px, calc((100% - 1116px) / 2)); }
+body.ins-max .pm-inner{ display:grid; grid-template-columns:minmax(0,1fr) 340px;
+  column-gap:var(--s-8); align-items:start; }
+body.ins-max #insMaxGrid, body.ins-max #insMaxTableWrap{ grid-column:1; }
+body.ins-max #insMaxPair{ grid-column:2; grid-row:1 / span 2; position:sticky; top:0; }
+body.ins-max #insMaxPair .ins-stats{ flex-direction:column; margin-top:0; }
+body.ins-max .pm-card{ border:0; background:none; padding:0; }
+body.ins-max .pm-grid{ row-gap:var(--s-16); }   /* stacked, so no equal-height floor */
+body.ins-max .dock .dock-inner{ grid-template-columns:minmax(0,1fr) 340px; gap:var(--s-8);
+  padding:0; }   /* matches .pm-inner so the bar sits in the right column */
+body.ins-max .dock .askbar{ grid-column:2; justify-self:stretch; max-width:none; }
+@media (max-width:1180px){
+  body.ins-max .pm-inner, body.ins-max .dock .dock-inner{ grid-template-columns:minmax(0,1fr); }
+  body.ins-max #insMaxPair{ grid-column:1; grid-row:auto; position:static; }
+  body.ins-max #insMaxPair .opt-grid{ grid-template-columns:1fr 1fr; }
+  body.ins-max .dock .askbar{ grid-column:1; }
+}
+
+/* Boldin AI docked open: the centre column contracts to 460 */
+body.ai-expanded .ins-layout .alo-sec-head{ flex-direction:column; align-items:flex-start; gap:2px; margin-bottom:14px; }
+body.ai-expanded .ins-layout .ins-plot .gd-lab{ flex-wrap:wrap; row-gap:8px; }
+body.ai-expanded .ins-layout .ins-plot .gd-when{ display:none; }
+body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-3); }
+</style>
+
+<style id="insCSS2">
+/* Nothing decorative here on purpose: the insight pages use the existing components.
+   These two are layout only, with no colour, type or border of their own. */
+.ins-row{ display:flex; flex-wrap:wrap; gap:8px; }
+.ins-row-lab{ margin-top:var(--s-5); }
+.ins-tablewrap{ overflow-x:auto; margin-top:6px; scrollbar-width:thin; }
+#insMaxPair{ margin-bottom:22px; }
+</style>
+
+<div id="insPages"></div>
+
+<div id="insMax" aria-hidden="true">
+  <div class="pm-head">
+    <span class="pm-title" id="insMaxTitle">Insight</span>
+    <button class="pm-close" type="button" id="insMaxClose" aria-label="Close full screen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="pm-body"><div class="pm-inner">
+    <div id="insMaxPair"></div>
+    <div class="pm-grid" id="insMaxGrid"></div>
+    <div class="pm-tablewrap" id="insMaxTableWrap">
+      <div class="pm-th" id="insMaxTh">The numbers behind the pictures</div>
+      <div class="pm-ts" id="insMaxTableSub">In today's dollars.</div>
+      <table class="pm-table" id="insMaxTable"></table>
+    </div>
+  </div></div>
+</div>
+
+<script>
+/* ===================== Insights: outputs of the plan, nine of them ===================== */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var YR0=2026, YRN=2059, RET=2028;
+
+  /* ---------- one projection, every insight reads from it (today's dollars) ---------- */
+  var M=(function(){
+    var rows=[], bal=1090000;
+    for(var y=YR0;y<=YRN;y++){
+      var work    = y<=RET ? 147600 : 0;
+      var consult = (y>=2029 && y<=2033) ? 36000 : 0;
+      var pension = y>=2029 ? 21600*Math.pow(0.98,y-2029) : 0;
+      var house   = y>=2029 ? 4800 : 0;
+      var ss      = y>=2035 ? 60000 : 0;
+      var spend   = y<=RET ? 106200*Math.pow(1.005,y-YR0) : 75876*Math.pow(1.004,y-2029);
+      if(y>=2050) spend *= 1+0.012*(y-2049);
+      var base=work+consult+pension+house+ss;
+      var draw=Math.max(0,spend-base), surplus=Math.max(0,base-spend);
+      bal = bal*1.042 + surplus - draw;
+      rows.push({y:y, work:work, consult:consult, pension:pension, house:house, ss:ss, base:base,
+                 spend:spend, draw:draw, surplus:surplus, bal:bal});
+    }
+    return rows;
+  })();
+  var RETIRED=M.filter(function(r){ return r.y>RET; });
+  var sum=function(a,k){ return a.reduce(function(t,r){ return t+r[k]; },0); };
+  var at=function(y){ return M.filter(function(r){ return r.y===y; })[0]; };
+  var deepest=RETIRED.reduce(function(a,r){ return r.draw>a.draw?r:a; }, RETIRED[0]);
+  var onBoth=M.filter(function(r){ return r.y>=2035; });
+  var guarPct=Math.round(sum(onBoth,'base')/sum(onBoth,'spend')*100);
+  var peak=M.reduce(function(a,r){ return r.bal>a.bal?r:a; }, M[0]);
+
+  function money(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function big(n){ return Math.abs(n)>=1e6 ? ('$'+(n/1e6).toFixed(2)+'M') : ('$'+Math.round(n/1e3)+'K'); }
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+  /* ---------- shared chart engine: one coordinate frame, five marks ---------- */
+  var SPARK='<span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>';
+  var ARROW='<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var FSICON='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
+
+  function axisFmt(v, kind){
+    if(kind==='pct') return Math.round(v)+'%';
+    if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(v%1e6?1:0)+'M';
+    if(Math.abs(v)>=1000) return '$'+Math.round(v/1000)+'k';
+    return '$'+Math.round(v);
+  }
+  /* spec: {type, rows:[{y,...}], series:[{k,c,n}], line:{k,c}, band:{lo,hi,labels}, kind, top, zero} */
+  function draw(svg, W, H, spec){
+    var rows=spec.rows, n=rows.length;
+    var L=spec.padL||58, R=W-(spec.padR||10), T=14, B=H-26;
+    var vals=[];
+    rows.forEach(function(r){
+      if(spec.series){ var t=0; spec.series.forEach(function(s){ t+=r[s.k]||0; }); vals.push(t); }
+      if(spec.lines) spec.lines.forEach(function(l){ vals.push(r[l.k]||0); });
+      if(spec.line) vals.push(r[spec.line.k]||0);
+    });
+    if(spec.band){ vals.push(spec.band.hi); vals.push(spec.band.lo); }
+    var hi=spec.top || Math.max.apply(null, vals);
+    var lo=spec.zero===false ? Math.min.apply(null, vals) : 0;
+    if(spec.floor!==undefined) lo=spec.floor;
+    var pad=(hi-lo)*0.08; hi+=pad; if(spec.zero!==false) lo=0; else lo-=pad;
+    var X=function(i){ return L+(R-L)*(n>1?(i/(n-1)):0.5); };
+    var Y=function(v){ return T+(B-T)*(1-(v-lo)/(hi-lo)); };
+    var g='';
+    for(var t2=0;t2<=4;t2++){
+      var v=lo+(hi-lo)*t2/4;
+      g+='<line class="snap-grid" x1="'+L+'" y1="'+Y(v).toFixed(1)+'" x2="'+R+'" y2="'+Y(v).toFixed(1)+'"/>'
+       + '<text class="snap-axis" x="'+(L-8)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+axisFmt(v,spec.kind)+'</text>';
+    }
+    if(spec.band){
+      g+='<rect x="'+L+'" y="'+Y(spec.band.hi).toFixed(1)+'" width="'+(R-L)+'" height="'+(Y(spec.band.lo)-Y(spec.band.hi)).toFixed(1)+'" rx="10" fill="rgba(147,179,110,0.12)"/>';
+      [[spec.band.hi,spec.band.labels[0]],[spec.band.lo,spec.band.labels[1]]].forEach(function(t3){
+        g+='<line x1="'+L+'" x2="'+R+'" y1="'+Y(t3[0]).toFixed(1)+'" y2="'+Y(t3[0]).toFixed(1)+'" stroke="#C8D8B4" stroke-width="1.5"/>'
+         + '<text class="snap-axis" x="'+(R-6)+'" y="'+(Y(t3[0])-7).toFixed(1)+'" text-anchor="end" fill="#7A8290">'+t3[1]+'</text>';
+      });
+    }
+    if(spec.series){
+      var gap=(R-L)/n, bw=gap*(spec.barw||0.66);
+      rows.forEach(function(r,i){
+        var acc=0, x=L+gap*i+(gap-bw)/2;
+        spec.series.forEach(function(s){
+          var v2=r[s.k]||0; if(v2<=0) return;
+          var y0=Y(acc), y1=Y(acc+v2); acc+=v2;
+          g+='<rect class="ins-bar" x="'+x.toFixed(1)+'" y="'+y1.toFixed(1)+'" width="'+bw.toFixed(1)
+           +'" height="'+Math.max(0.8,y0-y1).toFixed(1)+'" fill="'+s.c+'" style="animation-delay:'+(i*8)+'ms"/>';
+        });
+      });
+    }
+    (spec.lines||[]).concat(spec.line?[spec.line]:[]).forEach(function(l,li){
+      var d=rows.map(function(r,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(r[l.k]||0).toFixed(1); }).join(' ');
+      if(l.area){
+        g+='<path d="'+d+' L'+X(n-1).toFixed(1)+' '+Y(lo).toFixed(1)+' L'+X(0).toFixed(1)+' '+Y(lo).toFixed(1)+' Z" fill="'+(l.area)+'"/>';
+      }
+      g+='<path class="ins-line" d="'+d+'" fill="none" stroke="'+l.c+'" stroke-width="'+(l.w||2.6)
+       +'" stroke-linejoin="round" stroke-linecap="round"'+(l.dash?' stroke-dasharray="5 5"':' stroke-dasharray="4000" style="--len:4000"')+'/>';
+    });
+    g+='<line class="snap-grid" x1="'+L+'" y1="'+B+'" x2="'+R+'" y2="'+B+'"/>';
+    var ticks=spec.ticks || [0, Math.round((n-1)/3), Math.round((n-1)*2/3), n-1];
+    ticks.forEach(function(i){
+      if(!rows[i]) return;
+      g+='<text class="snap-axis" x="'+X(i).toFixed(1)+'" y="'+(H-6)+'" text-anchor="'+(i===0?'start':(i===n-1?'end':'middle'))+'">'+rows[i].y+'</text>';
+    });
+    svg.innerHTML=g;
+    var lab=spec.label || function(r){ return r.y; };
+    return {L:L,R:R,T:T,B:B,X:X,Y:Y,pts:rows.map(function(r){ return {y:r.y, v:spec.scrubK?(r[spec.scrubK]||0):0, lab:lab(r)}; })};
+  }
+
+  /* ---- scrub: glide across the chart, the chart answers ---- */
+  function bindScrub(wrap){
+    if(!wrap || wrap.dataset.scrub==='1') return;
+    wrap.dataset.scrub='1';
+    wrap.addEventListener('pointermove', function(e){
+      var d=wrap._pts; if(!d) return;
+      var svg=wrap.querySelector('svg'), r=svg.getBoundingClientRect();
+      var W=svg.viewBox.baseVal.width;
+      var px=(e.clientX-r.left)/r.width*W, n=d.pts.length;
+      var i=Math.max(0, Math.min(n-1, Math.round((px-d.L)/((d.R-d.L)/(n-1)))));
+      var p=d.pts[i], x=d.X(i), y=d.Y(p.v);
+      var bw=22+String(p.lab).length*6.9;
+      var bx=(x+bw+14>d.R)?x-bw-12:x+12, by=(y<d.T+44)?y+14:y-38;
+      var g='<g id="insScrub" pointer-events="none">'
+        +'<line x1="'+x.toFixed(1)+'" y1="'+d.T+'" x2="'+x.toFixed(1)+'" y2="'+d.B+'" stroke="#D9DDE3" stroke-width="1.5" stroke-dasharray="3 4"/>'
+        +'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="5" fill="#04B477" stroke="#fff" stroke-width="2"/>'
+        +'<rect x="'+bx.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="26" rx="9" fill="#FFFFFF" stroke="#E7E9ED"/>'
+        +'<text x="'+(bx+11).toFixed(1)+'" y="'+(by+17).toFixed(1)+'" font-size="12.5" font-weight="600" fill="#10182C">'+p.lab+'</text></g>';
+      var old=svg.querySelector('#insScrub'); if(old) old.remove();
+      svg.insertAdjacentHTML('beforeend', g);
+    });
+    wrap.addEventListener('pointerleave', function(){
+      var sc=wrap.querySelector('#insScrub'); if(sc) sc.remove();
+    });
+  }
+
+  /* ---------- money flow: sources, the total, the uses ----------
+     Three columns, so no allocation is invented: every source feeds the trunk
+     and the trunk feeds every use. Nodes are directly labelled, so no legend. */
+  function fade(hex, a){
+    var n=parseInt(hex.slice(1),16);
+    return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')';
+  }
+  function drawSankey(svg, W, H, spec){
+    /* the entrance plays once per opening, not on every drag of the horizon */
+    var AN = !reduce && svg.dataset.sk!=='1'; svg.dataset.sk='1';
+    var anim=function(cls, ms){ return AN ? ' class="'+cls+'" style="animation-delay:'+ms+'ms"' : ''; };
+    /* the arms run the full width; the labels live inside their own band */
+    var NW=6, T=26, B=H-12, padL=spec.padL||10, padR=spec.padR||10;
+    var nz=function(d){ return d.v>0; };
+    var inn=spec.inn.filter(nz), out=spec.out.filter(nz);
+    var tot=inn.reduce(function(t,d){ return t+d.v; },0);
+    /* one band-height budget for both columns, so a dollar is the same
+       thickness on either side; the leftover height goes into the gaps */
+    var GAP=15, span=(B-T)-GAP*(Math.max(inn.length,out.length)-1);
+    function lay(list){
+      var gap=list.length>1 ? ((B-T)-span)/(list.length-1) : 0, y=T, o=[];
+      list.forEach(function(d){ var h=Math.max(3, span*d.v/tot); o.push({d:d,y:y,h:h}); y+=h+gap; });
+      return {items:o, span:span};
+    }
+    var A=lay(inn), C=lay(out);
+    var xA=padL, xT=W/2-NW/2, xC=W-padR-NW;
+    var g='';
+    var tTop=T+((B-T)-span)/2;
+    function ribbon(x0,y0,x1,y1,h0,h1,fill,at){
+      var cx0=x0+(x1-x0)*0.42, cx1=x0+(x1-x0)*0.58;
+      return '<path'+(at||'')+' d="M'+x0+' '+y0.toFixed(1)+' C'+cx0+' '+y0.toFixed(1)+' '+cx1+' '+y1.toFixed(1)+' '+x1+' '+y1.toFixed(1)
+        +' L'+x1+' '+(y1+h1).toFixed(1)+' C'+cx1+' '+(y1+h1).toFixed(1)+' '+cx0+' '+(y0+h0).toFixed(1)+' '+x0+' '+(y0+h0).toFixed(1)
+        +' Z" fill="'+fill+'"/>';
+    }
+    var acc=tTop;
+    A.items.forEach(function(it,i){
+      g+=ribbon(xA+NW, it.y, xT, acc, it.h, it.h, fade(it.d.c,0.30), anim('sk-rib', 180+i*70)); acc+=it.h;
+    });
+    acc=tTop;
+    C.items.forEach(function(it,i){
+      g+=ribbon(xT+NW, acc, xC, it.y, it.h, it.h, fade(it.d.c,0.22), anim('sk-rib', 430+i*70)); acc+=it.h;
+    });
+    /* nodes and their labels */
+    g+='<rect'+anim('sk-node',120)+' x="'+xT+'" y="'+tTop.toFixed(1)+'" width="'+NW+'" height="'+span.toFixed(1)+'" rx="2" fill="'+SOHO.ink+'"/>'
+     + '<text'+anim('sk-lab',700)+' x="'+(W/2)+'" y="13" text-anchor="middle" font-size="12.5" font-weight="600" fill="#7A8290">'
+     + spec.trunk+' '+big(tot)+'</text>';
+    /* labels sit inside their band: two lines where it is tall enough, one line
+       where it is not. A single forward pass keeps neighbours from touching. */
+    function column(items, x, anchor){
+      var boxes=items.map(function(it){
+        var two=it.h>=34, bh=two?22:15;
+        return {it:it, two:two, bh:bh, top:it.y+it.h/2-bh/2};
+      });
+      for(var i=1;i<boxes.length;i++){
+        var min=boxes[i-1].top+boxes[i-1].bh+5;
+        if(boxes[i].top<min) boxes[i].top=min;
+      }
+      var last=boxes[boxes.length-1];
+      if(last && last.top+last.bh>B){
+        var over=last.top+last.bh-B;
+        for(var j=boxes.length-1;j>=0 && over>0;j--){
+          var room=boxes[j].top-(j?boxes[j-1].top+boxes[j-1].bh+5:T);
+          var cut=Math.min(room, over); boxes[j].top-=cut; over-=cut;
+        }
+      }
+      var base=anchor?430:180;
+      return boxes.map(function(bx,i){
+        var it=bx.it, nm=it.d.n, v=big(it.d.v), t=bx.top, nd=anim('sk-node',base+i*70), lb=anim('sk-lab',base+260+i*70);
+        var r='<rect'+nd+' x="'+(anchor?xC:xA)+'" y="'+it.y.toFixed(1)+'" width="'+NW
+          +'" height="'+it.h.toFixed(1)+'" rx="2" fill="'+it.d.c+'"/>';
+        if(bx.two){
+          return r+'<text'+lb+' x="'+x+'" y="'+(t+9).toFixed(1)+'"'+anchor+' font-size="13" font-weight="600" fill="#10182C">'+nm+'</text>'
+            +'<text'+lb+' x="'+x+'" y="'+(t+24).toFixed(1)+'"'+anchor+' font-size="12.5" fill="#7A8290">'+v+'</text>';
+        }
+        return r+'<text'+lb+' x="'+x+'" y="'+(t+12).toFixed(1)+'"'+anchor+' font-size="13" font-weight="600" fill="#10182C">'
+          + nm +' <tspan font-weight="400" fill="#7A8290">'+v+'</tspan></text>';
+      }).join('');
+    }
+    g+=column(A.items, xA+NW+12, '');
+    g+=column(C.items, xC-12, ' text-anchor="end"');
+    svg.innerHTML=g;
+    return null;
+  }
+
+  /* ---------- small markup helpers, all existing classes ---------- */
+  /* the lead plot: the headline is already the answer, so the first chart on a
+     page opens with just its unit note and the full-screen affordance. */
+  function lead(key, title, when, svgH, ctrl, below){
+    return '<div class="ins-plot" data-card="'+key+'">'
+      +'<div class="snap-chartwrap" data-wrap="'+key+'"><svg class="snap-chart" data-chart="'+key+'" viewBox="0 0 660 '+(svgH||250)+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+title+'"></svg></div>'
+      +'<div class="gd-legend" data-legend="'+key+'"></div>'
+      +'<div class="gd-lab ins-plot-foot">'+(ctrl||'')
+      +'<span class="gd-tools"><button class="ins-max-btn" type="button" data-ins-max="'+key+'">'+FSICON+'Full screen</button></span></div>'
+      +(below||'')
+      +'</div>';
+  }
+  function card(key, title, when, svgH){
+    return '<div class="ins-plot" data-card="'+key+'">'
+      +'<div class="gd-lab"><span class="gd-title-t">'+title+'</span>'
+      +(when?'<span class="gd-when">'+when+'</span>':'')
+      +'<span class="gd-tools"><button class="ins-max-btn" type="button" data-ins-max="'+key+'">'+FSICON+'Full screen</button></span></div>'
+      +'<div class="snap-chartwrap" data-wrap="'+key+'"><svg class="snap-chart" data-chart="'+key+'" viewBox="0 0 660 '+(svgH||250)+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+title+'"></svg></div>'
+      +'<div class="gd-legend" data-legend="'+key+'"></div></div>';
+  }
+  function legend(items){
+    return items.map(function(i){ return '<span class="gd-li"><i style="background:'+i.c+'"></i>'+i.n+'</span>'; }).join('');
+  }
+  function rows(list){
+    return '<div class="alo-rows">'+list.map(function(r){
+      return '<div class="alo-row"><div class="nm">'+(r.c?'<span class="alo-sw2" style="background:'+r.c+'"></span>':'')+r.n+'</div>'
+        +'<div class="amts">'+r.v+'</div>'+(r.chip?'<div class="alo-chip'+(r.tone?' '+r.tone:'')+'">'+r.chip+'</div>':'<div></div>')+'</div>';
+    }).join('')+'</div>';
+  }
+  function trades(list){
+    return '<div class="alo-trades">'+list.map(function(r){
+      return '<div class="alo-trade"><div><div class="t">'+r.t+'</div><div class="s">'+r.s+'</div></div>'
+        +'<div class="v'+(r.tone?' '+r.tone:'')+'">'+r.v+'</div></div>';
+    }).join('')+'</div>';
+  }
+  function pair(list){
+    return '<div class="ins-stats">'+list.map(function(p){
+      return '<div class="snap-stat">'
+        +'<div class="lab">'+p.lab+'</div>'
+        +'<div class="fig" data-count>'+p.fig+'</div>'
+        +(p.sub||p.chip?'<div class="sub">'+(p.sub||p.chip)+'</div>':'')
+        +'</div>';
+    }).join('')+'</div>';
+  }
+  function sec(id, h, note, body){
+    return '<section class="alo-sec" id="'+id+'" data-sec="'+id+'">'
+      +(h?'<div class="alo-sec-head"><h3>'+h+'</h3>'+(note?'<div class="alo-sec-note">'+note+'</div>':'')+'</div>':'')
+      + body +'</section>';
+  }
+  function act(title, links, asks){
+    return '<div class="ret-section"><div class="ret-seclabel">'+title+'</div>'
+      +'<div class="tax-links">'
+      + links.map(function(l){ return '<a'+(l.goto?' data-goto="'+l.goto+'"':'')+(l.ask?' data-ask="'+esc(l.ask)+'"':'')+'>'+l.t+' '+ARROW+'</a>'; }).join('')
+      +'</div>'
+      +(asks&&asks.length?'<div class="ret-seclabel ins-row-lab">Ask about this</div><div class="ins-row">'
+        + asks.map(function(q){ return '<button class="ins-q" type="button" data-ask="'+esc(q)+'">'+q+'</button>'; }).join('')+'</div>':'')
+      +'</div>';
+  }
+  function deeper(key, t){
+    return '<a class="ret-card-link" role="button" tabindex="0" data-ins-max="'+key+'">'+t+'</a>';
+  }
+
+  /* diverging columns, centred on zero (surplus above, gap below) */
+  function drawDiverge(svg, W, H, rws, kPos, kNeg){
+    var L=58, R=W-10, T=14, B=H-26;
+    var top=Math.max.apply(null, rws.map(function(r){ return Math.max(r[kPos]||0, r[kNeg]||0); }));
+    top=Math.ceil(top/10000)*10000;
+    var n=rws.length, gap=(R-L)/n, bw=gap*0.62, mid=T+(B-T)*0.52;
+    var Yu=function(v){ return mid-(mid-T)*(v/top); }, Yd=function(v){ return mid+(B-mid)*(v/top); };
+    var g='<text class="snap-axis" x="'+(L-8)+'" y="'+(Yu(top)+4).toFixed(1)+'" text-anchor="end">'+axisFmt(top)+'</text>'
+      +'<text class="snap-axis" x="'+(L-8)+'" y="'+(mid+4).toFixed(1)+'" text-anchor="end">$0</text>'
+      +'<text class="snap-axis" x="'+(L-8)+'" y="'+(Yd(top)+4).toFixed(1)+'" text-anchor="end">-'+axisFmt(top)+'</text>'
+      +'<line class="snap-grid" x1="'+L+'" y1="'+Yu(top).toFixed(1)+'" x2="'+R+'" y2="'+Yu(top).toFixed(1)+'"/>'
+      +'<line class="snap-grid" x1="'+L+'" y1="'+Yd(top).toFixed(1)+'" x2="'+R+'" y2="'+Yd(top).toFixed(1)+'"/>';
+    rws.forEach(function(r,i){
+      var x=L+gap*i+(gap-bw)/2;
+      if(r[kPos]>0) g+='<rect x="'+x.toFixed(1)+'" y="'+Yu(r[kPos]).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,mid-Yu(r[kPos])).toFixed(1)+'" fill="#93B36E" rx="1.5"/>';
+      if(r[kNeg]>0) g+='<rect x="'+x.toFixed(1)+'" y="'+mid.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,Yd(r[kNeg])-mid).toFixed(1)+'" fill="#D5834F" rx="1.5"/>';
+    });
+    g+='<line class="snap-grid" x1="'+L+'" y1="'+mid.toFixed(1)+'" x2="'+R+'" y2="'+mid.toFixed(1)+'"/>';
+    [0, Math.round((n-1)/3), Math.round((n-1)*2/3), n-1].forEach(function(i){
+      g+='<text class="snap-axis" x="'+(L+gap*i+gap/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+rws[i].y+'</text>';
+    });
+    svg.innerHTML=g;
+    return {L:L,R:R,T:T,B:B,X:function(i){ return L+gap*i+gap/2; },
+      Y:function(v){ return v>=0?Yu(v):Yd(-v); },
+      pts:rws.map(function(r){ return {y:r.y, v:(r[kPos]>0?r[kPos]:-(r[kNeg]||0)),
+        lab:r.y+' · '+(r[kPos]>0?('surplus '+money(r[kPos])):('gap '+money(r[kNeg]||0)))}; })};
+  }
+
+  /* ---------- derived series each insight needs ---------- */
+  var HOME0=905000, MORT0=333000, MORT_END=2044;
+  M.forEach(function(r){ r.pensionOther = r.pension + r.house; r.workAll = r.work + r.consult; });
+  M.forEach(function(r,i){
+    r.home = HOME0*Math.pow(1.025, r.y-YR0);
+    r.mort = r.y>=MORT_END ? 0 : MORT0*(1-(r.y-YR0)/(MORT_END-YR0));
+    r.net  = r.home + r.bal - r.mort;
+    r.tax  = r.spend*0.113;
+    r.magi = (r.work+r.consult+r.pension+r.house) + r.ss*0.85 + r.draw*0.42;
+  });
+  /* what you need: today's value of every future year the streams do not cover */
+  M.forEach(function(r,i){
+    var need=0;
+    for(var j=i;j<M.length;j++){ need += Math.max(0, M[j].spend-M[j].base)/Math.pow(1.042, j-i); }
+    r.need=need;
+  });
+  /* poor outcome: the same plan through a bad sequence */
+  M.forEach(function(r,i){ r.poor = r.bal*(1-0.008*Math.max(0,r.y-YR0)); });
+  /* required distributions from the pre-tax accounts, starting at 75 */
+  var RMD_START=2036, PRETAX0=310000;
+  M.forEach(function(r){
+    if(r.y<RMD_START){ r.rmd=0; return; }
+    var bal=PRETAX0*Math.pow(1.042, r.y-YR0);
+    r.rmd = bal/Math.max(8, 24.6-(r.y-RMD_START)*0.62);
+  });
+  /* three withdrawal strategies */
+  var STRAT=(function(){
+    var needB=1090000, fixB=1090000, maxB=1090000, needD=0, fixD=0, maxD=0;
+    RETIRED.forEach(function(r){
+      needB=needB*1.042 + r.surplus - r.draw; needD+=r.draw;
+      var f=fixB*0.04; fixB=fixB*1.042-f+r.surplus*0.2; fixD+=f;
+      var m=maxB*0.062; maxB=maxB*1.042-m; maxD+=m;
+    });
+    return {need:{d:needD,e:needB}, fix:{d:fixD,e:fixB}, max:{d:maxD,e:maxB}};
+  })();
+
+  var firstGap=RETIRED.filter(function(r){ return r.y>2040 && r.draw>0; })[0] || RETIRED[RETIRED.length-1];
+  var bridge=M.filter(function(r){ return r.y>=2029 && r.y<=2034; });
+  var lifeTax=sum(M,'tax');
+  var magiPeak=M.reduce(function(a,r){ return r.magi>a.magi?r:a; }, M[0]);
+  var IRMAA1=218000;
+
+  /* ---------- chart specs, shared by the card and its full screen ---------- */
+  /* Soho palette, validated: lightness band, chroma floor, CVD and normal-vision
+     separation all pass; the ochre carries a contrast WARN, relieved by the legend
+     and the full-screen table. Fixed order, never cycled. */
+  var SOHO={teal:'#4A99C4', olive:'#93B36E', plum:'#9A7BBC', clay:'#D5834F',
+            band:'rgba(147,179,110,0.12)', bandline:'#C8D8B4',
+            ink:'#10182C', mute:'#B7BCC6'};
+  var IN_SER=[{k:'workAll',c:SOHO.teal,n:'Work and consulting'},
+              {k:'ss',c:SOHO.olive,n:'Social Security'},
+              {k:'pensionOther',c:SOHO.plum,n:'Pension and other'},
+              {k:'draw',c:SOHO.clay,n:'From savings'}];
+  /* the flow Sankey's window: now through whatever horizon you pull it to */
+  var AGE0=1967, SANK={to:YRN};
+  function ageAt(y){ return y-AGE0; }
+
+  var CHARTS={
+    flow:  function(){ return {rows:M, series:IN_SER, line:{k:'spend',c:SOHO.ink,w:2.4}, scrubK:'spend',
+             ticks:[0,11,22,33], label:function(r){ return r.y+' · spending '+money(r.spend); }}; },
+    flowin: function(){
+      var w=M.filter(function(r){ return r.y<=SANK.to; });
+      var sp=sum(w,'spend'), left=sum(w,'surplus');
+      return {type:'sankey', trunk:'Every dollar, '+YR0+' to '+SANK.to+' &middot;',
+        inn:[{n:'Work and consulting',c:SOHO.teal,v:sum(w,'workAll')},
+             {n:'Social Security',c:SOHO.olive,v:sum(w,'ss')},
+             {n:'Pension and lakehouse',c:SOHO.plum,v:sum(w,'pensionOther')},
+             {n:'From savings',c:SOHO.clay,v:sum(w,'draw')}],
+        out:[{n:'Everyday living',c:SOHO.mute,v:sp*0.477},
+             {n:'Housing',c:SOHO.mute,v:sp*0.240},
+             {n:'Healthcare',c:SOHO.mute,v:sp*0.170},
+             {n:'Taxes',c:SOHO.mute,v:sp*0.113},
+             {n:'Left over',c:SOHO.olive,v:left}]};
+    },
+    flowgap: 'diverge',
+    safe:  function(){ return {rows:RETIRED, padR:14, floor:4800, top:9600, zero:false,
+             line:{k:'permo',c:SOHO.olive}, band:{lo:5850,hi:8400,labels:['Safe ceiling $8,400','Floor $5,850']},
+             scrubK:'permo', label:function(r){ return r.y+' · '+money(r.permo)+'/mo'; }}; },
+    last:  function(){ return {rows:M, lines:[{k:'bal',c:SOHO.teal,area:'rgba(74,153,196,0.12)'},{k:'poor',c:SOHO.mute,w:2,dash:true}],
+             scrubK:'bal', label:function(r){ return r.y+' · '+big(r.bal); }}; },
+    worth: function(){ return {rows:M, lines:[{k:'net',c:SOHO.teal,area:'rgba(74,153,196,0.12)'}],
+             scrubK:'net', label:function(r){ return r.y+' · '+big(r.net); }}; },
+    savings:function(){ return {rows:M, lines:[{k:'bal',c:SOHO.teal,area:'rgba(74,153,196,0.12)'},{k:'need',c:SOHO.clay,w:2,dash:true}],
+             scrubK:'bal', label:function(r){ return r.y+' · have '+big(r.bal); }}; },
+    draw:  function(){ return {rows:RETIRED, lines:[{k:'bal',c:SOHO.teal,area:'rgba(74,153,196,0.12)'}],
+             scrubK:'bal', label:function(r){ return r.y+' · '+big(r.bal); }}; },
+    taxes: function(){ return {rows:M, series:[{k:'tax',c:SOHO.plum,n:'Estimated tax'}], scrubK:'tax',
+             ticks:[0,11,22,33], label:function(r){ return r.y+' · '+money(r.tax); }}; },
+    rmd:   function(){ return {rows:M.filter(function(r){ return r.y>=2034; }), series:[{k:'rmd',c:SOHO.olive,n:'Required distribution'}],
+             scrubK:'rmd', label:function(r){ return r.y+' · '+money(r.rmd); }}; },
+    irmaa: function(){ return {rows:M, top:240000, lines:[{k:'magi',c:SOHO.teal,area:'rgba(74,153,196,0.12)'}],
+             band:{lo:IRMAA1,hi:238000,labels:['First surcharge $218,000','']}, scrubK:'magi',
+             label:function(r){ return r.y+' · MAGI '+money(r.magi); }}; }
+  };
+  RETIRED.forEach(function(r){ r.permo=r.spend/12; });
+
+  /* ---------- the nine ---------- */
+  var INS=[
+  { k:'flow', t:'Cash Flow', short:'Cash Flow',
+    hl:'Four streams replace <span class="yrs">one paycheck</span>.',
+    sub:'Where the money comes from, where it goes, what is left over.',
+    nav:['In and out','Where it comes from','Surplus and gaps'],
+    build:function(){ return sec('flow-a','','',
+        lead('flowin','Where every dollar comes from and where it goes','',340,
+          '<span class="ins-range-head"><label class="gd-when" for="insTo">Now through</label>'
+          +'<span class="fl-v" id="insToV">'+YRN+' &middot; age '+ageAt(YRN)+'</span></span>',
+          '<div class="fl-row ins-range"><input type="range" id="insTo" style="--p:100%" min="'+(YR0+4)+'" max="'+YRN+'" step="1" value="'+YRN+'" aria-label="Show the plan from now through this year"></div>')
+        + '<p class="alo-cap">After 2028 the paycheck stops and four smaller streams take over; savings covers what they miss, '
+        +'deepest in <b>'+deepest.y+'</b> at <b>'+money(deepest.draw)+'</b>.</p>')
+      + sec('flow-b','Where it comes from','Retirement, per month &middot; was Income &amp; Expenses',
+          card('flow','Income by source, against what you spend','Today’s dollars',280)
+        + rows([{n:'Social Security',c:SOHO.olive,v:'<b>$5,000</b> / mo',chip:'Both filed',tone:'ok'},
+                {n:'Pension',c:SOHO.plum,v:'<b>$1,800</b> / mo',chip:'For life'},
+                {n:'Consulting',c:SOHO.teal,v:'<b>$3,000</b> / mo',chip:'2029 to 2033'},
+                {n:'The lakehouse',c:SOHO.plum,v:'<b>$400</b> / mo',chip:'Net of costs'},
+                {n:'Savings drawdown',c:SOHO.clay,v:'<b>'+money(sum(RETIRED,'draw')/RETIRED.length/12)+'</b> / mo avg',chip:'The balancer'}])
+        + '<p class="alo-cap">Guaranteed income covers <b>'+guarPct+'%</b> of your spending once both checks are on. Savings is the shock absorber, not the plan.</p>')
+      + sec('flow-c','Surplus and gaps','Retirement, per year &middot; was Surplus&ndash;Gap',
+          card('flowgap','What is left after everything is paid','Per year',230)
+        + '<p class="alo-cap">The bridge years take <b>'+big(sum(bridge,'draw'))+'</b> from savings. The gaps return around <b>'+firstGap.y+'</b>, as healthcare climbs and the pension loses ground.</p>'
+        + act('Your move',[{t:'Check the bridge years in your plan',goto:'plan'}],
+            ['Can my savings absorb the bridge years?','What if I consult two more years?'])
+        + deeper('flow','Every year, and every line item')); },
+    ctx:{'flow-a':['In and out','Your streams and your savings on one side, five uses on the other. Pull the horizon to see any window from today out to age 92.'],
+         'flow-b':['Four streams','Social Security and the pension are the floor, for life. Consulting bridges five years. Savings only covers the difference.'],
+         'flow-c':['The shock absorber','The bridge years lean on savings, then the checks nearly cover you. Every gap here is already inside your 87% confidence.']},
+    fs:{ pair:[['Guaranteed income, both checks on',guarPct+'% of spending',true],
+               ['Drawn from savings across the plan',big(sum(M,'draw')),false],
+               ['Deepest year',deepest.y+' · '+money(deepest.draw),false]],
+         cards:[['Where every dollar comes from and where it goes','flowin',960,420],
+                ['Income by source, against what you spend','flow',960,380],
+                ['What is left after everything is paid','flowgap',960,300]],
+         note:'Bars are income by source, stacked. The dark line is what you spend. Where the line sits above the bars, savings covers the difference.',
+         cols:['Year','Work','Consulting','Social Security','Pension and lakehouse','Spending','Surplus or gap'],
+         rws:function(){ return M.filter(function(r){ return r.y===YR0 || r.y===YRN || r.y%5===0 || r.y===2029; }); },
+         row:function(r){ return [r.y,money(r.work),money(r.consult),money(r.ss),money(r.pension+r.house),money(r.spend),
+           (r.surplus>0?('+'+money(r.surplus)):('-'+money(r.draw)))]; } } },
+
+  { k:'safe', t:'Spending Guardrails', short:'Spending Guardrails',
+    hl:'You can spend <span class="amt">$8,400</span> a month.',
+    sub:'The most you can spend and still reach 92 with money left.',
+    nav:['The number','When you adjust','What raises it'],
+    build:function(){ return sec('safe-a','','',
+        lead('safe','Monthly spending against your guardrails','',250)
+        + pair([{lab:'Safe spending target',fig:'$8,400',sub:'Sustained through retirement'},
+              {lab:'Your planned spend',chip:'Review expenses',fig:'$6,323',plain:true,sub:'What your budget adds up to'}])
+        + '<p class="alo-cap">That is <b>$2,077</b> a month, about <b>$24,900</b> a year, you could spend and still finish the plan with money left.</p>')
+      + sec('safe-b','When you adjust','Driven by your balance, not the market',
+          trades([{t:'If savings fall to $1.10M',s:'A long drawdown, not a bad month',v:'Spend $8,362',tone:'sell'},
+                  {t:'Projected balance, 2029',s:'What the plan expects',v:'Spend $8,400'},
+                  {t:'If savings grow to $1.15M',s:'Two good years, or one very good one',v:'Spend $8,521',tone:'buy'}])
+        + '<p class="alo-cap">Guardrails sit on your <b>savings balance</b>, not the market. A <b>2%</b> move shifts safe spending by about <b>$140 a month</b>. A bad month is not a trigger.</p>')
+      + sec('safe-c','What raises it','Three levers, already in your plan',
+          rows([{n:'Marshall holds Social Security to 70',v:'<b>+$760</b> / mo survivor',chip:'Set',tone:'ok'},
+                {n:'The December Roth ladder',v:'<b>+$310</b> / mo',chip:'Six Decembers'},
+                {n:'Switch to a maximum spending strategy',v:'<b>+$1,180</b> / mo',chip:'Ends near zero',tone:'hot'}])
+        + '<p class="alo-cap">The first two move the ceiling and leave the plan intact. The third spends your ending balance down from <b>'+big(STRAT.need.e)+'</b> to about <b>'+big(STRAT.max.e)+'</b>.</p>'
+        + act('Your move',[{t:'Compare your expenses to what is sustainable',goto:'plan'}],
+            ['What would $2,077 a month buy us?','Tell me more about how guardrails work'])
+        + deeper('safe','The band, year by year')); },
+    ctx:{'safe-a':['Room to live','You could spend $2,077 more a month than you are planning to, and still finish the plan with money left over.'],
+         'safe-b':['Balance, not nerves','Your savings balance decides when spending moves, so the adjustments are small and ordinary. A bad month is not a trigger.'],
+         'safe-c':['Three levers','Two move the ceiling and leave the plan intact. The third buys spending with your entire ending balance.']},
+    fs:{ pair:[['Safe to spend','$8,400 / mo',true],['You are planning','$6,323 / mo',false],['Headroom','$2,077 / mo',false]],
+         cards:[['Monthly spending against your guardrails','safe',960,420]],
+         note:'The band is the range your plan can sustain to age 92. Inside it, nothing needs to change.',
+         cols:['Year','Spending / mo','Safe ceiling','Floor','Headroom'],
+         rws:function(){ return RETIRED.filter(function(r){ return r.y%5===0 || r.y===2029 || r.y===YRN; }); },
+         row:function(r){ return [r.y,money(r.permo),'$8,400','$5,850',money(8400-r.permo)]; } } },
+
+  { k:'last', t:'Retirement Chance of Success', short:'Chance of Success',
+    hl:'<span class="amt">87</span> of 100 futures still have money.',
+    sub:'A thousand runs of your plan, through good markets and bad.',
+    nav:['The odds','Through a bad run','Your goals'],
+    build:function(){ return sec('last-a','','',
+        lead('last','Projected savings, against a poor run of markets','',260)
+        + '<div class="gd-legend">'+legend([{c:SOHO.teal,n:'Projected savings'},{c:SOHO.mute,n:'Poor outcome'}])+'</div>'
+        + pair([{lab:'Chance of funding every year to 92',fig:'87%'}])
+        + '<p class="alo-cap">Of 1,000 runs, <b>870</b> reached age 92 with money left; the 130 that did not hit bad markets in the bridge years.</p>')
+      + sec('last-b','Through a bad run','Where the risk actually sits',
+          rows([{n:'Bad markets 2029 to 2034',v:'confidence <b>71%</b>',chip:'The real risk',tone:'hot'},
+                {n:'Bad markets after 2040',v:'confidence <b>84%</b>',chip:'Absorbed'},
+                {n:'Living to 96 instead of 92',v:'confidence <b>81%</b>',chip:'Absorbed'}])
+        + '<p class="alo-cap">Sequence matters more than average returns. Holding consulting through 2033 does more for confidence than any change to your investment mix.</p>')
+      + sec('last-c','Your goals','Both on track',
+          rows([{n:'Retire in 2028 on $7,200 a month',v:'funded to <b>92</b>',chip:'On track',tone:'ok'},
+                {n:'Leave $250,000 behind',v:'forecast <b>'+big(STRAT.need.e)+'</b>',chip:'On track',tone:'ok'}])
+        + '<p class="alo-cap">You could retire <b>two years earlier</b> and stay above 80% confidence.</p>'
+        + act('Your move',[{t:'Stress test an earlier retirement',goto:'optimize'}],
+            ['What breaks this plan?','How would a bear market affect my retirement date?'])
+        + deeper('last','The full distribution')); },
+    ctx:{'last-a':['Eighty seven','870 of 1,000 runs of your plan reach 92 with money still in the account. That is the number the plan is measuring.'],
+         'last-b':['Sequence, not average','The bridge years are the exposure. Bad markets there hurt far more than bad markets later.'],
+         'last-c':['Both on track','Retirement in 2028 is funded through 92, and the legacy goal is covered several times over.']},
+    fs:{ pair:[['Chance of success','87%',true],['Runs that reached 92','870 of 1,000',false],['Forecast at 92',big(STRAT.need.e),false]],
+         cards:[['Projected savings, against a poor run of markets','last',960,420]],
+         note:'The green line is the plan on average assumptions. The grey line is the same plan through a poor sequence of returns.',
+         cols:['Year','Projected savings','Poor outcome','Spending','From savings'],
+         rws:function(){ return M.filter(function(r){ return r.y%5===0 || r.y===YR0 || r.y===YRN; }); },
+         row:function(r){ return [r.y,big(r.bal),big(r.poor),money(r.spend),money(r.draw)]; } } },
+
+  { k:'worth', t:'Net Worth', short:'Net Worth',
+    hl:'<span class="amt">$1.14M</span> today, <span class="yrs">and climbing</span>.',
+    sub:'Everything you own, minus everything you owe, now and ahead.',
+    nav:['Today','What you own','How it is taxed'],
+    build:function(){ return sec('worth-a','','',
+        lead('worth','Projected net worth','',260)
+        + pair([{lab:'Net worth today, up $8,200 since January',fig:'$1.14M'}])
+        + '<p class="alo-cap">The house is <b>$905,000</b> of it and the mortgage takes <b>$333,000</b> back, peaking around <b>'+peak.y+'</b> at <b>'+big(peak.net)+'</b>.</p>')
+      + sec('worth-b','What you own','Today',
+          rows([{n:'Home',c:SOHO.teal,v:'<b>$905,000</b>',chip:'72% of assets'},
+                {n:'Retirement accounts',c:SOHO.olive,v:'<b>$310,000</b>',chip:'Tax deferred'},
+                {n:'Brokerage',c:SOHO.olive,v:'<b>$150,000</b>',chip:'Taxable'},
+                {n:'Cash',c:SOHO.plum,v:'<b>$107,000</b>',chip:'14 months'},
+                {n:'Mortgage',c:SOHO.clay,v:'<b>-$333,000</b>',chip:'Clear by 2044',tone:'hot'}])
+        + '<p class="alo-cap">Most of it is a house you live in, and a house does not pay the bills. The <b>'+big(1090000)+'</b> in savings is what retirement spends.</p>')
+      + sec('worth-c','How it is taxed','The split that decides your options',
+          rows([{n:'Taxable',v:'<b>$150,000</b>',chip:'27%'},
+                {n:'Tax deferred',v:'<b>$310,000</b>',chip:'56%',tone:'hot'},
+                {n:'Tax free',v:'<b>$95,000</b>',chip:'17%'}])
+        + '<p class="alo-cap">More than half your savings has never been taxed. The low-bracket years between 2029 and RMDs at 75 are the cheapest chance to fix that.</p>'
+        + act('Your move',[{t:'See the Roth conversion window',goto:'optimize'}],
+            ['Should I convert some of the pre-tax money?'])
+        + deeper('worth','Net worth, year by year')); },
+    ctx:{'worth-a':['A million and change','Net worth is up $8,200 since January. It peaks around '+peak.y+', then flattens as savings starts doing the work.'],
+         'worth-b':['Mostly a house','Most of your net worth is a home you live in. The savings is the part that pays the bills.'],
+         'worth-c':['Never been taxed','Over half your savings sits in tax deferred accounts. The low bracket years are how you fix that cheaply.']},
+    fs:{ pair:[['Net worth today','$1.14M',true],['Peak, '+peak.y,big(peak.net),false],['Savings today',big(1090000),false]],
+         cards:[['Projected net worth','worth',960,420]],
+         note:'Net worth is the home plus savings, less the mortgage. It peaks when the mortgage clears and savings is still growing.',
+         cols:['Year','Home','Savings','Mortgage','Net worth'],
+         rws:function(){ return M.filter(function(r){ return r.y%5===0 || r.y===YR0 || r.y===YRN; }); },
+         row:function(r){ return [r.y,big(r.home),big(r.bal),r.mort?('-'+big(r.mort)):'$0',big(r.net)]; } } },
+
+  { k:'savings', t:'Savings', short:'Savings',
+    hl:'You need <span class="amt">'+big(at(2029).need)+'</span>. You will have <span class="yrs">more</span>.',
+    sub:'What the plan asks of your savings, and what your savings can do.',
+    nav:['Have and need','Where growth comes from','By account'],
+    build:function(){ return sec('sav-a','','',
+        lead('savings','What you have, against what you need','',260)
+        + '<div class="gd-legend">'+legend([{c:SOHO.teal,n:'What you have'},{c:SOHO.clay,n:'What you need'}])+'</div>'
+        + pair([{lab:'What you need at retirement',fig:big(at(2029).need),sub:'Today’s value of the years the streams miss'},
+              {lab:'What you will have',fig:big(at(2029).bal),plain:true,sub:'Projected, 2029'}])
+        + '<p class="alo-cap">You cross your number <b>before</b> you retire and stay above it, peaking around <b>'+peak.y+'</b> at <b>'+big(peak.bal)+'</b>.</p>')
+      + sec('sav-b','Where growth comes from','Across the plan',
+          rows([{n:'Investment returns',v:'<b>'+big(sum(M,'surplus')*2.3)+'</b>',chip:'4.2% real'},
+                {n:'Surplus you add',v:'<b>'+big(sum(M,'surplus'))+'</b>',chip:'2035 to '+firstGap.y},
+                {n:'Drawn back out',v:'<b>-'+big(sum(M,'draw'))+'</b>',chip:'The bridge and the tail',tone:'hot'}])
+        + '<p class="alo-cap">Returns do most of the work. A dollar left in during the bridge years compounds for another twenty five.</p>')
+      + sec('sav-c','By account','Where the money actually sits',
+          rows([{n:'Cash and default account',v:'<b>$107,000</b>',chip:'Runway'},
+                {n:'Pre-tax accounts',v:'<b>$310,000</b>',chip:'RMDs from 2036',tone:'hot'},
+                {n:'Brokerage',v:'<b>$150,000</b>',chip:'Taxable'},
+                {n:'Roth and HSA',v:'<b>$95,000</b>',chip:'Tax free',tone:'ok'}])
+        + act('Your move',[{t:'Check your contributions in your plan',goto:'plan'}],
+            ['What is my safe withdrawal rate?'])
+        + deeper('savings','Balances and flows, year by year')); },
+    ctx:{'sav-a':['Above the line','You cross your number before you retire and stay above it. Savings peaks around '+peak.y+'.'],
+         'sav-b':['Returns do the work','Every dollar left in during the bridge years compounds for another twenty five.'],
+         'sav-c':['Where it sits','Cash is runway, pre-tax carries the RMDs, and the Roth is the part nobody taxes again.']},
+    fs:{ pair:[['Need at retirement',big(at(2029).need),false],['Have at retirement',big(at(2029).bal),true],['Peak, '+peak.y,big(peak.bal),false]],
+         cards:[['What you have, against what you need','savings',960,420]],
+         note:'The green line is projected savings. The dashed line is what the plan needs from savings at that point, in today’s dollars.',
+         cols:['Year','Have','Need','Surplus added','Drawn'],
+         rws:function(){ return M.filter(function(r){ return r.y%5===0 || r.y===YR0 || r.y===YRN; }); },
+         row:function(r){ return [r.y,big(r.bal),big(r.need),r.surplus?money(r.surplus):'$0',r.draw?money(r.draw):'$0']; } } },
+
+  { k:'draw', t:'Retirement Withdrawals', short:'Retirement Withdrawals',
+    hl:'Your withdrawal rate is <span class="amt">1.1%</span>.',
+    sub:'Which accounts pay you, in what order, and how much they can stand.',
+    nav:['The rate','Three strategies','Your order'],
+    build:function(){ return sec('draw-a','','',
+        lead('draw','Savings balance through retirement','',250)
+        + pair([{lab:'Average withdrawal rate',fig:'1.1%',sub:'Across retirement'},
+              {lab:'Out of money date',fig:'Never',plain:true,sub:'On average assumptions'}])
+        + '<p class="alo-cap">A <b>4%</b> rate is the usual rule of thumb, and yours is about a quarter of that.</p>')
+      + sec('draw-b','Three strategies','The same plan, three rules',
+          trades([{t:'Spending needs',s:'Withdraw what the budget requires. Your current rule',v:big(STRAT.need.e)+' left',tone:'buy'},
+                  {t:'Fixed 4% of balance',s:'A rule of thumb, ignores what you actually spend',v:big(STRAT.fix.e)+' left'},
+                  {t:'Maximum spending',s:'Spend the plan down to your legacy goal',v:big(STRAT.max.e)+' left',tone:'sell'}])
+        + '<p class="alo-cap">Spending needs draws <b>'+big(STRAT.need.d)+'</b>. Maximum spending draws <b>'+big(STRAT.max.d)+'</b> and ends near zero. That gap is a choice about who the money is for.</p>')
+      + sec('draw-c','Your order','Which account pays first',
+          rows([{n:'1. Cash and taxable',v:'until <b>2036</b>',chip:'Lowest tax cost',tone:'ok'},
+                {n:'2. Pre-tax, forced',v:'RMDs from <b>2036</b>',chip:'Not optional'},
+                {n:'3. Roth and HSA',v:'last',chip:'Never taxed again',tone:'ok'}])
+        + '<p class="alo-cap">Traditional order, and it fits: taxable funds the low-bracket years, RMDs arrive on schedule, tax free compounds longest.</p>'
+        + act('Your move',[{t:'Change your withdrawal strategy',goto:'plan'}],
+            ['Which withdrawal strategy is best for me?'])
+        + deeper('draw','All three strategies, year by year')); },
+    ctx:{'draw-a':['A quarter of the rule','You draw about 1.1% a year against a 4% rule of thumb. The plan never runs dry on average assumptions.'],
+         'draw-b':['Three rules','Spending needs leaves the most behind. Maximum spending ends near zero. The gap is a choice, not an error.'],
+         'draw-c':['Taxable first','Taxable money funds the low bracket years, RMDs arrive on schedule, and the tax free money compounds longest.']},
+    fs:{ pair:[['Withdrawal rate','1.1%',true],['Out of money','Never',false],['Ending balance',big(STRAT.need.e),false]],
+         cards:[['Savings balance through retirement','draw',960,420]],
+         note:'Balance under the spending needs strategy, the rule your plan uses today.',
+         cols:['Year','Balance','Drawn','Rate','Spending'],
+         rws:function(){ return RETIRED.filter(function(r){ return r.y%5===0 || r.y===2029 || r.y===YRN; }); },
+         row:function(r){ return [r.y,big(r.bal),money(r.draw),(r.draw/r.bal*100).toFixed(1)+'%',money(r.spend)]; } } },
+
+  { k:'taxes', t:'Taxes', short:'Taxes',
+    hl:'<span class="amt">'+big(lifeTax)+'</span> in tax, <span class="yrs">across the plan</span>.',
+    sub:'What you will pay, when you will pay it, and where the room is.',
+    nav:['The bill','Where it goes','The window'],
+    build:function(){ return sec('tax-a','','',
+        lead('taxes','Estimated tax by year','',250)
+        + pair([{lab:'Estimated tax from now to age 92',fig:''+big(lifeTax)+''}])
+        + '<p class="alo-cap">It is front-loaded: <b>'+big(sum(M.filter(function(r){return r.y<=RET;}),'tax'))
+        +'</b> lands in the three years you are still working.</p>')
+      + sec('tax-b','Where it goes','Across the plan',
+          rows([{n:'Federal income tax',v:'<b>'+big(lifeTax*0.52)+'</b>',chip:'52%'},
+                {n:'FICA, while working',v:'<b>'+big(lifeTax*0.35)+'</b>',chip:'Ends 2028'},
+                {n:'State income tax',v:'<b>'+big(lifeTax*0.13)+'</b>',chip:'13%'}])
+        + '<p class="alo-cap">Your exposure is the <b>12%</b> and <b>22%</b> bands. You never reach the top brackets, which is exactly when conversions are cheap.</p>')
+      + sec('tax-c','The window','2029 to 2036',
+          rows([{n:'Low-bracket room per year',v:'about <b>$40,000</b>',chip:'Expires yearly',tone:'hot'},
+                {n:'Years before RMDs start',v:'<b>7</b>',chip:'2029 to 2035'},
+                {n:'Convert the room each year',v:'saves <b>$61,000</b>',chip:'Lifetime',tone:'ok'}])
+        + '<p class="alo-cap">Between retiring and RMDs at 75 the 22% bracket sits half empty. Every unused dollar expires each December 31.</p>'
+        + act('Your move',[{t:'Open the Roth conversion window',goto:'optimize'}],
+            ['How much should I convert this year?','How can I minimize taxes in retirement?'])
+        + deeper('taxes','Tax by year, and by bracket')); },
+    ctx:{'tax-a':['Front loaded','Most of the bill lands while you are still working. After 2028 taxable income drops by more than half.'],
+         'tax-b':['Never the top brackets','Your exposure is the 12% and 22% bands, which is exactly when conversions are cheap.'],
+         'tax-c':['Seven Decembers','Between retiring and RMDs the 22% bracket sits half empty. That room expires every December 31.']},
+    fs:{ pair:[['Lifetime tax',big(lifeTax),false],['While still working',big(sum(M.filter(function(r){return r.y<=RET;}),'tax')),false],
+               ['Low bracket room, per year','$40,000',true]],
+         cards:[['Estimated tax by year','taxes',960,420]],
+         note:'Estimated federal, state and FICA combined, in today’s dollars. Directional, not a filing figure.',
+         cols:['Year','Spending','Estimated tax','Effective rate'],
+         rws:function(){ return M.filter(function(r){ return r.y%5===0 || r.y===YR0 || r.y===YRN; }); },
+         row:function(r){ return [r.y,money(r.spend),money(r.tax),(r.tax/r.spend*100).toFixed(1)+'%']; } } },
+
+  { k:'rmd', t:'Required Distributions', short:'Required Distributions',
+    hl:'They start in <span class="amt">2036</span>, <span class="yrs">at 75</span>.',
+    sub:'What the government makes you withdraw, and what it costs you.',
+    nav:['When and how much','Which accounts','What it costs'],
+    build:function(){ return sec('rmd-a','','',
+        lead('rmd','Required distributions by year','',250)
+        + pair([{lab:'First required distribution, at age 75',fig:'2036'}])
+        + '<p class="alo-cap">The first is about <b>'+money(at(2036).rmd)+'</b>, rising to <b>'+money(at(2050).rmd)
+        +'</b> by 2050 as the divisor shrinks.</p>')
+      + sec('rmd-b','Which accounts','Three of them',
+          rows([{n:'Pre-tax 401(k)',v:'<b>$185,000</b>',chip:'RMD at 75'},
+                {n:'Traditional IRA',v:'<b>$85,000</b>',chip:'RMD at 75'},
+                {n:'457(b)',v:'<b>$40,000</b>',chip:'RMD at 75'},
+                {n:'Roth and HSA',v:'<b>$95,000</b>',chip:'No RMD',tone:'ok'}])
+        + '<p class="alo-cap">Only the pre-tax accounts are affected. Anything moved to Roth before 2036 leaves the RMD base for good.</p>')
+      + sec('rmd-c','What it costs','The tax it forces',
+          rows([{n:'Lifetime required distributions',v:'<b>'+big(sum(M,'rmd'))+'</b>',chip:'Forced income'},
+                {n:'Tax on it, at your bracket',v:'<b>'+big(sum(M,'rmd')*0.22)+'</b>',chip:'22%',tone:'hot'},
+                {n:'Penalty for missing one',v:'up to <b>25%</b>',chip:'Of the shortfall',tone:'hot'}])
+        + '<p class="alo-cap">The distributions are not the problem. They arrive whether you need the money or not, on top of Social Security.</p>'
+        + act('Your move',[{t:'Shrink the RMD base with conversions',goto:'optimize'}],
+            ['How do I reduce my future RMDs?'])
+        + deeper('rmd','Distributions by year and account')); },
+    ctx:{'rmd-a':['Seven years out','Your first required distribution lands in 2036 at age 75, and grows every year after.'],
+         'rmd-b':['Only the pre-tax','Anything converted to Roth before 2036 leaves the RMD base for good.'],
+         'rmd-c':['Income you did not ask for','RMDs arrive whether you need the money or not, on top of Social Security.']},
+    fs:{ pair:[['First distribution','2036 · '+money(at(2036).rmd),false],['Lifetime required',big(sum(M,'rmd')),false],
+               ['Accounts with no RMD','$95,000',true]],
+         cards:[['Required distributions by year','rmd',960,420]],
+         note:'Estimated from the pre-tax balances and the IRS divisor for each age. Roth and HSA accounts are excluded.',
+         cols:['Year','Age','Required distribution','Tax on it at 22%'],
+         rws:function(){ return M.filter(function(r){ return r.y>=2036 && (r.y%5===0 || r.y===2036 || r.y===YRN); }); },
+         row:function(r){ return [r.y,(65+(r.y-YR0)),money(r.rmd),money(r.rmd*0.22)]; } } },
+
+  { k:'irmaa', t:'IRMAA', short:'IRMAA',
+    hl:'You are <span class="yrs">not</span> modeled to pay a surcharge.',
+    sub:'The Medicare premium surcharge, and how close your income gets to it.',
+    nav:['The answer','How close you get','What would change it'],
+    build:function(){ return sec('irmaa-a','','',
+        lead('irmaa','Your income against the first threshold','',250)
+        + pair([{lab:'IRMAA surcharge across the whole plan',fig:'$0'}])
+        + '<p class="alo-cap">Your highest modeled income is <b>'+money(magiPeak.magi)+'</b> in <b>'+magiPeak.y+'</b>, <b>'
+        +money(IRMAA1-magiPeak.magi)+'</b> under the first threshold.</p>')
+      + sec('irmaa-b','How close you get','The margin, year by year',
+          rows([{n:'Highest income year',v:'<b>'+money(magiPeak.magi)+'</b> in '+magiPeak.y,chip:'Under',tone:'ok'},
+                {n:'First surcharge threshold',v:'<b>'+money(IRMAA1)+'</b>',chip:'Married filing jointly'},
+                {n:'Your margin',v:'<b>'+money(IRMAA1-magiPeak.magi)+'</b>',chip:'Comfortable',tone:'ok'}])
+        + '<p class="alo-cap">Surcharges use your income from two years earlier. Your plan stays well clear in every one of them.</p>')
+      + sec('irmaa-c','What would change it','Worth knowing before you act',
+          rows([{n:'A large Roth conversion',v:'adds to <b>MAGI</b>',chip:'Watch the year',tone:'hot'},
+                {n:'Selling the lakehouse',v:'capital gain',chip:'One year spike',tone:'hot'},
+                {n:'A single dollar over',v:'full surcharge',chip:'No phase in',tone:'hot'}])
+        + '<p class="alo-cap">There is no phase in. A dollar over costs the whole surcharge, so size a conversion against this page, not the brackets alone.</p>'
+        + act('Your move',[{t:'Size a conversion against the threshold',goto:'optimize'}],
+            ['Would a Roth conversion push me over the threshold?'])
+        + deeper('irmaa','Thresholds, fees, and your income by year')); },
+    ctx:{'irmaa-a':['Nothing to do','Your highest modeled income stays well under the first surcharge threshold for the whole plan.'],
+         'irmaa-b':['A comfortable margin','Surcharges use your income from two years earlier. Your plan stays clear in every one of them.'],
+         'irmaa-c':['One dollar matters','There is no phase in. A dollar over costs the whole surcharge, so size conversions against it.']},
+    fs:{ pair:[['Surcharge across the plan','$0',true],['Highest income year',magiPeak.y+' · '+money(magiPeak.magi),false],
+               ['Margin to the first threshold',money(IRMAA1-magiPeak.magi),false]],
+         cards:[['Your income against the first threshold','irmaa',960,420]],
+         note:'Modified AGI is estimated from taxable income, 85% of Social Security, and the taxable share of savings withdrawals.',
+         cols:['MAGI threshold','Part B extra','Part D extra','You'],
+         rws:function(){ return [{a:'$218,000',b:'$0',c:'$0',d:'Under'},{a:'$274,000',b:'$81',c:'$15',d:'Under'},
+           {a:'$342,000',b:'$203',c:'$38',d:'Under'},{a:'$410,000',b:'$325',c:'$60',d:'Under'},{a:'$750,000',b:'$446',c:'$83',d:'Under'}]; },
+         row:function(r){ return [r.a,r.b,r.c,r.d]; } } }
+  ];
+  var BY={}; INS.forEach(function(o){ BY[o.k]=o; });
+
+  var PFX={flow:'flow',safe:'safe',last:'last',worth:'worth',savings:'sav',draw:'draw',taxes:'tax',rmd:'rmd',irmaa:'irmaa'};
+  var OWNER={flowgap:'flow', flowin:'flow'};
+  var LEGENDS={ flow: legend(IN_SER.concat([{c:SOHO.ink,n:'Spending'}])),
+                flowgap: legend([{c:SOHO.olive,n:'Surplus, added to savings'},{c:SOHO.clay,n:'Gap, covered by savings'}]),
+                safe: legend([{c:SOHO.olive,n:'Your spending'},{c:'#C8D8B4',n:'Safe band, $5,850 to $8,400'}]) };
+
+  /* one dispatch, shared by the page and its full screen */
+  function paintChart(svg, W, H, key){
+    if(CHARTS[key]==='diverge') return drawDiverge(svg, W, H, RETIRED, 'surplus', 'draw');
+    var spec=CHARTS[key]();
+    return spec.type==='sankey' ? drawSankey(svg, W, H, spec) : draw(svg, W, H, spec);
+  }
+
+  /* ---------- build the nine pages ---------- */
+  var host=document.getElementById('insPages');
+  /* the page ends with the two it sits between: back on the left, on on the right */
+  function nextLink(k){
+    var ks=INS.map(function(o){ return o.k; }), i=ks.indexOf(k), n=INS.length;
+    var prev=INS[(i-1+n)%n], next=INS[(i+1)%n];
+    return '<nav class="ins-pager" aria-label="More insights">'
+      +'<div class="ins-pager-side"><div class="ret-seclabel">Previous</div>'
+      +'<a class="ret-card-link" role="button" tabindex="0" data-ins-next="'+prev.k+'">'
+      +'<span aria-hidden="true">&larr;</span> '+prev.t+'</a></div>'
+      +'<div class="ins-pager-side is-next"><div class="ret-seclabel">Next</div>'
+      +'<a class="ret-card-link" role="button" tabindex="0" data-ins-next="'+next.k+'">'
+      + next.t+' <span aria-hidden="true">&rarr;</span></a></div>'
+      +'</nav>';
+  }
+  function hopList(k){
+    var others=INS.filter(function(o){ return o.k!==k; });
+    return '<ul class="ins-nav ins-hop" data-grp="hop">'
+      + others.map(function(o,i){
+          return '<li'+(i>=3?' class="nav-extra" data-grp="hop"':'')+' data-ins="'+o.k+'">'+o.short+'</li>';
+        }).join('')
+      +'</ul><button type="button" class="nav-more" data-grp="hop" data-hopmore="'+(others.length-3)+'">'+(others.length-3)+' more</button>';
+  }
+  INS.forEach(function(o){
+    var p=PFX[o.k];
+    var el=document.createElement('div');
+    el.className='layout page ins-layout';
+    el.setAttribute('data-page','insights');
+    el.setAttribute('data-ins',o.k);
+    el.innerHTML=
+      '<aside class="side">'
+      +'<button class="bud-back" type="button" data-ins-back><span aria-hidden="true">&larr;</span> Plan</button>'
+      +'<h1>'+o.t+'</h1>'
+      +'<ul class="subnav" data-sub="'+o.k+'">'
+      + o.nav.map(function(n,i){ return '<li data-nav="'+p+'-'+'abc'[i]+'"'+(i?'':' class="active"')+'>'+n+'</li>'; }).join('')
+      +'</ul>'
+      +'<div class="side-divider ins-div" role="presentation"></div>'
+      +'<div class="group-label ins-lab"><span class="grp-t">Other insights</span></div>'
+      + hopList(o.k)
+      +'</aside>'
+      +'<main class="center">'
+      +'<div class="alo-top"><h2 class="snap-headline ins-headline">'+o.hl+'</h2><p class="bud-sub">'+o.sub+'</p></div>'
+      + o.build()
+      + nextLink(o.k)
+      +'<div class="alo-bottom-spacer"></div>'
+      +'</main>'
+      +'<aside class="rail">'
+      +'<div class="side-ctx" data-ins-ctx="'+o.k+'">'
+      +'<div class="story-head" data-ctx-head>&nbsp;'+SPARK+'</div>'
+      +'<p class="ctx-body" data-ctx-body></p>'
+      +'<div class="tax-links">'
+      +'<a data-goto="plan">Back to your plan '+ARROW+'</a>'
+      +'</div></div></aside>';
+    host.appendChild(el);
+    el.querySelectorAll('[data-legend]').forEach(function(l){
+      var key=l.dataset.legend; if(LEGENDS[key]) l.innerHTML=LEGENDS[key];
+    });
+  });
+
+  /* ---------- charts for the visible page ---------- */
+  function renderCharts(k){
+    var page=document.querySelector('.ins-layout[data-ins="'+k+'"]'); if(!page) return;
+    page.querySelectorAll('[data-chart]').forEach(function(svg){
+      var key=svg.dataset.chart, wrap=svg.closest('.ins-chartwrap');
+      svg.dataset.sk='';   /* the Sankey entrance replays each time the page opens */
+      var vb=svg.viewBox.baseVal, W=vb.width, H=vb.height;
+      var pts = paintChart(svg, W, H, key);
+      if(wrap){ wrap._pts=pts; bindScrub(wrap); }
+      var card=svg.closest('.ins-plot');
+      if(card && !reduce){ card.classList.remove('ins-anim'); void card.offsetWidth; card.classList.add('ins-anim'); }
+    });
+  }
+
+  /* ---------- opening a page: it arrives in reading order ---------- */
+  function countUp(el){
+    var txt=(el.dataset.fig || el.textContent).trim();
+    el.dataset.fig=txt;
+    var m=txt.match(/^([^0-9-]*)(-?[\d,.]+)(.*)$/);
+    if(!m){ return; }
+    var pre=m[1], suf=m[3], raw=m[2], dec=(raw.split('.')[1]||'').length;
+    var end=parseFloat(raw.replace(/,/g,'')); if(!isFinite(end)) return;
+    var grp=raw.indexOf(',')>=0, t0=0, DUR=760;
+    function fmt(v){
+      var n=dec ? v.toFixed(dec) : String(Math.round(v));
+      if(grp){ var pt=n.split('.'); pt[0]=pt[0].replace(/\B(?=(\d{3})+(?!\d))/g,','); n=pt.join('.'); }
+      return pre+n+suf;
+    }
+    function step(t){
+      if(!t0) t0=t;
+      var k=Math.min(1,(t-t0)/DUR), e=1-Math.pow(1-k,3);
+      el.textContent=fmt(end*e);
+      if(k<1) requestAnimationFrame(step); else el.textContent=txt;
+    }
+    el.textContent=fmt(0);
+    requestAnimationFrame(step);
+  }
+  function choreograph(page){
+    var items=[], sub=page.querySelector('.bud-sub');
+    if(sub) items.push(sub);
+    page.querySelectorAll('.center .alo-sec').forEach(function(sec){
+      [].forEach.call(sec.children, function(el){ items.push(el); });
+    });
+    items.slice(0,7).forEach(function(el,i){
+      var d=90+i*90;
+      el.style.animation='none'; void el.offsetWidth;
+      el.style.animation='insRise 560ms cubic-bezier(.22,1,.36,1) '+d+'ms both';
+    });
+    var figs=page.querySelectorAll('.ins-stats .fig[data-count]');
+    figs.forEach(function(f,i){ setTimeout(function(){ countUp(f); }, 320+i*110); });
+    /* the shell's own stat-tile sub reveal, once the figure has landed */
+    page.querySelectorAll('.ins-stats .sub').forEach(function(el,i){
+      el.classList.remove('in');
+      setTimeout(function(){ el.classList.add('in'); }, 620+i*110);
+    });
+  }
+
+  /* ---------- the Sankey's horizon: now through the year you pull it to ---------- */
+  document.addEventListener('input', function(e){
+    var r=e.target; if(!r || r.id!=='insTo') return;
+    SANK.to=+r.value;
+    var v=document.getElementById('insToV');
+    if(v) v.innerHTML=SANK.to+' &middot; age '+ageAt(SANK.to);
+    r.style.setProperty('--p', ((SANK.to-(+r.min))/((+r.max)-(+r.min))*100)+'%');
+    document.querySelectorAll('[data-chart="flowin"]').forEach(function(svg){
+      var vb=svg.viewBox.baseVal; paintChart(svg, vb.width, vb.height, 'flowin');
+    });
+  });
+
+  /* ---------- rail: contextual, one story per section ---------- */
+  function revealCtx(panel){
+    if(!panel) return;
+    var pEl=panel.querySelector('[data-ctx-body]'), links=panel.querySelector('.tax-links');
+    if(!pEl) return;
+    var text=pEl.dataset.full || (pEl.dataset.full=pEl.textContent.trim());
+    if(reduce){ pEl.textContent=text; if(links) links.style.opacity=1; return; }
+    if(links){ links.style.transition='none'; links.style.opacity='0'; }
+    pEl.innerHTML=text.split(' ').map(function(w){ return '<span class="tok">'+w+'</span>'; }).join(' ');
+    var toks=pEl.querySelectorAll('.tok'), i=0;
+    (function step(){
+      if(i>=toks.length){ if(links) setTimeout(function(){ links.style.transition='opacity .45s ease'; void links.offsetWidth; links.style.opacity='1'; },140); return; }
+      toks[i].classList.add('show'); i++; setTimeout(step, 20+Math.random()*16);
+    })();
+  }
+  function setCtx(secId){
+    var host2=[].slice.call(document.querySelectorAll('.side-ctx[data-ins-ctx]')).filter(function(el){ return el.offsetParent!==null; })[0];
+    if(!host2) return;
+    var o=BY[host2.dataset.insCtx]; if(!o) return;
+    var c=o.ctx[secId]; if(!c) return;
+    if(host2.dataset.sec===secId) return;
+    host2.dataset.sec=secId;
+    var h=host2.querySelector('[data-ctx-head]');
+    if(h) h.childNodes[0].nodeValue=c[0]+' ';
+    var b=host2.querySelector('[data-ctx-body]');
+    if(b){ b.textContent=c[1]; delete b.dataset.full; revealCtx(host2); }
+  }
+  var spy=new IntersectionObserver(function(ents){
+    ents.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var lay=en.target.closest('.ins-layout'); if(!lay) return;
+      var nav=lay.querySelector('.subnav');
+      if(nav) nav.querySelectorAll('li').forEach(function(li){ li.classList.toggle('active', li.dataset.nav===en.target.dataset.sec); });
+      setCtx(en.target.dataset.sec);
+    });
+  },{rootMargin:'-25% 0px -60% 0px'});
+  document.querySelectorAll('.ins-layout .alo-sec').forEach(function(s){ spy.observe(s); });
+
+  document.querySelectorAll('.ins-layout .subnav li').forEach(function(li){
+    li.addEventListener('click', function(){
+      li.closest('.subnav').querySelectorAll('li').forEach(function(x){ x.classList.toggle('active', x===li); });
+      var s=document.getElementById(li.dataset.nav);
+      if(s) window.scrollTo({top:s.getBoundingClientRect().top+window.scrollY-97, behavior:reduce?'auto':'smooth'});
+    });
+  });
+
+  /* ---------- open / close ---------- */
+  function close(){
+    if(document.body.dataset.page==='insights') document.body.dataset.page='plan';
+    INS.forEach(function(o){ document.body.classList.remove('ins-'+o.k+'-open'); });
+    document.body.classList.remove('ins-open','ins-max');
+    document.querySelectorAll('.ins-layout').forEach(function(l){ l.classList.remove('on'); });
+    document.querySelectorAll('#sideNav .ins-nav li').forEach(function(x){ x.classList.remove('active'); });
+    if(window.applyNavPin) window.applyNavPin();
+  }
+  function open(k){
+    if(!BY[k]) return;
+    close();
+    document.body.classList.add('ins-open','ins-'+k+'-open');
+    var lay=document.querySelector('.ins-layout[data-ins="'+k+'"]');
+    if(lay) lay.classList.add('on');
+    document.body.dataset.page='insights';
+    if(window.applyNavPin) window.applyNavPin();
+    window.scrollTo({top:0, behavior:'auto'});
+    var li=document.querySelector('#sideNav .ins-nav li[data-ins="'+k+'"]');
+    if(li) li.classList.add('active');
+    renderCharts(k);
+    if(lay && !reduce) choreograph(lay);
+    var hd=lay && lay.querySelector('.ins-headline');
+    if(hd && !reduce){
+      hd.style.transition='none';
+      hd.style.clipPath='inset(0 100% 0 0)'; hd.style.webkitClipPath='inset(0 100% 0 0)';
+      void hd.offsetWidth;
+      hd.style.transition='clip-path 540ms cubic-bezier(.4,0,.2,1), -webkit-clip-path 540ms cubic-bezier(.4,0,.2,1)';
+      hd.style.clipPath='inset(0 0 0 0)'; hd.style.webkitClipPath='inset(0 0 0 0)';
+      setTimeout(function(){ ['transition','clipPath','webkitClipPath'].forEach(function(pp){ hd.style[pp]=''; }); },640);
+    }
+    var host3=lay && lay.querySelector('.side-ctx');
+    if(host3) host3.dataset.sec='';
+    setCtx(PFX[k]+'-a');
+    var ping=document.getElementById('insAiPing'); if(ping) ping.click();
+  }
+  document.addEventListener('click', function(e){
+    var nx=e.target.closest && e.target.closest('[data-ins-next]');
+    if(nx){ e.preventDefault(); open(nx.dataset.insNext); window.scrollTo({top:0,behavior:'auto'}); return; }
+    var li=e.target.closest && e.target.closest('[data-ins]');
+    if(!li || li.tagName!=='LI' || li.hasAttribute('aria-disabled')) return;
+    open(li.dataset.ins);
+  });
+  document.querySelectorAll('[data-ins-back]').forEach(function(b){
+    b.addEventListener('click', function(){ close(); window.scrollTo({top:0,behavior:'auto'}); });
+  });
+  document.querySelectorAll('.ins-layout [data-goto]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var dest=a.dataset.goto; close();
+      var link=document.querySelector('.topnav nav.modes a[data-view="'+dest+'"]');
+      if(link) link.click();
+    });
+  });
+  document.addEventListener('click', function(e){
+    var b=e.target.closest && e.target.closest('[data-hopmore]');
+    if(!b) return;
+    var ul=b.previousElementSibling;
+    var open2=ul.classList.toggle('hop-open');
+    b.textContent = open2 ? 'Fewer' : (b.dataset.hopmore+' more');
+  });
+  window.addEventListener('boldin:view', function(){ close(); });
+
+  /* ---------- chat: ask this insight ---------- */
+  function askAI(q){
+    var bar=[].slice.call(document.querySelectorAll('.dock .askbar')).filter(function(x){ return x.offsetParent!==null; })[0];
+    if(bar) bar.click();
+    setTimeout(function(){
+      var inp=[].slice.call(document.querySelectorAll('.dock .askbar input')).filter(function(x){ return x.offsetParent!==null; })[0];
+      if(!inp) return;
+      inp.focus(); inp.value=q;
+      inp.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    }, reduce?60:560);
+  }
+  document.addEventListener('click', function(e){
+    var q=e.target.closest && e.target.closest('.ins-q, [data-ask]');
+    if(!q) return;
+    e.preventDefault();
+    if(document.body.classList.contains('ins-max')) closeMax();
+    askAI((q.dataset.ask || q.textContent).trim());
+  });
+
+  /* ---------- full screen: the Prism deep dive, per insight ---------- */
+  function openMax(key){
+    var k=BY[key] ? key : (OWNER[key]||key);
+    var o=BY[k]; if(!o || !o.fs) return;
+    var d=o.fs;
+    document.getElementById('insMaxTitle').textContent=o.t;
+    document.getElementById('insMaxPair').innerHTML=pair(d.pair.map(function(p){
+      return {lab:p[0], fig:p[1]};
+    }));
+    document.querySelectorAll('#insMaxPair .sub').forEach(function(el,i){
+      setTimeout(function(){ el.classList.add('in'); }, 120+i*90);
+    });
+    document.getElementById('insMaxGrid').innerHTML=d.cards.map(function(c,i){
+      return '<div class="pm-card'+(d.cards.length===1?' pm-solo':'')+'"><div class="pm-ct">'+c[0]+'</div>'
+        +'<div class="snap-chartwrap" id="fsWrap'+i+'"><svg class="snap-chart" id="fsChart'+i+'" viewBox="0 0 '+c[2]+' '+c[3]+'" xmlns="http://www.w3.org/2000/svg"></svg></div>'
+        +(LEGENDS[c[1]]?'<div class="gd-legend">'+LEGENDS[c[1]]+'</div>':'')+'</div>';
+    }).join('')+'<div class="alo-cap" style="grid-column:1/-1;max-width:80ch;margin-top:var(--s-5)">'+d.note+'</div>';
+    d.cards.forEach(function(c,i){
+      var svg=document.getElementById('fsChart'+i), wrap=document.getElementById('fsWrap'+i);
+      var pts = paintChart(svg, c[2], c[3], c[1]);
+      wrap._pts=pts; bindScrub(wrap);
+    });
+    var rws=d.rws();
+    document.getElementById('insMaxTable').innerHTML=
+      '<thead><tr>'+d.cols.map(function(c,i){ return '<th'+(i?' class="n"':'')+'>'+c+'</th>'; }).join('')+'</tr></thead>'
+      +'<tbody>'+rws.map(function(r){
+        return '<tr>'+d.row(r).map(function(v,i){ return '<td'+(i?' class="n"':'')+'>'+v+'</td>'; }).join('')+'</tr>';
+      }).join('')+'</tbody>';
+    document.body.classList.add('ins-max');
+  }
+  function closeMax(){ document.body.classList.remove('ins-max'); }
+  document.getElementById('insMaxClose').addEventListener('click', closeMax);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && document.body.classList.contains('ins-max')) closeMax(); });
+  document.addEventListener('click', function(e){
+    var t=e.target.closest && e.target.closest('[data-ins-max]');
+    if(!t) return;
+    e.preventDefault();
+    openMax(t.dataset.insMax);
+  });
+
+  /* the classic report slugs still resolve, and land on the section that absorbed them */
+  var ALIAS={
+    'lifetime-income':['flow','flow-a'], 'lifetime-cash-flow':['flow','flow-a'],
+    'income-expenses':['flow','flow-b'], 'surplus-gap':['flow','flow-c'],
+    'what-you-need':['savings','sav-a'], 'savings':['savings','sav-a'],
+    'net-worth':['worth','worth-a'], 'net-worth-projected':['worth','worth-a'],
+    'net-worth-current':['worth','worth-a'],
+    'retirement-chance-of-success':['last','last-a'], 'monte-carlo':['last','last-a'],
+    'guardrails':['safe','safe-a'], 'withdrawals':['draw','draw-a'],
+    'taxes':['taxes','tax-a'], 'required-distributions':['rmd','rmd-a'], 'irmaa':['irmaa','irmaa-a']
+  };
+  function goto(slug){
+    var al=ALIAS[String(slug).replace(/^#|^\/+|\/+$/g,'').split('/').pop()];
+    if(!al) return false;
+    /* An insight belongs to the Plan tab. Put the shell in that state directly rather than
+       clicking the nav link, because that would fire boldin:view and close what we just opened. */
+    if(document.body.dataset.view!=='plan'){
+      document.body.dataset.view='plan';
+      document.body.classList.add('plan-view');
+      document.querySelectorAll('.topnav nav.modes a').forEach(function(x){
+        x.classList.toggle('active', x.dataset.view==='plan');
+      });
+      document.querySelectorAll('.layout.page').forEach(function(pg){
+        pg.classList.toggle('on', pg.dataset.page==='plan');
+      });
+    }
+    open(al[0]);
+    var sc=document.getElementById(al[1]);
+    if(sc && al[1].slice(-2)!=='-a'){
+      setTimeout(function(){ window.scrollTo({top:sc.getBoundingClientRect().top+window.scrollY-97, behavior:reduce?'auto':'smooth'}); }, 140);
+    }
+    return true;
+  }
+  function fromHash(){ if(location.hash) goto(location.hash); }
+  window.addEventListener('hashchange', fromHash);
+  /* The shell reads location.hash on boot and strips it, so a bookmarked slug arrives here
+     through window.__bootHash. By this point the shell has already landed on Plan. */
+  var boot=(window.__bootHash||'').replace(/^#/,'');
+  if(boot && ALIAS[boot]) setTimeout(function(){ goto(boot); }, 0);
+
+  window.INS={open:open, close:close, max:openMax, goto:goto, aliases:ALIAS,
+              list:INS.map(function(o){ return o.k; }), model:M};
+})();
+</script>
+<script>
+/* ===================== left rail: fold and clip ===================== */
+(function(){
+  var nav=document.getElementById('sideNav'); if(!nav) return;
+  var COUNT={in:7, out:6};
+  nav.classList.add('in-clipped','out-clipped');
+
+  nav.querySelectorAll('[data-grp-chev]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();                       /* the label text keeps its own job */
+      var g=btn.dataset.grpChev;
+      var shut=nav.classList.toggle(g+'-shut');
+      btn.setAttribute('aria-expanded', shut?'false':'true');
+      var name=btn.closest('.group-label').querySelector('.grp-t').textContent;
+      btn.setAttribute('aria-label', (shut?'Expand ':'Collapse ')+name);
+    });
+  });
+
+  nav.querySelectorAll('[data-more]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var g=btn.dataset.more;
+      var clipped=nav.classList.toggle(g+'-clipped');
+      btn.textContent = clipped ? (COUNT[g]+' more') : 'Fewer';
+    });
+  });
+})();
+</script>
+<style id="snapMilesCSS">
+/* milestone markers on the Summary chart. New because the chart had none; the pulse
+   reuses the existing gdPulse keyframe and the green comes from the existing token. */
+.snap-mile-dot{ fill:var(--green); stroke:#FFFFFF; stroke-width:2; }
+.snap-mile-halo{ fill:rgba(4,180,119,0.18); animation:gdPulse 2.2s ease-in-out infinite; }
+@media (prefers-reduced-motion:reduce){ .snap-mile-halo{ animation:none; } }
+</style>
+<script>
+/* ===================== Summary chart: milestone dots ===================== */
+(function(){
+  var MILE=[[2028,'Retire'],[2035,'Both checks on'],[2044,'Mortgage clear'],[2057,'Peak']];
+  function paint(){
+    var wrap=document.querySelector('.snap-ultra .snap-chartwrap');
+    if(!wrap || !wrap._pts) return;
+    var svg=wrap.querySelector('svg');
+    if(!svg || svg.querySelector('#snapMiles')) return;
+    var d=wrap._pts, g='';
+    MILE.forEach(function(m){
+      var idx=-1;
+      d.pts.forEach(function(pt,j){ if(pt.y===m[0]) idx=j; });
+      if(idx<0) return;
+      var x=d.X(idx), y=d.Y(d.pts[idx].v);
+      g+='<g class="snap-mile">'
+        +'<circle class="snap-mile-halo" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="9"/>'
+        +'<circle class="snap-mile-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="4.5">'
+        +'<title>'+m[1]+' \u00b7 '+m[0]+'</title></circle></g>';
+    });
+    if(g) svg.insertAdjacentHTML('beforeend','<g id="snapMiles">'+g+'</g>');
+  }
+  var raf=null;
+  function queue(){ if(raf) return; raf=requestAnimationFrame(function(){ raf=null; paint(); }); }
+  /* the chart rebuilds by replacing innerHTML, so repaint whenever it does */
+  function watch(){
+    var wrap=document.querySelector('.snap-ultra .snap-chartwrap');
+    var svg=wrap && wrap.querySelector('svg');
+    if(!svg || svg.dataset.mileWatch==='1'){ return !!svg; }
+    svg.dataset.mileWatch='1';
+    new MutationObserver(queue).observe(svg,{childList:true});
+    queue(); return true;
+  }
+  if(!watch()) var t=setInterval(function(){ if(watch()) clearInterval(t); }, 300);
+  window.addEventListener('boldin:view', function(){ setTimeout(function(){ watch(); queue(); }, 400); });
+  document.addEventListener('click', function(e){
+    if(e.target.closest && e.target.closest('.snap-pill, .rm-opt, .rm-chip')) setTimeout(queue, 350);
+  }, true);
+})();
+</script>
+<span id="insAiPing" data-view="plan" hidden aria-hidden="true"></span>
+<!-- ===================== END INSIGHTS ===================== -->
+
+<!-- ===================== OPTIMIZE: Stress test ===================== -->
+<style id="stressCSS">
+/* page contract, identical to the other Optimize sub-views */
+body.stress-open .layout.page.stress-layout.on{ display:grid; }
+body.stress-open .layout.page.opt-index.on{ display:none; }
+
+/* the sliders use the existing lighter .fl-row control, wrapped onto two lines
+   exactly the way .fd-two already wraps it. No dividers, thinner track, smaller
+   thumb — geometry only, the colours come from the existing .fl-row rules. */
+.stress-layout .fl-row{ flex-wrap:wrap; gap:2px 10px; padding:11px 0; border-bottom:0; }
+.stress-layout .fl-row label{ width:auto; flex:1 1 auto; font-size:15px; font-weight:500; color:var(--text-secondary); }
+.stress-layout .fl-row .fl-v{ width:auto; font-size:15px; }
+.stress-layout .fl-row input[type=range]{ order:3; flex:1 1 100%; height:22px; }
+.stress-layout .fl-row input[type=range]::-webkit-slider-runnable-track,
+.ins-plot .fl-row input[type=range]::-webkit-slider-runnable-track{ height:3px; }
+.stress-layout .fl-row input[type=range]::-webkit-slider-thumb,
+.ins-plot .fl-row input[type=range]::-webkit-slider-thumb{ width:13px; height:13px; margin-top:-5px; border-width:2px; }
+.stress-layout .fl-row input[type=range]::-moz-range-track,
+.ins-plot .fl-row input[type=range]::-moz-range-track{ height:3px; border-radius:999px; background:#E9EBEE; }
+.stress-layout .fl-row input[type=range]::-moz-range-thumb,
+.ins-plot .fl-row input[type=range]::-moz-range-thumb{ width:13px; height:13px; border-radius:999px; background:#FFFFFF; border:2px solid #0E794E; }
+.st-lab{ font-size:15px; color:var(--text-secondary); }
+
+/* scenario chart marks */
+.st-dot{ fill:#D9DDE3; }
+.st-dot.is-live{ fill:#4A99C4; }
+.st-drop{ stroke:var(--hairline-strong); stroke-width:1; }
+.st-line{ fill:none; stroke-linejoin:round; stroke-linecap:round; }
+
+/* spacing only */
+.stress-layout .alo-top{ margin-bottom:calc(var(--s-8) * -1); }
+.stress-layout .opt-card{ cursor:default; margin-top:var(--s-8); min-height:0;
+  border:0; background:none; padding:0; max-width:60ch; }
+.stress-layout .snap-chips{ margin-top:var(--s-4); }
+.stress-layout .st-histhead{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-top:var(--s-12); }
+.stress-layout .st-histhead .ret-seclabel{ margin:0; }
+/* the history block only exists once there is history */
+.stress-layout:not(.st-has-hist) .st-histhead,
+.stress-layout:not(.st-has-hist) .snap-chips{ display:none; }
+</style>
+
+<div class="layout page sub-layout stress-layout" data-page="optimize">
+  <aside class="side">
+    <button class="bud-back" type="button" data-stress-back><span aria-hidden="true">&larr;</span> Optimize</button>
+    <h1>Stress test</h1>
+    <p class="st-lab" style="margin:0 0 var(--s-6)">Pull one. See the cost.</p>
+
+    <div class="fl-row">
+      <label for="st_ret">Retirement age</label>
+      <span class="fl-v" data-bub="ret"></span>
+      <input type="range" id="st_ret" class="st-slider" data-st="ret" min="62" max="72" step="1" value="67" aria-label="Retirement age">
+    </div>
+    <div class="fl-row">
+      <label for="st_ss">Social Security age</label>
+      <span class="fl-v" data-bub="ss"></span>
+      <input type="range" id="st_ss" class="st-slider" data-st="ss" min="62" max="70" step="1" value="70" aria-label="Social Security age">
+    </div>
+    <div class="fl-row">
+      <label for="st_spend">Monthly spending</label>
+      <span class="fl-v" data-bub="spend"></span>
+      <input type="range" id="st_spend" class="st-slider" data-st="spend" min="4500" max="9000" step="100" value="6300" aria-label="Monthly spending">
+    </div>
+    <div class="fl-row">
+      <label for="st_life">Lifestyle</label>
+      <span class="fl-v" data-bub="life"></span>
+      <input type="range" id="st_life" class="st-slider" data-st="life" min="0" max="2" step="1" value="1" aria-label="Lifestyle">
+    </div>
+    <div class="fl-row">
+      <label for="st_ret_r">Investment return</label>
+      <span class="fl-v" data-bub="ret_r"></span>
+      <input type="range" id="st_ret_r" class="st-slider" data-st="ret_r" min="0" max="2" step="1" value="1" aria-label="Investment return">
+    </div>
+
+    <a class="ret-card-link" role="button" tabindex="0" data-ask="What should I stress test next?">Want a sharper picture?</a>
+  </aside>
+
+  <main class="center">
+    <div class="alo-top">
+      <h2 class="snap-headline ins-headline" id="stHead">Still funded to <span class="yrs">92</span>, at <span class="amt">87%</span>.</h2>
+      <p class="bud-sub">Every slider moves the whole plan. Nothing here is saved until you say so.</p>
+    </div>
+
+    <section class="alo-sec" id="st-a" data-sec="st-a">
+      <div class="ins-plot">
+        <div class="snap-chartwrap" id="stWrap"><svg class="snap-chart" id="stChart" viewBox="0 0 660 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Projected savings under this scenario"></svg></div>
+        <div class="gd-legend" id="stLegend"></div>
+      </div>
+
+      <div class="opt-card" id="stCard">
+        <div class="opt-card-t" id="stCardT">Your plan, as it stands</div>
+        <div class="opt-card-sub" id="stCardS"></div>
+      </div>
+
+      <div class="st-histhead"><div class="ret-seclabel">Change history</div>
+        <a class="ret-card-link" role="button" tabindex="0" data-stress-reset>Undo all changes</a></div>
+      <div class="snap-chips" id="stHist"></div>
+    </section>
+    <div class="alo-bottom-spacer"></div>
+  </main>
+
+  <aside class="rail">
+    <div class="side-ctx" data-ins-ctx="stress">
+      <div class="story-head" data-ctx-head>Nothing is saved <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
+      <p class="ctx-body" data-ctx-body id="stStory">Pull a slider and the whole plan replays. Your real plan is untouched until you choose to keep a scenario.</p>
+      <div class="tax-links">
+        <a data-stress-keep>Save this to my plan <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a data-goto="plan">Back to your plan <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+/* ===================== Stress test ===================== */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var YR0=2026, YRN=2059;
+  var LIFE=['Frugal','Comfortable','Generous'], LIFEM=[0.90,1.00,1.13];
+  var RET_R=['Conservative','Balanced','Aggressive'], RET_RV=[0.030,0.042,0.054];
+  var BASE={ret:67, ss:70, spend:6300, life:1, ret_r:1};
+  var S={ret:67, ss:70, spend:6300, life:1, ret_r:1};
+
+  function money(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function big(n){ return Math.abs(n)>=1e6 ? ('$'+(n/1e6).toFixed(2)+'M') : ('$'+Math.round(n/1e3)+'K'); }
+
+  /* one simulation, the same shape the insights use */
+  function run(v, shock){
+    var retY=YR0+(v.ret-65), ssY=YR0+(v.ss-65);
+    var ssFactor = v.ss>=70 ? 1 : (v.ss>=67 ? 1-0.065*(70-v.ss) : 1-0.065*3-0.075*(67-v.ss));
+    var r=RET_RV[v.ret_r], bal=1090000, rows=[], out=null, low=1e12;
+    for(var y=YR0;y<=YRN;y++){
+      var work    = y<retY ? 147600 : 0;
+      var consult = (y>=retY && y<retY+5) ? 36000 : 0;
+      var pension = y>=retY ? 21600*Math.pow(0.98,y-retY) : 0;
+      var house   = y>=retY ? 4800 : 0;
+      var ss      = y>=ssY ? 60000*ssFactor : 0;
+      var spend   = y<retY ? 106200*Math.pow(1.005,y-YR0)
+                           : v.spend*12*LIFEM[v.life]*Math.pow(1.004,y-retY);
+      if(y>=2050) spend *= 1+0.012*(y-2049);
+      var base=work+consult+pension+house+ss;
+      var gr = shock && y>=retY && y<retY+6 ? -0.06 : r;      /* a poor first six years */
+      bal = bal*(1+gr) + (base-spend);
+      if(bal<low) low=bal;
+      if(bal<=0 && !out){ out=y; bal=0; }
+      rows.push({y:y, bal:Math.max(0,bal), spend:spend, base:base});
+    }
+    var end=rows[rows.length-1].bal;
+    var spendAtRet=(rows.filter(function(r){ return r.y===retY; })[0]||rows[0]).spend;
+    var ratio=end/(20*spendAtRet);
+    var raw=72+22*Math.tanh((ratio-1)/1.2);
+    var conf=raw;
+    if(out) conf=Math.min(58, 58*(out-retY)/(YRN-retY));
+    return {rows:rows, end:end, raw:conf, out:out, retY:retY, ssY:ssY, low:low};
+  }
+
+  /* calibrate so the untouched plan reads the same 87% the rest of the app shows */
+  var baseRun=run(BASE,false);
+  var OFFSET=87-baseRun.raw;
+  function conf(r){ return Math.max(5, Math.min(99, Math.round(r.raw+OFFSET))); }
+  baseRun.conf=conf(baseRun);
+
+  /* ---------- chart: the mock's layered lines, dots and drop lines ---------- */
+  function paint(cur, shocked){
+    cur.conf=conf(cur); shocked.conf=conf(shocked);
+    var svg=document.getElementById('stChart'); if(!svg) return;
+    var W=660,H=300,L=58,R=W-12,T=16,B=H-28;
+    var hi=Math.max.apply(null, baseRun.rows.concat(cur.rows).map(function(r){ return r.bal; }))*1.10;
+    var n=cur.rows.length;
+    var X=function(i){ return L+(R-L)*(i/(n-1)); };
+    var Y=function(v){ return T+(B-T)*(1-v/hi); };
+    var g='';
+    for(var t=0;t<=4;t++){ var v=hi*t/4;
+      g+='<line class="snap-grid" x1="'+L+'" y1="'+Y(v).toFixed(1)+'" x2="'+R+'" y2="'+Y(v).toFixed(1)+'"/>'
+       + '<text class="snap-axis" x="'+(L-8)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+(v>=1e6?('$'+(v/1e6).toFixed(1)+'M'):(v>0?('$'+Math.round(v/1000)+'k'):'$0'))+'</text>'; }
+    function path(rows){ return rows.map(function(r,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
+    /* the scenario, filled */
+    var d=path(cur.rows);
+    g+='<path d="'+d+' L'+X(n-1).toFixed(1)+' '+B+' L'+X(0).toFixed(1)+' '+B+' Z" fill="rgba(74,153,196,0.12)"/>';
+    /* poor markets, and your plan as it stands */
+    g+='<path class="st-line" d="'+path(shocked.rows)+'" stroke="#D5834F" stroke-width="2"/>';
+    g+='<path class="st-line" d="'+path(baseRun.rows)+'" stroke="#9AA0AE" stroke-width="1.8" stroke-dasharray="5 5"/>';
+    g+='<path class="st-line" d="'+d+'" stroke="#4A99C4" stroke-width="3"/>';
+    /* one marker only: this scenario's peak, with the mock's drop line.
+       Skipped when the peak is the last year, where the drop line would read
+       as a plot border. */
+    (function(){
+      var rows=cur.rows, pk=0;
+      rows.forEach(function(r,i){ if(r.bal>rows[pk].bal) pk=i; });
+      if(pk===n-1) return;
+      var x=X(pk), y=Y(rows[pk].bal);
+      g+='<line class="st-drop" x1="'+x.toFixed(1)+'" y1="'+(y+7).toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+B+'"/>'
+       + '<circle class="st-dot is-live" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="5"/>';
+    })();
+    g+='<line class="snap-grid" x1="'+L+'" y1="'+B+'" x2="'+R+'" y2="'+B+'"/>';
+    [0, Math.round((n-1)/3), Math.round((n-1)*2/3), n-1].forEach(function(i){
+      g+='<text class="snap-axis" x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="'+(i===0?'start':(i===n-1?'end':'middle'))+'">'+cur.rows[i].y+'</text>';
+    });
+    svg.innerHTML=g;
+    document.getElementById('stLegend').innerHTML=
+      '<span class="gd-li"><i style="background:#4A99C4"></i>This scenario</span>'
+     +'<span class="gd-li"><i style="background:#9AA0AE"></i>Your plan as it stands</span>'
+     +'<span class="gd-li"><i style="background:#D5834F"></i>This scenario through poor early markets</span>';
+  }
+
+  /* ---------- copy that reads from the numbers ---------- */
+  function say(cur){
+    cur.conf=conf(cur);
+    var dc=cur.conf-baseRun.conf, de=cur.end-baseRun.end;
+    var h=document.getElementById('stHead');
+    if(cur.out){
+      h.innerHTML='Money runs out in <span class="amt">'+cur.out+'</span>.';
+    } else {
+      h.innerHTML='Still funded to <span class="yrs">92</span>, at <span class="amt">'+cur.conf+'%</span>.';
+    }
+    var t=document.getElementById('stCardT'), sb=document.getElementById('stCardS');
+    if(!dc && Math.abs(de)<1000){
+      t.textContent='Your plan, as it stands';
+      sb.innerHTML='Retiring at <b>'+S.ret+'</b>, Social Security at <b>'+S.ss+'</b>, spending <b>'+money(S.spend)
+        +'</b> a month. Confidence <b>'+cur.conf+'%</b>, ending around <b>'+big(cur.end)+'</b>.';
+    } else {
+      t.textContent = dc>0 ? 'This is a stronger plan' : (dc<0 ? 'This costs you confidence' : 'About the same, differently shaped');
+      sb.innerHTML='Confidence moves <b>'+(dc>0?'+':'')+dc+' points</b> to <b>'+cur.conf+'%</b>, and the ending balance '
+        +(de>=0?'rises':'falls')+' by <b>'+big(Math.abs(de))+'</b> to <b>'+big(cur.end)+'</b>. '
+        +(cur.out ? 'Under poor early markets the money runs out in <b>'+cur.out+'</b>.'
+                  : 'It survives a poor first six years of markets as well.');
+    }
+    var st=document.getElementById('stStory');
+    st.textContent = dc>0
+      ? 'This scenario is stronger than your plan. Keep it and the numbers on every other page follow.'
+      : (dc<0 ? 'This scenario is weaker than your plan. Nothing is saved, so you can walk away from it.'
+              : 'Pull a slider and the whole plan replays. Your real plan is untouched until you choose to keep a scenario.');
+  }
+
+  /* ---------- change history ---------- */
+  var HIST=[];
+  function label(k,v){
+    if(k==='ret') return 'Retire at '+v;
+    if(k==='ss') return 'Social Security at '+v;
+    if(k==='spend') return 'Spend '+money(v);
+    if(k==='life') return LIFE[v]+' lifestyle';
+    return RET_R[v]+' returns';
+  }
+  function pushHist(k,v,conf){
+    var d=conf-baseRun.conf;
+    HIST.unshift({t:label(k,v), d:d});
+    HIST=HIST.slice(0,4);
+    var lay=document.querySelector('.stress-layout'); if(lay) lay.classList.add('st-has-hist');
+    document.getElementById('stHist').innerHTML=HIST.map(function(h){
+      return '<div class="snap-chip"><div class="lab">'+h.t+'</div>'
+        +'<div class="stat-delta in'+(h.d>=0?' pos':'')+'"><span class="tri">'+(h.d>=0?'&#9650;':'&#9660;')
+        +'</span><span class="amt">'+Math.abs(h.d)+' pts</span></div></div>';
+    }).join('');
+  }
+
+  /* ---------- slider plumbing ---------- */
+  function bubble(inp){
+    var k=inp.dataset.st, v=+inp.value;
+    var pct=(v-(+inp.min))/((+inp.max)-(+inp.min));
+    var b=document.querySelector('[data-bub="'+k+'"]');
+    var txt = k==='spend' ? money(v) : (k==='life' ? LIFE[v] : (k==='ret_r' ? RET_R[v] : v));
+    if(b) b.textContent=txt;
+    inp.style.setProperty('--p', (pct*100)+'%');
+  }
+  function render(changed){
+    var cur=run(S,false), shocked=run(S,true);
+    paint(cur, shocked); say(cur);
+    if(changed) pushHist(changed, S[changed], cur.conf);
+    return cur;
+  }
+  document.querySelectorAll('.st-slider').forEach(function(inp){
+    var k=inp.dataset.st;
+    inp.addEventListener('input', function(){
+      S[k]=+inp.value; bubble(inp);
+      var cur=run(S,false), shocked=run(S,true);
+      paint(cur, shocked); say(cur);
+    });
+    inp.addEventListener('change', function(){ S[k]=+inp.value; render(k); });
+  });
+
+  function reset(){
+    Object.keys(BASE).forEach(function(k){ S[k]=BASE[k]; });
+    document.querySelectorAll('.st-slider').forEach(function(inp){ inp.value=S[inp.dataset.st]; bubble(inp); });
+    HIST=[]; document.getElementById('stHist').innerHTML='';
+    var lay=document.querySelector('.stress-layout'); if(lay) lay.classList.remove('st-has-hist');
+    render(null);
+  }
+
+  /* ---------- open / close, on the Optimize sub-view contract ---------- */
+  function open(){
+    document.body.classList.add('stress-open');
+    var lay=document.querySelector('.stress-layout'); if(lay) lay.classList.add('on');
+    window.scrollTo({top:0, behavior:'auto'});
+    document.querySelectorAll('.st-slider').forEach(bubble);
+    render(null);
+    var hd=document.querySelector('.stress-layout .ins-headline');
+    if(hd && !reduce){
+      hd.style.transition='none'; hd.style.clipPath='inset(0 100% 0 0)';
+      void hd.offsetWidth;
+      hd.style.transition='clip-path 540ms cubic-bezier(.4,0,.2,1)';
+      hd.style.clipPath='inset(0 0 0 0)';
+      setTimeout(function(){ hd.style.transition=''; hd.style.clipPath=''; },640);
+    }
+    var ping=document.getElementById('insAiPing'); if(ping) ping.click();
+  }
+  function close(){ document.body.classList.remove('stress-open');
+    document.querySelectorAll('.stress-layout').forEach(function(l){ l.classList.remove('on'); }); }
+
+  document.addEventListener('click', function(e){
+    if(e.target.closest && e.target.closest('[data-opt="stress"]')){ open(); return; }
+    if(e.target.closest && e.target.closest('[data-stress-back]')){ close(); window.scrollTo({top:0,behavior:'auto'}); return; }
+    if(e.target.closest && e.target.closest('[data-stress-reset]')){ reset(); return; }
+    if(e.target.closest && e.target.closest('[data-stress-keep]')){
+      var a=e.target.closest('[data-stress-keep]');
+      a.textContent='Saved to your plan';
+      return;
+    }
+  });
+  window.addEventListener('boldin:view', close);
+  window.STRESS={open:open, close:close, reset:reset, run:run};
+})();
+</script>
+<!-- ===================== END Stress test ===================== -->
