@@ -18390,3 +18390,245 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
 })();
 </script>
 <!-- ===================== END Profile: Connections ===================== -->
+
+<!-- ===================== Mini left rail, while Prism is open ===================== -->
+<style id="miniRailCSS">
+/* The same nav, at icon density. It gives the width back to the Prism column:
+   the band is 1116px, so 200px -> 64px hands column 3 another 136px.
+   Nothing new is introduced here - the rail keeps its own .side li, its active
+   state, its .nav-dot status and its own click handlers. Only the labels go. */
+body.prism-mini .layout{ grid-template-columns:64px minmax(0,460px) 1fr; }
+body.prism-mini .dock .dock-inner{ grid-template-columns:64px minmax(0,460px) 1fr; }
+body.prism-mini .side{ width:64px; }
+
+/* the toggle: the classic caret, so the full rail is one click away */
+.side-mini-tg{ display:none; align-items:center; justify-content:center; width:34px; height:34px;
+  margin:0 0 var(--s-4) 3px; border-radius:10px; border:1px solid var(--hairline); background:var(--white);
+  color:#8A90A0; cursor:pointer; padding:0; transition:background var(--dur-fast), color var(--dur-fast); }
+.side-mini-tg:hover{ background:#F6F7F8; color:var(--ink); }
+.side-mini-tg svg{ width:17px; height:17px; }
+body.graph-expanded .side .side-mini-tg{ display:flex; }
+body.prism-mini #sideNav{ margin-top:0; }
+body.prism-mini .side #sideNav > ul:first-of-type{ margin-top:0; }
+body.prism-mini .side-mini-tg svg{ transform:scaleX(-1); }
+
+/* icon mode */
+.nav-ic{ display:none; width:20px; height:20px; flex:none; color:currentColor; }
+.nav-ic svg{ display:block; width:20px; height:20px; }
+body.prism-mini .side h1,
+body.prism-mini .side .plan-select,
+body.prism-mini .side .group-label,
+body.prism-mini .side .side-download,
+body.prism-mini .side #sideNav .nav-txt{ display:none; }
+body.prism-mini .side #sideNav .nav-ic{ display:block; }
+body.prism-mini .side #sideNav ul{ display:flex; flex-direction:column; gap:2px; align-items:center; }
+body.prism-mini .side #sideNav ul + ul{ margin-top:2px; }
+body.prism-mini .side #sideNav li{ position:relative; width:44px; height:40px; padding:0;
+  justify-content:center; border-radius:11px; }
+body.prism-mini .side #sideNav li.nav-indent{ padding-left:0; }
+body.prism-mini .side #sideNav li.active::after{ display:none; }
+body.prism-mini .side #sideNav .nav-dot{ display:none; }
+body.prism-mini .side #sideNav .side-divider:not(.ins-div){ display:none; }
+body.prism-mini .side > .side-divider{ display:none; }
+/* the 44px tiles sit in a 64px rail: centre the whole column, dividers included */
+body.prism-mini .side #sideNav{ display:flex; flex-direction:column; align-items:center; }
+body.prism-mini .side-mini-tg{ margin:0 auto var(--s-4); }
+body.prism-mini .side #sideNav .ins-div{ width:40px; margin:var(--s-3) 0; }
+body.prism-mini .side .side-divider{ margin:var(--s-3) 10px; }
+body.prism-mini .side .ins-div{ margin-top:var(--s-3); }
+body.prism-mini #sideNav .nav-more{ width:44px; height:34px; padding:0; justify-content:center; gap:0; margin:2px 0 0; }
+body.prism-mini .side #sideNav .nav-more-n{ display:none; }
+.nav-more-dots{ display:none; }
+body.prism-mini .side #sideNav .nav-more-dots{ display:block; color:#8A90A0; }
+body.prism-mini .side #sideNav .nav-more:hover .nav-more-dots{ color:var(--green-cta); }
+.nav-more-dots svg{ width:19px; height:19px; stroke-width:2.1; }
+
+/* the label arrives as a tooltip, in a fixed layer, so a scrolled rail never clips it */
+#railTip{ position:fixed; z-index:130; background:#10182C; color:#FFFFFF; font-size:12.5px; font-weight:500;
+  line-height:1; white-space:nowrap; padding:7px 10px; border-radius:8px; pointer-events:none;
+  opacity:0; transform:translateY(-50%) translateX(-4px); transition:opacity .14s ease, transform .14s ease; }
+#railTip.on{ opacity:1; transform:translateY(-50%) translateX(0); }
+#railTip::before{ content:''; position:absolute; right:100%; top:50%; transform:translateY(-50%);
+  border:5px solid transparent; border-right-color:#10182C; }
+
+/* the rail can grow past the fold once both groups are expanded */
+body.prism-mini .side{ max-height:calc(100vh - 124px); overflow-y:auto; overflow-x:hidden;
+  scrollbar-width:none; padding-bottom:8px; }
+body.prism-mini .side::-webkit-scrollbar{ width:0; height:0; }
+
+/* the swap itself, so the column change reads as motion rather than a jump */
+body.prism-mini .side #sideNav li, body.prism-mini .side{ transition:width var(--dur-base) var(--ease-out); }
+@media (prefers-reduced-motion: reduce){
+  .side-mini-tg, #railTip, body.prism-mini .side, body.prism-mini .side #sideNav li{ transition:none; }
+}
+@media (max-width:1120px){
+  body.prism-mini .layout, body.prism-mini .dock .dock-inner{ grid-template-columns:64px minmax(0,420px) 1fr; }
+}
+
+/* Prism + chat: the three panel view folded the rail away entirely. It keeps the
+   mini rail instead, and the 64px comes out of the center column so the Prism and
+   the chat keep the exact widths they had. The caret steps aside here - three
+   panels plus labels leaves nothing for the middle. */
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .layout{ grid-template-columns:64px 376px 896px; }
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .dock .dock-inner{ grid-template-columns:64px 376px 896px; }
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .side{
+  width:64px; min-width:64px; opacity:1; overflow-x:hidden; overflow-y:auto; pointer-events:auto;
+  padding:0 0 8px; margin:0; left:max(32px, 50% - 658px); }
+body.tri-cols.graph-expanded.ai-expanded .side-mini-tg{ display:none; }
+</style>
+<script>
+/* Mini left rail. While Prism is open the rail drops to icons, which is where the
+   extra 136px of graph width comes from. The caret at the top brings the labels
+   back without closing Prism. Chat riding alongside Prism keeps the mini rail. */
+(function(){
+  var ICON = {
+    /* plan inputs */
+    assets:'<path d="M4 8.4c0-1.5 3.6-2.6 8-2.6s8 1.1 8 2.6-3.6 2.6-8 2.6-8-1.1-8-2.6z"/><path d="M4 8.4v7.2c0 1.5 3.6 2.6 8 2.6s8-1.1 8-2.6V8.4"/><path d="M4 12c0 1.5 3.6 2.6 8 2.6s8-1.1 8-2.6"/>',
+    debts:'<rect x="4.2" y="5.6" width="15.6" height="12.8" rx="2.2"/><path d="M8.4 12h7.2"/>',
+    income:'<rect x="3.6" y="6.8" width="16.8" height="10.4" rx="2.2"/><circle cx="12" cy="12" r="2.4"/><path d="M6.6 12h.01"/><path d="M17.4 12h.01"/>',
+    home:'<path d="M4 10.8 12 4.6l8 6.2"/><path d="M6.2 9.6v9.8h11.6V9.6"/><path d="M10 19.4v-5.2h4v5.2"/>',
+    expenses:'<path d="M4 5.4h2.4l2.2 9.4h8.6l1.8-6.6H7.2"/><circle cx="9.8" cy="18" r="1.4"/><circle cx="16.4" cy="18" r="1.4"/>',
+    flows:'<path d="M4.6 9h11.8"/><path d="M13.4 6 16.4 9l-3 3"/><path d="M19.4 15H7.6"/><path d="M10.6 12 7.6 15l3 3"/>',
+    withdrawal:'<rect x="4.4" y="4.6" width="15.2" height="9.2" rx="2.2"/><path d="M12 13.8v5.6"/><path d="M9.4 16.8 12 19.4l2.6-2.6"/>',
+    tax:'<path d="M5.4 18.6 18.6 5.4"/><circle cx="8.2" cy="8.2" r="2.1"/><circle cx="15.8" cy="15.8" r="2.1"/>',
+    estate:'<path d="M12 3.6 19 6.4v5.1c0 4.8-3.4 7.7-7 9.6-3.6-1.9-7-4.8-7-9.6V6.4z"/><path d="M9.2 12.2l2.1 2.1 4.3-4.3"/>',
+    rates:'<path d="M4.4 7.6h15.2"/><circle cx="14.6" cy="7.6" r="2.1" fill="#fff"/><path d="M4.4 16.4h15.2"/><circle cx="9.4" cy="16.4" r="2.1" fill="#fff"/>',
+    /* plan outputs */
+    flow:'<path d="M3.8 13.4c2 0 2-4 4-4s2 4 4 4 2-4 4-4 2 4 4 4"/><path d="M3.8 18.4h16.4"/>',
+    safe:'<path d="M4.4 8.6h15.2"/><path d="M4.4 15.4h15.2"/><path d="M8.4 11.4v1.2"/><path d="M12 11.4v1.2"/><path d="M15.6 11.4v1.2"/>',
+    last:'<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="4.4"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/>',
+    worth:'<path d="M4 19.4h16"/><rect x="5.6" y="12.6" width="3.4" height="6.8"/><rect x="10.3" y="9" width="3.4" height="10.4"/><rect x="15" y="5.4" width="3.4" height="14"/>',
+    savings:'<path d="M4 17.6 9.4 12l3.6 3.2 7-7.4"/><path d="M15.4 7.8h4.6v4.6"/>',
+    draw:'<path d="M4.6 5.4h14.8"/><path d="M12 8v8.6"/><path d="M8.8 13.4 12 16.6l3.2-3.2"/><path d="M4.6 19.4h14.8"/>',
+    taxes:'<path d="M6.4 3.8h11.2v16.4l-2.8-1.8-2.8 1.8-2.8-1.8-2.8 1.8z"/><path d="M9.8 8.4h4.4"/><path d="M9.8 12.4h4.4"/>',
+    rmd:'<rect x="4.2" y="5.6" width="15.6" height="13.4" rx="2.2"/><path d="M4.2 9.6h15.6"/><path d="M12 12.4v3l2.2 1.2"/>',
+    irmaa:'<path d="M12 4.6v14.8"/><path d="M4.6 12h14.8"/><circle cx="12" cy="12" r="8.4"/>'
+  };
+  var GEN = '<circle cx="12" cy="12" r="3.2"/>';
+
+  function svg(paths){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"'
+      + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+paths+'</svg>';
+  }
+
+  /* one pass over every rail: wrap the label, add the icon, keep everything else */
+  function dress(){
+    document.querySelectorAll('.side #sideNav li').forEach(function(li){
+      if(li.dataset.dressed) return;
+      li.dataset.dressed='1';
+      var key=li.dataset.key || li.dataset.ins;
+      var txt='';
+      [].slice.call(li.childNodes).forEach(function(n){
+        if(n.nodeType===3){ txt+=n.textContent; n.remove(); }
+        else if(n.nodeType===1 && !n.classList.contains('nav-dot') && !n.classList.contains('chev')){
+          txt+=n.textContent; n.remove();
+        }
+      });
+      txt=txt.replace(/\s+/g,' ').trim();
+      li.dataset.label=txt;
+      var ic=document.createElement('span');
+      ic.className='nav-ic';
+      ic.innerHTML=svg(ICON[key] || GEN);
+      var lab=document.createElement('span');
+      lab.className='nav-txt'; lab.textContent=txt;
+      li.appendChild(ic); li.appendChild(lab);
+    });
+    document.querySelectorAll('#sideNav .nav-more').forEach(function(b){
+      /* the group toggle rewrites its own textContent between "N more" and "Fewer",
+         so re-dress whenever the icon is gone rather than once */
+      if(b.querySelector('.nav-more-dots')) return;
+      var t=b.textContent.trim();
+      b.dataset.label=t;
+      /* the glyph follows the label: down to show the rest, up to fold it away */
+      var glyph = /more/i.test(t) ? '<path d="M5.5 8.6 12 15l6.5-6.4"/>' : '<path d="M5.5 15.4 12 9l6.5 6.4"/>';
+      b.innerHTML='<span class="nav-more-n">'+t+'</span>'
+        +'<span class="nav-more-dots">'+svg(glyph)+'</span>';
+    });
+  }
+
+  /* the caret, once per rail */
+  var CARET='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"'
+    +' stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6L8.5 12l6 6"/></svg>';
+  function addToggles(){
+    document.querySelectorAll('.layout .side').forEach(function(side){
+      /* only the rail that has an icon vocabulary gets a collapse control */
+      if(!side.querySelector('#sideNav')) return;
+      if(side.querySelector('.side-mini-tg')) return;
+      var b=document.createElement('button');
+      b.type='button'; b.className='side-mini-tg';
+      b.setAttribute('aria-label','Collapse the rail');
+      b.innerHTML=CARET;
+      side.insertBefore(b, side.firstChild);
+    });
+  }
+
+  function syncToggles(){
+    var mini=document.body.classList.contains('prism-mini');
+    document.querySelectorAll('.side-mini-tg').forEach(function(b){
+      b.setAttribute('aria-label', mini ? 'Show the rail labels' : 'Collapse the rail');
+      b.setAttribute('aria-expanded', mini ? 'false' : 'true');
+    });
+  }
+
+  /* Prism decides the default; the caret can override it for as long as Prism stays open */
+  var manual=null;
+  /* only the Plan rail has #sideNav; the insight pages carry their own subnav,
+     which has no icon vocabulary and must never be squeezed to 64px */
+  function railReady(){
+    /* .side is position:fixed, so offsetParent is null - ask the layout instead */
+    var vis=[].slice.call(document.querySelectorAll('.layout')).filter(function(l){
+      return getComputedStyle(l).display!=='none';
+    })[0];
+    return !!(vis && vis.querySelector('.side #sideNav'));
+  }
+  function apply(){
+    var c=document.body.classList;
+    var prism=c.contains('graph-expanded') && railReady();
+    /* the three panel view has no room for labels: the mini rail is the only option there */
+    var forced = prism && c.contains('tri-cols') && c.contains('ai-expanded');
+    var mini = prism && (forced || manual===null ? true : manual);
+    c.toggle('prism-mini', mini);
+    syncToggles();
+    if(!prism) manual=null;
+  }
+
+  dress(); addToggles(); apply();
+
+  document.addEventListener('click', function(e){
+    var b=e.target.closest('.side-mini-tg');
+    if(!b) return;
+    manual = !document.body.classList.contains('prism-mini');
+    apply();
+  });
+
+  /* Prism and chat both live on body classes, so watch them rather than hook every caller */
+  new MutationObserver(function(){ dress(); addToggles(); apply(); })
+    .observe(document.body, {attributes:true, attributeFilter:['class']});
+  new MutationObserver(function(){ dress(); addToggles(); })
+    .observe(document.querySelector('#app') || document.body, {childList:true, subtree:true});
+
+  /* the label, as a tooltip in a fixed layer */
+  var tip=document.createElement('div'); tip.id='railTip'; document.body.appendChild(tip);
+  var hideT=null;
+  function show(el){
+    var t=el.dataset.label; if(!t) return;
+    tip.textContent=t;
+    var r=el.getBoundingClientRect();
+    tip.style.left=(r.right+12)+'px';
+    tip.style.top=(r.top+r.height/2)+'px';
+    tip.classList.add('on');
+  }
+  function hide(){ tip.classList.remove('on'); }
+  document.addEventListener('pointerover', function(e){
+    if(!document.body.classList.contains('prism-mini')) return;
+    var el=e.target.closest('.side li, #sideNav .nav-more');
+    if(el){ clearTimeout(hideT); show(el); } else hide();
+  });
+  document.addEventListener('pointerout', function(e){
+    var el=e.target.closest('.side li, #sideNav .nav-more');
+    if(el){ hideT=setTimeout(hide, 60); }
+  });
+  window.addEventListener('scroll', hide, true);
+})();
+</script>
+<!-- ===================== END Mini left rail ===================== -->
