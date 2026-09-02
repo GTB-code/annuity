@@ -3571,7 +3571,7 @@ body.mpanel-open{ overflow:hidden; }
       <ul data-grp="in">
         <li data-key="assets"><span class="nav-dot done" aria-hidden="true"></span>Assets</li>
         <li data-key="debts"><span class="nav-dot done" aria-hidden="true"></span>Debts</li>
-        <li data-key="income"><span class="nav-dot done" aria-hidden="true"></span>Monthly Income</li>
+        <li data-key="income"><span class="nav-dot done" aria-hidden="true"></span>Income</li>
         <li class="nav-extra" data-grp="in" data-key="home"><span class="nav-dot done" aria-hidden="true"></span>Home &amp; Real Estate</li>
         <li class="nav-extra" data-grp="in" data-key="expenses"><span class="nav-dot" aria-hidden="true"></span>Expenses</li>
         <li class="nav-extra" data-grp="in" data-key="flows"><span class="nav-dot" aria-hidden="true"></span>Money Flows</li>
@@ -3887,10 +3887,27 @@ body.mpanel-open{ overflow:hidden; }
         <div class="assets-actions"><button class="btn-collapse" aria-label="Expand" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"/></svg></button></div>
       </div>
       <div class="acc-body" style="height:0;opacity:0;overflow:hidden;">
-        <div class="bucket">
+        <div class="bucket" data-bucket="work">
+          <div class="bucket-label">Work</div>
           <div class="acct"><div><div class="nm">My Job</div><div class="ty">Employment</div></div><div class="amt">$4,200</div></div>
           <div class="acct"><div><div class="nm">Part-time, Lily</div><div class="ty">Employment</div></div><div class="amt">$1,385</div></div>
           <div class="add-row">Add job</div>
+        </div>
+        <div class="bucket" data-bucket="passive">
+          <div class="bucket-label">Passive income</div>
+          <div class="add-row">Add passive income</div>
+        </div>
+        <div class="bucket" data-bucket="pensions">
+          <div class="bucket-label">Pensions</div>
+          <div class="add-row">Add a pension</div>
+        </div>
+        <div class="bucket" data-bucket="annuities">
+          <div class="bucket-label">Annuities</div>
+          <div class="add-row">Add an annuity</div>
+        </div>
+        <div class="bucket" data-bucket="windfall">
+          <div class="bucket-label">Windfall</div>
+          <div class="add-row">Add a windfall</div>
         </div>
       </div>
     </div>
@@ -4098,6 +4115,44 @@ body.mpanel-open{ overflow:hidden; }
           <div class="snap-chip" data-key="chipSaverate" role="button" tabindex="0" aria-expanded="false"><div class="lab">Savings rate</div><div class="val">28%</div></div>
           <div class="snap-chip" data-key="chipRunway" role="button" tabindex="0" aria-expanded="false"><div class="lab">Cash runway</div><div class="val">14 mo</div></div>
         </div>
+
+        <section class="pf-card snap-progress" id="pf-sec-progress">
+          <div class="pf-card-t">The road so far, and the road ahead</div>
+          <div class="pf-card-s">The line is your confidence. Solid is behind you, hollow is waiting.</div>
+          <svg class="pf-climb" viewBox="0 0 620 214" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confidence climbing from 64% in 2024 to 87% today, projected onward to 2035">
+            <defs><pattern id="pfHatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="7" stroke="#ECEEF1" stroke-width="2.4"/></pattern></defs>
+            <line x1="14" y1="190" x2="606" y2="190" stroke="#EEEEEE" stroke-width="1.5"/>
+            <path class="cl-fill" d="M274 190 L274 86 C 302 85, 328 83.5, 354 82 C 388 80.5, 410 80, 434 79 C 468 78, 490 77.5, 514 77 C 546 76.3, 572 75.6, 594 75 L594 190 Z" fill="url(#pfHatch)"/>
+            <path class="cl-fill" d="M34 190 L34 166 C 62 158, 88 136, 114 117 C 142 100, 168 90, 194 86 L274 86 L274 190 Z" fill="#E7F7F0" opacity="0.75"/>
+            <line class="cl-fill" x1="274" y1="42" x2="274" y2="190" stroke="#D9DDE3" stroke-width="1.5" stroke-dasharray="3 4"/>
+            <rect class="cl-fill" x="247" y="16" width="54" height="20" rx="10" fill="#E7F7F0"/>
+            <text class="cl-fill" x="274" y="30" font-size="11" font-weight="600" fill="#0E794E" text-anchor="middle">Today</text>
+            <path class="cl-past" pathLength="1" d="M34 166 C 62 158, 88 136, 114 117 C 142 100, 168 90, 194 86 L274 86" fill="none" stroke="#04B477" stroke-width="2.6" stroke-linecap="round"/>
+            <path class="cl-future" pathLength="1" d="M274 86 C 302 85, 328 83.5, 354 82 C 388 80.5, 410 80, 434 79 C 468 78, 490 77.5, 514 77 C 546 76.3, 572 75.6, 594 75" fill="none" stroke="#9FDFC6" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1"/>
+            <circle class="cl-dot cl-d1" cx="34" cy="166" r="4.5" fill="#04B477"/><circle class="cl-dot cl-d2" cx="114" cy="117" r="4.5" fill="#04B477"/><circle class="cl-dot cl-d3" cx="194" cy="86" r="4.5" fill="#04B477"/><circle class="cl-halo" cx="274" cy="86" r="6" fill="none" stroke="#04B477" stroke-width="2"/><circle class="cl-dot cl-d4" cx="274" cy="86" r="6" fill="#FFFFFF" stroke="#04B477" stroke-width="4"/><circle class="cl-dot cl-d5" cx="354" cy="82" r="4.5" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/><circle class="cl-dot cl-d6" cx="434" cy="79" r="4.5" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/><circle class="cl-dot cl-d7" cx="514" cy="77" r="4.5" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/><circle class="cl-dot cl-d8" cx="594" cy="75" r="4.5" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+            <text class="cl-lbl" x="34" y="155" font-size="11" font-weight="600" fill="#6E7687" text-anchor="middle">64%</text><text class="cl-lbl" x="194" y="75" font-size="11" font-weight="600" fill="#6E7687" text-anchor="middle">87%</text><text class="cl-lbl" x="354" y="71" font-size="11" font-weight="600" fill="#6E7687" text-anchor="middle">$40K</text><text class="cl-lbl" x="434" y="68" font-size="11" font-weight="600" fill="#0D3F4A" text-anchor="middle">Marshall</text><text class="cl-lbl" x="514" y="66" font-size="11" font-weight="600" fill="#0D3F4A" text-anchor="middle">Lily</text><text class="cl-lbl" x="594" y="64" font-size="11" font-weight="600" fill="#6E7687" text-anchor="middle">$3,940/mo</text>
+            <text class="cl-lbl" x="34" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">'24</text><text class="cl-lbl" x="114" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">May '26</text><text class="cl-lbl" x="194" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">Jun '26</text><text class="cl-lbl" x="274" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">Jul '26</text><text class="cl-lbl" x="354" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">Dec '26</text><text class="cl-lbl" x="434" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">'28</text><text class="cl-lbl" x="514" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">'32</text><text class="cl-lbl" x="594" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">'35</text>
+          </svg>
+          <div class="pf-jt">
+            <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20v-7"/><path d="M12 13c0-3.2 2.4-5.2 5.6-5.2 0 3.2-2.4 5.2-5.6 5.2z"/><path d="M12 13c0-3.2-2.4-5.2-5.6-5.2 0 3.2 2.4 5.2 5.6 5.2z"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">March 2024</div><div class="pf-jwhat"><b>Joined Boldin.</b> Confidence that first week: 64%.</div></div><div class="pf-jchip">64%</div></div>
+            <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 13.5a4.6 4.6 0 0 0 6.5 0l2-2a4.6 4.6 0 0 0-6.5-6.5L11.2 6.3"/><path d="M13.5 10.5a4.6 4.6 0 0 0-6.5 0l-2 2a4.6 4.6 0 0 0 6.5 6.5l1.3-1.3"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">May 2026</div><div class="pf-jwhat"><b>Every account linked.</b> TrueView went live.</div></div><div class="pf-jchip">$1.47M</div></div>
+            <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 2.8v5.1c0 4.8-3.4 7.7-7 9.6-3.6-1.9-7-4.8-7-9.6V5.8z"/><path d="M9 12l2.1 2.1L15.4 9.8"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">June 2026</div><div class="pf-jwhat"><b>Plan funded to 87%.</b> Holds in 9 of 10 markets.</div></div><div class="pf-jchip">87%</div></div>
+            <div class="pf-jrow today"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M15.2 8.8l-2 4.4-4.4 2 2-4.4z"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">Today</div><div class="pf-jwhat"><b><span id="pfDaysRow">903 days</span> out.</b> Three moves queued on Optimize.</div></div><div class="pf-jchip"><span id="pfDaysChip">903 days</span></div></div>
+            <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8h10"/><path d="M14 5l3 3-3 3"/><path d="M17 16H7"/><path d="M10 19l-3-3 3-3"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">December 2026</div><div class="pf-jwhat"><b>First Roth December.</b> $40,000 moves while the bracket is low.</div></div><div class="pf-jchip">$40,000</div></div>
+            <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 18h15"/><path d="M8 18a4 4 0 0 1 8 0"/><path d="M12 10V7.5"/><path d="M6.8 12.2 5 10.4"/><path d="M17.2 12.2l1.8-1.8"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">December 2028</div><div class="pf-jwhat"><b>Marshall retires at 63.</b> The Tuesday mornings begin.</div></div><div class="pf-jchip">Age 63</div></div>
+            <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.6 12h.01"/><path d="M17.4 12h.01"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">June 2030</div><div class="pf-jwhat"><b>The math at 65.</b> The nest egg becomes a paycheck.</div></div><div class="pf-jchip">$1.6M</div></div>
+            <div class="pf-jmath">
+              <div class="pf-jm-row"><span>Forecasted portfolio when Marshall turns 65</span><b>$1.6M</b></div>
+              <div class="pf-jm-row"><span>The 4% rule, growing with inflation</span><b>$64,000 / yr</b></div>
+              <div class="pf-jm-row"><span>Or annuitize half at 6%, draw 4% on the rest</span><b>$80,000 / yr</b></div>
+              <div class="pf-jm-row"><span>Social Security, once you both claim</span><b>$77,000 / yr</b></div>
+              <div class="pf-jm-total"><span>Income you could count on</span><b>$141K to $157K a year</b></div>
+              <div class="pf-jm-note">While all or most of the nest egg stays intact.</div>
+            </div>
+            <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5c2.1 0 2.1-1.8 4.2-1.8s2.1 1.8 4.2 1.8 2.1-1.8 4.2-1.8 2.1 1.8 4.2 1.8"/><path d="M3.5 15.5c2.1 0 2.1-1.8 4.2-1.8s2.1 1.8 4.2 1.8 2.1-1.8 4.2-1.8 2.1 1.8 4.2 1.8"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">2032</div><div class="pf-jwhat"><b>Lily follows.</b> The lake, full time.</div></div><div class="pf-jchip">2032</div></div>
+            <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M8.6 12.4l2.3 2.3 4.6-4.6"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">2035</div><div class="pf-jwhat"><b>Social Security at 70.</b> Guaranteed, for life.</div></div><div class="pf-jchip">$3,940/mo</div></div>
+          </div>
+        </section>
 
         <div class="lens-extra">
           <div class="ret-section">
@@ -5159,7 +5214,6 @@ body.mpanel-open{ overflow:hidden; }
       <div class="pf-nav-item on" data-target="pf-sec-profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.3 3.6-4.9 6.5-4.9s5.3 1.6 6.5 4.9"/></svg>Household</div>
       <div class="pf-nav-item" data-target="pf-sec-account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Account settings</div>
       <div class="pf-nav-item" data-target="pf-sec-connections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 13.5a4.6 4.6 0 0 0 6.5 0l2-2a4.6 4.6 0 0 0-6.5-6.5L11.2 6.3"/><path d="M13.5 10.5a4.6 4.6 0 0 0-6.5 0l-2 2a4.6 4.6 0 0 0 6.5 6.5l1.3-1.3"/></svg>Connections</div>
-      <div class="pf-nav-item" data-target="pf-sec-progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15l4.5-5 3.5 3.2L20 6"/><path d="M4 20h16"/></svg>Progress</div>
       <div class="pf-nav-item" data-target="pf-sec-security"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 2.8v5.1c0 4.8-3.4 7.7-7 9.6-3.6-1.9-7-4.8-7-9.6V5.8z"/><path d="M9 12l2.1 2.1L15.4 9.8"/></svg>Security</div>
       <div class="pf-nav-item" data-target="pf-sec-notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 15.5H6c1.4-1.4 2-3 2-5a4 4 0 0 1 8 0c0 2 .6 3.6 2 5z"/><path d="M10.4 18.6a1.7 1.7 0 0 0 3.2 0"/></svg>Notifications</div>
       <div class="pf-nav-item" data-target="pf-sec-preferences"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5h16"/><circle cx="15" cy="7.5" r="2.2" fill="#fff"/><path d="M4 12h16"/><circle cx="8.5" cy="12" r="2.2" fill="#fff"/><path d="M4 16.5h16"/><circle cx="16.5" cy="16.5" r="2.2" fill="#fff"/></svg>Preferences</div>
@@ -5249,43 +5303,6 @@ body.mpanel-open{ overflow:hidden; }
         <div class="pf-jmath pf-conn-acc" id="pfc-sun" hidden><div class="pf-conn-fixbar"><span class="pf-conn-fixtxt">Sunmark stopped accepting the saved sign-in on 16 August. Reconnect and the balance refreshes in a few seconds.</span><button type="button" class="cta pf-conn-recon">Reconnect</button></div><div class="pf-conn-achead"><span class="ret-seclabel">Account list</span><span class="alo-sec-note">0 of 1 active in My Plan</span></div><p class="pf-conn-ahint">Switch an account on to use its live balance in your plan, or off to keep your own entry from Assets and debts.</p><div class="alo-rows"><div class="alo-row"><div class="nm">Taxable savings (&bull;&bull;4407) <span class="alo-chip">SAVINGS</span></div><div class="amts"><b>$8,982</b></div><button type="button" class="pf-tgl" role="switch" aria-checked="false" aria-label="Taxable savings (&bull;&bull;4407) in My Plan"><span class="knob"></span></button></div></div><div class="pf-conn-acts"><button type="button" class="pfg-cancel pf-conn-remove">Remove this connection</button></div></div>
       </div>
       <a class="pf-link pf-conn-foot" role="button" tabindex="0" data-toast="Assets and debts is on the Plan tab.">Assets and debts <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </section>
-    <section class="pf-card" id="pf-sec-progress">
-      <div class="pf-card-t">The road so far, and the road ahead</div>
-      <div class="pf-card-s">The line is your confidence. Solid is behind you, hollow is waiting.</div>
-      <svg class="pf-climb" viewBox="0 0 620 214" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confidence climbing from 64% in 2024 to 87% today, projected onward to 2035">
-        <defs><pattern id="pfHatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="7" stroke="#ECEEF1" stroke-width="2.4"/></pattern></defs>
-        <line x1="14" y1="190" x2="606" y2="190" stroke="#EEEEEE" stroke-width="1.5"/>
-        <path class="cl-fill" d="M274 190 L274 86 C 302 85, 328 83.5, 354 82 C 388 80.5, 410 80, 434 79 C 468 78, 490 77.5, 514 77 C 546 76.3, 572 75.6, 594 75 L594 190 Z" fill="url(#pfHatch)"/>
-        <path class="cl-fill" d="M34 190 L34 166 C 62 158, 88 136, 114 117 C 142 100, 168 90, 194 86 L274 86 L274 190 Z" fill="#E7F7F0" opacity="0.75"/>
-        <line class="cl-fill" x1="274" y1="42" x2="274" y2="190" stroke="#D9DDE3" stroke-width="1.5" stroke-dasharray="3 4"/>
-        <rect class="cl-fill" x="247" y="16" width="54" height="20" rx="10" fill="#E7F7F0"/>
-        <text class="cl-fill" x="274" y="30" font-size="11" font-weight="600" fill="#0E794E" text-anchor="middle">Today</text>
-        <path class="cl-past" pathLength="1" d="M34 166 C 62 158, 88 136, 114 117 C 142 100, 168 90, 194 86 L274 86" fill="none" stroke="#04B477" stroke-width="2.6" stroke-linecap="round"/>
-        <path class="cl-future" pathLength="1" d="M274 86 C 302 85, 328 83.5, 354 82 C 388 80.5, 410 80, 434 79 C 468 78, 490 77.5, 514 77 C 546 76.3, 572 75.6, 594 75" fill="none" stroke="#9FDFC6" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1"/>
-        <circle class="cl-dot cl-d1" cx="34" cy="166" r="4.5" fill="#04B477"/><circle class="cl-dot cl-d2" cx="114" cy="117" r="4.5" fill="#04B477"/><circle class="cl-dot cl-d3" cx="194" cy="86" r="4.5" fill="#04B477"/><circle class="cl-halo" cx="274" cy="86" r="6" fill="none" stroke="#04B477" stroke-width="2"/><circle class="cl-dot cl-d4" cx="274" cy="86" r="6" fill="#FFFFFF" stroke="#04B477" stroke-width="4"/><circle class="cl-dot cl-d5" cx="354" cy="82" r="4.5" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/><circle class="cl-dot cl-d6" cx="434" cy="79" r="4.5" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/><circle class="cl-dot cl-d7" cx="514" cy="77" r="4.5" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/><circle class="cl-dot cl-d8" cx="594" cy="75" r="4.5" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
-        <text class="cl-lbl" x="34" y="155" font-size="11" font-weight="600" fill="#6E7687" text-anchor="middle">64%</text><text class="cl-lbl" x="194" y="75" font-size="11" font-weight="600" fill="#6E7687" text-anchor="middle">87%</text><text class="cl-lbl" x="354" y="71" font-size="11" font-weight="600" fill="#6E7687" text-anchor="middle">$40K</text><text class="cl-lbl" x="434" y="68" font-size="11" font-weight="600" fill="#0D3F4A" text-anchor="middle">Marshall</text><text class="cl-lbl" x="514" y="66" font-size="11" font-weight="600" fill="#0D3F4A" text-anchor="middle">Lily</text><text class="cl-lbl" x="594" y="64" font-size="11" font-weight="600" fill="#6E7687" text-anchor="middle">$3,940/mo</text>
-        <text class="cl-lbl" x="34" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">'24</text><text class="cl-lbl" x="114" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">May '26</text><text class="cl-lbl" x="194" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">Jun '26</text><text class="cl-lbl" x="274" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">Jul '26</text><text class="cl-lbl" x="354" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">Dec '26</text><text class="cl-lbl" x="434" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">'28</text><text class="cl-lbl" x="514" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">'32</text><text class="cl-lbl" x="594" y="207" font-size="10.5" fill="#9AA0AE" text-anchor="middle">'35</text>
-      </svg>
-      <div class="pf-jt">
-        <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20v-7"/><path d="M12 13c0-3.2 2.4-5.2 5.6-5.2 0 3.2-2.4 5.2-5.6 5.2z"/><path d="M12 13c0-3.2-2.4-5.2-5.6-5.2 0 3.2 2.4 5.2 5.6 5.2z"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">March 2024</div><div class="pf-jwhat"><b>Joined Boldin.</b> Confidence that first week: 64%.</div></div><div class="pf-jchip">64%</div></div>
-        <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 13.5a4.6 4.6 0 0 0 6.5 0l2-2a4.6 4.6 0 0 0-6.5-6.5L11.2 6.3"/><path d="M13.5 10.5a4.6 4.6 0 0 0-6.5 0l-2 2a4.6 4.6 0 0 0 6.5 6.5l1.3-1.3"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">May 2026</div><div class="pf-jwhat"><b>Every account linked.</b> TrueView went live.</div></div><div class="pf-jchip">$1.47M</div></div>
-        <div class="pf-jrow"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 2.8v5.1c0 4.8-3.4 7.7-7 9.6-3.6-1.9-7-4.8-7-9.6V5.8z"/><path d="M9 12l2.1 2.1L15.4 9.8"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">June 2026</div><div class="pf-jwhat"><b>Plan funded to 87%.</b> Holds in 9 of 10 markets.</div></div><div class="pf-jchip">87%</div></div>
-        <div class="pf-jrow today"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M15.2 8.8l-2 4.4-4.4 2 2-4.4z"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">Today</div><div class="pf-jwhat"><b><span id="pfDaysRow">903 days</span> out.</b> Three moves queued on Optimize.</div></div><div class="pf-jchip"><span id="pfDaysChip">903 days</span></div></div>
-        <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8h10"/><path d="M14 5l3 3-3 3"/><path d="M17 16H7"/><path d="M10 19l-3-3 3-3"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">December 2026</div><div class="pf-jwhat"><b>First Roth December.</b> $40,000 moves while the bracket is low.</div></div><div class="pf-jchip">$40,000</div></div>
-        <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 18h15"/><path d="M8 18a4 4 0 0 1 8 0"/><path d="M12 10V7.5"/><path d="M6.8 12.2 5 10.4"/><path d="M17.2 12.2l1.8-1.8"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">December 2028</div><div class="pf-jwhat"><b>Marshall retires at 63.</b> The Tuesday mornings begin.</div></div><div class="pf-jchip">Age 63</div></div>
-        <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.6 12h.01"/><path d="M17.4 12h.01"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">June 2030</div><div class="pf-jwhat"><b>The math at 65.</b> The nest egg becomes a paycheck.</div></div><div class="pf-jchip">$1.6M</div></div>
-        <div class="pf-jmath">
-          <div class="pf-jm-row"><span>Forecasted portfolio when Marshall turns 65</span><b>$1.6M</b></div>
-          <div class="pf-jm-row"><span>The 4% rule, growing with inflation</span><b>$64,000 / yr</b></div>
-          <div class="pf-jm-row"><span>Or annuitize half at 6%, draw 4% on the rest</span><b>$80,000 / yr</b></div>
-          <div class="pf-jm-row"><span>Social Security, once you both claim</span><b>$77,000 / yr</b></div>
-          <div class="pf-jm-total"><span>Income you could count on</span><b>$141K to $157K a year</b></div>
-          <div class="pf-jm-note">While all or most of the nest egg stays intact.</div>
-        </div>
-        <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5c2.1 0 2.1-1.8 4.2-1.8s2.1 1.8 4.2 1.8 2.1-1.8 4.2-1.8 2.1 1.8 4.2 1.8"/><path d="M3.5 15.5c2.1 0 2.1-1.8 4.2-1.8s2.1 1.8 4.2 1.8 2.1-1.8 4.2-1.8 2.1 1.8 4.2 1.8"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">2032</div><div class="pf-jwhat"><b>Lily follows.</b> The lake, full time.</div></div><div class="pf-jchip">2032</div></div>
-        <div class="pf-jrow future"><div class="pf-jico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M8.6 12.4l2.3 2.3 4.6-4.6"/></svg></div><div class="pf-jtxt"><div class="pf-jwhen">2035</div><div class="pf-jwhat"><b>Social Security at 70.</b> Guaranteed, for life.</div></div><div class="pf-jchip">$3,940/mo</div></div>
-      </div>
     </section>
     <section class="pf-card">
       <div class="pf-card-t">What it&#8217;s all for</div>
@@ -8000,10 +8017,13 @@ document.addEventListener('click', function(e){
     const head=acc.querySelector('.acc-head');
     if(head && head.classList.contains('acc-collapsed')) head.click();
     const line=add.closest('.add-row-line');
-    const bucket=(line||add).parentNode;
+    const bucket=add.closest('.bucket') || (line||add).parentNode;
     const empty=bucket.querySelector('.flow-empty'); if(empty) empty.remove();   // first add clears this bucket's empty-state prompt
     const row=newBlankRow(cfg.ty);
-    bucket.insertBefore(row, line||add);                                       // never inside the flex add-row line
+    var bHead=bucket.querySelector(':scope > .bucket-head');                 // not `head`: that name is the acc-head above
+    var anchor = (bHead && bHead===bucket.lastElementChild) ? bHead          // head parked at the foot: rows stack above it
+               : ((line||add).parentNode===bucket ? (line||add) : null);
+    bucket.insertBefore(row, anchor);                                        // never inside the flex add-row line
     wireRowToggle(row, buildRowEditor, {chain:false});
     if(!reduce) row.animate([{opacity:0,transform:'translateY(-6px)'},{opacity:1,transform:'none'}],{duration:260,easing:'cubic-bezier(0.22,1,0.36,1)'});
     requestAnimationFrame(()=>{
@@ -8849,7 +8869,7 @@ document.addEventListener('click', function(e){
       if(sg){ sg.parentElement.querySelectorAll('.rm-chip').forEach(function(c){ c.classList.remove('on'); }); sg.classList.add('on');
         var owner=sg.closest('.pf-ask'); if(owner){ var s=owner.querySelector('.pf-ask-seg'); s.style.maxHeight=s.scrollHeight+'px'; } }
     });
-    var ids=['pf-sec-profile','pf-sec-account','pf-sec-connections','pf-sec-progress','pf-sec-security','pf-sec-notifications','pf-sec-preferences'];
+    var ids=['pf-sec-profile','pf-sec-account','pf-sec-connections','pf-sec-security','pf-sec-notifications','pf-sec-preferences'];
     function setActive(id){ document.querySelectorAll('.pf-nav-item').forEach(function(n){ n.classList.toggle('on', n.dataset.target===id); }); }
     var visible={};
     var spy=new IntersectionObserver(function(ents){
@@ -9718,9 +9738,9 @@ document.addEventListener('click', function(e){
   let _alTimers=[];
   function slotAllocFig(){
     const el=document.getElementById('allocFig'); if(!el) return;
-    const FINAL='$744.6K';
-    const rollIdx=[1,2,3,5];
-    const settleAt={1:420, 2:560, 3:700, 5:860};
+    const FINAL=el.dataset.fig || '$744.6K';
+    const rollIdx=[]; for(let i=0;i<FINAL.length;i++) if(/[0-9]/.test(FINAL[i])) rollIdx.push(i);
+    const settleAt={}; rollIdx.forEach((ix,k)=>{ settleAt[ix]=380+k*95; });
     const t0=performance.now();
     const iv=setInterval(()=>{
       const now=performance.now()-t0;
@@ -9736,11 +9756,17 @@ document.addEventListener('click', function(e){
   }
   function playAlloc(){
     _alTimers.forEach(t=>clearInterval(t)); _alTimers=[];
-    const fig=document.getElementById('allocFig'); if(fig) fig.textContent='$744.6K';
+    const fig=document.getElementById('allocFig'); if(fig) fig.textContent=fig.dataset.fig || '$744.6K';
     const paths=[...document.querySelectorAll('.ut-panel[data-ut-panel="alloc"] path[pathLength]')];
     const texts=[...document.querySelectorAll('.ut-panel[data-ut-panel="alloc"] text')];
     if(reduce){ paths.forEach(p=>{ p.style.strokeDasharray='none'; p.style.strokeDashoffset='0'; p.style.opacity='1'; }); texts.forEach(t=>t.style.opacity='1'); return; }
-    const plan=[ {dur:600, delay:0}, {dur:340, delay:560}, {dur:260, delay:860} ];
+    /* one continuous sweep: each arc takes time in proportion to its share */
+    const SWEEP=1000; let _acc=0;
+    const plan=paths.map(p=>{
+      const f=parseFloat(p.dataset.frac || (1/paths.length));
+      const o={dur:Math.max(130, SWEEP*f), delay:_acc};
+      _acc += SWEEP*f*0.9; return o;
+    });
     paths.forEach((p,i)=>{
       p.getAnimations().forEach(a=>a.cancel());
       p.animate([{strokeDashoffset:1},{strokeDashoffset:0}],
@@ -13754,7 +13780,10 @@ body.fire-page .fire-side{ display:block; }
       if(ed && ed.classList && !ed.classList.contains('acct')) ed.remove();
       ctx.blankRow.remove();
     }
-    var anchor=ctx.bucket.querySelector('.add-row-line') || ctx.bucket.querySelector('.add-row');
+    var _hd=ctx.bucket.querySelector(':scope > .bucket-head');
+    var anchor = (_hd && _hd===ctx.bucket.lastElementChild) ? _hd
+               : (ctx.bucket.querySelector('.add-row-line') || ctx.bucket.querySelector('.add-row'));
+    if(anchor && anchor.parentNode!==ctx.bucket) anchor=null;   /* insertBefore(null) appends */
     picked.forEach(function(r, k){
       var row=document.createElement('div');
       row.className='acct';
@@ -13772,7 +13801,7 @@ body.fire-page .fire-side{ display:block; }
     if(!section || !SECTIONS[section]) return;
     setTimeout(function(){
       var line=add.closest('.add-row-line');
-      var bucket=(line||add).parentNode;
+      var bucket=add.closest('.bucket') || (line||add).parentNode;
       var blank=bucket.querySelector('.acct-new');
       if(!blank || bucket.querySelector('.cx-link')) return;
       var ed=blank.nextElementSibling;
@@ -18420,9 +18449,15 @@ body.prism-mini .side .plan-select,
 body.prism-mini .side .group-label,
 body.prism-mini .side .side-download,
 body.prism-mini .side #sideNav .nav-txt{ display:none; }
+/* the Today view re-shows its own Download link from an #id rule, so this one has
+   to match its weight to keep the 64px rail free of stray text */
+body.prism-mini .side #sideNav .side-download,
+body.prism-mini .side #sideNav .side-download.sd-today{ display:none; }
 body.prism-mini .side #sideNav .nav-ic{ display:block; }
-body.prism-mini .side #sideNav ul{ display:flex; flex-direction:column; gap:2px; align-items:center; }
+/* never set display on the lists: the Today view hides whole groups with
+   display:none at the same specificity, and this file loads last */
 body.prism-mini .side #sideNav ul + ul{ margin-top:2px; }
+body.prism-mini .side #sideNav li + li{ margin-top:2px; }
 body.prism-mini .side #sideNav li{ position:relative; width:44px; height:40px; padding:0;
   justify-content:center; border-radius:11px; }
 body.prism-mini .side #sideNav li.nav-indent{ padding-left:0; }
@@ -18632,3 +18667,229 @@ body.tri-cols.graph-expanded.ai-expanded .side-mini-tg{ display:none; }
 })();
 </script>
 <!-- ===================== END Mini left rail ===================== -->
+
+<!-- ===================== Bucket head: the add sits beside the title ===================== -->
+<style id="bucketHeadCSS">
+/* One row instead of two: the add moves up beside the bucket title and drops the
+   item name, which the title already says. Both surfaces are the existing ones -
+   .bucket-label and .add-row - only the row that holds them is new. */
+.bucket-head{ display:flex; align-items:baseline; gap:12px; margin:0 4px 8px; }
+.bucket.bucket-head-foot > .bucket-head{ margin:12px 4px 4px; }
+.bucket-head .bucket-label{ margin:0; }
+.bucket-head .add-row{ margin:0; padding:0; font-size:15px; gap:5px; }
+.bucket-head .add-row::before{ font-size:17px; }
+/* the rest of the phrase stays in the DOM for screen readers and for the
+   section's own "Add a ..." matching; it just stops taking a whole line */
+.ar-r{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden;
+  clip-path:inset(50%); white-space:nowrap; border:0; }
+/* the long-term care bucket keeps its budgeter link on its own line: the link
+   carries its own spacing and its 16px indent still lines up with the rows */
+</style>
+<script>
+/* The add action pairs with the bucket title. Buckets without a title keep the
+   whole-line add - there is nothing there for it to sit beside. */
+(function(){
+  function shorten(add){
+    if(add.querySelector('.ar-s')) return;
+    var m=add.textContent.trim().match(/^(Add)(\s.*)$/i);
+    if(!m) return;
+    add.innerHTML='<span class="ar-s">'+m[1]+'</span><span class="ar-r">'+m[2]+'</span>';
+  }
+  function rows(bucket){ return bucket.querySelectorAll(':scope > .acct').length; }
+  /* An empty bucket has nothing but its head, so the head leads. Once there are
+     entries the head drops below them: the add belongs at the foot of a list, and
+     the title then reads as the caption for the rows above it. */
+  function place(bucket, head){
+    var atFoot = rows(bucket) > 0;
+    if(atFoot){ if(head!==bucket.lastElementChild) bucket.appendChild(head); }
+    else if(head!==bucket.firstElementChild){ bucket.insertBefore(head, bucket.firstChild); }
+    bucket.classList.toggle('bucket-head-foot', atFoot);
+  }
+  function pair(bucket){
+    var head=bucket.querySelector(':scope > .bucket-head');
+    if(head){ place(bucket, head); return; }
+    var lab=bucket.querySelector(':scope > .bucket-label'); if(!lab) return;
+    var add=bucket.querySelector('.add-row'); if(!add) return;
+    head=document.createElement('div');
+    head.className='bucket-head';
+    lab.parentNode.insertBefore(head, lab);
+    head.appendChild(add);        /* the action first, so it reads to the left of the title */
+    head.appendChild(lab);
+    shorten(add);
+    place(bucket, head);
+  }
+  function run(){ document.querySelectorAll('.bucket').forEach(pair); }
+  run();
+  window.addEventListener('boldin:view', run);
+  /* every add path - the spawn CTA, the connect flow, quest mode - lands rows in the
+     bucket; watching the bucket keeps the head parked correctly without touching them */
+  new MutationObserver(function(muts){
+    var seen=[];
+    muts.forEach(function(m){
+      var b=m.target.closest && m.target.closest('.bucket');
+      if(b && seen.indexOf(b)<0 && b.querySelector(':scope > .bucket-head')){ seen.push(b); }
+    });
+    seen.forEach(function(b){ place(b, b.querySelector(':scope > .bucket-head')); });
+  }).observe(document.body, {childList:true, subtree:true});
+})();
+</script>
+<!-- ===================== END Bucket head ===================== -->
+
+<!-- ============ Today card: Investments donut + full-width Cash flow ============ -->
+<style id="utDonutCSS">
+/* Layout and state only. Both panels keep the shell's own 620x274 box so the card
+   never changes height between tabs, and both keep the shell's own animations:
+   playAlloc() sweeps [pathLength] arcs then fades <text>, playFlow() wipes the svg. */
+.ut-panel[data-ut-panel="alloc"] .dn-arc{ cursor:default; }
+.ut-panel[data-ut-panel="alloc"] .dn-arc:hover{ filter:brightness(1.06); }
+.ut-panel[data-ut-panel="alloc"] .dn-row .hit{ fill:transparent; }
+.ut-panel[data-ut-panel="flow"] .sk-rib:hover{ filter:brightness(0.97); }
+</style>
+<script>
+/* ---------------- Investments: the full donut, from the classic page ----------------
+   The classic /planner/investments-today donut with its own legend. Colours are the
+   classic ones re-stepped so the blue and the green clear the normal-vision floor -
+   the originals sat at dE 9, which full-colour readers cannot separate. The grey is
+   deliberately neutral: it is the Unclassified bucket. Every arc carries a legend
+   label, a percentage and a hover value, which is the relief the two lightest fills
+   owe for sitting under 3:1 against white. */
+(function(){
+  var panel=document.querySelector('.ut-panel[data-ut-panel="alloc"]');
+  var svg=panel && panel.querySelector('svg'); if(!svg) return;
+
+  var TOTAL=586710;
+  /* a preview, so the legend stays at one level: no indented holdings under Equities */
+  var ROWS=[
+    {n:'Equities',                    v:340300, c:'#00708A'},
+    {n:'Fixed Income',                v:129100, c:'#8CB85E'},
+    {n:'Alternative Investment',      v:5900,   c:'#9A7BBC'},
+    {n:'Cash &amp; Cash Equivalents', v:105600, c:'#DBA246'},
+    {n:'Unclassified',                v:5810,   c:'#7E848C'}
+  ];
+  var SLICES=ROWS.filter(function(r){ return r.c; });
+
+  var CX=124, CY=137, R=88, SW=26, PAD=1.0, MINDEG=1.8;
+  function pt(deg){
+    var a=(deg-90)*Math.PI/180;
+    return [ (CX+R*Math.cos(a)).toFixed(2), (CY+R*Math.sin(a)).toFixed(2) ];
+  }
+  function money(v){ return '$'+v.toLocaleString('en-US'); }
+  function pct(v){ return Math.round(v/TOTAL*100)+'%'; }
+
+  var g='', at=0;
+  SLICES.forEach(function(d){
+    var sweep=360*d.v/TOTAL;
+    var a0=at+PAD/2, a1=at+sweep-PAD/2;
+    if(a1-a0 < MINDEG){ var mid=at+sweep/2; a0=mid-MINDEG/2; a1=mid+MINDEG/2; }
+    at+=sweep;
+    var p0=pt(a0), p1=pt(a1);
+    g+='<path class="dn-arc" data-frac="'+(d.v/TOTAL).toFixed(4)+'" pathLength="1"'
+      +' d="M'+p0[0]+' '+p0[1]+' A'+R+' '+R+' 0 '+((a1-a0)>180?1:0)+' 1 '+p1[0]+' '+p1[1]+'"'
+      +' stroke="'+d.c+'" stroke-width="'+SW+'" fill="none" stroke-linecap="butt">'
+      +'<title>'+d.n.replace(/&amp;/g,'&')+' \u00b7 '+money(d.v)+' \u00b7 '+pct(d.v)+'</title></path>';
+  });
+
+  /* the centre reads the total, and owns the digit-roll string */
+  g+='<text x="'+CX+'" y="'+(CY-14)+'" font-size="13" fill="#6E7687" text-anchor="middle">Total portfolio</text>'
+   + '<text id="allocFig" data-fig="'+money(TOTAL)+'" x="'+CX+'" y="'+(CY+19)+'" font-size="27"'
+   + ' font-weight="700" fill="#10182C" text-anchor="middle" letter-spacing="-1">'+money(TOTAL)+'</text>';
+
+  /* the legend: one row per slice, spaced to sit against the ring rather than crowd the top */
+  var XG=268, PR=610;
+  var STEP=Math.min(46, 200/Math.max(1,ROWS.length-1));
+  var Y0=(274-(ROWS.length-1)*STEP)/2 + 5;
+  ROWS.forEach(function(r,i){
+    var y=Y0+i*STEP;
+    g+='<rect x="'+XG+'" y="'+(y-9.5).toFixed(1)+'" width="10" height="10" rx="2.5" fill="'+r.c+'"/>'
+      +'<text x="'+(XG+16)+'" y="'+y.toFixed(1)+'" font-size="14.5" font-weight="600" fill="#10182C">'+r.n+'</text>'
+      +'<text x="'+PR+'" y="'+y.toFixed(1)+'" font-size="14.5" text-anchor="end" font-weight="700"'
+      +' fill="#10182C" font-variant-numeric="tabular-nums">'+pct(r.v)+'</text>';
+  });
+
+  svg.innerHTML=g;
+})();
+
+/* ---------------- Cash flow: the sankey spans the card, labels inside ----------------
+   The bars sit on the two edges so the ribbons use the whole 620, and each name rides
+   inside its own band. One shared band-height budget across both sides, so a dollar is
+   the same thickness left and right; the leftover height goes into the gaps. */
+(function(){
+  var panel=document.querySelector('.ut-panel[data-ut-panel="flow"]');
+  var svg=panel && panel.querySelector('svg'); if(!svg) return;
+
+  var IN=[ {n:'Salary', v:8600}, {n:'Part-time', v:2450}, {n:'Dividends', v:1250} ];
+  var OUT=[ {n:'Housing', v:3650}, {n:'Groceries', v:1780}, {n:'Healthcare', v:1240},
+            {n:'Leisure', v:1120}, {n:'Insurance', v:1060}, {n:'Kept', v:3450, keep:1} ];
+  var TOT=IN.reduce(function(t,d){ return t+d.v; },0);        /* 12,300 - the card's own income */
+  var SPEND=OUT.reduce(function(t,d){ return t+(d.keep?0:d.v); },0);   /* 8,850 */
+
+  var T=54, B=264, H=B-T, SPAN=186;
+  var XL=4, XM=303, XR=609, BW=7, GAPL=(H-SPAN)/(IN.length-1), GAPR=(H-SPAN)/(OUT.length-1);
+  var MT=T+(H-SPAN)/2;                                        /* the trunk, one solid bar */
+
+  function lay(list, gap){
+    var y=T, o=[];
+    list.forEach(function(d){ var h=SPAN*d.v/TOT; o.push({d:d, y:y, h:h}); y+=h+gap; });
+    return o;
+  }
+  function trunk(list){
+    var y=MT, o=[];
+    list.forEach(function(d){ var h=SPAN*d.v/TOT; o.push({d:d, y:y, h:h}); y+=h; });
+    return o;
+  }
+  function ribbon(x1,ya,ha,x2,yb,hb){
+    var xm=(x1+x2)/2;
+    return 'M'+x1+' '+ya.toFixed(1)
+      +' C'+xm+' '+ya.toFixed(1)+' '+xm+' '+yb.toFixed(1)+' '+x2+' '+yb.toFixed(1)
+      +' L'+x2+' '+(yb+hb).toFixed(1)
+      +' C'+xm+' '+(yb+hb).toFixed(1)+' '+xm+' '+(ya+ha).toFixed(1)+' '+x1+' '+(ya+ha).toFixed(1)+' Z';
+  }
+  function money(v){ return '$'+v.toLocaleString('en-US'); }
+
+  var L=lay(IN,GAPL), R=lay(OUT,GAPR), TL=trunk(IN), TR=trunk(OUT);
+  var g='';
+
+  /* the two totals, at the two ends */
+  g+='<text x="'+XL+'" y="34" font-size="12.5" fill="#6E7687">Income '
+    +'<tspan font-weight="700" fill="#10182C">'+money(TOT)+'</tspan></text>'
+   + '<text x="'+(XR+BW)+'" y="34" font-size="12.5" text-anchor="end" fill="#6E7687">Spending '
+    +'<tspan font-weight="700" fill="#10182C">'+money(SPEND)+'</tspan></text>';
+
+  /* ribbons first, so the bars and the names sit on top */
+  L.forEach(function(b,i){
+    g+='<path class="sk-rib" d="'+ribbon(XL+BW, b.y, b.h, XM, TL[i].y, TL[i].h)+'"'
+      +' fill="rgba(13,63,74,0.10)"><title>'+b.d.n+' \u00b7 '+money(b.d.v)+'</title></path>';
+  });
+  R.forEach(function(b,i){
+    g+='<path class="sk-rib" d="'+ribbon(XM+BW, TR[i].y, TR[i].h, XR, b.y, b.h)+'"'
+      +' fill="'+(b.d.keep?'rgba(4,180,119,0.22)':'rgba(13,63,74,0.09)')+'">'
+      +'<title>'+b.d.n+' \u00b7 '+money(b.d.v)+'</title></path>';
+  });
+
+  /* the bars */
+  L.forEach(function(b){ g+='<rect x="'+XL+'" y="'+b.y.toFixed(1)+'" width="'+BW+'" height="'
+    +b.h.toFixed(1)+'" rx="3" fill="#0D3F4A"/>'; });
+  g+='<rect x="'+XM+'" y="'+MT.toFixed(1)+'" width="'+BW+'" height="'+SPAN+'" rx="3" fill="#0D3F4A"/>';
+  R.forEach(function(b){ g+='<rect x="'+XR+'" y="'+b.y.toFixed(1)+'" width="'+BW+'" height="'
+    +b.h.toFixed(1)+'" rx="3" fill="'+(b.d.keep?'#04B477':'#0D3F4A')+'"'
+    +(b.d.keep?'':' opacity="0.55"')+'/>'; });
+
+  /* the names, inside their own bands - only where the band can carry the type */
+  var FS=11.5, NEED=15;
+  L.forEach(function(b){
+    if(b.h < NEED) return;
+    g+='<text x="'+(XL+BW+11)+'" y="'+(b.y+b.h/2+4).toFixed(1)+'" font-size="'+FS+'" fill="#10182C">'
+      +'<tspan font-weight="600">'+b.d.n+'</tspan> <tspan fill="#6E7687">'+money(b.d.v)+'</tspan></text>';
+  });
+  R.forEach(function(b){
+    if(b.h < NEED) return;
+    var ink=b.d.keep?'#0E794E':'#10182C', val=b.d.keep?'#0E794E':'#6E7687';
+    g+='<text x="'+(XR-11)+'" y="'+(b.y+b.h/2+4).toFixed(1)+'" font-size="'+FS+'" text-anchor="end" fill="'+ink+'">'
+      +'<tspan font-weight="'+(b.d.keep?700:600)+'">'+b.d.n+'</tspan> '
+      +'<tspan fill="'+val+'"'+(b.d.keep?' font-weight="700"':'')+'>'+money(b.d.v)+'</tspan></text>';
+  });
+
+  svg.innerHTML=g;
+})();
+</script>
+<!-- ============ END Today card: Investments + Cash flow ============ -->
