@@ -13857,6 +13857,63 @@ body.story-open{ overflow:hidden; }
 })();
 </script>
 <!-- CAROUSEL-DRAG END -->
+<!-- SNAP-NAV BEGIN: arrows that appear over the end cards on hover -->
+<style id="snapNavCSS">
+.snap-scroll{ position:relative; }
+.snap-arrow{ position:absolute; top:50%; transform:translateY(-50%); z-index:3;
+  box-shadow:0 2px 10px rgba(16,24,44,.16); opacity:0; pointer-events:none;
+  transition:opacity 140ms ease, border-color 140ms ease; }
+.snap-arrow.prev{ left:6px; }
+.snap-arrow.next{ right:6px; }
+.snap-scroll:hover .snap-arrow.can,
+.snap-arrow.can:focus-visible{ opacity:1; pointer-events:auto; }
+@media (prefers-reduced-motion:reduce){ .snap-arrow{ transition:none; } }
+</style>
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function chev(d){
+    return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="' + d +
+           '" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  function arm(sc){
+    if(sc.dataset.snapNav) return; sc.dataset.snapNav = '1';
+    var wrap = document.createElement('div');
+    wrap.className = 'snap-scroll';
+    sc.parentNode.insertBefore(wrap, sc);
+    wrap.appendChild(sc);
+
+    function mk(cls, d, label){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'snap-arrow ' + cls;
+      b.setAttribute('aria-label', label);
+      b.innerHTML = chev(d);
+      wrap.appendChild(b);
+      return b;
+    }
+    var prev = mk('prev', 'M15 5l-7 7 7 7', 'Previous cards');
+    var next = mk('next', 'M9 5l7 7-7 7', 'Next cards');
+
+    function sync(){
+      prev.classList.toggle('can', sc.scrollLeft > 4);
+      next.classList.toggle('can', sc.scrollWidth - sc.clientWidth - sc.scrollLeft > 4);
+    }
+    function slide(dir){
+      var left = sc.scrollLeft + dir * Math.max(1, sc.clientWidth);
+      if(reduce) sc.scrollLeft = left; else sc.scrollTo({ left: left, behavior: 'smooth' });
+    }
+    prev.addEventListener('click', function(e){ e.stopPropagation(); slide(-1); });
+    next.addEventListener('click', function(e){ e.stopPropagation(); slide(1); });
+    sc.addEventListener('scroll', sync, {passive:true});
+    if(window.ResizeObserver) new ResizeObserver(sync).observe(sc);
+    sync();
+  }
+  function boot(){ Array.prototype.forEach.call(document.querySelectorAll('.snap-stats'), arm); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+<!-- SNAP-NAV END -->
+
 <!-- FIRE-PAGE BEGIN (fenced: Financial Independence dashboard + inspirational rail) -->
 <style>
 .fire-new{ display:inline-block; margin-left:8px; padding:2px 8px; border-radius:999px; background:#E7F5EE; color:#0E794E;
@@ -20516,9 +20573,9 @@ body:not([data-view="home"]) .hm-tip{ display:none !important; }
   background:var(--hairline-strong); transition:background var(--dur-fast), width var(--dur-fast);}
 .hm-page .pdot.on{background:var(--green); width:20px; border-radius:4px;}
 .hm-page .parrows{display:flex; gap:6px;}
-.hm-page .parrow{width:30px; height:30px; border-radius:var(--r-pill); border:1px solid var(--hairline);
+.hm-page .parrow, .snap-arrow{width:30px; height:30px; border-radius:var(--r-pill); border:1px solid var(--hairline);
   background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink);}
-.hm-page .parrow:hover{border-color:var(--ink);}
+.hm-page .parrow:hover, .snap-arrow:hover{border-color:var(--ink);}
 .hm-page .parrow:disabled{opacity:.35; cursor:default; border-color:var(--hairline);}
 .hm-page .meter{height:6px; border-radius:3px; background:#EDEFF2; margin-top:10px; overflow:hidden;}
 .hm-page .meter i{display:block; height:100%; border-radius:3px; background:var(--green);}
