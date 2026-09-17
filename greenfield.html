@@ -4112,12 +4112,7 @@ body.mpanel-open{ overflow:hidden; }
         </div>
         </div>
 
-        <div class="snap-chips">
-          <div class="snap-chip" data-key="chipSurplus" role="button" tabindex="0" aria-expanded="false"><div class="lab">Surplus/mo</div><div class="val">$3,450</div></div>
-          <div class="snap-chip" data-key="chipPortfolio" role="button" tabindex="0" aria-expanded="false"><div class="lab">Portfolio</div><div class="val">$1.09M</div></div>
-          <div class="snap-chip" data-key="chipSaverate" role="button" tabindex="0" aria-expanded="false"><div class="lab">Savings rate</div><div class="val">28%</div></div>
-          <div class="snap-chip" data-key="chipRunway" role="button" tabindex="0" aria-expanded="false"><div class="lab">Cash runway</div><div class="val">14 mo</div></div>
-        </div>
+        <!-- removed: the Surplus/mo, Portfolio, Savings rate, Cash runway chip row -->
 
         <section class="pf-card snap-progress" id="pf-sec-progress" hidden>   <!-- parked for now: delete `hidden` to bring it back -->
           <div class="pf-card-t">The road so far, and the road ahead</div>
@@ -4863,6 +4858,11 @@ body.mpanel-open{ overflow:hidden; }
           <span class="eyebrow">My financial journey</span>
           <div class="jwrap" id="jwrap"><svg class="jchart" id="jchart" viewBox="0 0 510 268" role="img" aria-label="Projected net worth for the selected plan, 2026 to 2071"></svg></div>
           <p class="card-sub" id="planNote">Your plan holds up in 87 of 100 simulated market histories, and leaves $7.2M at age 91.</p>
+
+          <div class="todaystrip">
+            <span class="eyebrow">This plan</span>
+            <div class="stat3" id="planStat3"></div>
+          </div>
           <a class="textlink" href="#" style="margin-top:14px;" data-hm-go="plan:rates">Edit assumptions
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
@@ -20887,19 +20887,9 @@ function renderSlides(){
         '<span class="name">' + pl.name + '</span>' +
         '<span class="chip ' + pl.cls + '">' + pl.status + '</span>' +
       '</div>' +
-      '<div class="planmeta">' + pl.chip + '</div>' +
-      '<div class="stat3">' +
-        '<div class="sbox"><span class="lab">Chance of success</span>' +
-          '<div class="fig">' + pl.score + '%</div>' +
-          '<div class="meter"><i style="width:' + pl.score + '%"></i></div></div>' +
-        '<div class="sbox"><span class="lab">Monthly spending</span>' +
-          '<div class="fig">' + pl.spend + '</div>' +
-          '<div class="subfig">' + pl.spendSub + '</div></div>' +
-        '<div class="sbox"><span class="lab">At longevity</span>' +
-          '<div class="fig">' + pl.longevity + '</div>' +
-          '<div class="subfig">Age 91</div></div>' +
-      '</div>';
+      '<div class="planmeta">' + pl.chip + '</div>';
   });
+  renderPlanStats();
   dots.innerHTML = PLANS.map(function(pl, i){
     return '<button class="pdot' + (i === 0 ? ' on' : '') + '" type="button" role="tab" data-i="' + i +
            '" aria-label="' + pl.name + '"></button>';
@@ -20907,6 +20897,20 @@ function renderSlides(){
   Array.prototype.forEach.call(dots.children, function(d){
     d.addEventListener('click', function(){ goPlan(+d.dataset.i); });
   });
+}
+function renderPlanStats(){
+  var host = document.getElementById('planStat3'); if(!host) return;
+  var pl = PLANS[planIdx];
+  host.innerHTML =
+    '<div class="sbox"><span class="lab">Chance of success</span>' +
+      '<div class="fig">' + pl.score + '%</div>' +
+      '<div class="meter"><i style="width:' + pl.score + '%"></i></div></div>' +
+    '<div class="sbox"><span class="lab">Monthly spending</span>' +
+      '<div class="fig">' + pl.spend + '</div>' +
+      '<div class="subfig">' + pl.spendSub + '</div></div>' +
+    '<div class="sbox"><span class="lab">At longevity</span>' +
+      '<div class="fig">' + pl.longevity + '</div>' +
+      '<div class="subfig">Age 91</div></div>';
 }
 function goPlan(i){
   i = Math.max(0, Math.min(PLANS.length - 1, i));
@@ -20922,6 +20926,7 @@ function setPlan(i){
 function syncPlanUI(){
   Array.prototype.forEach.call(dots.children, function(d, k){ d.classList.toggle('on', k === planIdx); });
   document.getElementById('planNote').textContent = PLANS[planIdx].note;
+  renderPlanStats();
   document.getElementById('pPrev').disabled = planIdx === 0;
   document.getElementById('pNext').disabled = planIdx === PLANS.length - 1;
 }
