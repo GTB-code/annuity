@@ -13895,7 +13895,7 @@ body.sum-open .sum-layout .side{ display:none; }
 /* ---- the range filter, stock-chart style ---- */
 .sum-range{ margin-top:10px; }
 .sum-chips{ display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0; }
-.sum-chip{ font-size:13px; font-weight:600; color:var(--text-secondary); background:var(--white);
+.sum-chip{ font-size:13px; font-weight:400; color:var(--text-secondary); background:var(--white);
   border:1px solid var(--hairline); border-radius:var(--r-pill); padding:5px 13px; cursor:pointer;
   transition:border-color 140ms ease, color 140ms ease, background 140ms ease; }
 .sum-chip:hover{ border-color:var(--hairline-strong); color:var(--ink); }
@@ -13932,7 +13932,7 @@ body.sum-open .sum-layout .side{ display:none; }
   padding-right:6px; scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; }
 .sum-layout .sum-rscroll .sxtl{ margin-top:0; }
 .sum-layout .sum-rscroll .sxtl-row{ cursor:pointer; border-radius:14px; margin-left:-14px;
-  padding-left:14px; padding-right:14px; padding-bottom:22px; }
+  padding-left:14px; padding-right:14px; padding-bottom:38px; }
 /* the picked milestone opens up: more air above and below the green, and a question to follow */
 .sum-layout .sum-rscroll .sxtl-row.lit{ background:#FCFCFD; padding-top:36px; padding-bottom:38px;
   margin-top:-10px; margin-bottom:22px; }
@@ -13950,7 +13950,7 @@ body.sum-open .sum-layout .side{ display:none; }
 .sum-tail{ height:calc(var(--sum-h, 520px) - 210px); min-height:80px; }
 
 .sum-layout .sum-note{ font-size:16.5px; line-height:1.5; color:var(--ink); font-weight:500;
-  margin:0; max-width:58ch; min-height:50px; }
+  margin:0; max-width:58ch; min-height:26px; }
 .sum-layout .sum-note.swap{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) both; }
 @media (prefers-reduced-motion:reduce){ .sum-layout .sum-note.swap{ animation:none; } }
 @media (max-width:1080px){ .layout.page.sum-layout{ grid-template-columns:minmax(0,1fr); } }
@@ -14092,13 +14092,13 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
   var SPANS={ all:[Y0,Y1], soon:[Y0,2031], ret:[Y0,2029], decade:[2029,2039],
               thirties:[2030,2040], forties:[2040,2050], peak:[2046,Y1] };
   var NOTES={
-    all:'Thirty years on one line. $567,000 today becomes $2.16M at the peak \u2014 not by luck, by showing up.',
-    soon:'These five years carry more weight than any that follow. Everything after them compounds on what you build now.',
-    ret:'Three years from the last paycheck you will ever need. You are not hoping to retire. You are scheduling it.',
-    decade:'The decade that settles the question. You spend it not working, and the balance climbs anyway.',
-    thirties:'Your sixties and seventies, already funded. This is the stretch where early decisions quietly pay you back.',
-    forties:'Twenty years retired and still growing. Most plans never get to draw this part of the line.',
-    peak:'The last climb to $2.16M. Every dollar at the top of it was a choice you made decades earlier.'
+    all:'Thirty years, one line. $567K today, $2.16M at the peak.',
+    soon:'These five years do the heaviest lifting. Everything else compounds on them.',
+    ret:'Three years from the last paycheck you will ever need.',
+    decade:'Ten years not working, and the balance climbs anyway.',
+    thirties:'Your sixties and seventies, already paid for.',
+    forties:'Twenty years retired, and still growing.',
+    peak:'The last climb to $2.16M. Every dollar of it was a choice.'
   };
   function money(v){
     if(v>=1000000) return '$'+(v/1000000).toFixed(2).replace(/\.?0+$/,'')+'M';
@@ -14109,8 +14109,8 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
     var J=window.__journey, a=J&&J.valueAt?J.valueAt(lo):null, b=J&&J.valueAt?J.valueAt(hi):null;
     if(a===null||b===null) return NOTES.all;
     var yrs=Math.max(1, Math.round(hi-lo));
-    if(b>a) return 'From '+money(a)+' to '+money(b)+' in '+yrs+' years \u2014 the quiet part of the plan, doing its work.';
-    return money(a)+' to '+money(b)+' across '+yrs+' years, spent exactly the way you meant to spend it.';
+    if(b>a) return money(a)+' to '+money(b)+' in '+yrs+' years, quietly.';
+    return money(a)+' to '+money(b)+' over '+yrs+' years, exactly as planned.';
   }
   function pct(y){ return (y-Y0)/(Y1-Y0)*100; }
   function paint(quiet){
@@ -14133,6 +14133,10 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
       noteEl.textContent=txt; noteEl.classList.add('swap');
     }
     J.draw(lay.querySelector('.sum-svg'), 720, vbH, true, lo, hi, quiet!==false);
+    /* the dots are rebuilt by every draw, so the current pick is re-applied after it */
+    var picked=lay.querySelector('.sum-rscroll .sxtl-row.lit');
+    if(picked) lay.querySelectorAll('.sum-svg .jdot').forEach(function(c){
+      c.classList.toggle('lit', c.dataset.mi===picked.dataset.mi); });
     lay.querySelectorAll('.sum-route .sxtl-row').forEach(function(r){
       var m=(r.querySelector('.sxtl-date')||{}).textContent||'';
       var ym=m.match(/(19|20)\d{2}/);
@@ -14276,6 +14280,13 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
       (r.lastElementChild||r).appendChild(b);
     });
     var tail=document.createElement('div'); tail.className='sum-tail'; ctx.appendChild(tail);
+    /* the view opens on the milestone everything else is measured against */
+    var retRow=null;
+    Array.prototype.some.call(ctx.querySelectorAll('.sxtl-row'), function(r){
+      if(/Retirement day/.test((r.querySelector('.sxtl-t')||{}).textContent||'')){ retRow=r; return true; }
+      return false;
+    });
+    if(retRow) light(retRow.dataset.mi);
     J.wire(ctx.querySelector('.sxtl'));
     document.body.classList.add('sum-open');
     lo=Y0; hi=Y1;
@@ -14283,7 +14294,15 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
     paint(false);
     lay.classList.remove('sum-live');
     clearTimeout(liveT);
-    liveT=setTimeout(function(){ if(lay) lay.classList.add('sum-live'); }, 1500);
+    liveT=setTimeout(function(){
+      if(!lay) return;
+      lay.classList.add('sum-live');
+      var host=lay.querySelector('.sum-rscroll'), row=lay.querySelector('.sum-rscroll .sxtl-row.lit');
+      if(host && row && !host.scrollTop){
+        var d=row.getBoundingClientRect().top - host.getBoundingClientRect().top;
+        host.scrollTop = Math.max(0, host.scrollTop + d - 14);
+      }
+    }, 1500);
     window.scrollTo(0,0);
     fit();
   }
