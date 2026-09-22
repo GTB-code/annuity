@@ -11734,17 +11734,26 @@ function xHead(label, fig, sub){
     '<button class="sx-close" aria-label="Close" data-sx-close><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10182C" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
 }
 const XTL=[
-  ['#04B477','2026 &middot; Marshall 61, Lily 59','Today','Net worth $1.14M, confidence 87. The starting line is already strong.','Give the $3,450 surplus a job'],
-  ['#FBBD04','December 2028 &middot; Marshall 63','Retirement day','Work income stops. The portfolio starts paying $3,100 a month, in the right order.','Set the withdrawal order'],
-  ['#1B6B5C','2029','The first Roth window','Convert about $17,800 to the top of the 12% band. Six Decembers like this save $61,000.','Pencil in the December conversion'],
-  ['#04B477','2030 &middot; Marshall 65','Medicare arrives','The $1,180 a month insurance bridge ends. Spending gets a permanent haircut.','Set an enrollment reminder for fall 2029'],
+  ['#04B477','2026 &middot; Marshall 61, Lily 59','Today','Net worth $1.14M, confidence 87. The starting line is already strong.'],
+  ['#9BD9C1','2027 &middot; Marshall 62','The door you should not walk through','Social Security opens at 62. Claiming now would lock in about 30% less, for life. The hardest year is the one you do nothing in.'],
+  ['#1B6B5C','2028 &middot; the year Medicare is watching','The two-year look-back starts','Medicare prices your 2030 premiums off your 2028 tax return. Anything you convert this year shows up as a bigger bill two years later.'],
+  ['#FBBD04','December 2028 &middot; Marshall 63','Retirement day','Work income stops. The portfolio starts paying $3,100 a month, in the right order.'],
+  ['#0E794E','2029','The first Roth window','Convert about $17,800 to the top of the 12% band. Six Decembers like this save $61,000.'],
+  ['#1B6B5C','2029 &middot; the bridge years','Your subsidy and your conversion collide','Buying your own insurance until 65 means every converted dollar counts as income too. Convert too much and the premium help vanishes.'],
+  ['#04B477','2030 &middot; Marshall 65','Medicare arrives','The $1,180 a month insurance bridge ends. Spending gets a permanent haircut.'],
+  ['#9BD9C1','2032 &middot; Lily 65','The second retirement','Lily stops four years after you do. Two incomes become one, and the withdrawal order has to be rewritten around it.'],
+  ['#0D3F4A','2033','Social Security&rsquo;s own deadline','The trust fund is projected to fall short around here. Your plan already assumes a trim, which is why it still holds.'],
   ['#1B6B5C','2034','The last conversion window','The low-bracket years close. The tax savings are locked in for good.'],
-  ['#0E794E','2035 &middot; Marshall 70','Social Security, claimed right','$3,940 a month for life. Three years of patience became a 24% raise.','Lock the age-70 claiming plan'],
+  ['#0E794E','2035 &middot; Marshall 70','Social Security, claimed right','$3,940 a month for life. Three years of patience became a 24% raise.'],
+  ['#9BD9C1','2036 &middot; Marshall 70&frac12;','Charity gets a tax-free door','From here you can send money straight from the IRA to a cause and skip the tax entirely. Almost nobody remembers this one.'],
   ['#9BD9C1','2038 &middot; Marshall 73','RMDs begin, already tamed','Required withdrawals start, shrunk by the conversions of the early thirties.'],
+  ['#0D3F4A','2041','The bracket nobody plans for','If one of you outlives the other, the survivor keeps most of the income and files single. The same money, taxed harder.'],
+  ['#1B6B5C','2045 &middot; Marshall 80','The care years, already priced in','Most long-term care need starts in the eighties. Three years of it sits in the plan so it never becomes a crisis decision.'],
   ['#0D3F4A','2046','The house is yours outright','The 3.1% mortgage retires. $905K of value with zero debt against it.'],
   ['#FBBD04','2056','The peak: $2.16M','The portfolio crests. From here the plan spends down by design, not by accident.'],
   ['#04B477','2099','Still funded','The plan carries past 99 with money left over. That is the whole point.']
 ];
+window.XTL = XTL;   /* the Prism draws the same milestones on the journey graph */
 const XREADS=[
   ['Your Savings Playbook','The order to fill your accounts, from the 401(k) match on down.','<path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/>'],
   ['What Are Special Expenses?','Weddings, roofs, remodels: pricing the one-time costs into the plan.','<path d="M20.6 13.4L12 22 2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.6"/>'],
@@ -12150,8 +12159,12 @@ document.querySelectorAll('.snap-stats').forEach(function(sc){
   upd();
 });
 const tlWrap=document.querySelector('.lens-body[data-lens="snapshot"] .snap-chartwrap');
-if(tlWrap){ tlWrap.setAttribute('title','Open the ultimate timeline');
-  tlWrap.addEventListener('click', e=>{ if(e.target.closest('.rm-dd, .rm-filter, .rm-menu, .rm-fmenu')) return; openPanel('tl'); }); }
+if(tlWrap){ tlWrap.setAttribute('title','Open your financial journey in Prism');
+  tlWrap.addEventListener('click', e=>{
+    if(e.target.closest('.rm-dd, .rm-filter, .rm-menu, .rm-fmenu')) return;
+    if(window.__sum2 && window.__sum2.open){ window.__sum2.open(); return; }
+    openPanel('tl');
+  }); }
 document.querySelectorAll('.stat-card[data-key], .snap-stat[data-key], .snap-chip[data-key]').forEach(c=>{
   const go=()=>{ openKey===c.dataset.key ? closePanel() : openPanel(c.dataset.key); };
   c.addEventListener('click', go);
@@ -13857,6 +13870,481 @@ body.story-open{ overflow:hidden; }
 })();
 </script>
 <!-- CAROUSEL-DRAG END -->
+
+
+<!-- SUMMARY-TWO BEGIN: the Summary graph opens its own two-column view -->
+<style id="sum2CSS">
+.layout.page.sum-layout{ display:none; grid-template-columns:minmax(0,1fr) 360px; }
+body.sum-open .layout.page.sum-layout{ display:grid; }
+body.sum-open .layout.page[data-page="plan"].on{ display:none; }
+body.sum-open .topnav{ background:var(--white); }
+body.sum-open .dock .dock-inner{ grid-template-columns:minmax(0,1fr); }
+body.sum-open .dock .askbar{ grid-column:1; justify-self:center; }
+body.sum-open .layout.page.sum-layout{ padding-bottom:150px; }
+body.sum-open .sum-layout .side{ display:none; }
+
+.sum-layout .center{ grid-column:1; gap:var(--s-3); }
+.sum-layout .sum-route{ grid-column:2; }
+/* the close sits on the route's own header line */
+.sum-layout .sum-rhead{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.sum-layout .sum-rhead .story-head{ margin-bottom:0; }
+.layout.page.sum-layout{ padding-top:calc(73px + var(--s-3)); row-gap:var(--s-4); }
+.sum-layout .alo-top{ margin-top:0; }
+.sum-layout .snap-headline{ transform:none; margin-top:0; }
+
+/* ---- the range filter, stock-chart style ---- */
+.sum-range{ margin-top:10px; }
+.sum-chips{ display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0; }
+.sum-chip{ font-size:13px; font-weight:600; color:var(--text-secondary); background:var(--white);
+  border:1px solid var(--hairline); border-radius:var(--r-pill); padding:5px 13px; cursor:pointer;
+  transition:border-color 140ms ease, color 140ms ease, background 140ms ease; }
+.sum-chip:hover{ border-color:var(--hairline-strong); color:var(--ink); }
+.sum-chip.on{ border-color:#CDEBDD; background:#F3FBF7; color:var(--green-cta); }
+.sum-rangefoot{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-top:7px;
+  margin-left:var(--plot-l, 0); margin-right:var(--plot-r, 0); }
+.sum-hint{ font-size:12.5px; color:var(--text-tertiary); }
+.sum-readout{ font-size:13px; font-weight:600; color:var(--text-secondary); font-variant-numeric:tabular-nums; }
+.sum-brush{ position:relative; height:38px; border-radius:8px; overflow:hidden; background:#FAFBFC;
+  border:1px solid var(--hairline); touch-action:none; user-select:none; cursor:pointer; }
+.sum-brush .sum-mini{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+.sum-brush .br-mask{ position:absolute; top:0; bottom:0; background:rgba(255,255,255,0.72); pointer-events:none; }
+.sum-brush .br-l{ left:0; } .sum-brush .br-r{ right:0; }
+.sum-brush .br-win{ position:absolute; top:0; bottom:0; cursor:grab;
+  border-left:2px solid var(--green); border-right:2px solid var(--green);
+  background:rgba(4,180,119,0.07); }
+.sum-brush.dragging .br-win{ cursor:grabbing; }
+.sum-brush .br-win:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+.sum-brush .br-h{ position:absolute; top:50%; width:8px; height:18px; margin-top:-9px; border-radius:4px;
+  background:var(--green); box-shadow:0 1px 3px rgba(16,24,44,.22); cursor:ew-resize; }
+.sum-brush .br-h-l{ left:-5px; } .sum-brush .br-h-r{ right:-5px; }
+.sum-brush .br-h::after{ content:''; position:absolute; inset:-8px -10px; }
+.sum-layout .sum-rscroll .sxtl-row.out{ opacity:0.32; }
+.sum-layout .sum-close{ display:flex; align-items:center; justify-content:center; width:38px; height:38px;
+  border-radius:12px; border:1px solid var(--hairline-strong); background:var(--white); color:#6E7480;
+  cursor:pointer; transition:background 140ms ease, color 140ms ease; }
+.sum-layout .sum-close:hover{ background:#F6F7F8; color:var(--ink); }
+.sum-layout .alo-top .bud-sub{ margin-bottom:6px; }
+.sum-layout .sum-plot{ padding:0; margin-top:-6px; }
+.sum-layout .sum-plot .gd-svg{ width:100%; height:auto; display:block; }
+.sum-layout .sum-route{ position:sticky; top:96px; }
+.sum-layout .sum-rscroll{ margin-top:var(--s-5); max-height:var(--sum-h, calc(100vh - 190px)); overflow-y:auto;
+  padding-right:6px; scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; }
+.sum-layout .sum-rscroll .sxtl{ margin-top:0; }
+.sum-layout .sum-rscroll .sxtl-row{ cursor:pointer; border-radius:14px; margin-left:-14px;
+  padding-left:14px; padding-right:14px; padding-bottom:22px; }
+/* the picked milestone opens up: more air above and below the green, and a question to follow */
+.sum-layout .sum-rscroll .sxtl-row.lit{ background:#FAFAFB; padding-top:36px; padding-bottom:38px;
+  margin-top:-10px; margin-bottom:22px; }
+.sum-layout .sum-rscroll .sxtl-row .sxtl-ask{ display:none; }
+.sum-layout .sum-rscroll .sxtl-row.lit .sxtl-ask{ display:inline-flex; align-items:center; gap:8px;
+  margin-top:14px; max-width:100%; text-align:left; cursor:pointer;
+  background:var(--white); border:1px solid #CDEBDD; border-radius:var(--r-pill);
+  padding:8px 14px; font:600 14px var(--font); color:var(--green-cta);
+  animation:aiRise 320ms cubic-bezier(0.22,1,0.36,1) 60ms both;
+  transition:border-color 140ms ease, background 140ms ease; }
+.sum-layout .sum-rscroll .sxtl-row.lit .sxtl-ask:hover{ border-color:var(--green); background:#F6FDFA; }
+.sum-layout .sum-rscroll .sxtl-ask .ic{ flex:none; display:inline-flex; color:var(--green); }
+.sum-layout .sum-rscroll .sxtl-ask .t{ min-width:0; }
+/* room for the last milestones to reach the top of the column */
+.sum-tail{ height:calc(var(--sum-h, 520px) - 210px); min-height:80px; }
+
+.sum-layout .sum-note{ font-size:16.5px; line-height:1.5; color:var(--ink); font-weight:500;
+  margin:0; max-width:58ch; min-height:50px; }
+.sum-layout .sum-note.swap{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) both; }
+@media (prefers-reduced-motion:reduce){ .sum-layout .sum-note.swap{ animation:none; } }
+@media (max-width:1080px){ .layout.page.sum-layout{ grid-template-columns:minmax(0,1fr); } }
+
+/* ---- entry: the columns settle, the line draws, the dots and milestones follow ---- */
+body.sum-open .sum-layout{ animation:aiSoft 150ms ease both; }
+body.sum-open .sum-layout .sum-range{ animation:aiRise 460ms cubic-bezier(0.22,1,0.36,1) 310ms both; }
+body.sum-open .sum-layout .alo-top{ animation:aiRise 440ms cubic-bezier(0.22,1,0.36,1) 60ms both; }
+body.sum-open .sum-layout .sum-plot{ animation:aiRise 500ms cubic-bezier(0.22,1,0.36,1) 200ms both; }
+body.sum-open .sum-layout .sum-chips{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) 100ms both; }
+body.sum-open .sum-layout .sum-note{ animation:aiRise 440ms cubic-bezier(0.22,1,0.36,1) 140ms both; }
+body.sum-open .sum-layout .sum-rhead{ animation:aiRise 400ms cubic-bezier(0.22,1,0.36,1) 150ms both; }
+body.sum-open .sum-layout .sum-rscroll .sxtl-row{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay:calc(210ms + var(--r, 0) * 42ms); }
+.sum-layout .sum-svg .jdot{ opacity:0; transform-box:fill-box; transform-origin:center;
+  animation:jdotIn 360ms cubic-bezier(0.22,1,0.36,1) forwards;
+  animation-delay:calc(430ms + var(--i, 0) * 50ms); }
+@keyframes jdotIn{ from{ opacity:0; transform:scale(0.2); } to{ opacity:1; transform:none; } }
+/* the retirement marker drops in, then its dot keeps a slow pulse */
+.sum-layout .sum-svg .jret{ animation:jretDrop 620ms cubic-bezier(0.22,1,0.36,1) 300ms both; }
+@keyframes jretDrop{ from{ opacity:0; transform:scaleY(0); } to{ opacity:0.55; transform:none; } }
+.sum-layout .sum-svg .jret{ transform-box:fill-box; transform-origin:top; }
+.sum-layout .sum-svg .jret-lab{ animation:aiRise 460ms cubic-bezier(0.22,1,0.36,1) 520ms both; }
+.sum-layout .sum-svg .jret-ring{ transform-box:fill-box; transform-origin:center; opacity:0;
+  animation:jretPulse 2600ms cubic-bezier(0.22,1,0.36,1) 900ms infinite; }
+@keyframes jretPulse{
+  0%{ opacity:0.75; transform:scale(1); }
+  60%{ opacity:0; transform:scale(2.6); }
+  100%{ opacity:0; transform:scale(2.6); } }
+/* once the view has landed, changing the range repaints at once — the arrival plays only on open */
+.sum-layout.sum-live .sum-svg .jdot{ animation:none; opacity:1; }
+.sum-layout.sum-live .sum-svg .jret,
+.sum-layout.sum-live .sum-svg .jret-lab{ animation:none; }
+.sum-layout.sum-live .sum-svg .jret{ opacity:0.55; }
+
+/* ---- exit: it steps back the way it came ---- */
+body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
+@keyframes sumOut{ from{ opacity:1; transform:none; } to{ opacity:0; transform:translateY(6px); } }
+
+/* ---- the picked milestone and its dot answer together ---- */
+.sum-layout .sum-svg .jdot{ transition:r 180ms cubic-bezier(0.22,1,0.36,1); }
+.sum-layout .sum-rscroll .sxtl-row{ transition:background 180ms ease, opacity 200ms ease, padding 180ms ease, margin 180ms ease; }
+
+@media (prefers-reduced-motion:reduce){
+  body.sum-open .sum-layout,
+  body.sum-open .sum-layout .alo-top,
+  body.sum-open .sum-layout .sum-plot,
+  body.sum-open .sum-layout .sum-note,
+  body.sum-open .sum-layout .sum-chips,
+  body.sum-open .sum-layout .sum-range,
+  body.sum-open .sum-layout .sum-rhead,
+  body.sum-open .sum-layout .sum-rscroll .sxtl-row,
+  body.sum-closing .sum-layout{ animation:none; }
+  .sum-layout .sum-svg .jdot{ animation:none; opacity:1; transition:none; }
+  .sum-layout .sum-svg .jret{ animation:none; opacity:0.55; }
+  .sum-layout .sum-svg .jret-lab{ animation:none; }
+  .sum-layout .sum-svg .jret-ring{ animation:none; opacity:0; }
+  .sum-layout .sum-rscroll .sxtl-row{ transition:none; }
+}
+</style>
+<script>
+(function(){
+  var lay=null, fitT=0, liveT=0, vbH=460;
+  var X='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+  function build(){
+    lay=document.createElement('div');
+    lay.className='layout page sum-layout';
+    lay.setAttribute('data-page','summary');
+    lay.innerHTML=
+      '<main class="center">'
+        +'<div class="alo-top">'
+          +'<h2 class="snap-headline ins-headline">Your plan, up to the <span class="yrs">peak</span>.</h2>'
+          +'<p class="bud-sub">Eighteen milestones, and the route to each one.</p>'
+        +'</div>'
+        +'<div class="sum-chips">'
+          +'<button type="button" class="sum-chip" data-span="all">All</button>'
+          +'<button type="button" class="sum-chip" data-span="soon">5 years</button>'
+          +'<button type="button" class="sum-chip" data-span="ret">To retirement</button>'
+          +'<button type="button" class="sum-chip" data-span="decade">First decade</button>'
+          +'<button type="button" class="sum-chip" data-span="thirties">The 2030s</button>'
+          +'<button type="button" class="sum-chip" data-span="forties">The 2040s</button>'
+          +'<button type="button" class="sum-chip" data-span="peak">To the peak</button>'
+        +'</div>'
+        +'<p class="sum-note" id="sumNote"></p>'
+        +'<div class="sum-plot">'
+          +'<svg class="gd-svg sum-svg" viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg" aria-label="Projected net worth, 2026 to 2056"></svg>'
+        +'</div>'
+        +'<div class="sum-range">'
+          +'<div class="sum-brush" id="sumBrush">'
+            +'<svg class="sum-mini" viewBox="0 0 720 38" preserveAspectRatio="none" aria-hidden="true"></svg>'
+            +'<div class="br-mask br-l"></div><div class="br-mask br-r"></div>'
+            +'<div class="br-win" role="slider" tabindex="0" aria-label="Timeline range">'
+              +'<span class="br-h br-h-l" aria-hidden="true"></span>'
+              +'<span class="br-h br-h-r" aria-hidden="true"></span>'
+            +'</div>'
+          +'</div>'
+          +'<div class="sum-rangefoot"><span class="sum-hint">Drag the window to slide, drag an edge to zoom</span>'
+          +'<span class="sum-readout" id="sumReadout"></span></div>'
+        +'</div>'
+
+      +'</main>'
+      +'<section class="sum-route">'
+        +'<div class="sum-rhead">'
+          +'<div class="story-head">The route <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'
+          +'<button class="sum-close" type="button" aria-label="Close summary" data-sum-back>'+X+'</button>'
+        +'</div>'
+        +'<div class="sum-rscroll"><div class="side-ctx" id="sumCtx"></div></div>'
+      +'</section>';
+    document.body.appendChild(lay);
+
+    lay.addEventListener('click', function(e){
+      if(e.target.closest('[data-sum-back]')){ close(); return; }
+      var ask=e.target.closest('.sxtl-ask');
+      if(ask){ e.stopPropagation(); askIt(ask.dataset.q); return; }
+      if(e.target.closest('.sxtl-act')) return;
+      var row=e.target.closest('.sum-route .sxtl-row');
+      if(row){ light(row.dataset.mi); scrollToRow(row); }
+    });
+    lay.addEventListener('mouseover', function(e){
+      var dot=e.target.closest && e.target.closest('.sum-svg .jdot');
+      if(dot) light(dot.dataset.mi);
+    });
+    lay.addEventListener('click', function(e){
+      var dot=e.target.closest && e.target.closest('.sum-svg .jdot'); if(!dot) return;
+      light(dot.dataset.mi);
+      scrollToRow(lay.querySelector('.sum-route .sxtl-row[data-mi="'+dot.dataset.mi+'"]'));
+    });
+    wireBrush();
+    document.addEventListener('keydown', function(e){
+      if(e.key==='Escape' && document.body.classList.contains('sum-open')) close();
+    });
+    window.addEventListener('resize', function(){ clearTimeout(fitT); fitT=setTimeout(fit, 120); });
+    if(window.ResizeObserver) new ResizeObserver(function(){ fit(); }).observe(lay.querySelector('.center'));
+    window.addEventListener('boldin:view', function(){ if(document.body.classList.contains('sum-open')) close(); });
+  }
+  /* ---- the range filter: drag the window, or drag either edge ---- */
+  var SPAN=(window.__journey && window.__journey.span) || [2026,2056];
+  var Y0=SPAN[0], Y1=SPAN[1], MINSPAN=3, lo=Y0, hi=Y1;
+  var SPANS={ all:[Y0,Y1], soon:[Y0,2031], ret:[Y0,2029], decade:[2029,2039],
+              thirties:[2030,2040], forties:[2040,2050], peak:[2046,Y1] };
+  var NOTES={
+    all:'Thirty years on one line. $567,000 today becomes $2.16M at the peak \u2014 not by luck, by showing up.',
+    soon:'These five years carry more weight than any that follow. Everything after them compounds on what you build now.',
+    ret:'Three years from the last paycheck you will ever need. You are not hoping to retire. You are scheduling it.',
+    decade:'The decade that settles the question. You spend it not working, and the balance climbs anyway.',
+    thirties:'Your sixties and seventies, already funded. This is the stretch where early decisions quietly pay you back.',
+    forties:'Twenty years retired and still growing. Most plans never get to draw this part of the line.',
+    peak:'The last climb to $2.16M. Every dollar at the top of it was a choice you made decades earlier.'
+  };
+  function money(v){
+    if(v>=1000000) return '$'+(v/1000000).toFixed(2).replace(/\.?0+$/,'')+'M';
+    return '$'+Math.round(v/1000)+'K';
+  }
+  function noteFor(key){
+    if(key && NOTES[key]) return NOTES[key];
+    var J=window.__journey, a=J&&J.valueAt?J.valueAt(lo):null, b=J&&J.valueAt?J.valueAt(hi):null;
+    if(a===null||b===null) return NOTES.all;
+    var yrs=Math.max(1, Math.round(hi-lo));
+    if(b>a) return 'From '+money(a)+' to '+money(b)+' in '+yrs+' years \u2014 the quiet part of the plan, doing its work.';
+    return money(a)+' to '+money(b)+' across '+yrs+' years, spent exactly the way you meant to spend it.';
+  }
+  function pct(y){ return (y-Y0)/(Y1-Y0)*100; }
+  function paint(quiet){
+    var J=window.__journey; if(!J || !lay) return;
+    var br=lay.querySelector('#sumBrush'), win=br.querySelector('.br-win');
+    win.style.left=pct(lo)+'%'; win.style.width=(pct(hi)-pct(lo))+'%';
+    br.querySelector('.br-l').style.width=pct(lo)+'%';
+    br.querySelector('.br-r').style.width=(100-pct(hi))+'%';
+    win.setAttribute('aria-valuetext', Math.round(lo)+' to '+Math.round(hi));
+    lay.querySelector('#sumReadout').textContent = Math.round(lo)+' \u2013 '+Math.round(hi);
+    var active=null;
+    lay.querySelectorAll('.sum-chip').forEach(function(c){
+      var r=SPANS[c.dataset.span], on = !!r && Math.abs(r[0]-lo)<0.6 && Math.abs(r[1]-hi)<0.6;
+      c.classList.toggle('on', on);
+      if(on) active=c.dataset.span;
+    });
+    var noteEl=lay.querySelector('#sumNote'), txt=noteFor(active);
+    if(noteEl && noteEl.textContent!==txt){
+      noteEl.classList.remove('swap'); void noteEl.offsetWidth;
+      noteEl.textContent=txt; noteEl.classList.add('swap');
+    }
+    J.draw(lay.querySelector('.sum-svg'), 720, vbH, true, lo, hi, quiet!==false);
+    lay.querySelectorAll('.sum-route .sxtl-row').forEach(function(r){
+      var m=(r.querySelector('.sxtl-date')||{}).textContent||'';
+      var ym=m.match(/(19|20)\d{2}/);
+      var yr = ym ? Math.min(+ym[0], Y1) : null;
+      var inWin = (yr===null) || (yr >= Math.floor(lo) && yr <= Math.ceil(hi));
+      r.classList.toggle('out', !inWin);
+    });
+  }
+  function setRange(a, b){
+    lo=Math.max(Y0, Math.min(Y1-MINSPAN, a));
+    hi=Math.min(Y1, Math.max(lo+MINSPAN, b));
+    paint();
+  }
+  function wireBrush(){
+    var br=lay.querySelector('#sumBrush'), win=br.querySelector('.br-win');
+    var J=window.__journey;
+    if(J){
+      J.mini(br.querySelector('.sum-mini'), 720, 38);
+      if(J.plot){
+        var ml=(J.plot.x0*100).toFixed(4)+'%', mr=((1-J.plot.x1)*100).toFixed(4)+'%';
+        br.style.marginLeft=ml; br.style.marginRight=mr;
+        var rg=lay.querySelector('.sum-range');
+        if(rg){ rg.style.setProperty('--plot-l', ml); rg.style.setProperty('--plot-r', mr); }
+      }
+    }
+    var drag=null;
+    function yearAt(clientX){
+      var r=br.getBoundingClientRect();
+      return Y0 + Math.max(0, Math.min(1, (clientX-r.left)/r.width)) * (Y1-Y0);
+    }
+    br.addEventListener('pointerdown', function(e){
+      var h=e.target.closest('.br-h');
+      var mode = h ? (h.classList.contains('br-h-l') ? 'l' : 'r')
+                   : (e.target.closest('.br-win') ? 'move' : 'jump');
+      var y=yearAt(e.clientX);
+      if(mode==='jump'){ var half=(hi-lo)/2; setRange(y-half, y+half); mode='move'; }
+      drag={ mode:mode, y0:y, lo0:lo, hi0:hi };
+      br.setPointerCapture(e.pointerId);
+      br.classList.add('dragging');
+      e.preventDefault();
+    });
+    br.addEventListener('pointermove', function(e){
+      if(!drag) return;
+      var y=yearAt(e.clientX), d=y-drag.y0;
+      if(drag.mode==='l') setRange(Math.min(drag.lo0+d, drag.hi0-MINSPAN), drag.hi0);
+      else if(drag.mode==='r') setRange(drag.lo0, Math.max(drag.hi0+d, drag.lo0+MINSPAN));
+      else {
+        var span=drag.hi0-drag.lo0, a=Math.max(Y0, Math.min(Y1-span, drag.lo0+d));
+        setRange(a, a+span);
+      }
+    });
+    function end(e){ if(!drag) return; drag=null; br.classList.remove('dragging');
+      try{ br.releasePointerCapture(e.pointerId); }catch(err){} }
+    br.addEventListener('pointerup', end);
+    br.addEventListener('pointercancel', end);
+    win.addEventListener('keydown', function(e){
+      var step=(hi-lo)/10, span=hi-lo;
+      if(e.key==='ArrowLeft'){ setRange(lo-step, hi-step); e.preventDefault(); }
+      else if(e.key==='ArrowRight'){ setRange(lo+step, hi+step); e.preventDefault(); }
+      else if(e.key==='ArrowUp'){ setRange(lo+span*0.1, hi-span*0.1); e.preventDefault(); }
+      else if(e.key==='ArrowDown'){ setRange(lo-span*0.1, hi+span*0.1); e.preventDefault(); }
+    });
+    lay.addEventListener('click', function(e){
+      var c=e.target.closest('.sum-chip'); if(!c) return;
+      var r=SPANS[c.dataset.span]; if(r) setRange(r[0], r[1]);
+    });
+  }
+  function askIt(q){
+    var inp=document.querySelector('.dock .askbar input'); if(!inp) return;
+    inp.value=q;
+    inp.dispatchEvent(new Event('input', {bubbles:true}));
+    inp.focus();
+    inp.setSelectionRange(q.length, q.length);
+  }
+  var rowT=0;
+  /* the plot fills whatever height is left, so the slider is always on screen */
+  function sizePlot(){
+    if(!lay) return false;
+    var plot=lay.querySelector('.sum-plot'), rangeEl=lay.querySelector('.sum-range');
+    if(!plot || !rangeEl) return false;
+    var colW=plot.offsetWidth || 720;
+    var topInView=plot.offsetTop - window.scrollY;
+    var reserve=104;                                   /* the ask bar and a little air */
+    var avail=window.innerHeight - topInView - rangeEl.offsetHeight - reserve;
+    var target=Math.max(240, Math.min(620, avail));
+    var next=Math.round(target * 720 / colW);
+    if(Math.abs(next-vbH) < 6) return false;
+    vbH=next;
+    var svg=lay.querySelector('.sum-svg');
+    if(svg) svg.setAttribute('viewBox', '0 0 720 '+vbH);
+    return true;
+  }
+  function scrollToRow(row, again){
+    if(!row) return;
+    var host=lay.querySelector('.sum-rscroll'); if(!host) return;
+    var delta=row.getBoundingClientRect().top - host.getBoundingClientRect().top;
+    var top=Math.max(0, host.scrollTop + delta - 14);
+    var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce) host.scrollTop=top; else host.scrollTo({ top:top, behavior:'smooth' });
+    if(!again){ clearTimeout(rowT); rowT=setTimeout(function(){ scrollToRow(row, true); }, 230); }
+  }
+  function light(mi){
+    lay.querySelectorAll('.sum-route .sxtl-row').forEach(function(r){ r.classList.toggle('lit', r.dataset.mi===mi); });
+    lay.querySelectorAll('.sum-svg .jdot').forEach(function(c){ c.classList.toggle('lit', c.dataset.mi===mi); });
+  }
+  function open(){
+    var J=window.__journey; if(!J) return;
+    if(!lay) build();
+    var ctx=lay.querySelector('#sumCtx');
+    ctx.innerHTML=J.tl();
+    var ASK=[
+      'Where should the surplus go?',
+      'What does waiting really buy?',
+      'Will this raise my premiums?',
+      'What order should I withdraw in?',
+      'How much should I convert?',
+      'How much can I convert safely?',
+      'What changes at Medicare?',
+      'How does Lily\u2019s date change this?',
+      'What if benefits get cut?',
+      'What if I skip these years?',
+      'Is waiting until 70 still right?',
+      'Should I give from the IRA?',
+      'How big will my RMDs be?',
+      'What happens if one of us dies?',
+      'Can the plan absorb care costs?',
+      'Should I pay it off sooner?',
+      'What happens after the peak?',
+      'Will the money really last?'
+    ];
+    Array.prototype.forEach.call(ctx.querySelectorAll('.sxtl-row'), function(r,i){
+      r.style.setProperty('--r', i);
+      var q=ASK[i]; if(!q) return;
+      var b=document.createElement('button');
+      b.type='button'; b.className='sxtl-ask'; b.dataset.q=q;
+      b.innerHTML='<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+
+        '<path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>'+
+        '<span class="t">'+q+'</span>';
+      (r.lastElementChild||r).appendChild(b);
+    });
+    var tail=document.createElement('div'); tail.className='sum-tail'; ctx.appendChild(tail);
+    J.wire(ctx.querySelector('.sxtl'));
+    document.body.classList.add('sum-open');
+    lo=Y0; hi=Y1;
+    J.draw(lay.querySelector('.sum-svg'), 720, 460, true);
+    paint(false);
+    lay.classList.remove('sum-live');
+    clearTimeout(liveT);
+    liveT=setTimeout(function(){ if(lay) lay.classList.add('sum-live'); }, 1500);
+    window.scrollTo(0,0);
+    fit();
+  }
+  /* the route's scroll window ends level with the note under the graph */
+  function fit(){
+    if(!lay || !document.body.classList.contains('sum-open')) return;
+    if(sizePlot()) paint();
+    var c=lay.querySelector('.center'), r=lay.querySelector('.sum-rscroll');
+    if(!c || !r) return;
+    var h=Math.round(c.getBoundingClientRect().bottom - r.getBoundingClientRect().top);
+    if(h>160) lay.style.setProperty('--sum-h', h+'px');
+  }
+  var closing=0;
+  function close(){
+    if(closing) return;
+    clearTimeout(liveT); if(lay) lay.classList.remove('sum-live');
+    var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){ document.body.classList.remove('sum-open'); window.scrollTo(0,0); return; }
+    document.body.classList.add('sum-closing');
+    closing=setTimeout(function(){
+      document.body.classList.remove('sum-open','sum-closing');
+      closing=0; window.scrollTo(0,0);
+    }, 210);
+  }
+  window.__sum2={ open:open, close:close, isOpen:function(){ return document.body.classList.contains('sum-open'); } };
+})();
+</script>
+<!-- SUMMARY-TWO END -->
+<!-- PRISM-JOURNEY BEGIN: the Summary graph opens in the rail, then splits full screen -->
+<style id="prismJourneyCSS">
+/* --- the simplified Prism: one card, no library chrome --- */
+body.prism-simple #gdAdd,
+body.prism-simple #gdGallery,
+body.prism-simple .gd-note{ display:none !important; }
+body.prism-simple .gd-card .gd-pin,
+body.prism-simple .gd-card .gd-edit,
+body.prism-simple .gd-card .gd-rm{ display:none !important; }
+body.prism-simple .gd-card{ padding-bottom:16px; }
+.gd-jtl{ max-height:min(56vh, 520px); overflow-y:auto; padding-right:8px; margin-right:-4px;
+  scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; }
+.gd-jtl .sxtl{ margin-top:4px; }
+.gd-jnote{ font-size:13px; color:var(--text-secondary); line-height:1.5; margin-top:12px;
+  padding-top:12px; border-top:1px solid var(--hairline); }
+.gd-svg .jdot{ transition:r 120ms ease; cursor:pointer; }
+.gd-svg .jdot.lit{ r:7; }
+
+/* --- full screen: the graph on the left, the milestones on the right --- */
+body.pm-journey .pm-tablewrap{ display:none; }
+body.pm-journey .pm-inner{ max-width:1400px; }
+body.pm-journey .pm-body{ padding-bottom:48px; }
+.pm-split{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(360px,0.85fr); gap:34px; align-items:start; }
+.pm-split-graph{ border:1px solid var(--hairline); border-radius:16px; padding:20px 22px 16px; background:var(--white);
+  position:sticky; top:0; }
+.pm-split-graph .pm-jsvg{ width:100%; height:auto; }
+.pm-split-tl{ border-left:1px solid var(--hairline); padding-left:30px; max-height:calc(100vh - 160px); overflow-y:auto;
+  scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; }
+.pm-split-tl .sxtl-row{ cursor:pointer; border-radius:10px; transition:background 140ms ease; }
+.pm-split-tl .sxtl-row.lit{ background:#F4FAF7; }
+@media (max-width:1080px){ .pm-split{ grid-template-columns:1fr; }
+  .pm-split-graph{ position:static; }
+  .pm-split-tl{ border-left:none; padding-left:0; max-height:none; } }
+@media (prefers-reduced-motion:reduce){ .gd-svg .jdot, .pm-split-tl .sxtl-row{ transition:none; } }
+</style>
+<!-- PRISM-JOURNEY END -->
 <!-- SNAP-NAV BEGIN: arrows that appear over the end cards on hover -->
 <style id="snapNavCSS">
 .snap-scroll{ position:relative; }
@@ -16404,6 +16892,8 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
   ultraRender();
 
   function refresh(){ decorate(visibleRail()); enhanceAskbar(); ultraRender(); }
+  window.__railAI={ refresh:refresh, expand:expand, collapse:function(){ setExpanded(false); },
+                    isOpen:function(){ return document.body.classList.contains('ai-expanded'); } };
   if(document.readyState!=='loading') refresh(); else document.addEventListener('DOMContentLoaded', refresh);
   document.addEventListener('click', function(e){
     if(e.target.closest && e.target.closest('.topnav nav.modes a, [data-goto], [data-view]')) setTimeout(refresh, 260);
@@ -16983,8 +17473,119 @@ body.prism-max #prismMax{ display:flex; }
     gFlow:'<svg width="18" height="14" viewBox="0 0 20 15"><rect x="1" y="2" width="16" height="4.4" rx="2.2" fill="#04B477"/><rect x="1" y="8.6" width="12.4" height="4.4" rx="2.2" fill="#0D3F4A"/></svg>'
   };
 
+  /* ---------- the journey: the Summary graph, drawn for the rail and for full screen ---------- */
+  var JY0=2026, JY1=2056, JPK=2056;
+  function jseries(){
+    var up=[567,640,720,810,900,1000,1110,1230,1360,1500,1650,1800,1930,2050,2130,2160], pts=[], i;
+    for(i=0;i<up.length;i++) pts.push({ y:JY0+i*(JPK-JY0)/(up.length-1), v:up[i]*1000 });
+    return pts;
+  }
+  function jvalue(yr){
+    var pts=jseries();
+    for(var k=1;k<pts.length;k++){
+      if(pts[k].y>=yr){ var a=pts[k-1], b=pts[k], t=(yr-a.y)/(b.y-a.y||1); return a.v+(b.v-a.v)*t; }
+    }
+    return pts[pts.length-1].v;
+  }
+  function drawJourney(svg, W, H, big, lo, hi, quiet){
+    if(!svg) return;
+    lo = (typeof lo==='number') ? lo : JY0;
+    hi = (typeof hi==='number') ? hi : JY1;
+    var padL = big?74:58, padR = big?26:16, padT = big?26:18, padB = big?34:26;
+    var pw=W-padL-padR, ph=H-padT-padB, pts=jseries();
+    var yMax=2500000;
+    function X(y){ return padL+(y-lo)/(hi-lo)*pw; }
+    function Y(v){ return padT+ph-(v/yMax)*ph; }
+    function valueAt(yr){
+      for(var k=1;k<pts.length;k++){
+        if(pts[k].y>=yr){ var a=pts[k-1], b2=pts[k], t=(yr-a.y)/(b2.y-a.y||1); return a.v+(b2.v-a.v)*t; }
+      }
+      return pts[pts.length-1].v;
+    }
+    var seen=[{y:lo, v:valueAt(lo)}];
+    pts.forEach(function(pt){ if(pt.y>lo && pt.y<hi) seen.push(pt); });
+    seen.push({y:hi, v:valueAt(hi)});
+    var line='M'+X(seen[0].y).toFixed(1)+' '+Y(seen[0].v).toFixed(1);
+    seen.forEach(function(pt,i){ if(i) line+=' L'+X(pt.y).toFixed(1)+' '+Y(pt.v).toFixed(1); });
+    var s='';
+    var nY = big ? 5 : 3;
+    for(var gi=0; gi<=nY; gi++){
+      var f=gi/nY, y=padT+ph-f*ph;
+      s+='<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y.toFixed(1)+'" stroke="#EEF0F2"/>';
+      s+='<text x="'+(padL-8)+'" y="'+(y+4).toFixed(1)+'" font-size="'+(big?12.5:11)+'" fill="#9AA0AE" text-anchor="end">'+moneyK(yMax*f)+'</text>';
+    }
+    s+='<path class="gd-area" d="'+line+' L'+X(hi).toFixed(1)+' '+(padT+ph).toFixed(1)+' L'+X(lo).toFixed(1)+' '+(padT+ph).toFixed(1)+' Z" fill="rgba(4,180,119,0.10)"/>';
+    s+='<path class="gd-line" d="'+line+'" fill="none" stroke="#04B477" stroke-width="'+(big?3:2.6)+'" stroke-linecap="round" stroke-linejoin="round"/>';
+    /* a dot per milestone, sitting on the line */
+    var RETI=-1, seenYr={};
+    (window.XTL||[]).forEach(function(m,i){ if(RETI<0 && /Retirement day/.test(m[2]||'')) RETI=i; });
+    (window.XTL||[]).forEach(function(m,i){
+      var ym=(m[1]||'').match(/(19|20)\d{2}/); if(!ym) return;
+      var yr=parseInt(ym[0],10);
+      seenYr[yr]=(seenYr[yr]||0)+1;
+      if(seenYr[yr]>1) yr += 0.42*(seenYr[yr]-1);   /* same year twice: nudge so both dots are clickable */
+      if(i===RETI) return;                    /* retirement is drawn with its marker, below */
+      if(yr<lo-0.5 || yr>hi+0.5) return;
+      var v=valueAt(yr), r = big?8.5:5.4;
+      s+='<circle class="jdot" data-mi="'+i+'" style="--i:'+i+'" cx="'+X(yr).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="'+r+'" fill="'+m[0]+'" stroke="#fff" stroke-width="'+(big?2.6:2)+'"/>';
+    });
+    /* retirement: December 2028 */
+    var RETIdx=RETI;
+    var RET=2028.95, rx=X(RET), rv=valueAt(RET), ry=Y(rv);
+    var mk = (RET<lo || RET>hi) ? '' : '<line class="jret" x1="'+rx.toFixed(1)+'" y1="'+padT+'" x2="'+rx.toFixed(1)+'" y2="'+(padT+ph).toFixed(1)+'"'+
+           ' stroke="#B9812A" stroke-width="'+(big?1.6:1.2)+'" stroke-dasharray="5 6" stroke-linecap="round" opacity="0.55"/>';
+    if(big){
+      mk+='<text class="jret-lab" x="'+(rx+8).toFixed(1)+'" y="'+(padT+11)+'" font-size="12.5" font-weight="700" fill="#8A6212">Retirement</text>';
+      mk+='<text class="jret-lab" x="'+(rx+8).toFixed(1)+'" y="'+(padT+27)+'" font-size="12" fill="#9AA0AE">December 2028</text>';
+    }
+    mk+='<circle class="jret-ring" cx="'+rx.toFixed(1)+'" cy="'+ry.toFixed(1)+'" r="'+(big?8.5:5.4)+'" fill="none" stroke="#FBBD04" stroke-width="2"/>';
+    mk+='<circle class="jdot jret-dot" data-mi="'+RETI+'" style="--i:'+RETI+'" cx="'+rx.toFixed(1)+'" cy="'+ry.toFixed(1)+'" r="'+(big?9.5:6)+'" fill="#FBBD04" stroke="#fff" stroke-width="'+(big?2.8:2.1)+'"/>';
+    s+=mk;
+    var ticks=[], nT=4, prev=null;
+    for(var ti=0; ti<=nT; ti++){
+      var tv=Math.round(lo + (hi-lo)*ti/nT);
+      ticks.push(tv===prev ? null : tv);   /* a repeated year is left blank, not printed twice */
+      if(tv!==prev) prev=tv;
+    }
+    ticks.forEach(function(y,i){
+      if(y===null) return;
+      var anc = i===0 ? 'start' : (i===nT ? 'end' : 'middle');
+      var tx = i===0 ? X(y)-2 : (i===nT ? X(y)+2 : X(y));
+      s+='<text x="'+tx.toFixed(1)+'" y="'+(H-(big?10:7))+'" font-size="'+(big?12.5:11)+'" fill="#6E7480" text-anchor="'+anc+'">'+y+'</text>'; });
+    svg.innerHTML=s;
+    if(!reduce && !quiet){ var pl=svg.querySelector('.gd-line'), L=pl.getTotalLength();
+      pl.style.strokeDasharray=L; pl.style.strokeDashoffset=L;
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){
+        pl.style.transition='stroke-dashoffset .9s cubic-bezier(0.22,1,0.36,1)'; pl.style.strokeDashoffset='0'; }); }); }
+  }
+
+  /* the milestone list from the old panel, now the body of the rail card and of the split view */
+  function tlHtml(){
+    return '<div class="sxtl">' +
+      (window.XTL||[]).map(function(m, mi){
+        return '<div class="sxtl-row" data-mi="'+mi+'"><span class="sxtl-dot" style="background:'+m[0]+'"></span><div>'+
+          '<div class="sxtl-date">'+m[1]+'</div><div class="sxtl-t">'+m[2]+'</div><div class="sxtl-b">'+m[3]+'</div></div></div>';
+      }).join('') + '</div>';
+  }
+  function wireTl(host){
+    if(!host || host.dataset.actWired) return; host.dataset.actWired='1';
+    host.addEventListener('click', function(e){
+      var a=e.target.closest('.sxtl-act'); if(!a) return;
+      var on=a.classList.toggle('done');
+      a.querySelector('.tag').textContent = on ? 'In your plan' : 'Add to plan';
+    });
+  }
+
   /* ---------- the visualization library ---------- */
   var VIZ={
+    journey:{ name:'Your financial journey', when:'2026 to 2099', icon:I.gLine,
+      body:'<div class="gd-jtl"></div>'+
+           '<div class="gd-jnote">Open it full screen to see these milestones on the graph.</div>',
+      render:function(card){
+        var host=card.querySelector('.gd-jtl');
+        host.innerHTML=tlHtml();
+        wireTl(host.querySelector('.sxtl'));
+      }},
     bars:{ name:'Savings to retirement', when:'Dec 2028', icon:I.gBars,
       body:'<svg class="gd-svg" viewBox="0 0 420 216" xmlns="http://www.w3.org/2000/svg" aria-label="Projected savings to retirement, stacked by tax type"></svg><div class="gd-legend"></div>',
       render:function(card,d){
@@ -17098,13 +17699,14 @@ body.prism-max #prismMax{ display:flex; }
   /* ---------- personal state ---------- */
   var uidN=0;
   function mk(viz){ return { uid:'c'+(++uidN), viz:viz, title:VIZ[viz].name, pinned:false }; }
-  var PRISM={ cards:[ mk('bars'), mk('ring') ] };
+  var PRISM={ cards:[ mk('bars'), mk('ring') ], solo:null };
 
   function data(){ return { b:readBuckets(), inc:readIncome(), debt:readDebts(), nw:readNW() }; }
 
   function renderDock(newUid){
     var host=document.getElementById('gdCards');
-    var sorted=PRISM.cards.slice().sort(function(a,b){ return (b.pinned?1:0)-(a.pinned?1:0); });
+    var sorted = PRISM.solo ? [PRISM.solo]
+               : PRISM.cards.slice().sort(function(a,b){ return (b.pinned?1:0)-(a.pinned?1:0); });
     host.innerHTML=sorted.map(function(c){
       var v=VIZ[c.viz];
       return '<div class="gd-card'+(c.uid===newUid?' gd-in':'')+'" data-uid="'+c.uid+'">'+
@@ -17126,7 +17728,7 @@ body.prism-max #prismMax{ display:flex; }
       if(card) VIZ[c.viz].render(card, d);
     });
     var addBtn=document.getElementById('gdAdd');
-    addBtn.style.display = PRISM.cards.length>=Object.keys(VIZ).length ? 'none' : '';
+    addBtn.style.display = (PRISM.solo || PRISM.cards.length>=Object.keys(VIZ).length) ? 'none' : '';
   }
   function renderGallery(){
     var g=document.getElementById('gdGallery');
@@ -17135,7 +17737,9 @@ body.prism-max #prismMax{ display:flex; }
     g.innerHTML=avail.map(function(k){
       return '<button class="gd-gal" type="button" data-viz="'+k+'">'+VIZ[k].icon+esc(VIZ[k].name)+'</button>'; }).join('');
   }
-  function card2state(el){ var uid=el.dataset.uid; for(var i=0;i<PRISM.cards.length;i++){ if(PRISM.cards[i].uid===uid) return PRISM.cards[i]; } return null; }
+  function card2state(el){ var uid=el.dataset.uid;
+    if(PRISM.solo && PRISM.solo.uid===uid) return PRISM.solo;
+    for(var i=0;i<PRISM.cards.length;i++){ if(PRISM.cards[i].uid===uid) return PRISM.cards[i]; } return null; }
 
   /* ---------- delegation: pin, edit, remove, add ---------- */
   dock.addEventListener('click', function(e){
@@ -17257,6 +17861,18 @@ body.prism-max #prismMax{ display:flex; }
     window.__tri={ apply:applyBoth, getRail:getRail };
   })();
   /* ===== end EXPERIMENT JS ===== */
+  function drawMini(svg, W, H){
+    if(!svg) return;
+    var pts=jseries(), yMax=2500000, padT=5, ph=H-padT-4;
+    function X(y){ return (y-JY0)/(JY1-JY0)*W; }
+    function Y(v){ return padT+ph-(v/yMax)*ph; }
+    var d='M'+X(pts[0].y).toFixed(1)+' '+Y(pts[0].v).toFixed(1);
+    pts.forEach(function(pt,i){ if(i) d+=' L'+X(pt.y).toFixed(1)+' '+Y(pt.v).toFixed(1); });
+    svg.innerHTML='<path d="'+d+' L'+W+' '+(padT+ph)+' L0 '+(padT+ph)+' Z" fill="rgba(4,180,119,0.10)"/>'+
+      '<path d="'+d+'" fill="none" stroke="#9FDFC6" stroke-width="1.8" stroke-linejoin="round"/>';
+  }
+  window.__journey={ draw:drawJourney, mini:drawMini, tl:tlHtml, wire:wireTl, valueAt:jvalue, span:[JY0,JY1], ret:2028.95,
+                     plot:{ x0:74/720, x1:694/720 } };
   window.__graphDock={
     expand: function(){
       document.body.classList.remove('ai-expanded','ai-fullscreen');
@@ -17266,8 +17882,15 @@ body.prism-max #prismMax{ display:flex; }
       renderDock();
     },
     collapse: function(){
-      document.body.classList.remove('graph-expanded');
+      document.body.classList.remove('graph-expanded','prism-simple');
+      PRISM.solo=null;
       dock.setAttribute('aria-hidden','true');
+    },
+    /* the Summary graph opens here: one card, no dock chrome */
+    openSolo: function(viz){
+      PRISM.solo = mk(viz);
+      document.body.classList.add('prism-simple');
+      this.expand();
     },
     update: function(){ scheduleRender(); },
     isOpen: function(){ return document.body.classList.contains('graph-expanded'); }
@@ -17281,7 +17904,10 @@ body.prism-max #prismMax{ display:flex; }
   }).observe(document.body, { subtree:true, characterData:true, childList:true });
   document.getElementById('gdClose').addEventListener('click', function(){ window.__graphDock.collapse(); });
   var peek=document.getElementById('prismPeek');
-  if(peek) peek.addEventListener('click', function(){ window.__graphDock.expand(); });
+  if(peek) peek.addEventListener('click', function(){
+    PRISM.solo=null; document.body.classList.remove('prism-simple');
+    window.__graphDock.expand();
+  });
   /* ---- the deep dive: full wide screen + the table beneath ---- */
   var maxEl=null;
   function buildMax(){
@@ -17303,6 +17929,36 @@ body.prism-max #prismMax{ display:flex; }
     var d=data();
     var grid=maxEl.querySelector('#pmGrid'); grid.innerHTML='';
     maxEl.querySelector('.pm-title').textContent='Prism \u00b7 '+one.title;
+    /* the journey opens as a split: the graph on the left, the milestones on the right */
+    if(one.viz==='journey'){
+      document.body.classList.add('pm-journey');
+      grid.innerHTML =
+        '<div class="pm-split">' +
+          '<div class="pm-split-graph">' +
+            '<div class="pm-ct">Your financial journey<span class="pm-when">2026 to 2099</span></div>' +
+            '<svg class="gd-svg pm-jsvg" viewBox="0 0 620 420" xmlns="http://www.w3.org/2000/svg" aria-label="Projected net worth, 2026 to 2056"></svg>' +
+            '<div class="sx-note">The portfolio crests at $2.16M in 2056, by design. Everything on the right is the route.</div>' +
+          '</div>' +
+          '<aside class="pm-split-tl">' + tlHtml() + '</aside>' +
+        '</div>';
+      drawJourney(grid.querySelector('.pm-jsvg'), 620, 420, true);
+      var tlHost=grid.querySelector('.sxtl');
+      wireTl(tlHost);
+      tlHost.addEventListener('click', function(e){
+        if(e.target.closest('.sxtl-act')) return;
+        var row=e.target.closest('.sxtl-row'); if(!row) return;
+        grid.querySelectorAll('.sxtl-row').forEach(function(r){ r.classList.toggle('lit', r===row); });
+        grid.querySelectorAll('.jdot').forEach(function(c){ c.classList.toggle('lit', c.dataset.mi===row.dataset.mi); });
+      });
+      grid.addEventListener('mouseover', function(e){
+        var dot=e.target.closest && e.target.closest('.jdot'); if(!dot) return;
+        grid.querySelectorAll('.sxtl-row').forEach(function(r){ r.classList.toggle('lit', r.dataset.mi===dot.dataset.mi); });
+        grid.querySelectorAll('.jdot').forEach(function(c){ c.classList.toggle('lit', c===dot); });
+      });
+      document.body.classList.add('prism-max');
+      return;
+    }
+    document.body.classList.remove('pm-journey');
     (function(c){
       var el=document.createElement('div'); el.className='pm-card pm-solo';
       el.innerHTML='<div class="pm-ct">'+esc(c.title)+(VIZ[c.viz].when?'<span class="pm-when">'+esc(VIZ[c.viz].when)+'</span>':'')+'</div>'+VIZ[c.viz].body;
@@ -17321,7 +17977,7 @@ body.prism-max #prismMax{ display:flex; }
       '<tbody>'+rows+'<tr class="tot"><td>Everything, working together</td><td class="n">'+money(tot)+'</td><td class="n">100%</td><td class="n">'+money(tot28)+'</td></tr></tbody>';
     document.body.classList.add('prism-max');
   }
-  function closeMax(){ document.body.classList.remove('prism-max'); }
+  function closeMax(){ document.body.classList.remove('prism-max','pm-journey'); }
 
   document.getElementById('gdViewPlan').addEventListener('click', function(e){
     e.preventDefault();
