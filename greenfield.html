@@ -13923,7 +13923,8 @@ body.sum-open .sum-layout .side{ display:none; }
   border-radius:12px; border:1px solid var(--hairline-strong); background:var(--white); color:#6E7480;
   cursor:pointer; transition:background 140ms ease, color 140ms ease; }
 .sum-layout .sum-close:hover{ background:#F6F7F8; color:var(--ink); }
-.sum-layout .alo-top .bud-sub{ margin-bottom:6px; }
+.sum-layout .alo-top .bud-sub{ margin-bottom:22px; }
+@media (max-height:780px){ .sum-layout .alo-top .bud-sub{ margin-bottom:10px; } }
 .sum-layout .sum-plot{ padding:0; margin-top:-6px; }
 .sum-layout .sum-plot .gd-svg{ width:100%; height:auto; display:block; }
 .sum-layout .sum-route{ position:sticky; top:96px; }
@@ -13933,7 +13934,7 @@ body.sum-open .sum-layout .side{ display:none; }
 .sum-layout .sum-rscroll .sxtl-row{ cursor:pointer; border-radius:14px; margin-left:-14px;
   padding-left:14px; padding-right:14px; padding-bottom:22px; }
 /* the picked milestone opens up: more air above and below the green, and a question to follow */
-.sum-layout .sum-rscroll .sxtl-row.lit{ background:#FAFAFB; padding-top:36px; padding-bottom:38px;
+.sum-layout .sum-rscroll .sxtl-row.lit{ background:#FCFCFD; padding-top:36px; padding-bottom:38px;
   margin-top:-10px; margin-bottom:22px; }
 .sum-layout .sum-rscroll .sxtl-row .sxtl-ask{ display:none; }
 .sum-layout .sum-rscroll .sxtl-row.lit .sxtl-ask{ display:inline-flex; align-items:center; gap:8px;
@@ -14214,9 +14215,11 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
     if(!plot || !rangeEl) return false;
     var colW=plot.offsetWidth || 720;
     var topInView=plot.offsetTop - window.scrollY;
-    var reserve=104;                                   /* the ask bar and a little air */
+    /* clear the whole ask-bar dock, gradient included, so the drag hint is never washed out */
+    var dock=document.querySelector('.dock');
+    var reserve=(dock ? dock.offsetHeight : 136) + 32;
     var avail=window.innerHeight - topInView - rangeEl.offsetHeight - reserve;
-    var target=Math.max(240, Math.min(620, avail));
+    var target=Math.max(165, Math.min(620, avail));
     var next=Math.round(target * 720 / colW);
     if(Math.abs(next-vbH) < 6) return false;
     vbH=next;
