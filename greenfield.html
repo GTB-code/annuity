@@ -1247,9 +1247,9 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .snap-cta:hover{ filter:brightness(1.06); }
 
 #optCtx .ctx-body{ margin-bottom:0; }
-#storyView .story-head, #taxStoryView .story-head, #retStoryView .story-head, #flStoryView .story-head, #homeCtx .story-head, #optCtx .story-head, #budCtx .story-head, #aloCtx .story-head, #socCtx .story-head, #taxCtx .story-head, .side-ctx[data-ins-ctx] .story-head, #wdrCtx .story-head, #advCtx .story-head, #flowCtx .story-head, #pickCtx .story-head, #meetCtx .story-head, #doneCtx .story-head, #docRail .story-head, #chatRail .story-head, #mtCtx .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); letter-spacing:0; margin-bottom:var(--s-4); white-space:nowrap; }
-#storyView .story-head .spk, #taxStoryView .story-head .spk, #retStoryView .story-head .spk, #flStoryView .story-head .spk, #homeCtx .story-head .spk, #optCtx .story-head .spk, #budCtx .story-head .spk, #aloCtx .story-head .spk, #socCtx .story-head .spk, #taxCtx .story-head .spk, .side-ctx[data-ins-ctx] .story-head .spk, #wdrCtx .story-head .spk, #advCtx .story-head .spk, #flowCtx .story-head .spk, #pickCtx .story-head .spk, #meetCtx .story-head .spk, #doneCtx .story-head .spk, #docRail .story-head .spk, #chatRail .story-head .spk, #mtCtx .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
-#storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, .side-ctx[data-ins-ctx] p, #wdrCtx p, #advCtx p, #flowCtx p, #pickCtx p, #meetCtx p, #doneCtx p, #docRail p, #chatRail p, #mtCtx p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
+#storyView .story-head, #taxStoryView .story-head, #retStoryView .story-head, #flStoryView .story-head, #homeCtx .story-head, #optCtx .story-head, #budCtx .story-head, #aloCtx .story-head, #socCtx .story-head, #taxCtx .story-head, .side-ctx[data-ins-ctx] .story-head, #wdrCtx .story-head, #advCtx .story-head, #flowCtx .story-head, #pickCtx .story-head, #meetCtx .story-head, #doneCtx .story-head, #docRail .story-head, #chatRail .story-head, #mtCtx .story-head, #accessRail .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); letter-spacing:0; margin-bottom:var(--s-4); white-space:nowrap; }
+#storyView .story-head .spk, #taxStoryView .story-head .spk, #retStoryView .story-head .spk, #flStoryView .story-head .spk, #homeCtx .story-head .spk, #optCtx .story-head .spk, #budCtx .story-head .spk, #aloCtx .story-head .spk, #socCtx .story-head .spk, #taxCtx .story-head .spk, .side-ctx[data-ins-ctx] .story-head .spk, #wdrCtx .story-head .spk, #advCtx .story-head .spk, #flowCtx .story-head .spk, #pickCtx .story-head .spk, #meetCtx .story-head .spk, #doneCtx .story-head .spk, #docRail .story-head .spk, #chatRail .story-head .spk, #mtCtx .story-head .spk, #accessRail .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
+#storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, .side-ctx[data-ins-ctx] p, #wdrCtx p, #advCtx p, #flowCtx p, #pickCtx p, #meetCtx p, #doneCtx p, #docRail p, #chatRail p, #mtCtx p, #accessRail p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
 #storyView .more{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:15px; font-weight:600; text-decoration:none; }
 #storyView .more:hover{ text-decoration:underline; }
 .fl-tip{ margin:18px 0 4px; padding:14px 16px; background:#F3FBF7; border-radius:14px; }
@@ -6302,10 +6302,7 @@ body.mpanel-open{ overflow:hidden; }
       </div>
 
       <div id="plansAnchor">
-        <div class="rowflex" style="justify-content:space-between; margin-bottom:14px; flex-wrap:wrap">
-          <h2 class="sec">Two ways to work together</h2>
-          <span class="small muted">Added to your PlannerPlus subscription · cancel Plan Partner any time</span>
-        </div>
+        <h2 class="sec" style="margin-bottom:14px">Two ways to work together</h2>
         <div class="plans" id="planCards">
           <article class="adv-plan card" data-plan="checkup" tabindex="0" role="button">
             <div class="ptop">
@@ -6610,7 +6607,7 @@ body.mpanel-open{ overflow:hidden; }
       <div class="wpane" data-pane="agreements">
         <div class="grid2">
           <div class="card summary" id="agrSummary"></div>
-          <div class="card" style="padding:18px 20px; display:flex; flex-direction:column; gap:10px">
+          <div class="card" id="accessCard" style="padding:18px 20px; display:flex; flex-direction:column; gap:10px">
             <h3>Plan access</h3>
             <p class="small muted">Your advisor can see your full plan, scenarios, and the Vault folder <b>Advisory</b>. Nothing else in your Vault is shared.</p>
             <label class="check"><input type="checkbox" checked> Full plan &amp; scenarios</label>
@@ -6646,6 +6643,9 @@ body.mpanel-open{ overflow:hidden; }
     <div class="side-ctx" id="doneCtx"></div>
     <div id="signRail"></div>
     <div id="payRail"></div>
+    <div class="side-ctx" id="accessRail">
+      <div class="story-head">Plan access <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
+    </div>
     <div class="side-ctx" id="mtCtx">
       <div class="story-head">Worth the hour <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
       <p class="ctx-body">Most people never write the plan down. You did, and someone is reading every line of it before you sit down.</p>
@@ -14026,7 +14026,6 @@ body.story-open{ overflow:hidden; }
         '<div><div class="mc-nm">'+a.name+'</div><div class="mc-cr">'+a.cred+' &middot; '+a.loc+'</div></div></div>'+
       '<p class="ctx-body">'+first+'.</p>'+
       '<p class="ctx-body">You built the plan. This is the hour someone helps you act on it.</p>'+
-      '<p class="ctx-body">Pick a time and the waiting ends. One hour turns thirty years of projections into the two or three things to do next month.</p>'+
       '<p class="ctx-body">Nobody gets a second run at these years. You are choosing to spend them on purpose.</p>';
     delete saved['#meetCtx'];
   }
@@ -22206,7 +22205,6 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 <style id="advDocCSS">
 /* same widening the signing and payment steps use, so the shell never changes shape twice */
 .layout.adv-page:has(#vWorkspace.on){ grid-template-columns:200px minmax(0,1fr) 300px; max-width:1320px; }
-.layout.adv-page:has(#vWorkspace.on .wpane[data-pane="agreements"].on){ grid-template-columns:200px minmax(0,1fr); }
 .adv-page:has(#vWorkspace.on) .side{ left:max(32px, calc(50% - 628px)); }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail{ display:block; }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) #advCtx{ display:none; }
@@ -22241,6 +22239,16 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 .adv-page:has(#vWorkspace.on .wpane[data-pane="meetings"].on) #advCtx{ display:none; }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="meetings"].on) #mtCtx{ display:block; }
 #mtCtx{ display:none; }
+/* agreements: plan access moves to the rail, the summary and documents share the centre */
+.adv-page:has(#vWorkspace.on .wpane[data-pane="agreements"].on) .adv-rail{ display:block; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="agreements"].on) #advCtx{ display:none; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="agreements"].on) #accessRail{ display:block; }
+#accessRail{ display:none; }
+.adv-page .wpane[data-pane="agreements"] .grid2{ grid-template-columns:minmax(0,1fr); }
+#accessRail .card{ border:0; background:none; border-radius:0; padding:0 !important; }
+#accessRail .card > h3{ display:none; }
+#accessRail .card .small.muted{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin-bottom:var(--s-3); }
+#accessRail .check{ font-size:15px; line-height:1.5; }
 /* the chat has its own composer, so the ask dock stands down here */
 body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ display:none; }
 .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on){ padding-bottom:var(--s-8); }
@@ -22290,6 +22298,8 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
     if(ch && th && th.parentNode!==ch) ch.appendChild(th);
     var hint=document.querySelector('.adv-page .wpane[data-pane="chat"] .aihint, .adv-page .aihint');
     if(ch && hint && hint.parentNode!==ch) ch.appendChild(hint);
+    var acc=document.getElementById('accessCard'), ahost=document.getElementById('accessRail');
+    if(acc && ahost && acc.parentNode!==ahost) ahost.appendChild(acc);
     var n=host.querySelector('.dr-n'), c=host.querySelector('.margin .mh span');
     if(n && c && c.textContent && n.textContent!==c.textContent) n.textContent=c.textContent;
   }
