@@ -1247,9 +1247,9 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .snap-cta:hover{ filter:brightness(1.06); }
 
 #optCtx .ctx-body{ margin-bottom:0; }
-#storyView .story-head, #taxStoryView .story-head, #retStoryView .story-head, #flStoryView .story-head, #homeCtx .story-head, #optCtx .story-head, #budCtx .story-head, #aloCtx .story-head, #socCtx .story-head, #taxCtx .story-head, .side-ctx[data-ins-ctx] .story-head, #wdrCtx .story-head, #advCtx .story-head, #flowCtx .story-head, #pickCtx .story-head, #meetCtx .story-head, #doneCtx .story-head, #docRail .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); letter-spacing:0; margin-bottom:var(--s-4); white-space:nowrap; }
-#storyView .story-head .spk, #taxStoryView .story-head .spk, #retStoryView .story-head .spk, #flStoryView .story-head .spk, #homeCtx .story-head .spk, #optCtx .story-head .spk, #budCtx .story-head .spk, #aloCtx .story-head .spk, #socCtx .story-head .spk, #taxCtx .story-head .spk, .side-ctx[data-ins-ctx] .story-head .spk, #wdrCtx .story-head .spk, #advCtx .story-head .spk, #flowCtx .story-head .spk, #pickCtx .story-head .spk, #meetCtx .story-head .spk, #doneCtx .story-head .spk, #docRail .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
-#storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, .side-ctx[data-ins-ctx] p, #wdrCtx p, #advCtx p, #flowCtx p, #pickCtx p, #meetCtx p, #doneCtx p, #docRail p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
+#storyView .story-head, #taxStoryView .story-head, #retStoryView .story-head, #flStoryView .story-head, #homeCtx .story-head, #optCtx .story-head, #budCtx .story-head, #aloCtx .story-head, #socCtx .story-head, #taxCtx .story-head, .side-ctx[data-ins-ctx] .story-head, #wdrCtx .story-head, #advCtx .story-head, #flowCtx .story-head, #pickCtx .story-head, #meetCtx .story-head, #doneCtx .story-head, #docRail .story-head, #chatRail .story-head, #mtCtx .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); letter-spacing:0; margin-bottom:var(--s-4); white-space:nowrap; }
+#storyView .story-head .spk, #taxStoryView .story-head .spk, #retStoryView .story-head .spk, #flStoryView .story-head .spk, #homeCtx .story-head .spk, #optCtx .story-head .spk, #budCtx .story-head .spk, #aloCtx .story-head .spk, #socCtx .story-head .spk, #taxCtx .story-head .spk, .side-ctx[data-ins-ctx] .story-head .spk, #wdrCtx .story-head .spk, #advCtx .story-head .spk, #flowCtx .story-head .spk, #pickCtx .story-head .spk, #meetCtx .story-head .spk, #doneCtx .story-head .spk, #docRail .story-head .spk, #chatRail .story-head .spk, #mtCtx .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
+#storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, .side-ctx[data-ins-ctx] p, #wdrCtx p, #advCtx p, #flowCtx p, #pickCtx p, #meetCtx p, #doneCtx p, #docRail p, #chatRail p, #mtCtx p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
 #storyView .more{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:15px; font-weight:600; text-decoration:none; }
 #storyView .more:hover{ text-decoration:underline; }
 .fl-tip{ margin:18px 0 4px; padding:14px 16px; background:#F3FBF7; border-radius:14px; }
@@ -6297,7 +6297,7 @@ body.mpanel-open{ overflow:hidden; }
       <div class="hero-wrap">
         <div class="hero-main">
           <div class="eyebrow">Boldin Advisors</div>
-          <h2 class="pf-hl"><span class="nw">A fiduciary who has already <span class="pf-em">read your plan.</span></span></h2>
+          <h2 class="pf-hl"><span class="nw">You built the plan. <span class="pf-em">Now be sure of it.</span></span></h2>
         </div>
       </div>
 
@@ -6308,9 +6308,10 @@ body.mpanel-open{ overflow:hidden; }
         </div>
         <div class="plans" id="planCards">
           <article class="adv-plan card" data-plan="checkup" tabindex="0" role="button">
-            <div class="kind">One-time</div>
-            <div class="name">Plan Checkup</div>
-            <div class="price"><span class="amt">+$3,200</span><span class="per">one time</span></div>
+            <div class="ptop">
+              <div class="pnm"><div class="kind">One-time</div><div class="name">Plan Checkup</div></div>
+              <div class="price"><span class="amt">+$3,200</span></div>
+            </div>
             <p class="desc">A full review of the plan you've built, delivered as notes inside it — plus a scenario your advisor builds for you.</p>
             <ul>
               <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7.5" stroke="#04B477" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>90-minute video review of your plan, with your plan on screen</li>
@@ -6322,9 +6323,10 @@ body.mpanel-open{ overflow:hidden; }
           </article>
           <article class="adv-plan card" data-plan="partner" tabindex="0" role="button">
             <span class="best pillbadge gold">Most chosen by retirees within 5 years</span>
-            <div class="kind">Ongoing</div>
-            <div class="name">Plan Partner</div>
-            <div class="price"><span class="amt">+$3,800</span><span class="per">/year</span></div>
+            <div class="ptop">
+              <div class="pnm"><div class="kind">Ongoing</div><div class="name">Plan Partner</div></div>
+              <div class="price"><span class="amt">+$3,800</span><span class="per">/year</span></div>
+            </div>
             <p class="desc">Everything in the Checkup, then a standing relationship: your advisor keeps the plan current and reachable all year.</p>
             <ul>
               <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7.5" stroke="#04B477" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Yearly check-in meeting plus a mid-year 30-minute touchpoint</li>
@@ -6595,10 +6597,10 @@ body.mpanel-open{ overflow:hidden; }
         <div class="card mt" id="mtCard"></div>
         <h3>Prep checklist</h3>
         <div class="card prep">
-          <label class="it"><input type="checkbox" checked> Link the Fidelity 401(k) — <span class="muted">done, synced daily</span><span class="by">You</span></label>
-          <label class="it"><input type="checkbox"> Upload the 2025 tax return to Vault → Advisory so <span id="prepAdv">Dana</span> can check bracket headroom<span class="by">Requested by advisor</span></label>
-          <label class="it"><input type="checkbox"> Confirm Luis's pension survivor option (100% or 50%)<span class="by">Requested by advisor</span></label>
-          <label class="it"><input type="checkbox"> Write down the 2–3 questions you most want answered<span class="by">Suggested</span></label>
+          <label class="it"><input type="checkbox" checked><span class="lb">Link the Fidelity 401(k) — <span class="muted">done, synced daily</span></span><span class="by">You</span></label>
+          <label class="it"><input type="checkbox"><span class="lb">Upload the 2025 tax return to Vault → Advisory so <span id="prepAdv">Dana</span> can check bracket headroom</span><span class="by">Requested by advisor</span></label>
+          <label class="it"><input type="checkbox"><span class="lb">Confirm Luis's pension survivor option (100% or 50%)</span><span class="by">Requested by advisor</span></label>
+          <label class="it"><input type="checkbox"><span class="lb">Write down the 2–3 questions you most want answered</span><span class="by">Suggested</span></label>
         </div>
         <h3>Past</h3>
         <p class="small muted">No past meetings yet. Recordings and notes will appear here and in your Vault after each meeting.</p>
@@ -6644,6 +6646,15 @@ body.mpanel-open{ overflow:hidden; }
     <div class="side-ctx" id="doneCtx"></div>
     <div id="signRail"></div>
     <div id="payRail"></div>
+    <div class="side-ctx" id="mtCtx">
+      <div class="story-head">Worth the hour <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
+      <p class="ctx-body">Most people never write the plan down. You did, and someone is reading every line of it before you sit down.</p>
+      <p class="ctx-body">Every box you tick is one less thing to explain, and one more minute spent on what to actually do.</p>
+      <p class="ctx-body">Come with your two hardest questions. That is the whole job of the hour.</p>
+    </div>
+    <div class="side-ctx" id="chatRail">
+      <div class="story-head">Your conversations <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
+    </div>
     <div class="side-ctx" id="docRail">
       <div class="story-head"><span class="dr-n">Notes on this plan</span> <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
       <p class="ctx-body">Select any text in the plan to leave a note. Yellow is your advisor, green is you.</p>
@@ -14042,7 +14053,7 @@ body.story-open{ overflow:hidden; }
     if(ov && ov.classList.contains('on')){ setTimeout(function(){ run('#advCtx'); }, 120); return; }
     if(visible(document.getElementById('meetCtx'))) buildMeet();
     if(visible(document.getElementById('doneCtx'))) buildDone();
-    ['#flowCtx','#pickCtx','#meetCtx','#doneCtx'].forEach(function(sel){
+    ['#flowCtx','#pickCtx','#meetCtx','#doneCtx','#mtCtx'].forEach(function(sel){
       if(visible(document.querySelector(sel))) setTimeout(function(){ run(sel); }, 120);
     });
   }
@@ -14055,7 +14066,7 @@ body.story-open{ overflow:hidden; }
   /* paying jumps to step 5 without a [data-next] click, so watch the steps themselves */
   function watchSteps(){
     if(!window.MutationObserver) return;
-    var steps=document.querySelectorAll('.adv-page .fstep'); if(!steps.length) return;
+    var steps=document.querySelectorAll('.adv-page .fstep, .adv-page .wpane'); if(!steps.length) return;
     var mo=new MutationObserver(function(){ setTimeout(maybe, 120); });
     Array.prototype.forEach.call(steps, function(f){ mo.observe(f, {attributes:true, attributeFilter:['class']}); });
   }
@@ -20589,6 +20600,11 @@ body:not([data-view="advisory"]) .adv-proto{ display:none !important; }
 .adv-page .adv-plan .kind{font-size:13px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.05em;}
 .adv-page .adv-plan .name{font-size:24px; font-weight:600; line-height:1.2;}
 .adv-page .adv-plan .price{display:flex; align-items:baseline; gap:6px; font-variant-numeric:tabular-nums;}
+/* the price sits top-right of the card so the name and the list start higher */
+.adv-page .adv-plan .ptop{display:flex; align-items:flex-start; justify-content:space-between; gap:18px;}
+.adv-page .adv-plan .pnm{display:flex; flex-direction:column; gap:8px; min-width:0;}
+.adv-page .adv-plan .ptop .price{flex-direction:column; align-items:flex-end; gap:0; flex:none; text-align:right;}
+.adv-page .adv-plan .ptop .price .amt{line-height:1.05;}
 .adv-page .adv-plan .price .amt{font-size:34px; font-weight:600; color:var(--green-cta);}
 .adv-page .adv-plan .price .per{font-size:15px; color:var(--text-secondary);}
 .adv-page .adv-plan .desc{font-size:15px; color:var(--text-secondary);}
@@ -20596,7 +20612,7 @@ body:not([data-view="advisory"]) .adv-proto{ display:none !important; }
 .adv-page .adv-plan li{display:flex; gap:10px; align-items:flex-start;}
 .adv-page .adv-plan li svg{flex:none; width:18px; height:18px; margin-top:2px;}
 .adv-page .adv-plan .foot{margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:8px;}
-.adv-page .adv-plan .best{position:absolute; top:-12px; right:22px;}
+.adv-page .adv-plan .best{position:absolute; top:-12px; left:22px; right:auto;}
 .adv-page .adv-plan .rec{font-size:13px; color:var(--text-secondary);}
 .adv-page .steps5{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px;}
 @media (max-width:900px){
@@ -20875,9 +20891,10 @@ body:not([data-view="advisory"]) .adv-proto{ display:none !important; }
 .adv-page .mt .d{font-size:14px; color:var(--text-secondary); margin-top:2px;}
 .adv-page .mt .acts{display:flex; gap:8px; flex-wrap:wrap;}
 .adv-page .prep{padding:18px 20px; display:flex; flex-direction:column; gap:10px;}
-.adv-page .prep .it{display:flex; gap:10px; align-items:flex-start; font-size:14.5px;}
-.adv-page .prep .it input{margin-top:5px; accent-color:var(--green-cta);}
-.adv-page .prep .it .by{font-size:12px; color:var(--text-tertiary); margin-left:auto; white-space:nowrap;}
+.adv-page .prep .it{display:flex; gap:0; align-items:flex-start; font-size:16px; line-height:1.5;}
+.adv-page .prep .it input{margin-top:5px; margin-right:10px; accent-color:var(--green-cta); flex:none;}
+.adv-page .prep .it .by{font-size:13px; color:var(--text-tertiary); margin-left:auto; padding-left:16px; white-space:nowrap;}
+.adv-page .prep .it > .lb{flex:1; min-width:0;}
 .adv-page .filelist{display:flex; flex-direction:column;}
 .adv-page .file{display:flex; align-items:center; gap:14px; padding:14px 18px; border-bottom:1px solid var(--hairline);}
 .adv-page .file:last-child{border-bottom:0;}
@@ -22189,7 +22206,7 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 <style id="advDocCSS">
 /* same widening the signing and payment steps use, so the shell never changes shape twice */
 .layout.adv-page:has(#vWorkspace.on){ grid-template-columns:200px minmax(0,1fr) 300px; max-width:1320px; }
-.layout.adv-page:has(#vWorkspace.on):not(:has(#vWorkspace.on .wpane[data-pane="doc"].on)){ grid-template-columns:200px minmax(0,1fr); }
+.layout.adv-page:has(#vWorkspace.on .wpane[data-pane="agreements"].on){ grid-template-columns:200px minmax(0,1fr); }
 .adv-page:has(#vWorkspace.on) .side{ left:max(32px, calc(50% - 628px)); }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail{ display:block; }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) #advCtx{ display:none; }
@@ -22201,6 +22218,44 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 #docRail .margin .mh{ justify-content:flex-end; margin-bottom:var(--s-3); }
 #docRail .margin .mh span{ display:none; }
 #docRail .margin .mh button{ font-size:15px; }
+/* advisor chat: the conversation takes the centre, the thread list moves to the rail */
+.adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on) .adv-rail{ display:block; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on) #advCtx{ display:none; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on) #chatRail{ display:block; }
+#chatRail{ display:none; }
+.adv-page .chatwrap{ grid-template-columns:minmax(0,1fr); }
+#chatRail .threads{ border-right:0; }
+#chatRail .threads .th-head{ padding:0 0 var(--s-4); border-bottom:0; }
+#chatRail .quota{ font-size:15px; }
+#chatRail .quota .qr b{ font-size:17px; }
+#chatRail .quota .reset{ font-size:13px; }
+#chatRail .thlist{ overflow:visible; margin:0 -14px; }
+#chatRail .thlist li{ border-bottom:0; border-radius:12px; gap:4px; }
+#chatRail .thlist li + li{ margin-top:2px; }
+#chatRail .thlist .t{ font-size:16px; }
+#chatRail .thlist .t span{ font-size:13px; }
+#chatRail .thlist .p{ font-size:14px; }
+#chatRail .thlist .st{ font-size:13px; }
+#chatRail .aihint{ margin-top:var(--s-5); }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="meetings"].on) .adv-rail{ display:block; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="meetings"].on) #advCtx{ display:none; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="meetings"].on) #mtCtx{ display:block; }
+#mtCtx{ display:none; }
+/* the chat has its own composer, so the ask dock stands down here */
+body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ display:none; }
+.layout.adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on){ padding-bottom:var(--s-8); }
+.adv-page .wpane[data-pane="chat"] .chatwrap{ height:max(520px, calc(100vh - 222px)); min-height:0; }
+.adv-page .wpane[data-pane="chat"] .convo{ min-height:0; }
+.adv-page .wpane[data-pane="chat"] .msgs{ max-height:none; min-height:0; padding:22px 24px; gap:14px; }
+/* the conversation has the whole column now, so it reads at the app's normal sizes */
+.adv-page .wpane[data-pane="chat"] .msg .b{ font-size:16px; line-height:1.5; padding:12px 16px; }
+.adv-page .wpane[data-pane="chat"] .msg .m{ font-size:13px; }
+.adv-page .wpane[data-pane="chat"] .msg.sys .b{ font-size:14px; }
+.adv-page .wpane[data-pane="chat"] .convo .ch .n{ font-size:17px; }
+.adv-page .wpane[data-pane="chat"] .convo .ch .s,
+.adv-page .wpane[data-pane="chat"] .convo .ch .sla{ font-size:13px; }
+.adv-page .wpane[data-pane="chat"] .composer textarea{ font-size:16px; }
+.adv-page .wpane[data-pane="chat"] .composer .note{ font-size:13px; }
 /* the tab row and the advisor header repeat the left nav and its advisor card, so the nav carries it alone */
 @media (min-width:761px){
   .adv-page #vWorkspace .tabs, .adv-page #vWorkspace .ws-head{ display:none; }
@@ -22211,13 +22266,17 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 .adv-page .docpage .byline span + span::before{ content:"\00b7"; margin:0 9px; color:var(--hairline-strong); }
 /* below the rail breakpoint the notes fall back under the document, as they did before */
 @media (max-width:1080px){
-  .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on){ grid-template-columns:180px minmax(0,1fr); }
-  .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail{ display:block; position:static; grid-column:2; width:auto; }
+  .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on),
+  .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on){ grid-template-columns:180px minmax(0,1fr); }
+  .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail,
+  .adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on) .adv-rail{ display:block; position:static; grid-column:2; width:auto; }
   #docRail .margin{ max-height:none; overflow:visible; }
 }
 @media (max-width:760px){
-  .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on){ grid-template-columns:1fr; }
-  .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail{ grid-column:auto; }
+  .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on),
+  .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on){ grid-template-columns:1fr; }
+  .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail,
+  .adv-page:has(#vWorkspace.on .wpane[data-pane="chat"].on) .adv-rail{ grid-column:auto; }
 }
 </style>
 <script>
@@ -22226,12 +22285,26 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
     var host=document.getElementById('docRail'); if(!host) return;
     var m=document.getElementById('margin');
     if(m && m.parentNode!==host) host.appendChild(m);
+    var ch=document.getElementById('chatRail');
+    var th=document.querySelector('.adv-page .threads');
+    if(ch && th && th.parentNode!==ch) ch.appendChild(th);
+    var hint=document.querySelector('.adv-page .wpane[data-pane="chat"] .aihint, .adv-page .aihint');
+    if(ch && hint && hint.parentNode!==ch) ch.appendChild(hint);
     var n=host.querySelector('.dr-n'), c=host.querySelector('.margin .mh span');
     if(n && c && c.textContent && n.textContent!==c.textContent) n.textContent=c.textContent;
+  }
+  function toBottom(){
+    var m=document.getElementById('msgs');
+    if(m && m.clientHeight) m.scrollTop=m.scrollHeight;
   }
   function boot(){ mount();
     var lay=document.querySelector('.layout.adv-page');
     if(lay && window.MutationObserver) new MutationObserver(mount).observe(lay, {childList:true, subtree:true});
+    /* the pane has no height while hidden, so the chat re-pins to the latest message on open */
+    var pane=document.querySelector('.adv-page .wpane[data-pane="chat"]');
+    if(pane && window.MutationObserver) new MutationObserver(function(){
+      if(pane.classList.contains('on')) setTimeout(toBottom, 60);
+    }).observe(pane, {attributes:true, attributeFilter:['class']});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
