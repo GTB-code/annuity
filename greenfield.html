@@ -1247,9 +1247,9 @@ body.lens-fl #snapshotView .snap-headline[data-lens="fl"], body.lens-fl #snapsho
 .snap-cta:hover{ filter:brightness(1.06); }
 
 #optCtx .ctx-body{ margin-bottom:0; }
-#storyView .story-head, #taxStoryView .story-head, #retStoryView .story-head, #flStoryView .story-head, #homeCtx .story-head, #optCtx .story-head, #budCtx .story-head, #aloCtx .story-head, #socCtx .story-head, #taxCtx .story-head, .side-ctx[data-ins-ctx] .story-head, #wdrCtx .story-head, #advCtx .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); letter-spacing:0; margin-bottom:var(--s-4); white-space:nowrap; }
-#storyView .story-head .spk, #taxStoryView .story-head .spk, #retStoryView .story-head .spk, #flStoryView .story-head .spk, #homeCtx .story-head .spk, #optCtx .story-head .spk, #budCtx .story-head .spk, #aloCtx .story-head .spk, #socCtx .story-head .spk, #taxCtx .story-head .spk, .side-ctx[data-ins-ctx] .story-head .spk, #wdrCtx .story-head .spk, #advCtx .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
-#storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, .side-ctx[data-ins-ctx] p, #wdrCtx p, #advCtx p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
+#storyView .story-head, #taxStoryView .story-head, #retStoryView .story-head, #flStoryView .story-head, #homeCtx .story-head, #optCtx .story-head, #budCtx .story-head, #aloCtx .story-head, #socCtx .story-head, #taxCtx .story-head, .side-ctx[data-ins-ctx] .story-head, #wdrCtx .story-head, #advCtx .story-head, #flowCtx .story-head, #pickCtx .story-head, #meetCtx .story-head, #doneCtx .story-head, #docRail .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); letter-spacing:0; margin-bottom:var(--s-4); white-space:nowrap; }
+#storyView .story-head .spk, #taxStoryView .story-head .spk, #retStoryView .story-head .spk, #flStoryView .story-head .spk, #homeCtx .story-head .spk, #optCtx .story-head .spk, #budCtx .story-head .spk, #aloCtx .story-head .spk, #socCtx .story-head .spk, #taxCtx .story-head .spk, .side-ctx[data-ins-ctx] .story-head .spk, #wdrCtx .story-head .spk, #advCtx .story-head .spk, #flowCtx .story-head .spk, #pickCtx .story-head .spk, #meetCtx .story-head .spk, #doneCtx .story-head .spk, #docRail .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
+#storyView p, #taxStoryView p, #retStoryView p, #flStoryView p, #homeCtx p, #optCtx p, #budCtx p, #aloCtx p, #socCtx p, #taxCtx p, .side-ctx[data-ins-ctx] p, #wdrCtx p, #advCtx p, #flowCtx p, #pickCtx p, #meetCtx p, #doneCtx p, #docRail p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
 #storyView .more{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:15px; font-weight:600; text-decoration:none; }
 #storyView .more:hover{ text-decoration:underline; }
 .fl-tip{ margin:18px 0 4px; padding:14px 16px; background:#F3FBF7; border-radius:14px; }
@@ -6296,15 +6296,9 @@ body.mpanel-open{ overflow:hidden; }
     <section class="adv-view on" id="vOverview">
       <div class="hero-wrap">
         <div class="hero-main">
-          <div class="eyebrow">Boldin Advisors · inside your plan</div>
-          <h2 class="pf-hl"><span class="nw">A fiduciary</span> <span class="nw">who has already <span class="pf-em">read your plan.</span></span></h2>
-          <p class="sub">A CERTIFIED FINANCIAL PLANNER&trade; professional reviews your plan and leaves notes on it. The advice stays there, not in an email.</p>
-          <div class="rowflex" style="margin-top:18px; gap:10px; flex-wrap:wrap">
-            <button class="btn btn-primary" data-go="plans">Choose an engagement</button>
-            <button class="btn btn-ghost" data-go="advisors">Browse advisors</button>
-          </div>
+          <div class="eyebrow">Boldin Advisors</div>
+          <h2 class="pf-hl"><span class="nw">A fiduciary who has already <span class="pf-em">read your plan.</span></span></h2>
         </div>
-        
       </div>
 
       <div id="plansAnchor">
@@ -6529,16 +6523,14 @@ body.mpanel-open{ overflow:hidden; }
       <!-- plan document -->
       <div class="wpane on" data-pane="doc">
         <div class="docbar">
-          <span class="ttl">My Financial Plan</span>
           <span class="sv"><i></i>Saved · synced with your Planner</span>
           <span class="tools"><button class="tbtn on" id="tglComments">Comments <span id="cmCount">3</span></button><button class="tbtn" id="tglSugg">Suggestions <span>1</span></button><button class="tbtn noclick" style="cursor:default">Share</button></span>
           <span class="who"><span class="av">ML</span><img class="av" alt="" id="docAdvAv"></span>
         </div>
-        <div class="selhint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h10M4 17h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Select any text in the plan to leave a note for your advisor. Yellow = advisor, green = you.</div>
         <div class="doclayout">
           <article class="docpage" id="docPage">
             <h1>My Financial Plan</h1>
-            <div class="byline"><span>Margaret Lee, 58 · Arlington, VA</span><span>Plan Score 82</span><span>Last edited today by <span id="docAdvByline">Dana</span></span><span>Live from PlannerPlus</span></div>
+            <div class="byline"><span>Margaret Lee, 58 · Arlington, VA</span><span>Plan Score 82</span><span>Last edited today by <span id="docAdvByline">Dana</span></span></div>
 
             <h2>Plan summary</h2>
             <div class="kpis">
@@ -6566,7 +6558,7 @@ body.mpanel-open{ overflow:hidden; }
             <p>Current setting: <span class="hl sugg" data-cm="s1"><span class="sugg-del">taxable first, then pre-tax, then Roth</span> <span class="sugg-ins">taxable and partial Roth conversions from 63–67, then pre-tax, Roth last</span></span>. Estimated lifetime federal tax under the current order: $486,000.</p>
 
             <div class="scen" id="advScen">
-              <div class="t"><img alt="" id="scenAv">Advisor scenario · <span id="scenName">Dana</span>: Retire at 63 with a Roth ladder</div>
+              <div class="t"><img alt="" id="scenAv">Advisor scenario&nbsp;·&nbsp;<span id="scenName">Dana</span>: Retire at 63 with a Roth ladder</div>
               <div>Built from your plan on <span id="scenDate"></span>. Converts $85K/yr from the Rollover IRA during the low-income years before Social Security, keeping you under the 22% bracket and IRMAA thresholds. Lifetime tax falls to about $379,000; success rises to 93%.</div>
               <div class="cta"><button class="btn btn-text" style="font-size:13px" id="openScen">Open in Planner →</button><span class="muted">Saved to your scenarios · 4 assumptions differ from your plan</span></div>
             </div>
@@ -6638,8 +6630,23 @@ body.mpanel-open{ overflow:hidden; }
     <div class="side-ctx" id="advCtx">
       <div class="story-head">What an advisor sees <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
       <p class="ctx-body">Your whole plan — <b>3 scenarios</b>, <b>14 accounts</b>, Plan Score <b>82</b> — plus the <b>6 items</b> still open in Plan Completeness, and only the Vault documents you share.</p>
-      <p class="ctx-body">Boldin Advisors is a separate registered investment adviser. Advice here is fiduciary advice; Boldin’s software guidance is not.</p>
       <div class="tax-links"><a class="ctx-cta" role="button" tabindex="0" data-go="advisors">Meet the advisors <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+    </div>
+    <div class="side-ctx" id="flowCtx">
+      <div class="story-head">Why it helps <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
+      <p class="ctx-body">Someone reads the whole plan before you meet. The hour is about decisions, not catching up.</p>
+    </div>
+    <div class="side-ctx" id="pickCtx">
+      <div class="story-head">No wrong answer <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
+      <p class="ctx-body">Each one is a fiduciary, paid only by you. Pick whoever&rsquo;s focus sounds like your questions.</p>
+    </div>
+    <div class="side-ctx" id="meetCtx"></div>
+    <div class="side-ctx" id="doneCtx"></div>
+    <div id="signRail"></div>
+    <div id="payRail"></div>
+    <div class="side-ctx" id="docRail">
+      <div class="story-head"><span class="dr-n">Notes on this plan</span> <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>
+      <p class="ctx-body">Select any text in the plan to leave a note. Yellow is your advisor, green is you.</p>
     </div>
   </aside>
 </div>
@@ -13872,6 +13879,211 @@ body.story-open{ overflow:hidden; }
 <!-- CAROUSEL-DRAG END -->
 
 
+
+
+
+<!-- ACK-RING BEGIN: once the first initial is down, the acknowledgements ask for attention -->
+<style id="ackRingCSS">
+.ack-ring{ position:relative; }
+.ack-ring > .ack-ring-svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible;
+  pointer-events:none; z-index:2; }
+/* the comet is eight stacked segments, each a step further back and a step fainter — a feathered tail */
+.ack-ring > .ack-ring-svg rect{ --o:0px; fill:none; stroke:var(--green); stroke-width:2; stroke-linecap:round;
+  stroke-dashoffset:var(--o); animation:ackTrace 5.6s linear infinite; }
+.ack-ring > .ack-ring-svg rect:nth-child(1){ --o:0px;                                  stroke-opacity:.80; }
+.ack-ring > .ack-ring-svg rect:nth-child(2){ --o:calc(var(--len, 800) * .038px); stroke-opacity:.62; }
+.ack-ring > .ack-ring-svg rect:nth-child(3){ --o:calc(var(--len, 800) * .076px); stroke-opacity:.47; }
+.ack-ring > .ack-ring-svg rect:nth-child(4){ --o:calc(var(--len, 800) * .114px); stroke-opacity:.34; stroke:var(--mint); }
+.ack-ring > .ack-ring-svg rect:nth-child(5){ --o:calc(var(--len, 800) * .152px); stroke-opacity:.24; stroke:var(--mint); }
+.ack-ring > .ack-ring-svg rect:nth-child(6){ --o:calc(var(--len, 800) * .190px); stroke-opacity:.16; stroke:var(--mint); }
+.ack-ring > .ack-ring-svg rect:nth-child(7){ --o:calc(var(--len, 800) * .228px); stroke-opacity:.09; stroke:var(--mint); }
+.ack-ring > .ack-ring-svg rect:nth-child(8){ --o:calc(var(--len, 800) * .266px); stroke-opacity:.04; stroke:var(--mint); }
+@keyframes ackTrace{
+  from{ stroke-dashoffset:var(--o); }
+  to{ stroke-dashoffset:calc(var(--o) - var(--len, 800) * 1px); }
+}
+.adv-page .card.ack-ring, .esign-side .card.ack-ring{ background:#F8FDFB; transition:background 300ms ease; }
+.ack-ring .check{ transition:color 300ms ease; }
+@media (prefers-reduced-motion:reduce){
+  .ack-ring > .ack-ring-svg rect{ display:none; }
+  .ack-ring > .ack-ring-svg rect:nth-child(1){ display:inline; animation:none; stroke:var(--mint);
+    stroke-dasharray:none; stroke-dashoffset:0; stroke-opacity:.8; }
+}
+</style>
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function card(){ var a=document.getElementById('ackAdv'); return a && a.closest('.card'); }
+  function size(el){
+    var svg=el.querySelector('.ack-ring-svg'); if(!svg) return;
+    var w=el.offsetWidth, h=el.offsetHeight; if(!w || !h) return;
+    svg.setAttribute('viewBox','0 0 '+w+' '+h);
+    var rects=svg.querySelectorAll('rect'); if(!rects.length) return;
+    var len=0;
+    Array.prototype.forEach.call(rects, function(r){
+      r.setAttribute('x',1); r.setAttribute('y',1);
+      r.setAttribute('width', Math.max(0,w-2)); r.setAttribute('height', Math.max(0,h-2));
+      r.setAttribute('rx', 15);
+      if(!len){ try{ len=r.getTotalLength(); }catch(e){ len=2*(w+h); } }
+      r.style.setProperty('--len', len);
+      r.style.strokeDasharray=(len*0.045).toFixed(1)+' '+(len*0.955).toFixed(1);
+    });
+  }
+  function on(el){
+    if(el.classList.contains('ack-ring')) { size(el); return; }
+    var svg=document.createElementNS(NS,'svg');
+    svg.setAttribute('class','ack-ring-svg'); svg.setAttribute('aria-hidden','true');
+    for(var i=0;i<8;i++) svg.appendChild(document.createElementNS(NS,'rect'));   /* feathered tail, brightest first */
+    el.appendChild(svg);
+    el.classList.add('ack-ring');
+    size(el);
+    if(window.ResizeObserver && !el._ackRO){ el._ackRO=new ResizeObserver(function(){ size(el); }); el._ackRO.observe(el); }
+  }
+  function off(el){
+    el.classList.remove('ack-ring');
+    var svg=el.querySelector('.ack-ring-svg'); if(svg) svg.remove();
+  }
+  function sync(){
+    var el=card(); if(!el) return;
+    var txt=(document.getElementById('sigProgText')||{}).textContent||'0 of 3';
+    var signed=parseInt(txt,10)||0;
+    var a=document.getElementById('ackAdv'), b=document.getElementById('ackSep');
+    var bothChecked = a && b && a.checked && b.checked;
+    if(signed>=1 && !bothChecked) on(el); else off(el);
+  }
+  function boot(){
+    var t=document.getElementById('sigProgText');
+    if(t && window.MutationObserver) new MutationObserver(sync).observe(t, {childList:true, characterData:true, subtree:true});
+    ['ackAdv','ackSep'].forEach(function(id){
+      var c=document.getElementById(id); if(c) c.addEventListener('change', function(){ setTimeout(sync,0); });
+    });
+    document.addEventListener('click', function(e){
+      if(e.target.closest && e.target.closest('.sigbox')) setTimeout(sync, 60);
+    }, true);
+    sync();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+<!-- ACK-RING END -->
+<!-- ADV-RAIL-STREAM BEGIN: the advisory rail types itself in like every other rail -->
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var saved={}, timers={};
+  function tokens(root){
+    var out=[];
+    (function walk(node){
+      [].slice.call(node.childNodes).forEach(function(n){
+        if(n.nodeType===3){
+          var parts=n.data.match(/\s*\S+\s*/g); if(!parts) return;   /* keep the space that follows a <b> */
+          var frag=document.createDocumentFragment();
+          parts.forEach(function(t){
+            var sp=document.createElement('span'); sp.className='tok'; sp.textContent=t;
+            frag.appendChild(sp); out.push(sp);
+          });
+          n.parentNode.replaceChild(frag, n);
+        } else if(n.nodeType===1){ walk(n); }
+      });
+    })(root);
+    return out;
+  }
+  function run(sel){
+    var bodies=[].slice.call(document.querySelectorAll(sel+' .ctx-body, '+sel+' .mc-sign')); if(!bodies.length) return;
+    if(saved[sel]===undefined) saved[sel]=bodies.map(function(b){ return b.innerHTML; });
+    (timers[sel]||[]).forEach(clearTimeout); timers[sel]=[];
+    bodies.forEach(function(b,i){ b.innerHTML=saved[sel][i]; });
+    if(reduce) return;
+    var n=0;
+    bodies.forEach(function(b){
+      tokens(b).forEach(function(t){
+        timers[sel].push(setTimeout(function(){ t.classList.add('show'); }, 60 + (n++)*26));
+      });
+    });
+  }
+  function visible(el){ return el && getComputedStyle(el).display!=='none'; }
+  function buildMeet(){
+    var host=document.getElementById('meetCtx'); if(!host) return;
+    var A=window.__adv; if(!A || !A.state) return;
+    var a=A.byId(A.state.advisor) || (A.list && A.list[0]); if(!a) return;
+    if(host.dataset.built===a.id) return;
+    host.dataset.built=a.id;
+    var first=(a.bio||'').split('. ')[0];
+    host.innerHTML=
+      '<div class="story-head">Your advisor <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'+
+      '<div class="mc-top"><img src="'+A.photos[a.photo]+'" alt="'+a.name+'">'+
+        '<div><div class="mc-nm">'+a.name+'</div><div class="mc-cr">'+a.cred+' &middot; '+a.loc+'</div></div></div>'+
+      '<p class="ctx-body">'+first+'.</p>'+
+      '<p class="ctx-body">You built the plan. This is the hour someone helps you act on it.</p>'+
+      '<p class="ctx-body">Pick a time and the waiting ends. One hour turns thirty years of projections into the two or three things to do next month.</p>'+
+      '<p class="ctx-body">Nobody gets a second run at these years. You are choosing to spend them on purpose.</p>';
+    delete saved['#meetCtx'];
+  }
+  function buildDone(){
+    var host=document.getElementById('doneCtx'); if(!host) return;
+    var A=window.__adv; if(!A || !A.state) return;
+    var a=A.byId(A.state.advisor) || (A.list && A.list[0]); if(!a) return;
+    if(host.dataset.built===a.id) return;
+    host.dataset.built=a.id;
+    var first=(a.name||'').split(' ')[0];
+    host.innerHTML=
+      '<div class="story-head">A note from '+first+' <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'+
+      '<div class="mc-top"><img src="'+A.photos[a.photo]+'" alt="'+a.name+'">'+
+        '<div><div class="mc-nm">'+a.name+'</div><div class="mc-cr">'+a.cred+' &middot; '+a.loc+'</div></div></div>'+
+      '<p class="ctx-body">Thank you for trusting me with this. I&rsquo;ll read your plan end to end before we meet, and my first notes will be waiting on it.</p>'+
+      '<p class="ctx-body">You did the hard part already. Now we make it better together.</p>'+
+      '<p class="mc-sign">&mdash; '+first+'</p>';
+    delete saved['#doneCtx'];
+  }
+  function maybe(){
+    var page=document.querySelector('.layout.adv-page');
+    if(!page || !page.classList.contains('on')) return;
+    var ov=document.getElementById('vOverview');
+    if(ov && ov.classList.contains('on')){ setTimeout(function(){ run('#advCtx'); }, 120); return; }
+    if(visible(document.getElementById('meetCtx'))) buildMeet();
+    if(visible(document.getElementById('doneCtx'))) buildDone();
+    ['#flowCtx','#pickCtx','#meetCtx','#doneCtx'].forEach(function(sel){
+      if(visible(document.querySelector(sel))) setTimeout(function(){ run(sel); }, 120);
+    });
+  }
+  window.addEventListener('boldin:view', maybe);
+  document.addEventListener('click', function(e){
+    if(!e.target.closest) return;
+    if(e.target.closest('.topnav nav.modes a[data-view="advisory"], #navAdvisory, #advSideNav li[data-nav="overview"], .adv-page [data-go], .adv-page [data-next], .adv-page [data-work], .adv-page .stp'))
+      setTimeout(maybe, 280);
+  }, true);
+  /* paying jumps to step 5 without a [data-next] click, so watch the steps themselves */
+  function watchSteps(){
+    if(!window.MutationObserver) return;
+    var steps=document.querySelectorAll('.adv-page .fstep'); if(!steps.length) return;
+    var mo=new MutationObserver(function(){ setTimeout(maybe, 120); });
+    Array.prototype.forEach.call(steps, function(f){ mo.observe(f, {attributes:true, attributeFilter:['class']}); });
+  }
+  function start(){ watchSteps(); maybe(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+<!-- ADV-RAIL-STREAM END -->
+<!-- ESIGN-RAIL BEGIN: the signing panel lives in the advisory rail -->
+<script>
+(function(){
+  function mount(){
+    var side=document.querySelector('.adv-page .esign-side');
+    var host=document.getElementById('signRail');
+    if(side && host && side.parentNode!==host) host.appendChild(side);
+    var sum=document.getElementById('paySummary');
+    var phost=document.getElementById('payRail');
+    if(sum && phost && sum.parentNode!==phost) phost.appendChild(sum);
+  }
+  function boot(){ mount();
+    /* the flow rebuilds its steps as you move through it, so keep checking */
+    var lay=document.querySelector('.layout.adv-page');
+    if(lay && window.MutationObserver) new MutationObserver(mount).observe(lay, {childList:true, subtree:true});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+<!-- ESIGN-RAIL END -->
 <!-- SUMMARY-TWO BEGIN: the Summary graph opens its own two-column view -->
 <style id="sum2CSS">
 .layout.page.sum-layout{ display:none; grid-template-columns:minmax(0,1fr) 360px; }
@@ -20246,6 +20458,56 @@ body.tri-cols.graph-expanded.ai-expanded .side-mini-tg{ display:none; }
 /* the rail carries overview context, so it steps aside on the flow and the workspace */
 .adv-page .adv-rail{ display:none; }
 .adv-page:has(#vOverview.on) .adv-rail{ display:block; }
+/* signing: the document takes the whole centre column, the signing panel moves to the rail */
+#signRail, #payRail, #flowCtx, #pickCtx, #meetCtx, #doneCtx{ display:none; }
+.adv-page:has(#vFlow.on .fstep[data-step="6"].on) .adv-rail{ display:block; }
+.adv-page:has(#vFlow.on .fstep[data-step="6"].on) #advCtx{ display:none; }
+.adv-page:has(#vFlow.on .fstep[data-step="6"].on) #doneCtx{ display:block; }
+#doneCtx .mc-top{ display:flex; align-items:center; gap:12px; margin-bottom:var(--s-4); }
+#doneCtx .mc-top img{ width:52px; height:52px; border-radius:50%; object-fit:cover; flex:none; }
+#doneCtx .mc-nm{ font-size:16px; font-weight:600; color:var(--ink); line-height:1.25; }
+#doneCtx .mc-cr{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+#doneCtx .mc-sign{ font-size:14px; color:var(--text-secondary); margin-top:-4px; }
+.adv-page:has(#vFlow.on .fstep[data-step="5"].on) .adv-rail{ display:block; }
+.adv-page:has(#vFlow.on .fstep[data-step="5"].on) #advCtx{ display:none; }
+.adv-page:has(#vFlow.on .fstep[data-step="5"].on) #meetCtx{ display:block; }
+#meetCtx .mc-top{ display:flex; align-items:center; gap:12px; margin-bottom:var(--s-4); }
+#meetCtx .mc-top img{ width:52px; height:52px; border-radius:50%; object-fit:cover; flex:none; }
+#meetCtx .mc-nm{ font-size:16px; font-weight:600; color:var(--ink); line-height:1.25; }
+#meetCtx .mc-cr{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+/* payment: the method fills the centre, the order summary moves to the rail */
+.adv-page:has(#vFlow.on .fstep[data-step="4"].on) .adv-rail{ display:block; }
+.adv-page:has(#vFlow.on .fstep[data-step="4"].on) #advCtx{ display:none; }
+.adv-page:has(#vFlow.on .fstep[data-step="4"].on) #payRail{ display:block; }
+.adv-page .fstep[data-step="4"] .paygrid{ grid-template-columns:minmax(0,1fr); }
+#payRail .summary{ position:sticky; top:96px; }
+.adv-page:has(#vFlow.on .fstep[data-step="2"].on) .adv-rail{ display:block; }
+.adv-page:has(#vFlow.on .fstep[data-step="2"].on) #advCtx{ display:none; }
+.adv-page:has(#vFlow.on .fstep[data-step="2"].on) #pickCtx{ display:block; }
+.adv-page:has(#vFlow.on .fstep[data-step="1"].on) .adv-rail{ display:block; }
+.adv-page:has(#vFlow.on .fstep[data-step="1"].on) #advCtx{ display:none; }
+.adv-page:has(#vFlow.on .fstep[data-step="1"].on) #flowCtx{ display:block; }
+.adv-page:has(#vFlow.on .fstep[data-step="3"].on) .adv-rail{ display:block; }
+.adv-page:has(#vFlow.on .fstep[data-step="3"].on) #advCtx{ display:none; }
+.adv-page:has(#vFlow.on .fstep[data-step="3"].on) #signRail{ display:block; }
+/* signing gets a wider canvas: the document and the signing panel both need room */
+.layout.adv-page:has(#vFlow.on .fstep[data-step="3"].on),
+.layout.adv-page:has(#vFlow.on .fstep[data-step="4"].on){ grid-template-columns:200px minmax(0,1fr) 300px; max-width:1320px; }
+.adv-page:has(#vFlow.on .fstep[data-step="3"].on) .side,
+.adv-page:has(#vFlow.on .fstep[data-step="4"].on) .side{ left:max(32px, calc(50% - 628px)); }
+/* the stepper tightens so all five stay visible in the narrower centre */
+.adv-page:has(#vFlow.on .fstep[data-step="3"].on) .stepper,
+.adv-page:has(#vFlow.on .fstep[data-step="4"].on) .stepper{ padding:12px 14px; }
+.adv-page:has(#vFlow.on .fstep[data-step="3"].on) .stp,
+.adv-page:has(#vFlow.on .fstep[data-step="4"].on) .stp{ font-size:13px; gap:8px; }
+.adv-page:has(#vFlow.on .fstep[data-step="3"].on) .stp .c,
+.adv-page:has(#vFlow.on .fstep[data-step="4"].on) .stp .c{ width:23px; height:23px; font-size:12px; }
+.adv-page:has(#vFlow.on .fstep[data-step="3"].on) .stp-sep,
+.adv-page:has(#vFlow.on .fstep[data-step="4"].on) .stp-sep{ margin:0 7px; min-width:10px; }
+.adv-page .fstep[data-step="3"]{ border:0; padding:0; }
+.adv-page .fstep[data-step="3"] .esign{ grid-template-columns:minmax(0,1fr); gap:0; }
+.adv-page .fstep[data-step="3"] .esign-doc{ max-height:min(72vh, 780px); }
+#signRail .esign-side{ position:sticky; top:96px; }
 .adv-proto{ display:none; }
 .adv-page [hidden]{ display:none !important; }
 
@@ -20276,6 +20538,7 @@ body:not([data-view="advisory"]) .adv-proto{ display:none !important; }
 /* the shell picks its own breaks with .nw groups rather than leaving it to
    text-wrap:balance, which evens the two lines and splits the phrase mid-thought */
 .adv-page .sub{font-size:17px; color:var(--text-secondary); max-width:58ch; margin-top:10px;}
+.adv-page .pf-hl{ white-space:nowrap; margin-bottom:var(--s-8); }
 .adv-page .eyebrow{font-size:13px; font-weight:600; color:var(--green); text-transform:uppercase; letter-spacing:.05em;}
 .adv-page h2.sec{font-size:24px; font-weight:600; line-height:1.25;}
 .adv-page h3{font-size:18px; font-weight:600;}
@@ -20510,9 +20773,10 @@ body:not([data-view="advisory"]) .adv-proto{ display:none !important; }
 .adv-page .docpage .kpi .v{font-size:24px; font-weight:600; line-height:1.1; font-variant-numeric:tabular-nums;}
 .adv-page .docpage .kpi .k{font-size:12px; color:var(--text-secondary); margin-top:2px;}
 .adv-page .scen{margin:14px 0; padding:14px 16px; border-left:3px solid var(--teal); background:#F3F7F8; border-radius:0 10px 10px 0; font-size:14.5px;}
-.adv-page .scen .t{display:flex; align-items:center; gap:8px; font-weight:600; margin-bottom:4px;}
+.adv-page .scen .t{display:flex; align-items:center; gap:0; font-weight:600; margin-bottom:4px;}
+.adv-page .scen .t img{margin-right:8px;}
 .adv-page .scen .t img{width:22px; height:22px; border-radius:50%; object-fit:cover;}
-.adv-page .scen .cta{margin-top:8px; display:flex; gap:10px; align-items:center; font-size:13px; flex-wrap:wrap;}
+.adv-page .scen .cta{margin-top:8px; display:flex; gap:10px; align-items:center; font-size:13px; flex-wrap:wrap; background:none; color:inherit; padding:0; min-height:0; border-radius:0;}
 .adv-page .scen .cta button{white-space:nowrap;}
 .adv-page .hl{background:#FFF1B8; border-bottom:2px solid #F3C94A; cursor:pointer; transition:background .16s; border-radius:2px;}
 .adv-page .hl:hover, .adv-page .hl.act{background:#FFE07A;}
@@ -20719,6 +20983,7 @@ const ADVISORS = [
 const advById = id => ADVISORS.find(a=>a.id===id);
 
 const S = { plan:null, advisor:null, fields:{init1:false, init2:false, sign:false}, signedAt:null, paid:false, pm:'card', meeting:null, calMonth:8, enrolled:false, quotaUsed:2, quotaMax:5, activeThread:'t1', suggMode:false };
+window.__adv = { byId:advById, photos:PHOTOS, state:S };   /* the meeting rail reads the chosen advisor from here */
 
 /* ---------- toast / modal ---------- */
 let toastT;
@@ -20772,7 +21037,7 @@ function showProfile(id){
 function markPlans(){ $$('.adv-plan').forEach(p=>p.classList.toggle('sel', p.dataset.plan===S.plan)); }
 $('#planCards2').innerHTML = $('#planCards').innerHTML;
 document.addEventListener('click', e=>{
-  const ch = e.target.closest('[data-choose]'); if(ch){ S.plan=ch.dataset.choose; markPlans(); if(ch.closest('#vOverview')) startFlow(1); return; }
+  const ch = e.target.closest('[data-choose]'); if(ch){ S.plan=ch.dataset.choose; markPlans(); if(ch.closest('#vOverview')) startFlow(2); return; }
   const pl = e.target.closest('.adv-plan'); if(pl){ S.plan=pl.dataset.plan; markPlans(); }
 });
 
@@ -21919,4 +22184,57 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
   });
 })();
 </script>
+
+<!-- ADV-DOC BEGIN: the plan document takes the whole centre column, its notes move to the real rail -->
+<style id="advDocCSS">
+/* same widening the signing and payment steps use, so the shell never changes shape twice */
+.layout.adv-page:has(#vWorkspace.on){ grid-template-columns:200px minmax(0,1fr) 300px; max-width:1320px; }
+.layout.adv-page:has(#vWorkspace.on):not(:has(#vWorkspace.on .wpane[data-pane="doc"].on)){ grid-template-columns:200px minmax(0,1fr); }
+.adv-page:has(#vWorkspace.on) .side{ left:max(32px, calc(50% - 628px)); }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail{ display:block; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) #advCtx{ display:none; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) #docRail{ display:block; }
+#docRail{ display:none; }
+.adv-page .doclayout{ grid-template-columns:minmax(0,1fr); gap:0; }
+/* the notes list, once it lives in the rail */
+#docRail .margin{ max-height:calc(100vh - 300px); overflow-y:auto; margin-right:-10px; padding-right:10px; }
+#docRail .margin .mh{ justify-content:flex-end; margin-bottom:var(--s-3); }
+#docRail .margin .mh span{ display:none; }
+#docRail .margin .mh button{ font-size:15px; }
+/* the tab row and the advisor header repeat the left nav and its advisor card, so the nav carries it alone */
+@media (min-width:761px){
+  .adv-page #vWorkspace .tabs, .adv-page #vWorkspace .ws-head{ display:none; }
+}
+.adv-page .adv-band .sp a{ white-space:nowrap; }
+/* the byline reads as one line of type, separated by middots rather than gaps */
+.adv-page .docpage .byline{ display:block; gap:0; line-height:1.7; }
+.adv-page .docpage .byline span + span::before{ content:"\00b7"; margin:0 9px; color:var(--hairline-strong); }
+/* below the rail breakpoint the notes fall back under the document, as they did before */
+@media (max-width:1080px){
+  .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on){ grid-template-columns:180px minmax(0,1fr); }
+  .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail{ display:block; position:static; grid-column:2; width:auto; }
+  #docRail .margin{ max-height:none; overflow:visible; }
+}
+@media (max-width:760px){
+  .layout.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on){ grid-template-columns:1fr; }
+  .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail{ grid-column:auto; }
+}
+</style>
+<script>
+(function(){
+  function mount(){
+    var host=document.getElementById('docRail'); if(!host) return;
+    var m=document.getElementById('margin');
+    if(m && m.parentNode!==host) host.appendChild(m);
+    var n=host.querySelector('.dr-n'), c=host.querySelector('.margin .mh span');
+    if(n && c && c.textContent && n.textContent!==c.textContent) n.textContent=c.textContent;
+  }
+  function boot(){ mount();
+    var lay=document.querySelector('.layout.adv-page');
+    if(lay && window.MutationObserver) new MutationObserver(mount).observe(lay, {childList:true, subtree:true});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+<!-- ADV-DOC END -->
 <!-- ===================== END Home ===================== -->
