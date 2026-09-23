@@ -6507,7 +6507,7 @@ body.mpanel-open{ overflow:hidden; }
 
     <!-- ================= WORKSPACE ================= -->
     <section class="adv-view" id="vWorkspace">
-      <div class="adv-band"><span class="dot"></span><span><b>Boldin Advisors client</b> · Notes and chat here are fiduciary advice from <span id="bandAdv">your advisor</span>.</span><span class="sp"><a data-ws="agreements">Agreement &amp; access</a></span></div>
+      <div class="adv-band"><span class="dot"></span><span><b>Boldin Advisors client</b> · Fiduciary advice from <span id="bandAdv">your advisor</span>.</span><span class="sp"><a data-ws="agreements">Agreement &amp; access</a></span></div>
       <div class="ws-head">
         <img alt="" id="wsAdvImg"><div><div class="nm" id="wsAdvName"></div><div class="r" id="wsAdvRole"></div></div>
         <div class="acts"><button class="btn btn-ghost btn-sm" data-ws="chat">Message</button><button class="btn btn-ghost btn-sm" data-ws="meetings">Meetings</button></div>
@@ -6585,7 +6585,7 @@ body.mpanel-open{ overflow:hidden; }
           </div>
           <div class="convo" id="convo"></div>
         </div>
-        <div class="aihint"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4L12 3z" stroke="#0E794E" stroke-width="1.8" stroke-linejoin="round"/></svg><span><b>How the limit works.</b> A conversation is a new topic you start; replies inside it are unlimited and don't count. Plan Partner includes 5 a month, resetting on the 1st. For quick "what does this number mean" questions, Boldin AI is unlimited and knows your plan too — it just can't give you advice.</span></div>
+        <div class="aihint"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4L12 3z" stroke="#0E794E" stroke-width="1.8" stroke-linejoin="round"/></svg><span><b>How the limit works.</b> A conversation is a new topic. Replies inside it are unlimited. Plan Partner includes 5 a month, resetting on the 1st — and Boldin AI stays unlimited for quick questions.</span></div>
       </div>
 
       <!-- meetings -->
@@ -22203,9 +22203,8 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 
 <!-- ADV-DOC BEGIN: the plan document takes the whole centre column, its notes move to the real rail -->
 <style id="advDocCSS">
-/* same widening the signing and payment steps use, so the shell never changes shape twice */
-.layout.adv-page:has(#vWorkspace.on){ grid-template-columns:200px minmax(0,1fr) 300px; max-width:1320px; }
-.adv-page:has(#vWorkspace.on) .side{ left:max(32px, calc(50% - 628px)); }
+/* the app's own column widths — the rail min is pinned so its content can't push the centre */
+.layout.adv-page:has(#vWorkspace.on){ grid-template-columns:200px minmax(0,620px) minmax(0,1fr); }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) .adv-rail{ display:block; }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) #advCtx{ display:none; }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) #docRail{ display:block; }
@@ -22225,15 +22224,21 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 #chatRail .threads{ border-right:0; }
 #chatRail .threads .th-head{ padding:0 0 var(--s-4); border-bottom:0; }
 #chatRail .quota{ font-size:15px; }
+#chatRail .quota .qr{ flex-direction:column; align-items:flex-start; gap:2px; margin-bottom:8px; }
 #chatRail .quota .qr b{ font-size:17px; }
 #chatRail .quota .reset{ font-size:13px; }
 #chatRail .thlist{ overflow:visible; margin:0 -14px; }
-#chatRail .thlist li{ border-bottom:0; border-radius:12px; gap:4px; }
+/* one row per thread: title and date on top, preview clamped, status underneath */
+#chatRail .thlist li{ display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:10px; row-gap:3px;
+  padding:12px 14px; border-bottom:0; border-radius:12px; }
 #chatRail .thlist li + li{ margin-top:2px; }
-#chatRail .thlist .t{ font-size:16px; }
-#chatRail .thlist .t span{ font-size:13px; }
-#chatRail .thlist .p{ font-size:14px; }
-#chatRail .thlist .st{ font-size:13px; }
+#chatRail .thlist .t{ display:contents; }
+#chatRail .thlist .t > span:first-child{ grid-column:1; font-size:16px; font-weight:600; line-height:1.35; min-width:0; }
+#chatRail .thlist .t > span:last-child{ grid-column:2; align-self:start; padding-top:3px;
+  font-size:13px; font-weight:500; color:var(--text-tertiary); white-space:nowrap; }
+#chatRail .thlist .p{ grid-column:1 / -1; font-size:14px; line-height:1.45; white-space:normal;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:clip; }
+#chatRail .thlist .st{ grid-column:1 / -1; font-size:13px; margin-top:1px; }
 #chatRail .aihint{ margin-top:var(--s-5); }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="meetings"].on) .adv-rail{ display:block; }
 .adv-page:has(#vWorkspace.on .wpane[data-pane="meetings"].on) #advCtx{ display:none; }
