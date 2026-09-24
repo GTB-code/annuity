@@ -5041,6 +5041,7 @@ body.mpanel-open{ overflow:hidden; }
     </div>
 
   </main>
+  <aside class="rail hm-ai-rail"></aside>
 </div>
   <div class="hm-tip" id="tip" role="status" aria-live="polite"></div>
   <div id="layoutLive" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;"></div>
@@ -14171,8 +14172,8 @@ body.sum-open .sum-layout .side{ display:none; }
 /* room for the last milestones to reach the top of the column */
 .sum-tail{ height:calc(var(--sum-h, 520px) - 210px); min-height:80px; }
 
-.sum-layout .sum-note{ font-size:16.5px; line-height:1.5; color:var(--ink); font-weight:500;
-  margin:0; max-width:58ch; min-height:26px; }
+.sum-layout .bud-sub.sum-note{ font-size:18px; line-height:1.45; color:var(--text-secondary); font-weight:400;
+  white-space:normal; max-width:58ch; min-height:26px; }
 .sum-layout .sum-note.swap{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) both; }
 @media (prefers-reduced-motion:reduce){ .sum-layout .sum-note.swap{ animation:none; } }
 @media (max-width:1080px){ .layout.page.sum-layout{ grid-template-columns:minmax(0,1fr); } }
@@ -14183,7 +14184,6 @@ body.sum-open .sum-layout .sum-range{ animation:aiRise 460ms cubic-bezier(0.22,1
 body.sum-open .sum-layout .alo-top{ animation:aiRise 440ms cubic-bezier(0.22,1,0.36,1) 60ms both; }
 body.sum-open .sum-layout .sum-plot{ animation:aiRise 500ms cubic-bezier(0.22,1,0.36,1) 200ms both; }
 body.sum-open .sum-layout .sum-chips{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) 100ms both; }
-body.sum-open .sum-layout .sum-note{ animation:aiRise 440ms cubic-bezier(0.22,1,0.36,1) 140ms both; }
 body.sum-open .sum-layout .sum-rhead{ animation:aiRise 400ms cubic-bezier(0.22,1,0.36,1) 150ms both; }
 body.sum-open .sum-layout .sum-rscroll .sxtl-row{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) both;
   animation-delay:calc(210ms + var(--r, 0) * 42ms); }
@@ -14245,18 +14245,16 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
       '<main class="center">'
         +'<div class="alo-top">'
           +'<h2 class="snap-headline ins-headline">Your plan, up to the <span class="yrs">peak</span>.</h2>'
-          +'<p class="bud-sub">Eighteen milestones, and the route to each one.</p>'
+          +'<p class="bud-sub sum-note" id="sumNote"></p>'
         +'</div>'
         +'<div class="sum-chips">'
           +'<button type="button" class="sum-chip" data-span="all">All</button>'
           +'<button type="button" class="sum-chip" data-span="soon">5 years</button>'
           +'<button type="button" class="sum-chip" data-span="ret">To retirement</button>'
           +'<button type="button" class="sum-chip" data-span="decade">First decade</button>'
-          +'<button type="button" class="sum-chip" data-span="thirties">The 2030s</button>'
           +'<button type="button" class="sum-chip" data-span="forties">The 2040s</button>'
           +'<button type="button" class="sum-chip" data-span="peak">To the peak</button>'
         +'</div>'
-        +'<p class="sum-note" id="sumNote"></p>'
         +'<div class="sum-plot">'
           +'<svg class="gd-svg sum-svg" viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg" aria-label="Projected net worth, 2026 to 2056"></svg>'
         +'</div>'
@@ -14312,13 +14310,12 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
   var SPAN=(window.__journey && window.__journey.span) || [2026,2056];
   var Y0=SPAN[0], Y1=SPAN[1], MINSPAN=3, lo=Y0, hi=Y1;
   var SPANS={ all:[Y0,Y1], soon:[Y0,2031], ret:[Y0,2029], decade:[2029,2039],
-              thirties:[2030,2040], forties:[2040,2050], peak:[2046,Y1] };
+              forties:[2040,2050], peak:[2046,Y1] };
   var NOTES={
     all:'Thirty years, one line. $567K today, $2.16M at the peak.',
     soon:'These five years do the heaviest lifting. Everything else compounds on them.',
     ret:'Three years from the last paycheck you will ever need.',
     decade:'Ten years not working, and the balance climbs anyway.',
-    thirties:'Your sixties and seventies, already paid for.',
     forties:'Twenty years retired, and still growing.',
     peak:'The last climb to $2.16M. Every dollar of it was a choice.'
   };
@@ -14382,6 +14379,8 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
         br.style.marginLeft=ml; br.style.marginRight=mr;
         var rg=lay.querySelector('.sum-range');
         if(rg){ rg.style.setProperty('--plot-l', ml); rg.style.setProperty('--plot-r', mr); }
+        var ch=lay.querySelector('.sum-chips');
+        if(ch){ ch.style.marginLeft=ml; ch.style.marginRight=mr; }
       }
     }
     var drag=null;
@@ -17145,7 +17144,22 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
   // clicking the "Ask anything" dock footer also opens the wide Boldin AI rail
   // (expand-only: typing in the moved bar never collapses it back)
   document.addEventListener('click', function(e){
-    if(e.target.closest && e.target.closest('.dock .askbar')) expand();
+    if(!(e.target.closest && e.target.closest('.dock .askbar'))) return;
+    var was=document.body.classList.contains('ai-expanded');
+    expand();
+    /* on Home there is no rail to expand into, so the ask bar goes straight to full screen */
+    var home=document.querySelector('.layout.page[data-page="home"]');
+    if(home && home.classList.contains('on') && !document.body.classList.contains('ai-fullscreen')){
+      /* the expand transition holds the flight lock, so wait for it to clear */
+      var tries=0;
+      (function go(){
+        if(document.body.classList.contains('ai-fullscreen') || ++tries>16) return;
+        /* Home's rail is only visible once expanded, so decorate it before going wide */
+        refresh();
+        setFullscreen(true);
+        if(!document.body.classList.contains('ai-fullscreen')) setTimeout(go, 110);
+      })();
+    }
   }, true);
   // while expanded, the ask bar is the chat input
   document.addEventListener('keydown', function(e){
@@ -22223,6 +22237,13 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 .adv-page .chatwrap{ grid-template-columns:minmax(0,1fr); }
 #chatRail .threads{ border-right:0; }
 #chatRail .threads .th-head{ padding:0 0 var(--s-4); border-bottom:0; }
+/* Home has no rail of its own — this one exists only to host Boldin AI full screen */
+.layout.hm-page > .rail.hm-ai-rail{ display:none; }
+body.ai-expanded .layout.hm-page.on > .rail.hm-ai-rail{ position:static; width:auto; }
+body.ai-expanded:not(.ai-fullscreen) .layout.hm-page.on > .rail.hm-ai-rail{ display:block; }
+body.ai-fullscreen .layout.hm-page.on > .rail.hm-ai-rail{ display:grid; }
+body.ai-fullscreen .layout.hm-page > *:not(.rail){ display:none; }
+body.ai-fullscreen .layout.hm-page{ padding-top:calc(73px + var(--s-3)); padding-bottom:var(--s-6); }
 #chatRail .quota{ font-size:15px; }
 #chatRail .quota .qr{ flex-direction:column; align-items:flex-start; gap:2px; margin-bottom:8px; }
 #chatRail .quota .qr b{ font-size:17px; }
