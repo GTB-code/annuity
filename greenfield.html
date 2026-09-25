@@ -11773,6 +11773,28 @@ const XTL=[
   ['#04B477','2099','Still funded','The plan carries past 99 with money left over. That is the whole point.']
 ];
 window.XTL = XTL;   /* the Prism draws the same milestones on the journey graph */
+/* one Lucide icon per milestone, in XTL order (lucide.dev, ISC) */
+var JICONS=[
+  /* flag             */ '<path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528" />',
+  /* door-closed      */ '<path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16" /> <path d="M2 21h20" /> <path d="M9 12h.01" />',
+  /* history          */ '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /> <path d="M3 3v5h5" /> <path d="M12 7v5l4 2" />',
+  /* briefcase        */ '<path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /> <rect width="20" height="14" x="2" y="6" rx="2" />',
+  /* arrow-right-left */ '<path d="m16 3 4 4-4 4" /> <path d="M20 7H4" /> <path d="m8 21-4-4 4-4" /> <path d="M4 17h16" />',
+  /* heart-pulse      */ '<path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" /> <path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />',
+  /* shield-check     */ '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" />',
+  /* users            */ '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <path d="M16 3.128a4 4 0 0 1 0 7.744" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <circle cx="9" cy="7" r="4" />',
+  /* landmark         */ '<path d="M10 18v-7" /> <path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z" /> <path d="M14 18v-7" /> <path d="M18 18v-7" /> <path d="M3 22h18" /> <path d="M6 18v-7" />',
+  /* hourglass        */ '<path d="M5 22h14" /> <path d="M5 2h14" /> <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" /> <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" />',
+  /* banknote         */ '<rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" />',
+  /* heart-handshake  */ '<path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762" />',
+  /* calendar-clock   */ '<path d="M16 14v2.2l1.6 1" /> <path d="M16 2v3" /> <path d="M21 7.338V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h2.338" /> <path d="M3 9h5.859" /> <path d="M8 2v3" /> <circle cx="16" cy="16" r="6" />',
+  /* triangle-alert   */ '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /> <path d="M12 9v4" /> <path d="M12 17h.01" />',
+  /* stethoscope      */ '<path d="M11 2v2" /> <path d="M5 2v2" /> <path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1" /> <path d="M8 15a6 6 0 0 0 12 0v-3" /> <circle cx="20" cy="10" r="2" />',
+  /* house            */ '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />',
+  /* trending-up      */ '<path d="M16 7h6v6" /> <path d="m22 7-8.5 8.5-5-5L2 17" />',
+  /* infinity         */ '<path d="M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8" />'
+];
+window.JICONS = JICONS;
 const XREADS=[
   ['Your Savings Playbook','The order to fill your accounts, from the 401(k) match on down.','<path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/>'],
   ['What Are Special Expenses?','Weddings, roofs, remodels: pricing the one-time costs into the plan.','<path d="M20.6 13.4L12 22 2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.6"/>'],
@@ -14146,7 +14168,28 @@ body.sum-open .layout.page.sum-layout{ overflow-x:clip; }   /* the slide travels
 .sum-layout .sum-close:hover{ background:#F6F7F8; color:var(--ink); }
 .sum-layout .alo-top .bud-sub{ margin-bottom:22px; }
 @media (max-height:780px){ .sum-layout .alo-top .bud-sub{ margin-bottom:10px; } }
-.sum-layout .sum-plot{ padding:0; margin-top:-6px; }
+.sum-layout .sum-plot{ padding:0; margin-top:-6px; position:relative; }
+/* hover card: the year, what it is worth, and what happens */
+.sum-tip{ position:absolute; z-index:6; min-width:196px; max-width:288px; pointer-events:none;
+  background:var(--white); border:1px solid var(--hairline); border-radius:16px;
+  box-shadow:0 8px 24px rgba(16,24,44,.10), 0 1px 3px rgba(16,24,44,.05);
+  padding:13px 15px 14px; transform:translate(-50%,-100%);
+  opacity:0; transition:opacity 140ms ease, transform 200ms var(--sum-ease); }
+.sum-tip.on{ opacity:1; }
+.sum-tip[hidden]{ display:none; }
+.sum-tip .tp-when{ font-size:13px; font-weight:400; color:var(--text-tertiary); line-height:1.3; }
+.sum-tip .tp-nw{ margin-top:4px; font-size:24px; font-weight:400; color:var(--ink); line-height:1.1;
+  font-variant-numeric:tabular-nums; }
+.sum-tip .tp-nw .k{ font-size:13px; color:var(--text-tertiary); margin-left:7px; }
+.sum-tip .tp-ev{ display:flex; gap:9px; margin-top:15px; }
+.sum-tip .tp-ic{ flex:none; display:inline-flex; margin-top:2px; }
+.sum-tip .tp-ic svg{ width:17px; height:17px; display:block; }
+.sum-tip .tp-dot{ width:8px; height:8px; border-radius:50%; flex:none; margin-top:6px; }
+.sum-tip .tp-t{ font-size:15px; font-weight:400; color:var(--ink); line-height:1.4; }
+.sum-tip .tp-fig{ margin-top:5px; font-size:14px; font-weight:400; color:var(--text-tertiary); line-height:1.4; }
+.sum-tip .tp-fig .n{ font-size:15px; color:var(--green-cta); margin-right:4px;
+  font-variant-numeric:tabular-nums; }
+@media (prefers-reduced-motion:reduce){ .sum-tip{ transition:none; } }
 .sum-layout .sum-plot .gd-svg{ width:100%; height:auto; display:block; }
 .sum-layout .sum-route{ position:sticky; top:96px; }
 .sum-layout .sum-rscroll{ margin-top:var(--s-5); max-height:var(--sum-h, calc(100vh - 190px)); overflow-y:auto;
@@ -14221,6 +14264,8 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-e
   transition:r 200ms var(--sum-ease), stroke-width 200ms var(--sum-ease), filter 200ms ease; }
 .sum-layout .sum-svg .jdot.lit{ r:13; stroke-width:4; filter:drop-shadow(0 3px 8px rgba(16,24,44,.3)); }
 .sum-layout .sum-svg .jhit:hover + .jdot{ r:11; }
+.sum-layout .sum-svg .jic{ opacity:0; pointer-events:none; transition:opacity 160ms ease; }
+.sum-layout .sum-svg .jic.lit{ opacity:1; }
 .sum-layout .sum-rscroll .sxtl-row{ transition:background 180ms ease, opacity 200ms ease, padding 180ms ease, margin 180ms ease; }
 
 @media (prefers-reduced-motion:reduce){
@@ -14293,7 +14338,14 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-e
     });
     lay.addEventListener('mouseover', function(e){
       var dot=e.target.closest && e.target.closest('.sum-svg .jdot, .sum-svg .jhit');
-      if(dot) light(dot.dataset.mi);
+      if(dot){ light(dot.dataset.mi); showTip(dot); }
+    });
+    lay.addEventListener('mouseout', function(e){
+      var dot=e.target.closest && e.target.closest('.sum-svg .jdot, .sum-svg .jhit');
+      if(!dot) return;
+      var to=e.relatedTarget;
+      if(to && to.closest && to.closest('.sum-svg .jdot, .sum-svg .jhit')) return;
+      hideTip();
     });
     lay.addEventListener('click', function(e){
       var dot=e.target.closest && e.target.closest('.sum-svg .jdot, .sum-svg .jhit'); if(!dot) return;
@@ -14315,7 +14367,7 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-e
               forties:[2040,2050], peak:[2046,Y1] };
   var NOTES={
     all:'Thirty years, one line. $567K today, $2.16M at the peak.',
-    soon:'These five years do the heaviest lifting. Everything else compounds on them.',
+    soon:'Five years of heavy lifting. The rest compounds.',
     ret:'Three years from the last paycheck you will ever need.',
     decade:'Ten years not working, and the balance climbs anyway.',
     forties:'Twenty years retired, and still growing.',
@@ -14360,8 +14412,12 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-e
     J.draw(lay.querySelector('.sum-svg'), 720, vbH, true, lo, hi, quiet!==false);
     /* the dots are rebuilt by every draw, so the current pick is re-applied after it */
     var picked=lay.querySelector('.sum-rscroll .sxtl-row.lit');
-    if(picked) lay.querySelectorAll('.sum-svg .jdot').forEach(function(c){
-      c.classList.toggle('lit', c.dataset.mi===picked.dataset.mi); });
+    if(picked){
+      lay.querySelectorAll('.sum-svg .jdot').forEach(function(c){
+        c.classList.toggle('lit', c.dataset.mi===picked.dataset.mi); });
+      lay.querySelectorAll('.sum-svg .jic').forEach(function(g){
+        g.classList.toggle('lit', g.dataset.mi===picked.dataset.mi); });
+    }
     lay.querySelectorAll('.sum-route .sxtl-row').forEach(function(r){
       var m=(r.querySelector('.sxtl-date')||{}).textContent||'';
       var ym=m.match(/(19|20)\d{2}/);
@@ -14470,6 +14526,7 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-e
   function light(mi){
     lay.querySelectorAll('.sum-route .sxtl-row').forEach(function(r){ r.classList.toggle('lit', r.dataset.mi===mi); });
     lay.querySelectorAll('.sum-svg .jdot').forEach(function(c){ c.classList.toggle('lit', c.dataset.mi===mi); });
+    lay.querySelectorAll('.sum-svg .jic').forEach(function(g){ g.classList.toggle('lit', g.dataset.mi===mi); });
   }
   function open(){
     var J=window.__journey; if(!J) return;
@@ -14544,6 +14601,68 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-e
     if(!c || !r) return;
     var h=Math.round(c.getBoundingClientRect().bottom - r.getBoundingClientRect().top);
     if(h>160) lay.style.setProperty('--sum-h', h+'px');
+  }
+  /* ---- the hover card: year, net worth, the event and its number ---- */
+  var tipEl=null, tipT=0;
+  function money(v){
+    if(v>=1000000) return '$'+(v/1000000).toFixed(2).replace(/\.?0+$/,'')+'M';
+    return '$'+Math.round(v/1000)+'K';
+  }
+  function figureOf(body){
+    var t=(body||'').replace(/<[^>]*>/g,'');
+    if(/^\s*net worth/i.test(t)) return null;   /* the card already states net worth */
+    var m=t.match(/(\$[\d.,]+(?:\s?(?:million|M|K))?|\d+(?:\.\d+)?%)((?:\s+[a-z][\w'\u2019-]*){0,4})/);
+    if(!m) return null;
+    return { n:m[1].trim(), rest:(m[2]||'').trim() };
+  }
+  function tipIcon(mi, col){
+    var ic=(window.JICONS||[])[mi];
+    if(!ic) return '<span class="tp-dot" style="background:'+col+'"></span>';
+    return '<span class="tp-ic" style="color:'+col+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"'+
+           ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ic+'</svg></span>';
+  }
+  function showTip(dot){
+    if(!lay) return;
+    clearTimeout(tipT);
+    var plot=lay.querySelector('.sum-plot'); if(!plot) return;
+    var mi=parseInt(dot.dataset.mi,10);
+    var row=(window.XTL||[])[mi]; if(!row) return;
+    if(!tipEl){
+      tipEl=document.createElement('div'); tipEl.className='sum-tip'; tipEl.hidden=true;
+      plot.appendChild(tipEl);
+    }
+    /* "2035 &middot; Marshall 70" splits into the year and who it is about */
+    var label=(row[1]||'').replace(/&middot;/g,'\u00b7').replace(/&frac12;/g,'\u00bd');
+    var parts=label.split('\u00b7');
+    var when=parts[0].trim(), who=parts.slice(1).join('\u00b7').trim();
+    var ym=when.match(/(19|20)\d{2}/);
+    var J=window.__journey;
+    var nw = (ym && J && J.valueAt) ? money(J.valueAt(parseInt(ym[0],10))) : '\u2014';
+    var fig=figureOf(row[3]);
+    tipEl.innerHTML =
+      '<div class="tp-when">'+when+(who?' \u00b7 '+who:'')+'</div>'+
+      '<div class="tp-nw">'+nw+'<span class="k">net worth</span></div>'+
+      '<div class="tp-ev">'+tipIcon(mi, row[0])+'<div>'+
+        '<div class="tp-t">'+row[2]+'</div>'+
+        (fig?'<div class="tp-fig"><span class="n">'+fig.n+'</span>'+(fig.rest?' '+fig.rest:'')+'</div>':'')+
+      '</div></div>';
+    tipEl.hidden=false;
+    /* anchor above the dot, flipping at the edges so it never leaves the plot */
+    var d=dot.getBoundingClientRect(), p=plot.getBoundingClientRect();
+    var cx=d.left+d.width/2-p.left, cy=d.top-p.top;
+    var w=tipEl.offsetWidth, h=tipEl.offsetHeight, pad=8;
+    var left=Math.max(w/2+pad, Math.min(p.width-w/2-pad, cx));
+    var below = (cy - h - 16) < 0;
+    tipEl.style.left=left+'px';
+    tipEl.style.top=(below ? cy + d.height + 16 + h : cy - 16)+'px';
+    tipEl.classList.toggle('below', below);
+    requestAnimationFrame(function(){ if(tipEl) tipEl.classList.add('on'); });
+  }
+  function hideTip(){
+    if(!tipEl) return;
+    tipEl.classList.remove('on');
+    clearTimeout(tipT);
+    tipT=setTimeout(function(){ if(tipEl) tipEl.hidden=true; }, 160);
   }
   /* the plan page's own left nav comes along, so the shell never changes shape */
   var sideEl=null, sideHome=null;
@@ -17835,6 +17954,16 @@ body.prism-max #prismMax{ display:flex; }
         });
         var hr=Math.max(9, Math.min(20, d/2));
         s+='<circle class="jhit" data-mi="'+pt.mi+'" cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="'+hr.toFixed(1)+'" fill="transparent"/>';
+      });
+      /* the picked dot carries its milestone's icon */
+      var LIGHTFILL={ '#FBBD04':1, '#9BD9C1':1, '#04B477':1 };
+      hitPts.forEach(function(pt){
+        var ic=(window.JICONS||[])[pt.mi]; if(!ic) return;
+        var col=((window.XTL||[])[pt.mi]||[])[0]||'#0E794E';
+        var sc=0.62, off=12*sc;
+        s+='<g class="jic" data-mi="'+pt.mi+'" transform="translate('+(pt.x-off).toFixed(1)+','+(pt.y-off).toFixed(1)+') scale('+sc+')"'+
+           ' fill="none" stroke="'+(LIGHTFILL[col]?'#10182C':'#fff')+'" stroke-width="3.6"'+
+           ' stroke-linecap="round" stroke-linejoin="round">'+ic+'</g>';
       });
     }
     var ticks=[], nT=4, prev=null;
