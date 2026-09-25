@@ -14126,19 +14126,18 @@ body.sum-open .layout.page.sum-layout{ overflow-x:clip; }   /* the slide travels
   margin-left:var(--plot-l, 0); margin-right:var(--plot-r, 0); }
 .sum-hint{ font-size:12.5px; color:var(--text-tertiary); }
 .sum-readout{ font-size:13px; font-weight:600; color:var(--text-secondary); font-variant-numeric:tabular-nums; }
-.sum-brush{ position:relative; height:38px; border-radius:8px; overflow:hidden; background:#FAFBFC;
-  border:1px solid var(--hairline); touch-action:none; user-select:none; cursor:pointer; }
-.sum-brush .sum-mini{ position:absolute; inset:0; width:100%; height:100%; display:block; }
-.sum-brush .br-mask{ position:absolute; top:0; bottom:0; background:rgba(255,255,255,0.72); pointer-events:none; }
+.sum-brush{ position:relative; height:26px; border-radius:999px; overflow:hidden; background:#F1F3F5;
+  border:0; touch-action:none; user-select:none; cursor:pointer; }
+.sum-brush .sum-mini{ display:none; }
+.sum-brush .br-mask{ position:absolute; top:0; bottom:0; background:transparent; pointer-events:none; }
 .sum-brush .br-l{ left:0; } .sum-brush .br-r{ right:0; }
-.sum-brush .br-win{ position:absolute; top:0; bottom:0; cursor:grab;
-  border-left:2px solid var(--green); border-right:2px solid var(--green);
-  background:rgba(4,180,119,0.07); }
+.sum-brush .br-win{ position:absolute; top:0; bottom:0; cursor:grab; border-radius:999px;
+  border:0; background:var(--mint); }
 .sum-brush.dragging .br-win{ cursor:grabbing; }
 .sum-brush .br-win:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
-.sum-brush .br-h{ position:absolute; top:50%; width:8px; height:18px; margin-top:-9px; border-radius:4px;
-  background:var(--green); box-shadow:0 1px 3px rgba(16,24,44,.22); cursor:ew-resize; }
-.sum-brush .br-h-l{ left:-5px; } .sum-brush .br-h-r{ right:-5px; }
+.sum-brush .br-h{ position:absolute; top:50%; width:6px; height:26px; margin-top:-13px; border-radius:999px;
+  background:var(--green-cta); cursor:ew-resize; }
+.sum-brush .br-h-l{ left:0; } .sum-brush .br-h-r{ right:0; }
 .sum-brush .br-h::after{ content:''; position:absolute; inset:-8px -10px; }
 .sum-layout .sum-rscroll .sxtl-row.out{ opacity:0.32; }
 .sum-layout .sum-close{ display:flex; align-items:center; justify-content:center; width:38px; height:38px;
@@ -14181,20 +14180,16 @@ body.sum-open .layout.page.sum-layout{ overflow-x:clip; }   /* the slide travels
        the line draws and the dots land last. Apple's sheet curve throughout. ---- */
 /* nothing fades — every piece simply travels into place on one curve */
 .sum-layout{ --sum-ease:cubic-bezier(0.32, 0.72, 0, 1); }
-@keyframes sumRise{ from{ transform:translateY(22px); } to{ transform:none; } }
-@keyframes sumSlideIn{ from{ transform:translateX(34px); } to{ transform:none; } }
-body.sum-open .sum-layout .alo-top{ animation:sumRise 560ms var(--sum-ease) both; }
-body.sum-open .sum-layout .sum-chips{ animation:sumRise 580ms var(--sum-ease) 50ms both; }
-body.sum-open .sum-layout .sum-plot{ animation:sumRise 640ms var(--sum-ease) 90ms both; }
-body.sum-open .sum-layout .sum-range{ animation:sumRise 660ms var(--sum-ease) 150ms both; }
-/* the route travels in from the edge it lives on */
-body.sum-open .sum-layout .sum-route{ animation:sumSlideIn 620ms var(--sum-ease) both; }
-body.sum-open .sum-layout .sum-rhead{ animation:sumSlideIn 600ms var(--sum-ease) 60ms both; }
-body.sum-open .sum-layout .sum-rscroll .sxtl-row{ animation:sumSlideIn 580ms var(--sum-ease) both;
-  animation-delay:calc(110ms + var(--r, 0) * 34ms); }
+@keyframes sumRise{ from{ transform:translate3d(0,26px,0); } to{ transform:translate3d(0,0,0); } }
+@keyframes sumSlideIn{ from{ transform:translate3d(38px,0,0); } to{ transform:translate3d(0,0,0); } }
+/* two moving parts, not twenty: each column travels as a single composited layer */
+body.sum-open .sum-layout .center{ animation:sumRise 720ms var(--sum-ease) both; will-change:transform; }
+body.sum-open .sum-layout .sum-route{ animation:sumSlideIn 720ms var(--sum-ease) both; will-change:transform; }
+body.sum-open .sum-layout.sum-live .center,
+body.sum-open .sum-layout.sum-live .sum-route{ will-change:auto; }
 .sum-layout .sum-svg .jdot{ transform-box:fill-box; transform-origin:center;
   animation:jdotIn 420ms var(--sum-ease) both;
-  animation-delay:calc(360ms + var(--i, 0) * 42ms); }
+  animation-delay:calc(260ms + var(--i, 0) * 26ms); }
 @keyframes jdotIn{ from{ transform:scale(0); } to{ transform:none; } }
 /* the retirement marker drops in, then its dot keeps a slow pulse */
 .sum-layout .sum-svg .jret{ animation:jretDrop 660ms var(--sum-ease) 330ms both; }
@@ -14214,24 +14209,23 @@ body.sum-open .sum-layout .sum-rscroll .sxtl-row{ animation:sumSlideIn 580ms var
 .sum-layout.sum-live .sum-svg .jret{ opacity:0.55; }
 
 /* ---- exit: it travels back out the way it came ---- */
-body.sum-closing .sum-layout .center{ animation:sumOutDown 280ms var(--sum-ease) both; }
-body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 280ms var(--sum-ease) both; }
-@keyframes sumOutDown{ from{ transform:none; } 70%{ opacity:1; } to{ transform:translateY(20px); opacity:0; } }
-@keyframes sumOutRight{ from{ transform:none; } 70%{ opacity:1; } to{ transform:translateX(34px); opacity:0; } }
+body.sum-closing .sum-layout .center{ animation:sumOutDown 300ms var(--sum-ease) both; }
+body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-ease) both; }
+@keyframes sumOutDown{ from{ transform:translate3d(0,0,0); } 70%{ opacity:1; } to{ transform:translate3d(0,24px,0); opacity:0; } }
+@keyframes sumOutRight{ from{ transform:translate3d(0,0,0); } 70%{ opacity:1; } to{ transform:translate3d(38px,0,0); opacity:0; } }
 
 /* ---- the picked milestone and its dot answer together ---- */
-.sum-layout .sum-svg .jdot{ transition:r 180ms cubic-bezier(0.22,1,0.36,1); }
+/* the dots: a big invisible target, and the picked one lifts off the line */
+.sum-layout .sum-svg .jhit{ cursor:pointer; }
+.sum-layout .sum-svg .jdot{ pointer-events:none;
+  transition:r 200ms var(--sum-ease), stroke-width 200ms var(--sum-ease), filter 200ms ease; }
+.sum-layout .sum-svg .jdot.lit{ r:13; stroke-width:4; filter:drop-shadow(0 3px 8px rgba(16,24,44,.3)); }
+.sum-layout .sum-svg .jhit:hover + .jdot{ r:11; }
 .sum-layout .sum-rscroll .sxtl-row{ transition:background 180ms ease, opacity 200ms ease, padding 180ms ease, margin 180ms ease; }
 
 @media (prefers-reduced-motion:reduce){
-  body.sum-open .sum-layout .alo-top,
-  body.sum-open .sum-layout .sum-plot,
-  body.sum-open .sum-layout .sum-note,
-  body.sum-open .sum-layout .sum-chips,
-  body.sum-open .sum-layout .sum-range,
-  body.sum-open .sum-layout .sum-rhead,
+  body.sum-open .sum-layout .center,
   body.sum-open .sum-layout .sum-route,
-  body.sum-open .sum-layout .sum-rscroll .sxtl-row,
   body.sum-closing .sum-layout .center,
   body.sum-closing .sum-layout .sum-route{ animation:none; }
   .sum-layout .sum-svg .jdot{ animation:none; transform:none; transition:none; }
@@ -14243,7 +14237,7 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 280ms var(--sum-e
 </style>
 <script>
 (function(){
-  var lay=null, fitT=0, liveT=0, vbH=460;
+  var lay=null, fitT=0, liveT=0, vbH=460, firstPaint=false;
   var X='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
   function build(){
     lay=document.createElement('div');
@@ -14298,11 +14292,11 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 280ms var(--sum-e
       if(row){ light(row.dataset.mi); scrollToRow(row); }
     });
     lay.addEventListener('mouseover', function(e){
-      var dot=e.target.closest && e.target.closest('.sum-svg .jdot');
+      var dot=e.target.closest && e.target.closest('.sum-svg .jdot, .sum-svg .jhit');
       if(dot) light(dot.dataset.mi);
     });
     lay.addEventListener('click', function(e){
-      var dot=e.target.closest && e.target.closest('.sum-svg .jdot'); if(!dot) return;
+      var dot=e.target.closest && e.target.closest('.sum-svg .jdot, .sum-svg .jhit'); if(!dot) return;
       light(dot.dataset.mi);
       scrollToRow(lay.querySelector('.sum-route .sxtl-row[data-mi="'+dot.dataset.mi+'"]'));
     });
@@ -14356,8 +14350,12 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 280ms var(--sum-e
     });
     var noteEl=lay.querySelector('#sumNote'), txt=noteFor(active);
     if(noteEl && noteEl.textContent!==txt){
-      noteEl.classList.remove('swap'); void noteEl.offsetWidth;
-      noteEl.textContent=txt; noteEl.classList.add('swap');
+      /* on the way in the whole column is already moving — the note just arrives with it */
+      if(firstPaint){ firstPaint=false; noteEl.classList.remove('swap'); noteEl.textContent=txt; }
+      else{
+        noteEl.classList.remove('swap'); void noteEl.offsetWidth;
+        noteEl.textContent=txt; noteEl.classList.add('swap');
+      }
     }
     J.draw(lay.querySelector('.sum-svg'), 720, vbH, true, lo, hi, quiet!==false);
     /* the dots are rebuilt by every draw, so the current pick is re-applied after it */
@@ -14447,10 +14445,10 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 280ms var(--sum-e
     var plot=lay.querySelector('.sum-plot'), rangeEl=lay.querySelector('.sum-range');
     if(!plot || !rangeEl) return false;
     var colW=plot.offsetWidth || 720;
-    var topInView=plot.offsetTop - window.scrollY;
+    var topInView=plot.getBoundingClientRect().top;   /* offsetTop misses the layout's own top inset */
     /* clear the whole ask-bar dock, gradient included, so the drag hint is never washed out */
     var dock=document.querySelector('.dock');
-    var reserve=(dock ? dock.offsetHeight : 136) + 32;
+    var reserve=(dock ? dock.offsetHeight : 136) + 76;
     var avail=window.innerHeight - topInView - rangeEl.offsetHeight - reserve;
     var target=Math.max(165, Math.min(620, avail));
     var next=Math.round(target * 720 / colW);
@@ -14521,20 +14519,22 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 280ms var(--sum-e
     document.body.classList.add('sum-open');
     lo=Y0; hi=Y1;
     J.draw(lay.querySelector('.sum-svg'), 720, 460, true);
+    firstPaint=true;
     paint(false);
     lay.classList.remove('sum-live');
     clearTimeout(liveT);
-    liveT=setTimeout(function(){
+    liveT=setTimeout(function(){ if(lay) lay.classList.add('sum-live'); }, 1400);
+    window.scrollTo(0,0);
+    fit();
+    /* put the chosen milestone at the top before the column has finished travelling in */
+    requestAnimationFrame(function(){
       if(!lay) return;
-      lay.classList.add('sum-live');
       var host=lay.querySelector('.sum-rscroll'), row=lay.querySelector('.sum-rscroll .sxtl-row.lit');
       if(host && row && !host.scrollTop){
         var d=row.getBoundingClientRect().top - host.getBoundingClientRect().top;
         host.scrollTop = Math.max(0, host.scrollTop + d - 14);
       }
-    }, 1500);
-    window.scrollTo(0,0);
-    fit();
+    });
   }
   /* the route's scroll window ends level with the note under the graph */
   function fit(){
@@ -14570,7 +14570,7 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 280ms var(--sum-e
       document.body.classList.remove('sum-open','sum-closing');
       giveSideBack();
       closing=0; window.scrollTo(0,0);
-    }, 265);
+    }, 305);
   }
   window.__sum2={ open:open, close:close, isOpen:function(){ return document.body.classList.contains('sum-open'); } };
 })();
@@ -17799,7 +17799,7 @@ body.prism-max #prismMax{ display:flex; }
     s+='<path class="gd-area" d="'+line+' L'+X(hi).toFixed(1)+' '+(padT+ph).toFixed(1)+' L'+X(lo).toFixed(1)+' '+(padT+ph).toFixed(1)+' Z" fill="rgba(4,180,119,0.10)"/>';
     s+='<path class="gd-line" d="'+line+'" fill="none" stroke="#04B477" stroke-width="'+(big?3:2.6)+'" stroke-linecap="round" stroke-linejoin="round"/>';
     /* a dot per milestone, sitting on the line */
-    var RETI=-1, seenYr={};
+    var RETI=-1, seenYr={}, hitPts=[];
     (window.XTL||[]).forEach(function(m,i){ if(RETI<0 && /Retirement day/.test(m[2]||'')) RETI=i; });
     (window.XTL||[]).forEach(function(m,i){
       var ym=(m[1]||'').match(/(19|20)\d{2}/); if(!ym) return;
@@ -17808,7 +17808,8 @@ body.prism-max #prismMax{ display:flex; }
       if(seenYr[yr]>1) yr += 0.42*(seenYr[yr]-1);   /* same year twice: nudge so both dots are clickable */
       if(i===RETI) return;                    /* retirement is drawn with its marker, below */
       if(yr<lo-0.5 || yr>hi+0.5) return;
-      var v=valueAt(yr), r = big?8.5:5.4;
+      var v=valueAt(yr), r = big?9:5.4;
+      hitPts.push({ mi:i, x:X(yr), y:Y(v) });
       s+='<circle class="jdot" data-mi="'+i+'" style="--i:'+i+'" cx="'+X(yr).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="'+r+'" fill="'+m[0]+'" stroke="#fff" stroke-width="'+(big?2.6:2)+'"/>';
     });
     /* retirement: December 2028 */
@@ -17821,8 +17822,21 @@ body.prism-max #prismMax{ display:flex; }
       mk+='<text class="jret-lab" x="'+(rx+8).toFixed(1)+'" y="'+(padT+27)+'" font-size="12" fill="#9AA0AE">December 2028</text>';
     }
     mk+='<circle class="jret-ring" cx="'+rx.toFixed(1)+'" cy="'+ry.toFixed(1)+'" r="'+(big?8.5:5.4)+'" fill="none" stroke="#FBBD04" stroke-width="2"/>';
+    if(RET>=lo && RET<=hi) hitPts.push({ mi:RETI, x:rx, y:ry });
     mk+='<circle class="jdot jret-dot" data-mi="'+RETI+'" style="--i:'+RETI+'" cx="'+rx.toFixed(1)+'" cy="'+ry.toFixed(1)+'" r="'+(big?9.5:6)+'" fill="#FBBD04" stroke="#fff" stroke-width="'+(big?2.8:2.1)+'"/>';
     s+=mk;
+    /* one generous tap target per dot, never wider than the gap to its closest neighbour */
+    if(big){
+      hitPts.forEach(function(pt){
+        var d=1e9;
+        hitPts.forEach(function(o){ if(o===pt) return;
+          var dx=o.x-pt.x, dy=o.y-pt.y, l=Math.sqrt(dx*dx+dy*dy);
+          if(l<d) d=l;
+        });
+        var hr=Math.max(9, Math.min(20, d/2));
+        s+='<circle class="jhit" data-mi="'+pt.mi+'" cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="'+hr.toFixed(1)+'" fill="transparent"/>';
+      });
+    }
     var ticks=[], nT=4, prev=null;
     for(var ti=0; ti<=nT; ti++){
       var tv=Math.round(lo + (hi-lo)*ti/nT);
