@@ -3542,10 +3542,13 @@ body.mpanel-open{ overflow:hidden; }
       <svg class="ic" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 19c.6-3.3 2.9-5 5.5-5s4.9 1.7 5.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 4.5a3 3 0 0 1 0 6M17 13.5c2 .5 3.3 2 3.8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>My Advisory</a>
   </nav>
   <div class="right">
+    <button class="iconbtn alert-btn" id="alertBtn" aria-label="Alerts" data-tip="Coach alerts">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10182C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+      <span class="alert-count" id="alertCount">3</span>
+    </button>
     <button class="iconbtn" aria-label="Vault" data-tip="File vault" data-view="vault">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#10182C" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" stroke="#10182C" stroke-width="1.8"/><path d="M12 12v3" stroke="#10182C" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
-    <div class="avatar-s" data-tip="Your profile">ML</div>
     <button class="iconbtn" aria-label="Menu" data-tip="More"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="#10182C" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   </div>
 </header>
@@ -10545,6 +10548,7 @@ document.addEventListener('click', function(e){
     }
     showView(a.dataset.view, a); }));
   document.querySelectorAll('.topnav .right .iconbtn[data-view]').forEach(b=> b.addEventListener('click', ()=> showView(b.dataset.view)));
+  window.__goView = showView;   /* the top menu reaches the profile page through this */
   const pfAv=document.querySelector('.topnav .avatar-s');
   if(pfAv){ pfAv.style.cursor='pointer'; pfAv.setAttribute('role','button'); pfAv.setAttribute('aria-label','Your profile');
     pfAv.addEventListener('click', ()=> showView('profile')); }
@@ -15537,6 +15541,10 @@ body.fire-page .fire-side{ display:block; }
 
 <!-- top-right hamburger menu -->
 <div class="top-menu" id="topMenu" role="menu" aria-label="Menu">
+  <button class="tm-item tm-me" role="menuitem" type="button" data-tm="profile">
+    <span class="tm-av">ML</span><span class="tm-mex"><span class="n">Margaret Lee</span><span class="s">Your profile &amp; settings</span></span>
+  </button>
+  <div class="tm-div"></div>
   <button class="tm-item" role="menuitem" type="button" data-panel="classes">Classes &amp; live events</button>
   <button class="tm-item" role="menuitem" type="button" data-panel="coach">Book a coach</button>
   <button class="tm-item" role="menuitem" type="button" data-panel="advisor">Talk to a financial advisor</button>
@@ -15567,7 +15575,7 @@ body.fire-page .fire-side{ display:block; }
     if(!menu.classList.contains('open')) return;
     var it=e.target.closest && e.target.closest('#topMenu .tm-item');
     if(it){
-      if(it.dataset.tm==='profile'){ var av=document.querySelector('.topnav .avatar-s'); if(av) av.click(); }
+      if(it.dataset.tm==='profile'){ if(window.__goView) window.__goView('profile'); }
       else if(it.dataset.panel){ openPanel(it.dataset.panel); }
       close(); return;
     }
@@ -22513,4 +22521,129 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
 })();
 </script>
 <!-- ADV-DOC END -->
+
+<!-- COACH-ALERTS BEGIN: the bell in the top nav, and everything Boldin Coach has flagged -->
+<style id="coachAlertCSS">
+.topnav .right .alert-btn{ position:relative; }
+/* a true circle, riding just off the bell's top-right corner */
+.alert-count{ position:absolute; top:-6px; right:-7px; width:23px; height:23px; padding:0;
+  border-radius:50%; background:#9F1D1D; color:#fff; font-size:13px; font-weight:600; line-height:1;
+  display:flex; align-items:center; justify-content:center; border:2px solid var(--white);
+  box-sizing:border-box; font-variant-numeric:tabular-nums; }
+.alert-count[hidden]{ display:none; }
+/* the panel reuses the top menu's shell, widened for real content */
+.top-menu.alert-menu{ width:376px; padding:0; max-height:min(560px, calc(100vh - 110px)); display:flex; flex-direction:column; }
+.al-head{ display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:16px 18px 12px; border-bottom:1px solid var(--hairline); }
+.al-head .t{ font-size:17px; font-weight:600; color:var(--ink); }
+.al-head .clear{ border:0; background:none; font-family:inherit; font-size:14px; color:var(--green-cta);
+  cursor:pointer; padding:4px 2px; }
+.al-head .clear:hover{ text-decoration:underline; }
+.al-list{ overflow-y:auto; padding:8px; scrollbar-width:thin; scrollbar-color:#D9DDE3 transparent; }
+.al-row{ display:flex; gap:12px; width:100%; text-align:left; border:0; background:transparent;
+  font-family:inherit; padding:12px; border-radius:12px; cursor:pointer;
+  transition:background var(--dur-fast) var(--ease-out); }
+.al-row:hover{ background:#F6F7F8; }
+.al-ic{ flex:none; width:34px; height:34px; border-radius:50%; display:grid; place-items:center;
+  background:var(--eggshell); color:var(--green-cta); margin-top:1px; }
+.al-ic svg{ width:17px; height:17px; }
+.al-ic.warn{ background:#FFF6E3; color:#8A6212; }
+.al-ic.teal{ background:#E3EEF0; color:var(--teal); }
+.al-bd{ min-width:0; flex:1; }
+.al-t{ font-size:15px; color:var(--ink); line-height:1.35; }
+.al-s{ font-size:14px; color:var(--text-secondary); line-height:1.45; margin-top:3px; }
+.al-w{ font-size:13px; color:var(--text-tertiary); margin-top:5px; }
+.al-new{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--green); margin-top:7px; }
+.al-row.read .al-new{ background:transparent; }
+.al-row.read .al-t{ color:var(--text-secondary); }
+.al-foot{ border-top:1px solid var(--hairline); padding:11px 18px 13px; }
+.al-foot button{ border:0; background:none; font-family:inherit; font-size:14.5px; color:var(--green-cta);
+  cursor:pointer; padding:0; }
+.al-foot button:hover{ text-decoration:underline; }
+/* the profile row at the head of the More menu */
+.tm-item.tm-me{ align-items:center; gap:11px; padding:9px 12px; }
+.tm-av{ flex:none; width:36px; height:36px; border-radius:50%; background:var(--eggshell); color:var(--teal);
+  display:grid; place-items:center; font-size:14px; font-weight:600; }
+.tm-mex{ display:flex; flex-direction:column; min-width:0; }
+.tm-mex .n{ font-size:15.5px; color:var(--ink); line-height:1.3; }
+.tm-mex .s{ font-size:13px; color:var(--text-tertiary); line-height:1.3; }
+</style>
+<div class="top-menu alert-menu" id="alertMenu" role="dialog" aria-label="Coach alerts">
+  <div class="al-head"><span class="t">Boldin Coach</span><button type="button" class="clear" id="alClear">Mark all read</button></div>
+  <div class="al-list" id="alList"></div>
+  <div class="al-foot"><button type="button" data-al-go="today">Open Today →</button></div>
+</div>
+<script>
+(function(){
+  var ICON={
+    conv:'<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+    drift:'<path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>',
+    doc:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+    cal:'<path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/>',
+    shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+    cash:'<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>'
+  };
+  var ALERTS=[
+    { ic:'conv',  tone:'',     t:'Your December conversion window is open',
+      s:'About $17,800 fits under the 12% band this year. Last December you left $9,400 of it unused.',
+      w:'2 hours ago', go:'plan' },
+    { ic:'drift', tone:'warn', t:'The brokerage has drifted to 71% equities',
+      s:'Your target is 60/40. Two years without a rebalance, three years before you retire.',
+      w:'Yesterday', go:'optimize' },
+    { ic:'doc',   tone:'',     t:'Three plan inputs are still empty',
+      s:'Estate documents, long-term care, and the home equity plan. Each one moves your score.',
+      w:'2 days ago', go:'plan' },
+    { ic:'cal',   tone:'teal', t:'Medicare\u2019s look-back starts with your 2028 return', read:true,
+      s:'What you convert in 2028 sets your 2030 premiums. Worth a look before year end.',
+      w:'Last week', go:'plan' },
+    { ic:'cash',  tone:'',     t:'Your surplus rose to $3,450 a month', read:true,
+      s:'Three months running. Coach suggests routing the increase to the Roth before December.',
+      w:'Last week', go:'today' },
+    { ic:'shield',tone:'teal', t:'Your plan survived this quarter\u2019s stress test', read:true,
+      s:'A 2022-style drop the year before retirement still leaves you funded to 99.',
+      w:'2 weeks ago', go:'plan' }
+  ];
+  var btn=document.getElementById('alertBtn'), menu=document.getElementById('alertMenu');
+  var list=document.getElementById('alList'), count=document.getElementById('alertCount');
+  if(!btn || !menu) return;
+  btn.setAttribute('aria-haspopup','dialog'); btn.setAttribute('aria-expanded','false');
+  function render(){
+    list.innerHTML=ALERTS.map(function(a,i){
+      return '<button type="button" class="al-row'+(a.read?' read':'')+'" data-al="'+i+'" data-al-go="'+a.go+'">'+
+        '<span class="al-ic '+(a.tone||'')+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+ICON[a.ic]+'</svg></span>'+
+        '<span class="al-bd"><span class="al-t">'+a.t+'</span><span class="al-s">'+a.s+'</span><span class="al-w">'+a.w+'</span></span>'+
+        '<span class="al-new"></span></button>';
+    }).join('');
+    /* the spans need to stack, and a button will not do that on its own */
+    [].forEach.call(list.querySelectorAll('.al-bd, .al-t, .al-s, .al-w'), function(e){ e.style.display='block'; });
+    var n=ALERTS.filter(function(a){ return !a.read; }).length;
+    count.textContent=n; count.hidden = n===0;
+  }
+  function place(){
+    var r=btn.getBoundingClientRect();
+    menu.style.top=(r.bottom+10)+'px';
+    menu.style.left=Math.max(12, r.right - menu.offsetWidth)+'px';
+  }
+  function open(){ render(); place(); menu.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+  function close(){ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+  btn.addEventListener('click', function(e){ e.stopPropagation();
+    if(menu.classList.contains('open')) close(); else open(); });
+  document.addEventListener('click', function(e){
+    if(!menu.classList.contains('open')) return;
+    var row=e.target.closest && e.target.closest('.al-row');
+    if(row){ ALERTS[+row.dataset.al].read=true; render();
+      if(window.__goView) window.__goView(row.dataset.alGo);
+      close(); return; }
+    var go=e.target.closest && e.target.closest('[data-al-go]');
+    if(go && go.closest('#alertMenu')){ if(window.__goView) window.__goView(go.dataset.alGo); close(); return; }
+    if(e.target.closest && e.target.closest('#alClear')){
+      ALERTS.forEach(function(a){ a.read=true; }); render(); return; }
+    if(!(e.target.closest && e.target.closest('#alertMenu'))) close();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+  window.addEventListener('resize', function(){ if(menu.classList.contains('open')) place(); });
+  render();
+})();
+</script>
+<!-- COACH-ALERTS END -->
 <!-- ===================== END Home ===================== -->
