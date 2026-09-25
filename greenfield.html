@@ -14097,29 +14097,28 @@ body.story-open{ overflow:hidden; }
 <!-- ESIGN-RAIL END -->
 <!-- SUMMARY-TWO BEGIN: the Summary graph opens its own two-column view -->
 <style id="sum2CSS">
-.layout.page.sum-layout{ display:none; grid-template-columns:minmax(0,1fr) 360px; }
+/* the summary sits in the app's own shell: left nav, 620 centre, the route in the rail */
+.layout.page.sum-layout{ display:none; grid-template-columns:200px minmax(0,620px) minmax(0,1fr);
+  max-width:1180px; margin:0 auto; gap:var(--s-8); align-items:start;
+  padding:calc(73px + var(--s-4)) var(--s-8) 120px; }
 body.sum-open .layout.page.sum-layout{ display:grid; }
 body.sum-open .layout.page[data-page="plan"].on{ display:none; }
 body.sum-open .topnav{ background:var(--white); }
-body.sum-open .dock .dock-inner{ grid-template-columns:minmax(0,1fr); }
-body.sum-open .dock .askbar{ grid-column:1; justify-self:center; }
-body.sum-open .layout.page.sum-layout{ padding-bottom:150px; }
-body.sum-open .sum-layout .side{ display:none; }
+body.sum-open .layout.page.sum-layout{ overflow-x:clip; }   /* the slide travels past the gutter for a beat */
 
-.sum-layout .center{ grid-column:1; gap:var(--s-3); }
-.sum-layout .sum-route{ grid-column:2; }
+.sum-layout .center{ grid-column:2; gap:var(--s-3); }
+.sum-layout .sum-route{ grid-column:3; }
 /* the close sits on the route's own header line */
 .sum-layout .sum-rhead{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
 .sum-layout .sum-rhead .story-head{ margin-bottom:0; }
-.layout.page.sum-layout{ padding-top:calc(73px + var(--s-3)); row-gap:var(--s-4); }
 .sum-layout .alo-top{ margin-top:0; }
 .sum-layout .snap-headline{ transform:none; margin-top:0; }
 
 /* ---- the range filter, stock-chart style ---- */
 .sum-range{ margin-top:10px; }
-.sum-chips{ display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0; }
-.sum-chip{ font-size:13px; font-weight:400; color:var(--text-secondary); background:var(--white);
-  border:1px solid var(--hairline); border-radius:var(--r-pill); padding:5px 13px; cursor:pointer;
+.sum-chips{ display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:6px; margin:0; }
+.sum-chip{ font-size:12px; font-weight:400; color:var(--text-secondary); background:var(--white);
+  border:1px solid var(--hairline); border-radius:var(--r-pill); padding:3px 10px; cursor:pointer;
   transition:border-color 140ms ease, color 140ms ease, background 140ms ease; }
 .sum-chip:hover{ border-color:var(--hairline-strong); color:var(--ink); }
 .sum-chip.on{ border-color:#CDEBDD; background:#F3FBF7; color:var(--green-cta); }
@@ -14178,24 +14177,30 @@ body.sum-open .sum-layout .side{ display:none; }
 @media (prefers-reduced-motion:reduce){ .sum-layout .sum-note.swap{ animation:none; } }
 @media (max-width:1080px){ .layout.page.sum-layout{ grid-template-columns:minmax(0,1fr); } }
 
-/* ---- entry: the columns settle, the line draws, the dots and milestones follow ---- */
-body.sum-open .sum-layout{ animation:aiSoft 150ms ease both; }
-body.sum-open .sum-layout .sum-range{ animation:aiRise 460ms cubic-bezier(0.22,1,0.36,1) 310ms both; }
-body.sum-open .sum-layout .alo-top{ animation:aiRise 440ms cubic-bezier(0.22,1,0.36,1) 60ms both; }
-body.sum-open .sum-layout .sum-plot{ animation:aiRise 500ms cubic-bezier(0.22,1,0.36,1) 200ms both; }
-body.sum-open .sum-layout .sum-chips{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) 100ms both; }
-body.sum-open .sum-layout .sum-rhead{ animation:aiRise 400ms cubic-bezier(0.22,1,0.36,1) 150ms both; }
-body.sum-open .sum-layout .sum-rscroll .sxtl-row{ animation:aiRise 420ms cubic-bezier(0.22,1,0.36,1) both;
-  animation-delay:calc(210ms + var(--r, 0) * 42ms); }
-.sum-layout .sum-svg .jdot{ opacity:0; transform-box:fill-box; transform-origin:center;
-  animation:jdotIn 360ms cubic-bezier(0.22,1,0.36,1) forwards;
-  animation-delay:calc(430ms + var(--i, 0) * 50ms); }
-@keyframes jdotIn{ from{ opacity:0; transform:scale(0.2); } to{ opacity:1; transform:none; } }
+/* ---- entry: one settling motion. The page eases in, the route slides over from the edge,
+       the line draws and the dots land last. Apple's sheet curve throughout. ---- */
+/* nothing fades — every piece simply travels into place on one curve */
+.sum-layout{ --sum-ease:cubic-bezier(0.32, 0.72, 0, 1); }
+@keyframes sumRise{ from{ transform:translateY(22px); } to{ transform:none; } }
+@keyframes sumSlideIn{ from{ transform:translateX(34px); } to{ transform:none; } }
+body.sum-open .sum-layout .alo-top{ animation:sumRise 560ms var(--sum-ease) both; }
+body.sum-open .sum-layout .sum-chips{ animation:sumRise 580ms var(--sum-ease) 50ms both; }
+body.sum-open .sum-layout .sum-plot{ animation:sumRise 640ms var(--sum-ease) 90ms both; }
+body.sum-open .sum-layout .sum-range{ animation:sumRise 660ms var(--sum-ease) 150ms both; }
+/* the route travels in from the edge it lives on */
+body.sum-open .sum-layout .sum-route{ animation:sumSlideIn 620ms var(--sum-ease) both; }
+body.sum-open .sum-layout .sum-rhead{ animation:sumSlideIn 600ms var(--sum-ease) 60ms both; }
+body.sum-open .sum-layout .sum-rscroll .sxtl-row{ animation:sumSlideIn 580ms var(--sum-ease) both;
+  animation-delay:calc(110ms + var(--r, 0) * 34ms); }
+.sum-layout .sum-svg .jdot{ transform-box:fill-box; transform-origin:center;
+  animation:jdotIn 420ms var(--sum-ease) both;
+  animation-delay:calc(360ms + var(--i, 0) * 42ms); }
+@keyframes jdotIn{ from{ transform:scale(0); } to{ transform:none; } }
 /* the retirement marker drops in, then its dot keeps a slow pulse */
-.sum-layout .sum-svg .jret{ animation:jretDrop 620ms cubic-bezier(0.22,1,0.36,1) 300ms both; }
+.sum-layout .sum-svg .jret{ animation:jretDrop 660ms var(--sum-ease) 330ms both; }
 @keyframes jretDrop{ from{ opacity:0; transform:scaleY(0); } to{ opacity:0.55; transform:none; } }
 .sum-layout .sum-svg .jret{ transform-box:fill-box; transform-origin:top; }
-.sum-layout .sum-svg .jret-lab{ animation:aiRise 460ms cubic-bezier(0.22,1,0.36,1) 520ms both; }
+.sum-layout .sum-svg .jret-lab{ animation:sumRise 480ms var(--sum-ease) 560ms both; }
 .sum-layout .sum-svg .jret-ring{ transform-box:fill-box; transform-origin:center; opacity:0;
   animation:jretPulse 2600ms cubic-bezier(0.22,1,0.36,1) 900ms infinite; }
 @keyframes jretPulse{
@@ -14203,30 +14208,33 @@ body.sum-open .sum-layout .sum-rscroll .sxtl-row{ animation:aiRise 420ms cubic-b
   60%{ opacity:0; transform:scale(2.6); }
   100%{ opacity:0; transform:scale(2.6); } }
 /* once the view has landed, changing the range repaints at once — the arrival plays only on open */
-.sum-layout.sum-live .sum-svg .jdot{ animation:none; opacity:1; }
+.sum-layout.sum-live .sum-svg .jdot{ animation:none; transform:none; }
 .sum-layout.sum-live .sum-svg .jret,
 .sum-layout.sum-live .sum-svg .jret-lab{ animation:none; }
 .sum-layout.sum-live .sum-svg .jret{ opacity:0.55; }
 
-/* ---- exit: it steps back the way it came ---- */
-body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
-@keyframes sumOut{ from{ opacity:1; transform:none; } to{ opacity:0; transform:translateY(6px); } }
+/* ---- exit: it travels back out the way it came ---- */
+body.sum-closing .sum-layout .center{ animation:sumOutDown 280ms var(--sum-ease) both; }
+body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 280ms var(--sum-ease) both; }
+@keyframes sumOutDown{ from{ transform:none; } 70%{ opacity:1; } to{ transform:translateY(20px); opacity:0; } }
+@keyframes sumOutRight{ from{ transform:none; } 70%{ opacity:1; } to{ transform:translateX(34px); opacity:0; } }
 
 /* ---- the picked milestone and its dot answer together ---- */
 .sum-layout .sum-svg .jdot{ transition:r 180ms cubic-bezier(0.22,1,0.36,1); }
 .sum-layout .sum-rscroll .sxtl-row{ transition:background 180ms ease, opacity 200ms ease, padding 180ms ease, margin 180ms ease; }
 
 @media (prefers-reduced-motion:reduce){
-  body.sum-open .sum-layout,
   body.sum-open .sum-layout .alo-top,
   body.sum-open .sum-layout .sum-plot,
   body.sum-open .sum-layout .sum-note,
   body.sum-open .sum-layout .sum-chips,
   body.sum-open .sum-layout .sum-range,
   body.sum-open .sum-layout .sum-rhead,
+  body.sum-open .sum-layout .sum-route,
   body.sum-open .sum-layout .sum-rscroll .sxtl-row,
-  body.sum-closing .sum-layout{ animation:none; }
-  .sum-layout .sum-svg .jdot{ animation:none; opacity:1; transition:none; }
+  body.sum-closing .sum-layout .center,
+  body.sum-closing .sum-layout .sum-route{ animation:none; }
+  .sum-layout .sum-svg .jdot{ animation:none; transform:none; transition:none; }
   .sum-layout .sum-svg .jret{ animation:none; opacity:0.55; }
   .sum-layout .sum-svg .jret-lab{ animation:none; }
   .sum-layout .sum-svg .jret-ring{ animation:none; opacity:0; }
@@ -14509,6 +14517,7 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
     });
     if(retRow) light(retRow.dataset.mi);
     J.wire(ctx.querySelector('.sxtl'));
+    takeSide();
     document.body.classList.add('sum-open');
     lo=Y0; hi=Y1;
     J.draw(lay.querySelector('.sum-svg'), 720, 460, true);
@@ -14536,17 +14545,32 @@ body.sum-closing .sum-layout{ animation:sumOut 200ms ease both; }
     var h=Math.round(c.getBoundingClientRect().bottom - r.getBoundingClientRect().top);
     if(h>160) lay.style.setProperty('--sum-h', h+'px');
   }
+  /* the plan page's own left nav comes along, so the shell never changes shape */
+  var sideEl=null, sideHome=null;
+  function takeSide(){
+    if(!lay) return;
+    var plan=document.querySelector('.layout.page[data-page="plan"]');
+    var el=plan && plan.querySelector(':scope > .side');
+    if(!el) return;
+    sideEl=el; sideHome=plan;
+    lay.insertBefore(el, lay.firstChild);
+  }
+  function giveSideBack(){
+    if(sideEl && sideHome && sideEl.parentNode!==sideHome) sideHome.insertBefore(sideEl, sideHome.firstChild);
+    sideEl=null; sideHome=null;
+  }
   var closing=0;
   function close(){
     if(closing) return;
     clearTimeout(liveT); if(lay) lay.classList.remove('sum-live');
     var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(reduce){ document.body.classList.remove('sum-open'); window.scrollTo(0,0); return; }
+    if(reduce){ document.body.classList.remove('sum-open'); giveSideBack(); window.scrollTo(0,0); return; }
     document.body.classList.add('sum-closing');
     closing=setTimeout(function(){
       document.body.classList.remove('sum-open','sum-closing');
+      giveSideBack();
       closing=0; window.scrollTo(0,0);
-    }, 210);
+    }, 265);
   }
   window.__sum2={ open:open, close:close, isOpen:function(){ return document.body.classList.contains('sum-open'); } };
 })();
