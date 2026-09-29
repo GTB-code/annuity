@@ -3593,19 +3593,9 @@ body.mpanel-open{ overflow:hidden; }
       <button type="button" class="nav-more" data-grp="in" data-more="in">7 more</button>
 
       <div class="side-divider ins-div" role="presentation"></div>
-      <div class="group-label ins-lab"><span class="grp-t">Plan outputs</span><button type="button" class="grp-chev" data-grp-chev="out" aria-label="Collapse plan outputs" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
-      <ul class="ins-nav" data-grp="out">
-        <li data-ins="flow">Cash Flow</li>
-        <li data-ins="safe">Spending Guardrails</li>
-        <li data-ins="last">Chance of Success</li>
-        <li class="nav-extra" data-grp="out" data-ins="worth">Net Worth</li>
-        <li class="nav-extra" data-grp="out" data-ins="savings">Savings</li>
-        <li class="nav-extra" data-grp="out" data-ins="draw">Retirement Withdrawals</li>
-        <li class="nav-extra" data-grp="out" data-ins="taxes">Taxes</li>
-        <li class="nav-extra" data-grp="out" data-ins="rmd">Required Distributions</li>
-        <li class="nav-extra" data-grp="out" data-ins="irmaa">IRMAA</li>
-      </ul>
-      <button type="button" class="nav-more" data-grp="out" data-more="out">6 more</button>
+      <!-- Explore Plan (replaces the former Plan outputs group; items are filled in by the Explore Plan script) -->
+      <div class="group-label ins-lab"><span class="grp-t">Explore Plan</span><button type="button" class="grp-chev" data-grp-chev="xp" aria-label="Collapse Explore Plan" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <ul id="xpNav" data-grp="xp"></ul>
       <a class="side-download" role="button" tabindex="0">Download Plan <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a class="side-download sd-today" role="button" tabindex="0">Download TrueView <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
@@ -18433,6 +18423,7 @@ body.prism-max #prismMax{ display:flex; }
 body[data-view="today"] #sideNav .ins-lab,
 body[data-view="today"] #sideNav .ins-nav,
 body[data-view="today"] #sideNav [data-more="out"],
+body[data-view="today"] #sideNav #xpNav,
 body[data-view="today"] #sideNav .ins-div{ display:none; }
 .side .group-label{ display:flex; align-items:center; gap:8px; width:100%;
   user-select:none; padding:0 4px 0 2px; margin-bottom:8px; border-radius:10px; }
@@ -18445,9 +18436,10 @@ body[data-view="today"] #sideNav .ins-div{ display:none; }
 .grp-chev svg{ width:15px; height:15px; transition:transform 300ms var(--ease-out); transform:rotate(180deg); }
 .grp-chev:hover{ background:#F6F7F8; color:var(--ink); }
 #sideNav.in-shut [data-grp-chev="in"] svg,
-#sideNav.out-shut [data-grp-chev="out"] svg{ transform:none; }
+#sideNav.out-shut [data-grp-chev="out"] svg,
+#sideNav.xp-shut [data-grp-chev="xp"] svg{ transform:none; }
 @media (prefers-reduced-motion:reduce){ .grp-chev svg{ transition:none; } }
-#sideNav.in-shut [data-grp="in"], #sideNav.out-shut [data-grp="out"]{ display:none; }
+#sideNav.in-shut [data-grp="in"], #sideNav.out-shut [data-grp="out"], #sideNav.xp-shut [data-grp="xp"]{ display:none; }
 #sideNav .nav-more{ display:none; }
 body[data-view="plan"] #sideNav .nav-more{ display:flex; }
 body[data-view="plan"] #sideNav.in-clipped [data-grp="in"].nav-extra,
@@ -22647,3 +22639,1003 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
 </script>
 <!-- COACH-ALERTS END -->
 <!-- ===================== END Home ===================== -->
+
+<!-- ===================================================================
+     EXPLORE PLAN — merge block
+     Merged into greenfield.html. The "Explore Plan" group sits in the left
+     rail where "Plan outputs" used to be (static markup in the sidebar);
+     this block fills its items and adds six chapters to the centre column.
+     ================================================================== -->
+<style id="xpMergeCSS">
+/* ===== Explore Plan: styles =====
+   Everything is scoped to #xpChapters / #xpRail / #xpNav so it cannot reach
+   the rest of the plan page, and greenfield's own .card/.stat/.item rules
+   cannot reach inside it. */
+
+/* isolation: drop greenfield's author styles inside the chapter column,
+   then put back the two resets the app relies on */
+/* SVG is left alone — reverting it would strip the charts' own fill and stroke */
+#xpChapters, #xpChapters *:not(svg):not(svg *){ all:revert; }
+#xpChapters, #xpChapters *:not(svg):not(svg *){
+  box-sizing:border-box; margin:0; padding:0; border:0; font:inherit; color:inherit;
+  background:none; list-style:none; text-align:left; }
+#xpChapters button{ cursor:pointer; }
+/* specificity here has to clear the app's own `.center > :not(#snapshotView)` rule */
+#xpChapters{ display:none; }
+body.xp-open .layout.page[data-page="plan"] > .center > #xpChapters{ display:block; }
+/* while a chapter is open the rest of the plan column and rail step aside */
+body.xp-open .layout.page[data-page="plan"] > .center > :not(#xpChapters){ display:none; }
+body.xp-open .layout.page[data-page="plan"] > .rail > :not(#xpRail){ display:none; }
+
+/* the chapter column */
+/* ===== the chapter column ==========================================
+   Every rule is scoped under #xpChapters so that when this merges into
+   insights.html it cannot collide with greenfield's own .card / .stat /
+   .item / .chip / .legend. Nothing here leaks out of the centre column.
+   Type sizes come from the app scale only: 34 / 24 / 18 / 17 / 15 / 14 / 13,
+   tracking normal everywhere except the two uppercase labels. */
+
+:root{ --ease-apple:cubic-bezier(0.32, 0.72, 0, 1);
+  /* tokens the chapters use that greenfield does not define */
+  --text-tertiary:#7A7D8C; --c1:#0B84A5;
+  --good:#0E794E; --good-bg:#E6F6EE;
+  --warn:#9A6B00; --warn-bg:#FFF4D6;
+  --crit:#B3261E; --crit-bg:#FBE9E7; }
+
+#xpChapters .view{display:none;flex-direction:column;gap:28px;}
+#xpChapters .view.on{display:flex;}
+
+/* chapter head */
+#xpChapters .eyebrow{font-size:13px;font-weight:600;color:var(--green-cta);text-transform:uppercase;
+  letter-spacing:.05em;}
+#xpChapters .qhead h2.pf-hl{font-size:34px;font-weight:400;line-height:1.1;letter-spacing:0;
+  color:var(--ink);text-wrap:wrap;margin-top:10px;}
+#xpChapters .qhead h2 em{font-style:normal;color:var(--green-cta);}
+#xpChapters .qhead .bud-sub{font-size:18px;line-height:1.5;color:var(--text-secondary);margin-top:12px;
+  max-width:46ch;text-wrap:pretty;}
+@media (max-width:600px){#xpChapters .qhead h2.pf-hl{font-size:24px;}}
+
+/* the one thing this chapter is about */
+#xpChapters .insight{display:flex;gap:13px;align-items:flex-start;padding:18px 20px;border-radius:14px;
+  background:var(--eggshell);border:1px solid rgba(4,180,119,.22);}
+#xpChapters .insight .ic{color:var(--green-cta);flex:none;display:block;margin-top:2px;}
+#xpChapters .insight p{font-size:18px;line-height:1.5;color:var(--ink);text-wrap:pretty;}
+#xpChapters .insight b{font-weight:600;}
+
+/* stat tiles — two up at 620 */
+#xpChapters .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+#xpChapters .stat{padding:16px 18px;border:1px solid var(--hairline);border-radius:14px;display:flex;
+  flex-direction:column;gap:5px;}
+#xpChapters .stat .k{font-size:13px;color:var(--text-secondary);}
+#xpChapters .stat .v{font-size:24px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums;
+  letter-spacing:0;}
+#xpChapters .stat .d{font-size:13px;line-height:1.45;color:var(--text-secondary);}
+#xpChapters .stat .chip{align-self:flex-start;margin-top:3px;}
+
+/* chart card */
+#xpChapters .card{border:1px solid var(--hairline);border-radius:var(--r-card);background:var(--white);
+  padding:22px 24px;display:flex;flex-direction:column;gap:16px;min-width:0;}
+#xpChapters .card .ch{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+#xpChapters .card .ch .tt{flex:1;min-width:200px;}
+#xpChapters .card h3{font-size:18px;font-weight:600;line-height:1.3;letter-spacing:0;}
+#xpChapters .card .src{font-size:13px;color:var(--text-tertiary);margin-top:4px;}
+#xpChapters .card .take{font-size:17px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty;}
+#xpChapters .card .take b{color:var(--ink);font-weight:600;}
+#xpChapters .card .tools{display:flex;gap:6px;align-items:center;}
+#xpChapters .tbtn{height:34px;padding:0 13px;border-radius:var(--r-pill);border:1px solid var(--hairline-strong);
+  background:#fff;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px;
+  transition:background .2s var(--ease-out),border-color .2s;}
+#xpChapters .tbtn:hover{background:#F6F7F8;}
+#xpChapters .tbtn[aria-pressed="true"]{background:var(--eggshell);border-color:var(--green);color:var(--green-cta);}
+#xpChapters .grid2{display:grid;grid-template-columns:1fr;gap:var(--s-6);}
+#xpChapters .legend{display:flex;flex-wrap:wrap;gap:7px 18px;font-size:14px;color:var(--text-secondary);}
+#xpChapters .legend span{display:inline-flex;align-items:center;gap:7px;}
+#xpChapters .legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+#xpChapters .legend i.ln{height:3px;border-radius:2px;width:16px;}
+#xpChapters .legend i.dash{height:0;border-top:2px dashed;width:16px;border-radius:0;background:none!important;}
+#xpChapters .chart svg{display:block;width:100%;height:auto;overflow:visible;}
+#xpChapters .chart text{font-family:var(--font);letter-spacing:0;}
+#xpChapters .tablewrap{overflow-x:auto;max-height:320px;overflow-y:auto;border:1px solid var(--hairline);
+  border-radius:10px;}
+#xpChapters table.dt{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums;}
+#xpChapters table.dt th{position:sticky;top:0;background:var(--panel);text-align:right;font-weight:600;
+  color:var(--text-secondary);padding:8px 11px;border-bottom:1px solid var(--hairline-strong);white-space:nowrap;}
+#xpChapters table.dt td{text-align:right;padding:7px 11px;border-bottom:1px solid var(--hairline);white-space:nowrap;}
+#xpChapters table.dt th:first-child,#xpChapters table.dt td:first-child{text-align:left;}
+
+/* strengths / risks */
+#xpChapters .sr{display:grid;grid-template-columns:1fr;gap:28px;}
+#xpChapters .sr h3{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px;}
+#xpChapters .items{display:flex;flex-direction:column;gap:10px;}
+#xpChapters .item{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:16px 18px;border-radius:14px;
+  border:1px solid var(--hairline);background:#fff;text-align:left;width:100%;
+  transition:border-color .2s var(--ease-out),background .2s;}
+#xpChapters button.item:hover{border-color:rgba(16,24,44,.3);background:#FCFCFD;}
+#xpChapters .item .ico{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;}
+#xpChapters .item.s .ico{background:var(--good-bg);color:var(--good);}
+#xpChapters .item.r .ico{background:var(--warn-bg);color:var(--warn);}
+#xpChapters .item.r.hi .ico{background:var(--crit-bg);color:var(--crit);}
+#xpChapters .item .h{font-size:17px;font-weight:600;line-height:1.35;text-wrap:pretty;}
+#xpChapters .item .b{font-size:15px;line-height:1.5;color:var(--text-secondary);margin-top:4px;text-wrap:pretty;}
+#xpChapters .item .go{font-size:14px;font-weight:600;color:var(--green-cta);margin-top:8px;
+  display:inline-flex;gap:4px;}
+
+/* chapter index */
+#xpChapters .sech{font-size:13px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;
+  letter-spacing:.05em;}
+#xpChapters .qgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+@media (max-width:560px){#xpChapters .qgrid{grid-template-columns:1fr;}}
+#xpChapters .qcard{text-align:left;background:var(--panel);border:1px solid transparent;border-radius:14px;
+  padding:17px 18px;display:flex;flex-direction:column;gap:7px;transition:border-color .2s,background .2s;}
+#xpChapters .qcard:hover{border-color:var(--hairline-strong);background:#fff;}
+#xpChapters .qcard .t{font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--text-tertiary);}
+#xpChapters .qcard .q{font-size:17px;font-weight:600;line-height:1.35;text-wrap:pretty;}
+#xpChapters .qcard .a{font-size:15px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty;}
+#xpChapters .qcard .chip{align-self:flex-start;margin-top:auto;}
+
+/* meters, levers, comparisons, documents */
+#xpChapters .meter{position:relative;height:12px;border-radius:var(--r-pill);background:#EEF0F2;
+  overflow:visible;margin:24px 0 28px;}
+#xpChapters .meter .zone{position:absolute;top:0;bottom:0;border-radius:var(--r-pill);}
+#xpChapters .meter .pin{position:absolute;top:-6px;width:2px;height:24px;background:var(--ink);}
+#xpChapters .meter .pin span{position:absolute;top:-21px;left:50%;transform:translateX(-50%);font-size:13px;
+  font-weight:600;white-space:nowrap;}
+#xpChapters .meter .tick{position:absolute;top:19px;font-size:13px;color:var(--text-secondary);
+  transform:translateX(-50%);white-space:nowrap;font-variant-numeric:tabular-nums;}
+#xpChapters .lever{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.2fr) 62px;gap:12px;
+  align-items:center;padding:11px 0;border-bottom:1px solid var(--hairline);font-size:15px;}
+#xpChapters .lever:last-child{border-bottom:0;}
+#xpChapters .lever .nm b{display:block;font-weight:600;font-size:15px;}
+#xpChapters .lever .nm span{color:var(--text-secondary);font-size:13px;}
+#xpChapters .lever .bar{height:10px;background:#EEF0F2;border-radius:var(--r-pill);position:relative;}
+#xpChapters .lever .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:var(--r-pill);background:var(--c1);}
+#xpChapters .lever .bar s{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);text-decoration:none;}
+#xpChapters .lever .pct{font-weight:600;font-variant-numeric:tabular-nums;text-align:right;}
+#xpChapters .lever .pct small{display:block;font-size:13px;font-weight:600;color:var(--good);}
+#xpChapters .cmp{display:grid;grid-template-columns:1fr;gap:12px;}
+#xpChapters .cmp .col{padding:16px 18px;border-radius:12px;background:var(--panel);display:flex;
+  flex-direction:column;gap:9px;}
+#xpChapters .cmp .col.best{background:var(--eggshell);}
+#xpChapters .cmp .col h4{font-size:15px;font-weight:600;}
+#xpChapters .cmp .row{display:flex;justify-content:space-between;gap:8px;font-size:15px;color:var(--text-secondary);}
+#xpChapters .cmp .row b{color:var(--ink);font-variant-numeric:tabular-nums;}
+#xpChapters .docs{display:flex;flex-direction:column;}
+#xpChapters .doc{display:grid;grid-template-columns:30px 1fr auto;gap:12px;align-items:center;padding:13px 0;
+  border-bottom:1px solid var(--hairline);}
+#xpChapters .doc:last-child{border-bottom:0;}
+#xpChapters .doc .h{font-size:17px;font-weight:600;}
+#xpChapters .doc .b{font-size:14px;color:var(--text-secondary);margin-top:2px;}
+
+/* prev / next */
+#xpChapters .nextrow{display:flex;justify-content:space-between;gap:12px;align-items:center;padding-top:20px;
+  border-top:1px solid var(--hairline);flex-wrap:wrap;}
+#xpChapters .btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 22px;
+  border-radius:var(--r-pill);border:1px solid transparent;font-size:15px;font-weight:600;
+  transition:background .2s var(--ease-out),border-color .2s;}
+#xpChapters .btn-primary{background:#127154;color:#fff;}
+#xpChapters .btn-primary:hover{background:#0F5D45;}
+#xpChapters .btn-ghost{background:#fff;border-color:var(--hairline-strong);}
+#xpChapters .btn-ghost:hover{background:#F6F7F8;}
+
+/* shared hover tooltip for every chart */
+#tt{position:fixed;z-index:200;pointer-events:none;background:var(--ink);color:#fff;border-radius:10px;
+  padding:10px 12px;font-size:13px;line-height:1.5;min-width:156px;max-width:270px;
+  box-shadow:0 8px 24px rgba(16,24,44,.25);opacity:0;transition:opacity .12s;
+  font-variant-numeric:tabular-nums;}
+#tt.on{opacity:1;}
+#tt .h{font-weight:700;margin-bottom:5px;}
+#tt .r{display:flex;justify-content:space-between;gap:16px;}
+#tt .r i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;}
+#tt .r.tot{border-top:1px solid rgba(255,255,255,.2);margin-top:5px;padding-top:5px;font-weight:600;}
+
+/* ===== motion ======================================================
+   One rule: nothing loops. The chapter settles in, the charts draw
+   themselves once, and everything then holds still. */
+
+@keyframes xpRise{from{opacity:0;transform:translate3d(0,20px,0);}to{opacity:1;transform:none;}}
+#xpChapters .view.anim > *{animation:xpRise 560ms var(--ease-apple) both;will-change:transform;}
+#xpChapters .view.anim > *:nth-child(1){animation-delay:0ms}
+#xpChapters .view.anim > *:nth-child(2){animation-delay:55ms}
+#xpChapters .view.anim > *:nth-child(3){animation-delay:110ms}
+#xpChapters .view.anim > *:nth-child(4){animation-delay:160ms}
+#xpChapters .view.anim > *:nth-child(5){animation-delay:205ms}
+#xpChapters .view.anim > *:nth-child(6){animation-delay:245ms}
+#xpChapters .view.anim > *:nth-child(7){animation-delay:280ms}
+#xpChapters .view.anim > *:nth-child(n+8){animation-delay:310ms}
+
+/* the fills and bars are revealed by one left-to-right wipe */
+@keyframes xpWipe{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+#xpChapters .chart .xp-wipe-rect{transform-box:fill-box;transform-origin:left center;}
+#xpChapters .view.anim .chart .xp-wipe-rect{animation:xpWipe 860ms var(--ease-apple) 160ms both;}
+
+/* the lines draw */
+@keyframes xpDraw{from{stroke-dashoffset:var(--len);}to{stroke-dashoffset:0;}}
+#xpChapters .view.anim .chart path.xp-line{stroke-dasharray:var(--len);
+  animation:xpDraw 1020ms var(--ease-apple) 160ms both;}
+
+/* horizontal bars grow off the axis */
+@keyframes xpGrow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+#xpChapters .chart .xp-grow{transform-box:fill-box;transform-origin:left center;}
+#xpChapters .view.anim .chart .xp-grow{animation:xpGrow 620ms var(--ease-apple) both;
+  animation-delay:calc(120ms + var(--i,0) * 45ms);}
+
+/* the donut opens from its centre */
+@keyframes xpArc{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:none;}}
+#xpChapters .chart .xp-arc{transform-box:view-box;transform-origin:110px 110px;}
+#xpChapters .view.anim .chart .xp-arc{animation:xpArc 620ms var(--ease-apple) 120ms both;}
+
+/* sankey flows arrive in order */
+@keyframes xpSeq{from{opacity:0;}to{opacity:1;}}
+#xpChapters .view.anim .chart .xp-seq{animation:xpSeq 460ms ease-out both;
+  animation-delay:calc(160ms + var(--i,0) * 70ms);}
+
+/* labels, markers and callouts land after the chart is drawn */
+@keyframes xpPop{from{opacity:0;transform:translate3d(0,5px,0);}to{opacity:1;transform:none;}}
+#xpChapters .chart .xp-pop{transform-box:fill-box;}
+#xpChapters .view.anim .chart .xp-pop{animation:xpPop 420ms var(--ease-apple) 860ms both;}
+
+@media (prefers-reduced-motion:reduce){
+  #xpChapters .view.anim > *,
+  #xpChapters .view.anim .chart .xp-wipe-rect,
+  #xpChapters .view.anim .chart path.xp-line,
+  #xpChapters .view.anim .chart .xp-grow,
+  #xpChapters .view.anim .chart .xp-arc,
+  #xpChapters .view.anim .chart .xp-seq,
+  #xpChapters .view.anim .chart .xp-pop{animation:none!important;}
+  #xpChapters .view.anim .chart path.xp-line{stroke-dasharray:none;}
+}
+
+/* ===== per-chapter compositions =====================================
+   Each of these is used on one or two chapters only, so the six pages
+   do not open the same way twice. All of it is built from the same
+   tokens and the same type scale. */
+
+/* Start here — the dial */
+#xpChapters .hero{display:grid;grid-template-columns:132px minmax(0,1fr);gap:26px;align-items:center;
+  padding:24px 26px;border:1px solid var(--hairline);border-radius:var(--r-card);}
+#xpChapters .hero .ring{width:132px;height:132px;position:relative;flex:none;}
+#xpChapters .hero .ring svg{width:132px;height:132px;display:block;transform:rotate(-90deg);}
+#xpChapters .hero .ring .n{position:absolute;inset:0;display:grid;place-items:center;font-size:34px;
+  font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:0;}
+#xpChapters .hero .hl{font-size:17px;line-height:1.5;color:var(--text-secondary);margin-bottom:14px;
+  text-wrap:pretty;}
+#xpChapters .hero .hl b{color:var(--ink);font-weight:600;}
+#xpChapters .hero .rows div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;
+  border-bottom:1px solid var(--hairline);font-size:15px;color:var(--text-secondary);}
+#xpChapters .hero .rows div:last-child{border-bottom:0;padding-bottom:0;}
+#xpChapters .hero .rows b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;}
+@media (max-width:560px){#xpChapters .hero{grid-template-columns:1fr;}}
+
+/* Budgeting, Investments, Taxes, Estate — figures without boxes */
+#xpChapters .strip{display:grid;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);}
+#xpChapters .strip > div{padding:16px 16px 16px 0;border-right:1px solid var(--hairline);min-width:0;}
+#xpChapters .strip > div:last-child{border-right:0;padding-right:0;}
+#xpChapters .strip > div + div{padding-left:16px;}
+#xpChapters .strip .k{font-size:13px;color:var(--text-secondary);}
+#xpChapters .strip .v{font-size:24px;font-weight:600;line-height:1.15;margin-top:4px;
+  font-variant-numeric:tabular-nums;letter-spacing:0;}
+#xpChapters .strip .d{font-size:13px;line-height:1.45;color:var(--text-tertiary);margin-top:5px;}
+@media (max-width:560px){#xpChapters .strip{grid-template-columns:1fr!important;}
+  #xpChapters .strip > div{border-right:0;border-bottom:1px solid var(--hairline);padding:14px 0!important;}
+  #xpChapters .strip > div:last-child{border-bottom:0;}}
+
+/* a chart that carries the page on its own, without card chrome */
+#xpChapters .card.plain{border:0;border-radius:0;padding:0;background:none;}
+
+/* Investments — the gap, stated twice, side by side */
+#xpChapters .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;}
+@media (max-width:560px){#xpChapters .split{grid-template-columns:1fr;}}
+#xpChapters .gap-fig{padding:20px;border:1px solid var(--hairline);border-radius:var(--r-card);
+  display:flex;flex-direction:column;gap:6px;}
+#xpChapters .gap-fig.hi{background:var(--warn-bg);border-color:rgba(251,189,4,.4);}
+#xpChapters .gap-fig .k{font-size:13px;color:var(--text-secondary);}
+#xpChapters .gap-fig .v{font-size:34px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;
+  letter-spacing:0;}
+#xpChapters .gap-fig.hi .v{color:var(--warn);}
+#xpChapters .gap-fig .d{font-size:13px;line-height:1.5;color:var(--text-secondary);}
+#xpChapters .gap-fig .bar{height:10px;background:#EEF0F2;border-radius:var(--r-pill);position:relative;
+  margin:8px 0 4px;}
+#xpChapters .gap-fig .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:var(--r-pill);
+  background:var(--c1);}
+#xpChapters .gap-fig .bar s{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);
+  text-decoration:none;}
+
+/* Retirement — the one dark surface */
+#xpChapters .panel-ink{background:var(--teal);color:#fff;border-radius:var(--r-card);padding:26px 28px 22px;
+  display:flex;flex-direction:column;gap:22px;}
+#xpChapters .panel-ink .pk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+#xpChapters .panel-ink .big{font-size:34px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;
+  letter-spacing:0;}
+#xpChapters .panel-ink .lb{font-size:13px;line-height:1.45;color:rgba(255,255,255,.72);margin-top:7px;}
+#xpChapters .panel-ink .meter{background:rgba(255,255,255,.16);margin:28px 0 30px;}
+#xpChapters .panel-ink .meter .pin{background:#fff;}
+#xpChapters .panel-ink .meter .pin span{color:#fff;}
+#xpChapters .panel-ink .meter .tick{color:rgba(255,255,255,.7);}
+#xpChapters .panel-ink .legend{color:rgba(255,255,255,.72);font-size:13px;}
+@media (max-width:560px){#xpChapters .panel-ink .pk{grid-template-columns:1fr;gap:14px;}}
+
+/* Taxes — forty-one years of bracket as one band */
+#xpChapters .ribbon{display:flex;flex-direction:column;gap:9px;}
+#xpChapters .ribbon .track{display:flex;height:46px;border-radius:12px;overflow:hidden;}
+#xpChapters .ribbon .track span{display:grid;place-items:center;font-size:13px;font-weight:600;
+  font-variant-numeric:tabular-nums;min-width:0;}
+#xpChapters .ribbon .axis{display:flex;}
+#xpChapters .ribbon .axis span{text-align:center;font-size:13px;color:var(--text-secondary);
+  font-variant-numeric:tabular-nums;min-width:0;}
+#xpChapters .ribbon .rb-note{font-size:15px;line-height:1.5;color:var(--text-secondary);margin-top:2px;}
+
+/* motion for the new pieces */
+@keyframes xpRing{from{stroke-dashoffset:var(--c);}to{stroke-dashoffset:var(--off);}}
+#xpChapters .hero .ring circle.val{stroke-dasharray:var(--c);stroke-dashoffset:var(--off);}
+#xpChapters .view.anim .hero .ring circle.val{animation:xpRing 1040ms var(--ease-apple) 200ms both;}
+@keyframes xpBand{from{clip-path:inset(0 100% 0 0);}to{clip-path:inset(0 0 0 0);}}
+#xpChapters .view.anim .ribbon .track{animation:xpBand 820ms var(--ease-apple) 160ms both;}
+#xpChapters .view.anim .gap-fig .bar i{animation:xpBand 720ms var(--ease-apple) 200ms both;}
+#xpChapters .view.anim .lever .bar i{animation:xpBand 720ms var(--ease-apple) both;}
+@media (prefers-reduced-motion:reduce){
+  #xpChapters .view.anim .hero .ring circle.val,
+  #xpChapters .view.anim .ribbon .track,
+  #xpChapters .view.anim .gap-fig .bar i,
+  #xpChapters .view.anim .lever .bar i{animation:none!important;}
+}
+
+
+/* the helper rail */
+#xpRail{ display:none; }
+body.xp-open .layout.page[data-page="plan"] > .rail > #xpRail{ display:block; }
+#xpRail .story-head{display:flex;align-items:center;gap:6px;min-height:38px;font-size:18px;font-weight:700;
+#xpRail .story-head .spk{color:var(--green);width:17px;height:17px;flex:none;display:inline-flex;}
+#xpRail .story-head .spk svg{width:17px;height:17px;display:block;}
+#xpRail p.ctx-body{font-size:16px;line-height:1.6;color:var(--text-secondary);margin:0 0 var(--s-5);max-width:34ch;}
+#xpRail .tax-links{display:flex;flex-direction:column;gap:var(--s-3);}
+#xpRail .ctx-cta{display:inline-flex;align-items:flex-start;gap:6px;font-size:15px;font-weight:600;
+#xpRail .ctx-cta:hover{text-decoration:underline;}
+#xpRail .ctx-cta svg{width:14px;height:14px;flex:none;margin-top:3px;}
+#xpRail .tok{opacity:0;transition:opacity .24s ease;}
+#xpRail .tok.show{opacity:1;}
+
+/* the left-rail group, using the app's own nav idiom */
+#xpNav li{ cursor:pointer; }
+
+</style>
+<script id="xpMergeJS">
+/* ===== Explore Plan: six chapters for the plan page =====
+   Self-contained. Builds its own hosts inside the existing plan page and
+   touches nothing that is already there. */
+(function(){
+  function mount(){
+    var plan=document.querySelector('.layout.page[data-page="plan"]');
+    if(!plan || document.getElementById('xpChapters')) return !!plan;
+    var side=plan.querySelector(':scope > .side'),
+        center=plan.querySelector(':scope > .center'),
+        rail=plan.querySelector(':scope > .rail');
+    if(!side || !center) return false;
+
+    var nav=side.querySelector('#sideNav') || side;
+    if(!document.getElementById('xpNav')) nav.insertAdjacentHTML('beforeend',
+      '<div class="side-divider ins-div" role="presentation"></div>'+
+      '<div class="group-label ins-lab"><span class="grp-t">Explore Plan</span>'+
+      '<button type="button" class="grp-chev" data-grp-chev="xp" aria-label="Collapse Explore Plan" aria-expanded="true">'+
+      '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+      '</button></div><ul id="xpNav" data-grp="xp"></ul>');
+
+    center.insertAdjacentHTML('beforeend','<div id="xpChapters"></div>');
+    if(rail) rail.insertAdjacentHTML('beforeend','<aside id="xpRail" aria-label="Helpful context"></aside>');
+    if(!document.getElementById('tt'))
+      document.body.insertAdjacentHTML('beforeend','<div id="tt" role="tooltip"></div>');
+    return true;
+  }
+  function boot(){
+    if(!mount()) return;
+/* ---------- greenfield rail idiom: the sparkle head, the cta arrow, the stream ---------- */
+const SPK='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
+const ARR='<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* wrap every word so the rail types itself in, exactly as the advisory rails do */
+let streamTimers=[];
+function stream(root){
+  streamTimers.forEach(clearTimeout); streamTimers=[];
+  if(!root) return;
+  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+  const bodies=[].slice.call(root.querySelectorAll('.ctx-body'));
+  let n=0;
+  bodies.forEach(b=>{
+    (function walk(node){
+      [].slice.call(node.childNodes).forEach(c=>{
+        if(c.nodeType===3){
+          const parts=c.data.match(/\s*\S+\s*/g); if(!parts) return;
+          const frag=document.createDocumentFragment();
+          parts.forEach(t=>{const sp=document.createElement('span');sp.className='tok';sp.textContent=t;
+            frag.appendChild(sp);
+            streamTimers.push(setTimeout(()=>sp.classList.add('show'), 60+(n++)*22));});
+          c.parentNode.replaceChild(frag,c);
+        } else if(c.nodeType===1) walk(c);
+      });
+    })(b);
+  });
+}
+
+
+// Shared model — also embedded in page
+function makeModel(o){
+  o=Object.assign({retireL:2037,retireM:2039,spend:115000,ssAgeL:67,ssAgeM:67,roth:0,crash:null,ret:null},o||{});
+  const Y0=2026,Y1=2066; const bornL=1972,bornM=1974;
+  const B=[[24800,.10],[100800,.12],[211400,.22],[403550,.24],[512450,.32],[768700,.35],[1e12,.37]];
+  const STD=32200;
+  function tax(ti){ti=Math.max(0,ti);let t=0,p=0;for(const[c,r]of B){if(ti>p){t+=(Math.min(ti,c)-p)*r;p=c}}return t}
+  function marg(ti){for(const[c,r]of B){if(ti<=c+1)return r}return .37}
+  const rmdDiv=a=>({75:24.6,76:23.7,77:22.9,78:22.0,79:21.1,80:20.2,81:19.4,82:18.5,83:17.7,84:16.8,85:16.0,86:15.2,87:14.4,88:13.7,89:12.9,90:12.2,91:11.5,92:10.8,93:10.1,94:9.5}[a]||10);
+  let def=o.def0||560000,roth=45000,txb=110000,cash=40000,home=620000,mort=210000;
+  const rows=[];
+  for(let y=Y0;y<=Y1;y++){
+    const aL=y-bornL,aM=y-bornM, i=y-Y0;
+    const r = o.ret? o.ret[i] : (o.crash===y? -0.28 : 0.032);
+    const workL = y<o.retireL? 95000:0, workM = y<o.retireM? 115000:0;
+    const work=workL+workM;
+    const ssL = aL>=o.ssAgeL? 38000*(o.ssAgeL===70?1.24:o.ssAgeL===62?0.70:1):0;
+    const ssM = aM>=o.ssAgeM? 32000*(o.ssAgeM===70?1.24:o.ssAgeM===62?0.70:1):0;
+    const ss=ssL+ssM;
+    const mortPay = mort>0? Math.min(26000,mort*1.04):0; mort=Math.max(0,mort*1.035-mortPay);
+    const retired = work===0;
+    const living = retired? o.spend : 88000 + (workL&&workM?0:-8000);
+    const health = (aM<65||aL<65)&&retired? 21000 : (aL>=65? 9800 : 6200);
+    const expenses={living,housing:mortPay,health};
+    const contrib = work>0? (workL&&workM? 36000: 16000):0;
+    // RMD
+    const rmd = aL>=75? def/rmdDiv(aL):0;
+    // conversion
+    let conv=0;
+    const need0 = living+mortPay+health+contrib;
+    // withdrawals to fill gap after tax (iterate)
+    let wTx=0,wDef=0,wRoth=0,wCash=0, fed=0, irmaa=0;
+    const baseOrd = work + rmd + 0.85*ss;
+    if(o.roth && retired && y<=(o.rothEnd||2046)){ const target=o.roth; const ti0=baseOrd-STD; conv=Math.max(0,Math.min(def-rmd, target-ti0)); }
+    let gap = need0 - work - ss - rmd;
+    for(let k=0;k<6;k++){
+      const ti = baseOrd + wDef + conv - STD + 0.3*wTx*0.4;
+      fed = tax(baseOrd + wDef + conv - STD) + 0.15*0.4*wTx;
+      const magi = baseOrd + wDef + conv + wTx*0.4;
+      irmaa = (aL>=65? (magi>218000? (magi>274000?5800:2300):0):0)*( aM>=65?2:1);
+      let g = gap + fed + irmaa; wTx=wDef=wRoth=wCash=0;
+      if(g>0){ wCash=Math.min(cash,Math.max(0,g-0)*0); wTx=Math.min(txb,g); g-=wTx; wDef=Math.max(0,Math.min(def-rmd-conv,g)); g-=wDef; wRoth=Math.min(roth,Math.max(0,g)); g-=wRoth; }
+    }
+    const surplus = work+ss+rmd - need0 - fed - irmaa; // pre-withdrawal
+    const deficit = Math.max(0,-(surplus));
+    // apply
+    def = def - wDef - rmd - conv; roth=roth - wRoth + conv; txb = txb - wTx;
+    if(contrib){ def+=contrib*0.8; roth+=contrib*0.2; }
+    const excess = Math.max(0, work+ss+rmd - need0 - fed - irmaa); if(excess>0) txb+=excess*0.5;
+    def*=1+r; roth*=1+r; txb*=1+r; cash*=1.005; home*=1.005;
+    const savings=def+roth+txb+cash;
+    const depleted = (def+roth+txb)<=1000 && y<=2066;
+    rows.push({y,aL,aM,work,ss,rmd,conv,wTx,wDef,wRoth,fed,irmaa,expenses,contrib,def,roth,txb,cash,home,mort,savings,nw:savings+home-mort,surplus:work+ss+rmd-need0-fed-irmaa,ti:baseOrd+wDef+conv-STD,marg:marg(baseOrd+wDef+conv-STD),depleted});
+    if(def<0)def=0; if(roth<0)roth=0; if(txb<0)txb=0;
+  }
+  return rows;
+}
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function monte(o,n=1000){const R=rng(42);const paths=[];let ok=0;for(let s=0;s<n;s++){const ret=[];for(let i=0;i<41;i++){let u=0,v=0;while(!u)u=R();v=R();ret.push(0.038+0.10*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v))}const rows=makeModel(Object.assign({},o,{ret}));paths.push(rows.map(r=>r.savings));if(!rows.some(r=>r.depleted))ok++;}return{p:ok/n,paths}}
+
+
+/* ---------- chart library ---------- */
+const COL={c1:'#0B84A5',c2:'#04B477',c3:'#E0A800',c4:'#BC0278',c5:'#6A5AE0',c0:'#A7ACB8',ink:'#10182C',t2:'#47495A',t3:'#7A7D8C',grid:'rgba(16,24,44,.08)',axis:'rgba(16,24,44,.28)',gap:'#E4572E',fan1:'#D3EAF2',fan2:'#A6D2E2'};
+const $=(s,r=document)=>r.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+function money(v,o={}){const a=Math.abs(v);let s;
+  if(o.full) s='$'+Math.round(a).toLocaleString('en-US');
+  else if(a>=1e6) s='$'+(a/1e6).toFixed(a>=1e7?1:2).replace(/0$/,'').replace(/\.$/,'')+'M';
+  else if(a>=1e3) s='$'+Math.round(a/1e3)+'k'; else s='$'+Math.round(a);
+  return (v<-0.5?'−':(o.sign&&v>0.5?'+':''))+s;}
+const pct=(v,d=0)=>(v*100).toFixed(d)+'%';
+const mo=v=>'$'+Math.round(v/12).toLocaleString('en-US');
+function niceStep(range,n){const raw=range/n;const p=Math.pow(10,Math.floor(Math.log10(raw)));const f=raw/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p;}
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+/* tooltip */
+const TT={el:null,show(html,ev){const t=this.el||(this.el=$('#tt'));t.innerHTML=html;t.classList.add('on');const w=t.offsetWidth,h=t.offsetHeight;let x=ev.clientX+14,y=ev.clientY+14;if(x+w>innerWidth-8)x=ev.clientX-w-14;if(y+h>innerHeight-8)y=ev.clientY-h-14;t.style.left=Math.max(8,x)+'px';t.style.top=Math.max(8,y)+'px';},hide(){(this.el||$('#tt')).classList.remove('on');}};
+const ttRow=(c,n,v,cls='')=>`<div class="r ${cls}"><span>${c?`<i style="background:${c}"></i>`:''}${esc(n)}</span><b>${v}</b></div>`;
+
+function legendHTML(items){return `<div class="legend">${items.map(s=>`<span><i class="${s.kind==='line'?(s.dash?'dash':'ln'):''}" style="background:${s.color};border-color:${s.color}"></i>${esc(s.name)}</span>`).join('')}</div>`;}
+
+/* time-series chart: stacked bars, stacked areas, lines, fan bands, markers */
+let WIPE=0;
+function tsChart(host,cfg){
+  const {years,series=[],height=250,yfmt=money,fan=null,markers=[],vlines=[],spans=[],notes=[],rowLabel=i=>String(years[i]),legend=true,tipTotal=false,minY=null,maxY=null}=cfg;
+  const n=years.length,W=Math.max(340,host.clientWidth||720),L=60,R=16,T=26,B=32,H=height,iw=W-L-R,ih=H-T-B,step=iw/n;
+  const X=i=>L+step*(i+.5);
+  const bars=series.filter(s=>s.kind==='bar'),areas=series.filter(s=>s.kind==='area'),lines=series.filter(s=>s.kind==='line');
+  let lo=0,hi=0;
+  for(let i=0;i<n;i++){let p=0,q=0;bars.forEach(s=>{const v=s.values[i]||0;v>=0?p+=v:q+=v});let a=0;areas.forEach(s=>a+=s.values[i]||0);
+    hi=Math.max(hi,p,a);lo=Math.min(lo,q);lines.forEach(s=>{const v=s.values[i];if(v!=null){hi=Math.max(hi,v);lo=Math.min(lo,v)}});
+    if(fan)fan.bands.forEach(b=>{hi=Math.max(hi,b.hi[i]);lo=Math.min(lo,b.lo[i])});}
+  if(maxY!=null)hi=maxY; if(minY!=null)lo=minY;
+  const st=niceStep((hi-lo)||1,4);const y0=Math.floor(lo/st)*st,y1=Math.ceil(hi/st)*st;
+  const Y=v=>T+ih-(v-y0)/(y1-y0)*ih;
+  host.innerHTML=(legend?legendHTML([...(fan?fan.bands.map(b=>({name:b.name,color:b.color})):[]),...series.filter(s=>!s.hideLegend)]):'')+'<div class="chart"></div>';
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':cfg.aria||'chart'},host.lastChild);
+
+  /* the emphasis band: a tinted range with a rule and a label sitting above the plot */
+  spans.forEach(sp=>{const a=years.indexOf(sp.from),b=years.indexOf(sp.to);if(a<0||b<0)return;
+    const x=X(a)-step/2,w=(b-a+1)*step;
+    el('rect',{x,y:T,width:w,height:ih,fill:sp.color||'rgba(4,180,119,.10)',class:'xp-pop'},svg);
+    el('line',{x1:x,x2:x+w,y1:T,y2:T,stroke:sp.ink||COL.c2,'stroke-width':2,class:'xp-pop'},svg);
+    const t=el('text',{x:x+w/2,y:T-9,'text-anchor':'middle','font-size':13,'font-weight':600,fill:sp.ink||'#0E794E',class:'xp-pop'},svg);t.textContent=sp.label;});
+
+  for(let v=y0;v<=y1+1e-9;v+=st){el('line',{x1:L,x2:W-R,y1:Y(v),y2:Y(v),stroke:Math.abs(v)<1e-9?COL.axis:COL.grid,'stroke-width':1},svg);
+    const t=el('text',{x:L-10,y:Y(v)+4,'text-anchor':'end','font-size':12,fill:COL.t3},svg);t.textContent=yfmt(v);}
+  const every=n>30?5:n>14?3:1;
+  years.forEach((yr,i)=>{if((yr%every===0&&every>1)||every===1||i===0&&every===1){const t=el('text',{x:X(i),y:H-9,'text-anchor':'middle','font-size':12,fill:COL.t3},svg);t.textContent=yr;}});
+
+  /* everything that fills area is revealed by one left-to-right wipe */
+  const wid='xpw'+(++WIPE);
+  const cp=el('clipPath',{id:wid,clipPathUnits:'userSpaceOnUse'},el('defs',{},svg));
+  el('rect',{x:L-1,y:T-3,width:iw+2,height:ih+6,class:'xp-wipe-rect'},cp);
+  const gw=el('g',{'clip-path':`url(#${wid})`},svg);
+
+  if(fan)fan.bands.forEach(b=>{let d='';for(let i=0;i<n;i++)d+=(i?'L':'M')+X(i)+','+Y(b.hi[i]);for(let i=n-1;i>=0;i--)d+='L'+X(i)+','+Y(b.lo[i]);el('path',{d:d+'Z',fill:b.color,stroke:'none'},gw);});
+  if(areas.length){const cum=new Array(n).fill(0);areas.forEach(s=>{const top=cum.map((c,i)=>c+(s.values[i]||0));let d='';for(let i=0;i<n;i++)d+=(i?'L':'M')+X(i)+','+Y(top[i]);for(let i=n-1;i>=0;i--)d+='L'+X(i)+','+Y(cum[i]);
+    el('path',{d:d+'Z',fill:s.color,'fill-opacity':.88,stroke:'#fff','stroke-width':1.5,'stroke-linejoin':'round'},gw);top.forEach((v,i)=>cum[i]=v);});}
+  if(bars.length){const bw=Math.max(3,Math.min(26,step*.66));
+    for(let i=0;i<n;i++){let p=0,q=0;bars.forEach(s=>{const v=s.values[i]||0;if(Math.abs(v)<1)return;const c=typeof s.color==='function'?s.color(v):s.color;
+      if(v>=0){el('rect',{x:X(i)-bw/2,y:Y(p+v),width:bw,height:Math.max(0.5,Y(p)-Y(p+v)),fill:c,rx:2,stroke:'#fff','stroke-width':1},gw);p+=v;}
+      else{el('rect',{x:X(i)-bw/2,y:Y(q),width:bw,height:Math.max(0.5,Y(q+v)-Y(q)),fill:c,rx:2,stroke:'#fff','stroke-width':1},gw);q+=v;}});}}
+  if(y0<0)el('line',{x1:L,x2:W-R,y1:Y(0),y2:Y(0),stroke:COL.axis,'stroke-width':1},svg);
+
+  vlines.forEach(v=>{const i=years.indexOf(v.y);if(i<0)return;el('line',{x1:X(i),x2:X(i),y1:T,y2:T+ih,stroke:COL.ink,'stroke-width':1,'stroke-dasharray':'3 3',opacity:.5,class:'xp-pop'},svg);
+    const t=el('text',{x:X(i)+(i>n*.8?-6:6),y:T+ih-7,'text-anchor':i>n*.8?'end':'start','font-size':13,'font-weight':600,fill:COL.t2,class:'xp-pop'},svg);t.textContent=v.label;});
+
+  /* the lines draw themselves in */
+  lines.forEach(s=>{let d='',pen=false;for(let i=0;i<n;i++){const v=s.values[i];if(v==null){pen=false;continue}
+      if(s.step&&pen){d+='L'+(X(i)-step/2)+','+Y(s.values[i-1])+'L'+(X(i)-step/2)+','+Y(v);}
+      d+=(pen?'L':'M')+X(i)+','+Y(v);pen=true;}
+    const pa=el('path',{d,fill:'none',stroke:s.color,'stroke-width':s.width||2,'stroke-linejoin':'round','stroke-linecap':'round',class:s.dash?'':'xp-line'},svg);
+    if(s.dash)pa.setAttribute('stroke-dasharray',s.dash); else {try{pa.style.setProperty('--len',pa.getTotalLength());}catch(e){pa.classList.remove('xp-line');}}
+    if(s.endDot){const i=n-1;el('circle',{cx:X(i),cy:Y(s.values[i]),r:5,fill:s.color,stroke:'#fff','stroke-width':2,class:'xp-pop'},svg);}});
+
+  markers.forEach(m=>{const i=years.indexOf(m.y);if(i<0)return;const cy=Y(m.v);const g=el('g',{class:'xp-pop'},svg);
+    el('circle',{cx:X(i),cy,r:9.5,fill:COL.ink,stroke:'#fff','stroke-width':2},g);
+    const t=el('text',{x:X(i),y:cy+3.8,'text-anchor':'middle','font-size':11,'font-weight':700,fill:'#fff'},g);t.textContent=m.n;});
+
+  /* a pinned callout on the one point worth naming */
+  notes.forEach(nt=>{const i=years.indexOf(nt.y);if(i<0)return;const cx=X(i),cy=Y(nt.v),ty=cy+(nt.dy==null?-28:nt.dy);
+    const g=el('g',{class:'xp-pop'},svg);
+    el('line',{x1:cx,y1:cy-6,x2:cx,y2:ty+5,stroke:COL.axis,'stroke-width':1},g);
+    el('circle',{cx,cy,r:4.5,fill:nt.color||COL.c2,stroke:'#fff','stroke-width':2},g);
+    const anc=cx>W*.7?'end':cx<W*.3?'start':'middle';
+    const t=el('text',{x:cx+(anc==='end'?6:anc==='start'?-6:0),y:ty,'text-anchor':anc,'font-size':13,'font-weight':600,fill:COL.ink},g);t.textContent=nt.text;});
+
+  const guide=el('line',{x1:0,x2:0,y1:T,y2:T+ih,stroke:COL.ink,'stroke-width':1,opacity:0},svg);
+  const ov=el('g',{},svg);
+  for(let i=0;i<n;i++){const r=el('rect',{x:X(i)-step/2,y:T,width:step,height:ih,fill:'transparent'},ov);
+    r.addEventListener('pointermove',ev=>{guide.setAttribute('x1',X(i));guide.setAttribute('x2',X(i));guide.setAttribute('opacity',.25);
+      let h=`<div class="h">${esc(rowLabel(i))}</div>`;let tot=0;
+      if(fan)[...fan.tip].forEach(t=>h+=ttRow(t.color,t.name,yfmt(t.values[i])));
+      [...series].reverse().forEach(s=>{const v=s.values[i];if(v==null||(s.kind!=='line'&&Math.abs(v)<1&&!s.showZero))return;if(s.kind!=='line')tot+=v;const c=typeof s.color==='function'?s.color(v):s.color;h+=ttRow(c,s.name,yfmt(v));});
+      if(tipTotal)h+=ttRow('',tipTotal,yfmt(tot),'tot');
+      const mk=markers.find(m=>m.y===years[i]);if(mk)h+=`<div style="margin-top:4px;opacity:.85">${mk.n}. ${esc(mk.label)}</div>`;
+      TT.show(h,ev);});
+    r.addEventListener('pointerleave',()=>{guide.setAttribute('opacity',0);TT.hide();});}
+}
+function tsTable(years,series,rowLabel,fmt=money){return {head:['Year',...series.map(s=>s.name)],rows:years.map((y,i)=>[rowLabel?rowLabel(i):y,...series.map(s=>s.values[i]==null?'—':fmt(s.values[i]))])};}
+
+/* donut */
+function donut(host,{items,center,label}){
+  const tot=items.reduce((a,b)=>a+b.v,0);const S=220,cx=110,cy=110,r=92,w=26;
+  host.innerHTML=`<div style="display:flex;gap:22px;align-items:center;flex-wrap:wrap"><div class="chart" style="width:200px;flex:none"></div><div class="dl" style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px"></div></div>`;
+  const svg=el('svg',{viewBox:`0 0 ${S} ${S}`,role:'img','aria-label':label||'donut'},host.querySelector('.chart'));
+  const ga=el('g',{class:'xp-arc'},svg);
+  let a0=-Math.PI/2;const gap=0.018;
+  items.forEach(it=>{const a1=a0+it.v/tot*Math.PI*2;const s=a0+gap/2,e=a1-gap/2;const big=e-s>Math.PI?1:0;
+    const p=(ang,rr)=>[cx+rr*Math.cos(ang),cy+rr*Math.sin(ang)];const [x1,y1]=p(s,r),[x2,y2]=p(e,r),[x3,y3]=p(e,r-w),[x4,y4]=p(s,r-w);
+    const path=el('path',{d:`M${x1},${y1}A${r},${r} 0 ${big} 1 ${x2},${y2}L${x3},${y3}A${r-w},${r-w} 0 ${big} 0 ${x4},${y4}Z`,fill:it.color},ga);
+    path.addEventListener('pointermove',ev=>TT.show(`<div class="h">${esc(it.name)}</div>${ttRow(it.color,'Share',pct(it.v/tot))}${it.amt?ttRow('','Amount',money(it.amt)):''}`,ev));path.addEventListener('pointerleave',()=>TT.hide());a0=a1;});
+  const t1=el('text',{x:cx,y:cy-2,'text-anchor':'middle','font-size':24,'font-weight':600,fill:COL.ink,class:'xp-pop'},svg);t1.textContent=center.v;
+  const t2=el('text',{x:cx,y:cy+18,'text-anchor':'middle','font-size':13,fill:COL.t2,class:'xp-pop'},svg);t2.textContent=center.label;
+  host.querySelector('.dl').innerHTML=items.map(it=>`<div style="display:flex;align-items:center;gap:10px;font-size:15px"><i style="width:10px;height:10px;border-radius:3px;background:${it.color};flex:none"></i><span style="flex:1">${esc(it.name)}</span><b style="font-variant-numeric:tabular-nums">${pct(it.v/tot)}</b></div>`).join('');
+}
+
+/* grouped horizontal bars */
+function hbars(host,{cats,series,fmt=money}){
+  const max=Math.max(...series.flatMap(s=>s.values));const W=Math.max(340,host.clientWidth||720),L=W<500?118:150,R=70,rowH=16,gapIn=4,gapOut=18;const H=cats.length*(series.length*(rowH+gapIn)+gapOut)+6;
+  host.innerHTML=legendHTML(series)+'<div class="chart"></div>';
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'bar chart'},host.lastChild);
+  let y=4;cats.forEach((c,ci)=>{const gy=y;const t=el('text',{x:0,y:gy+ (series.length*(rowH+gapIn))/2+3,'font-size':14,fill:COL.ink,'font-weight':500},svg);t.textContent=c;
+    series.forEach(s=>{const v=s.values[ci];const w=Math.max(v>0?3:0,(v/max)*(W-L-R));
+      const r=el('rect',{x:L,y,width:w,height:rowH,rx:4,fill:s.color,class:'xp-grow'},svg);r.style.setProperty('--i',ci*2+series.indexOf(s));
+      const tv=el('text',{x:L+w+8,y:y+rowH-3,'font-size':13,fill:COL.t2,class:'xp-pop'},svg);tv.textContent=v>0?fmt(v):'—';
+      r.addEventListener('pointermove',ev=>TT.show(`<div class="h">${esc(c)}</div>${ttRow(s.color,s.name,fmt(v))}`,ev));r.addEventListener('pointerleave',()=>TT.hide());
+      y+=rowH+gapIn;});
+    y+=gapOut;});
+}
+
+/* horizontal stacked bars (composition) */
+function hstack(host,{rows,parts,fmt=money}){
+  const W=Math.max(340,host.clientWidth||720),L=W<500?120:170,R=10,rowH=30,gap=26;const H=rows.length*(rowH+gap);const max=Math.max(...rows.map(r=>r.values.reduce((a,b)=>a+b,0)));
+  host.innerHTML=legendHTML(parts)+'<div class="chart"></div>';
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'stacked bars'},host.lastChild);
+  rows.forEach((r,ri)=>{const y=ri*(rowH+gap)+14;const t=el('text',{x:0,y:y+rowH/2+4,'font-size':14,'font-weight':500,fill:COL.ink},svg);t.textContent=r.name;
+    let x=L;const tot=r.values.reduce((a,b)=>a+b,0);
+    r.values.forEach((v,i)=>{const w=v/max*(W-L-R);if(w<.5)return;const rc=el('rect',{x,y,width:w,height:rowH,fill:parts[i].color,stroke:'#fff','stroke-width':2,rx:3,class:'xp-grow'},svg);rc.style.setProperty('--i',ri*2+i*.4);
+      if(w>58){const tt=el('text',{x:x+9,y:y+rowH/2+4,'font-size':13,'font-weight':600,fill:'#fff',class:'xp-pop'},svg);tt.textContent=fmt(v);}
+      rc.addEventListener('pointermove',ev=>TT.show(`<div class="h">${esc(r.name)}</div>${ttRow(parts[i].color,parts[i].name,fmt(v))}${ttRow('','Share of total',pct(v/tot))}`,ev));rc.addEventListener('pointerleave',()=>TT.hide());x+=w;});
+    const tl=el('text',{x:L,y:y-7,'font-size':13,fill:COL.t2,class:'xp-pop'},svg);tl.textContent='Total '+fmt(tot)+(r.note?' · '+r.note:'');});
+}
+
+/* three-column sankey */
+function sankey(host,{left,right,mid}){
+  const W=720,H=300,nw=12,T=10,B=10;const tot=left.reduce((a,b)=>a+b.v,0);const gapL=10,gapR=8;
+  const sc=(H-T-B-gapR*(right.length-1))/tot;
+  host.innerHTML='<div class="chart"></div>';const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'cash flow sankey'},host.firstChild);
+  const xL=150,xM=345,xR=468;
+  // mid node
+  const mh=tot*sc;const my=T+((H-T-B)-mh)/2;
+  // left nodes
+  let yl=T+((H-T-B)-(tot*sc+gapL*(left.length-1)))/2,ym=my;
+  left.forEach(n=>{const h=n.v*sc;el('rect',{x:xL-nw,y:yl,width:nw,height:h,fill:n.color,rx:2},svg);
+    const p=el('path',{d:`M${xL},${yl}C${(xL+xM)/2},${yl} ${(xL+xM)/2},${ym} ${xM},${ym}L${xM},${ym+h}C${(xL+xM)/2},${ym+h} ${(xL+xM)/2},${yl+h} ${xL},${yl+h}Z`,fill:n.color,'fill-opacity':.28,class:'xp-seq'},svg);
+    p.addEventListener('pointermove',ev=>TT.show(`<div class="h">${esc(n.name)}</div>${ttRow(n.color,'Per year',money(n.v))}${ttRow('','Per month',mo(n.v))}`,ev));p.addEventListener('pointerleave',()=>TT.hide());
+    const t=el('text',{x:xL-nw-8,y:yl+h/2-2,'text-anchor':'end','font-size':13,'font-weight':600,fill:COL.ink},svg);t.textContent=n.name;
+    const t2=el('text',{x:xL-nw-8,y:yl+h/2+15,'text-anchor':'end','font-size':13,fill:COL.t2},svg);t2.textContent=money(n.v)+'/yr';
+    yl+=h+gapL;ym+=h;});
+  el('rect',{x:xM,y:my,width:nw,height:mh,fill:COL.ink,rx:2},svg);
+  const tm=el('text',{x:xM+nw/2,y:my-4+0,'text-anchor':'middle','font-size':12,'font-weight':600,fill:COL.ink},svg);tm.textContent='';
+  // right
+  let yr=T,ym2=my;
+  right.forEach(n=>{const h=n.v*sc;el('rect',{x:xR,y:yr,width:nw,height:h,fill:n.color,rx:2},svg);
+    const p=el('path',{d:`M${xM+nw},${ym2}C${(xM+xR)/2},${ym2} ${(xM+xR)/2},${yr} ${xR},${yr}L${xR},${yr+h}C${(xM+xR)/2},${yr+h} ${(xM+xR)/2},${ym2+h} ${xM+nw},${ym2+h}Z`,fill:n.color,'fill-opacity':.28,class:'xp-seq'},svg);
+    p.addEventListener('pointermove',ev=>TT.show(`<div class="h">${esc(n.name)}</div>${ttRow(n.color,'Per year',money(n.v))}${ttRow('','Per month',mo(n.v))}${ttRow('','Share of income',pct(n.v/tot))}`,ev));p.addEventListener('pointerleave',()=>TT.hide());
+    const t=el('text',{x:xR+nw+8,y:yr+h/2+4,'font-size':13,'font-weight':600,fill:COL.ink},svg);t.textContent=n.name;
+    const t2=el('text',{x:W-4,y:yr+h/2+4,'text-anchor':'end','font-size':13,fill:COL.t2},svg);t2.textContent=money(n.v)+' · '+pct(n.v/tot);
+    yr+=h+gapR;ym2+=h;});
+  const lab=el('text',{x:xM+nw/2,y:H-0,'text-anchor':'middle','font-size':13,fill:COL.t3},svg);lab.textContent=mid;
+}
+
+/* ---------- data ---------- */
+const M=makeModel();
+const YRS=M.map(r=>r.y);
+const lab=i=>`${M[i].y} · Luis ${M[i].aL}, Maya ${M[i].aM}`;
+const MC=monte({});
+function pctl(paths,q){return YRS.map((_,i)=>{const col=paths.map(p=>p[i]).sort((a,b)=>a-b);return col[Math.min(col.length-1,Math.floor(q*col.length))];});}
+const P={p10:pctl(MC.paths,.10),p25:pctl(MC.paths,.25),p50:pctl(MC.paths,.50),p75:pctl(MC.paths,.75),p90:pctl(MC.paths,.90)};
+const LV={spend:monte({spend:103500}).p,ret1:monte({retireL:2038,retireM:2040}).p,ss70:monte({ssAgeL:70,ssAgeM:70}).p,all:monte({spend:109250,ssAgeL:70,ssAgeM:70}).p};
+const RC=makeModel({roth:100800,rothEnd:2042});
+const CR=makeModel({crash:2037});
+const SUM=(rows,k)=>rows.reduce((a,r)=>a+(typeof k==='function'?k(r):r[k]),0);
+const HEIR=0.24;
+const END=M[M.length-1], ENDR=RC[RC.length-1];
+const K={
+  success:MC.p, spend:115000, safeLo:108359, safeMid:117598, safeHi:125527,
+  sav0:755000, nw0:1165000, home0:620000, mort0:210000,
+  estate:END.nw, estateR:ENDR.nw,
+  afterTax:END.nw-END.def*HEIR, afterTaxR:ENDR.nw-ENDR.def*HEIR,
+  taxLife:SUM(M,r=>r.fed+r.irmaa), taxLifeR:SUM(RC,r=>r.fed+r.irmaa),
+  rmdMax:Math.max(...M.map(r=>r.rmd)), rmdMaxR:Math.max(...RC.map(r=>r.rmd)),
+  mortFree:M.find(r=>r.mort<=0).y, txbOut:M.find(r=>r.y>2037&&r.txb<1).y,
+  atRetire:M.find(r=>r.y===2039).savings,
+  crashEnd:CR[CR.length-1].savings, baseEnd:END.savings,
+  surplus0:M[0].surplus,
+};
+K.legacyP=MC.paths.filter(p=>p[p.length-1]+END.home>=1000000).length/MC.paths.length;
+K.ssShare=70000/(115000+9800);
+K.defShare=560000/755000;
+const lowYrs=M.filter(r=>r.y>2036&&r.marg<=0.12).map(r=>r.y);const lowA=lowYrs[0],lowB=lowYrs[lowYrs.length-1];
+const peakGap=Math.min(...M.map(r=>r.surplus));const peakYear=M.find(r=>r.surplus===peakGap).y;
+
+/* ---------- chapter defs ---------- */
+const CH=[
+ {id:'first',t:'Start here',q:'Am I on track?',chip:['good',`${pct(K.success)} on track`]},
+ {id:'budget',t:'Budgeting',q:'Where does my money come from and go?',chip:['good',`${money(K.surplus0)}/yr left over`]},
+ {id:'retire',t:'Retirement',q:'Will my money last?',chip:['warn','Watch 2037–2041']},
+ {id:'invest',t:'Investments',q:'Am I invested for what’s ahead?',chip:['warn','7 pts above target']},
+ {id:'tax',t:'Taxes',q:'Am I paying more tax than I need to?',chip:['good',`${money(K.afterTaxR-K.afterTax)} opportunity`]},
+ {id:'estate',t:'Estate planning',q:'What will I leave, and to whom?',chip:['crit','2 documents missing']},
+];
+
+/* ---------- card helper ---------- */
+let MOUNTS=[];
+const SPARK='<svg width="20" height="20" viewBox="0 0 24 24" fill="#C08A00"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg>';
+const ICON={check:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  warn:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 8v5M12 16.5v.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>',
+  x:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 7l10 10M17 7L7 17" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  arrow:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  table:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M4 10h16M10 10v9" stroke="currentColor" stroke-width="2"/></svg>',
+  spark:'<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg>',
+  spark2:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg>',
+  explore:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'};
+let cid=0;
+function card({title,src,take,draw,table,ask,wide,plain}){
+  const id='c'+(++cid);
+  MOUNTS.push({id,draw,table});
+  return `<section class="card${plain?' plain':''}" id="${id}">
+    <div class="ch"><div class="tt"><h3>${title}</h3>${src?`<div class="src">Was: ${src}</div>`:''}</div>
+      <div class="tools">${table?`<button class="tbtn" type="button" data-table="${id}" aria-pressed="false">${ICON.table}Table</button>`:''}<button class="tbtn noclick" type="button">${ICON.spark}Ask</button></div></div>
+    ${take?`<p class="take">${take}</p>`:''}
+    <div class="body"></div><div class="tablewrap" hidden></div>
+  </section>`;
+}
+/* the short answer is the member's helper — it belongs in the rail, not the column */
+let RAIL='';
+function answer(text,asks=[]){
+  RAIL+=`<div class="side-ctx"><div class="story-head">The short answer <span class="spk">${SPK}</span></div>`
+   +`<p class="ctx-body">${text}</p>`
+   +(asks.length?`<div class="tax-links">${asks.map(a=>`<a class="ctx-cta" role="button" tabindex="0">${a} ${ARR}</a>`).join('')}</div>`:'')
+   +`</div>`;
+  return '';
+}
+/* the callout between the headline and the evidence: the one thing this chapter is about */
+function insight(text){return `<div class="insight"><span class="ic">${ICON.spark2}</span><p>${text}</p></div>`;}
+function head(i,q,sub){return `<div class="qhead"><div class="eyebrow">${CH[i].t}</div><h2 class="pf-hl">${q}</h2>${sub?`<p class="bud-sub">${sub}</p>`:''}</div>`;}
+function stats(arr,cls=''){return `<div class="stats ${cls}">${arr.map(s=>`<div class="stat"><div class="k">${s.k}</div><div class="v">${s.v}</div>${s.d?`<div class="d">${s.d}</div>`:''}${s.chip?`<span class="chip ${s.chip[0]}">${s.chip[1]}</span>`:''}</div>`).join('')}</div>`;}
+/* a dial, for the one page that opens on a single number */
+function heroRing(p){const r=58,c=2*Math.PI*r;
+  return `<div class="ring"><svg viewBox="0 0 132 132" aria-hidden="true"><circle cx="66" cy="66" r="${r}" fill="none" stroke="#EEF0F2" stroke-width="12"/>`
+   +`<circle class="val" cx="66" cy="66" r="${r}" fill="none" stroke="var(--green-cta)" stroke-width="12" stroke-linecap="round" style="--c:${c.toFixed(1)};--off:${(c*(1-p)).toFixed(1)}"/></svg><span class="n">${pct(p)}</span></div>`;}
+function hero({p,lead,rows}){
+  return `<div class="hero">${heroRing(p)}<div><p class="hl">${lead}</p>`
+   +`<div class="rows">${rows.map(r=>`<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')}</div></div></div>`;}
+
+/* figures without boxes, for pages where the chart is the subject */
+function strip(arr){
+  return `<div class="strip" style="grid-template-columns:repeat(${arr.length},minmax(0,1fr))">`
+   +arr.map(x=>`<div><div class="k">${x.k}</div><div class="v">${x.v}</div>${x.d?`<div class="d">${x.d}</div>`:''}</div>`).join('')+`</div>`;}
+
+/* two panels side by side */
+function split(a,b){return `<div class="split">${a}${b}</div>`;}
+
+/* the one dark surface in the six chapters */
+function panelInk(html){return `<div class="panel-ink">${html}</div>`;}
+
+/* forty-one years of marginal bracket as one band */
+function bracketRibbon(){
+  /* group by band, not by exact rate, so the window reads as one stretch */
+  const tier=v=>v<=12?'low':v<=22?'mid':'high';
+  const segs=[];let cur=null;
+  M.forEach(r=>{const v=Math.round(r.marg*100),t=tier(v);
+    if(!cur||cur.t!==t){cur={t,lo:v,hi:v,from:r.y,to:r.y,n:1};segs.push(cur);}
+    else{cur.to=r.y;cur.n++;cur.lo=Math.min(cur.lo,v);cur.hi=Math.max(cur.hi,v);}});
+  const tone={low:'#9FDCC2',mid:'#0B84A5',high:'#0D3F4A'};
+  const ink={low:'#0E794E',mid:'#fff',high:'#fff'};
+  const rate=g=>g.lo===g.hi?g.hi+'%':g.lo+'–'+g.hi+'%';
+  return `<div class="ribbon"><div class="track">${segs.map(g=>`<span style="flex:${g.n};background:${tone[g.t]};color:${ink[g.t]}">${g.n>3?rate(g):''}</span>`).join('')}</div>`
+   +`<div class="axis">${segs.map(g=>`<span style="flex:${g.n}">${g.n>3?(g.from===g.to?g.from:g.from+'–'+g.to):''}</span>`).join('')}</div>`
+   +`<p class="rb-note">Your marginal bracket every year from ${YRS[0]} to ${YRS[YRS.length-1]}. The pale stretch is the window worth using.</p></div>`;}
+
+function nextRow(i){const p=CH[i-1],n=CH[i+1];return `<div class="nextrow">${p?`<button class="btn btn-ghost" data-go="${p.id}" type="button">← ${p.t}</button>`:'<span></span>'}${n?`<button class="btn btn-primary" data-go="${n.id}" type="button">Next: ${n.t} ${ICON.arrow}</button>`:'<span></span>'}</div>`;}
+function tableHTML(t){return `<table class="dt"><thead><tr>${t.head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${t.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;}
+
+const S=(name,color,values,kind='bar',extra={})=>Object.assign({name,color,values,kind},extra);
+const sliceFrom=(y)=>{const i=YRS.indexOf(y);return {years:YRS.slice(i),idx:i,sl:a=>a.slice(i),lab:j=>lab(i+j)};};
+
+/* ---------- 1. What you need to know first ---------- */
+function vFirst(){
+  const nw=M.map(r=>r.nw);
+  const mk=[{y:2035,n:1,label:'Mortgage paid off'},{y:2037,n:2,label:'Luis retires (65)'},{y:2039,n:3,label:'Maya retires (65) · Luis starts Social Security'},{y:2041,n:4,label:'Maya starts Social Security'},{y:2047,n:5,label:'Required distributions begin (Luis 75)'},{y:2062,n:6,label:'Luis’s planning age (90)'}].map(m=>({...m,v:nw[YRS.indexOf(m.y)]}));
+  return head(0,`You’re on track to retire on schedule and spend <em>${mo(K.spend)} a month</em>.`,`Where you stand, what is working, and what could knock it off course.`)
+  +hero({p:K.success,lead:`Your money lasts to Maya’s age 92 in <b>${pct(K.success)}</b> of a thousand simulated markets.`,
+    rows:[['Net worth today',money(K.nw0)],['Projected estate at 92',money(K.estate)],['Plan accuracy','88% · 2 items to review']]})
+  +insight(`Everything on this page is steady except one stretch: the <b>four years from 2037 to 2041</b>, when Luis has stopped working and neither Social Security check has started. That window decides most of your odds.`)
+  +answer(`You can retire on schedule and spend about ${mo(K.spend)} a month for life; the pressure point is the four years between Luis retiring in 2037 and Maya’s Social Security starting in 2041.`,['What would raise my odds?'])
+  +card({plain:true,title:'How will my net worth change over time?',src:'Net Worth projection · Timeline of Milestones',take:`Net worth builds to about <b>${money(Math.max(...nw))}</b> around retirement, then draws down slowly. Numbered points are your milestones.`,
+    draw:h=>{const pk=Math.max(...nw),pky=YRS[nw.indexOf(pk)];
+      tsChart(h,{years:YRS,series:[S('Net worth',COL.c1,nw,'line',{width:2.5,endDot:true})],markers:mk,notes:[{y:pky,v:pk,text:`Peak ${money(pk)} in ${pky}`,dy:-34,color:COL.c1}],rowLabel:lab,height:270});
+      h.insertAdjacentHTML('beforeend',`<div class="legend" style="margin-top:6px">${mk.map(m=>`<span><b style="display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:${COL.ink};color:#fff;font-size:10px">${m.n}</b>${m.y} · ${m.label}</span>`).join('')}</div>`);},
+    table:()=>tsTable(YRS,[S('Net worth',0,nw),S('Savings',0,M.map(r=>r.savings)),S('Home equity',0,M.map(r=>r.home-r.mort))],lab)})
+  +`<div class="sr">
+    <div class="items"><h3>Key strengths</h3>
+      <button class="item s" data-go="budget" type="button"><span class="ico">${ICON.check}</span><span><div class="h">You save ${pct(36000/210000)} of pay and still have ${money(K.surplus0)} a year left over</div><div class="b">That surplus is room to save more now or to fund the early retirement years.</div><span class="go">Budgeting ${ICON.arrow}</span></span></button>
+      <button class="item s" data-go="retire" type="button"><span class="ico">${ICON.check}</span><span><div class="h">Social Security will cover ${pct(K.ssShare)} of your retirement spending</div><div class="b">Guaranteed, inflation-adjusted income for life once both benefits start in 2041.</div><span class="go">Retirement ${ICON.arrow}</span></span></button>
+      <button class="item s" data-go="budget" type="button"><span class="ico">${ICON.check}</span><span><div class="h">Your mortgage is paid off in ${K.mortFree}, before either of you retires</div><div class="b">You go into retirement with no debt payments.</div><span class="go">Budgeting ${ICON.arrow}</span></span></button>
+    </div>
+    <div class="items"><h3>Key risks</h3>
+      <button class="item r" data-go="retire" type="button"><span class="ico">${ICON.warn}</span><span><div class="h">The bridge years, 2037–2041, lean hardest on savings</div><div class="b">Withdrawals peak near ${money(-peakGap)} in ${peakYear}, and taxable savings are gone by ${K.txbOut}. A market drop in this window matters most.</div><span class="go">Retirement ${ICON.arrow}</span></span></button>
+      <button class="item r" data-go="tax" type="button"><span class="ico">${ICON.warn}</span><span><div class="h">${pct(K.defShare)} of your savings has never been taxed</div><div class="b">Required distributions start in 2047 and your heirs inherit the tax bill on what is left.</div><span class="go">Taxes ${ICON.arrow}</span></span></button>
+      <button class="item r hi" data-go="estate" type="button"><span class="ico">${ICON.x}</span><span><div class="h">No healthcare directive, and your IRA beneficiary is out of date</div><div class="b">Both are quick fixes, and they decide who acts for you and who inherits.</div><span class="go">Estate planning ${ICON.arrow}</span></span></button>
+    </div></div>`
+  +`<div class="sech">Your plan in six questions</div><div class="qgrid">${CH.slice(1).map((c,j)=>`<button class="qcard" data-go="${c.id}" type="button"><span class="t">${c.t}</span><span class="q">${c.q}</span><span class="a">${['Income covers today’s spending with room to spare.','Yes in most markets. The bridge years are the stress point.','Slightly more aggressive than your target for your timeline.','You could pay less over your lifetime by converting early.','About '+money(K.estate)+', but two documents need attention.'][j]}</span><span class="chip ${c.chip[0]}">${c.chip[1]}</span></button>`).join('')}</div>`
+  +nextRow(0);
+}
+
+/* ---------- 2. Budgeting ---------- */
+function vBudget(){
+  const r0=M[0];
+  const inc=M.map(r=>r.work+r.ss+r.rmd);
+  const exp={living:M.map(r=>r.expenses.living),housing:M.map(r=>r.expenses.housing),health:M.map(r=>r.expenses.health),tax:M.map(r=>r.fed+r.irmaa),save:M.map(r=>r.contrib)};
+  const sur=M.map(r=>r.surplus);
+  return head(1,'Where does your money come from, and where does it go?','Where the money goes today, and what changes when the paychecks stop.')
+  +answer(`Your paychecks cover everything today with about ${mo(K.surplus0)} a month to spare, and that flips in 2037 when Luis stops working.`,['Is my retirement budget realistic?'])
+  +card({plain:true,title:'Where does my money go this year?',src:'Lifetime Cash Flow (Sankey)',take:`Of every dollar you earn, <b>${pct(r0.expenses.living/210000)}</b> goes to everyday living and <b>${pct(36000/210000)}</b> to savings.`,
+    draw:h=>sankey(h,{left:[{name:'Maya’s pay',v:115000,color:COL.c1},{name:'Luis’s pay',v:95000,color:COL.c2}],right:[{name:'Everyday living',v:r0.expenses.living,color:COL.c1},{name:'Taxes',v:Math.round(r0.fed),color:COL.c4},{name:'Saving',v:36000,color:COL.c2},{name:'Mortgage',v:26000,color:COL.c5},{name:'Left over',v:Math.round(r0.surplus),color:COL.c3},{name:'Healthcare',v:r0.expenses.health,color:COL.c0}],mid:''})})
+  +strip([{k:'Income this year',v:money(r0.work),d:'two paychecks'},{k:'Spending',v:money(r0.expenses.living+r0.expenses.housing+r0.expenses.health),d:`${mo(r0.expenses.living+r0.expenses.housing+r0.expenses.health)}/mo incl. mortgage`},{k:'Saving rate',v:pct(36000/210000),d:'into 401(k)s and Roth IRAs'},{k:'Left over',v:money(K.surplus0),d:'after everything'}])
+  +insight(`Today your paychecks cover everything with <b>${mo(K.surplus0)} a month</b> spare. The shape of this page changes completely in 2037 — the same spending, none of the income.`)
+  +card({title:'What are my income and expenses over time?',src:'Income & Expenses',take:'Bars are where money goes each year. The line is income before withdrawals from savings; when bars rise above it, savings fill the difference.',
+    draw:h=>tsChart(h,{years:YRS,series:[S('Everyday living',COL.c1,exp.living),S('Mortgage',COL.c5,exp.housing),S('Healthcare',COL.c0,exp.health),S('Taxes',COL.c4,exp.tax),S('Saving',COL.c2,exp.save),S('Income (pay, Social Security, RMDs)',COL.ink,inc,'line',{width:2})],rowLabel:lab,tipTotal:'Total outflows',height:270}),
+    table:()=>tsTable(YRS,[S('Income',0,inc),S('Living',0,exp.living),S('Mortgage',0,exp.housing),S('Healthcare',0,exp.health),S('Taxes',0,exp.tax),S('Saving',0,exp.save)],lab)})
+  +`<div class="grid2">`
+  +card({title:'Which years run a surplus or a gap?',src:'Surplus-Gap',take:`Gaps peak at <b>${money(-peakGap)}</b> in ${peakYear}, before Maya’s Social Security starts, and are funded from savings.`,
+    draw:h=>tsChart(h,{years:YRS,series:[S('Surplus / gap',v=>v>=0?COL.c1:COL.gap,sur,'bar',{hideLegend:true})],rowLabel:lab,height:240,yfmt:v=>money(v)}),
+    table:()=>tsTable(YRS,[S('Surplus / gap',0,sur)],lab)})
+  +card({title:'How does spending change in retirement?',src:'New · compares today with 2041',take:'Saving and the mortgage go away; travel and healthcare go up.',
+    draw:h=>{const r=M.find(x=>x.y===2041);hbars(h,{cats:['Everyday living','Mortgage','Healthcare','Taxes','Saving'],series:[{name:'Today',color:COL.c1,values:[r0.expenses.living,26000,r0.expenses.health,r0.fed,36000]},{name:'In retirement (2041)',color:COL.c3,values:[r.expenses.living,r.expenses.housing,r.expenses.health,r.fed,0]}]});}})
+  +`</div>`
+  +nextRow(1);
+}
+
+/* ---------- 3. Retirement ---------- */
+function vRetire(){
+  const ret=sliceFrom(2036);
+  const ss=M.map(r=>r.ss),work=M.map(r=>r.work),rmd=M.map(r=>r.rmd),wd=M.map(r=>r.wTx+r.wDef+r.wRoth),need=M.map(r=>r.expenses.living+r.expenses.housing+r.expenses.health+r.fed+r.irmaa+r.contrib);
+  const lev=[['Spend 10% less in retirement',`${mo(K.spend*.9)}/mo instead of ${mo(K.spend)}`,LV.spend],['Retire one year later','Luis at 66, Maya at 66',LV.ret1],['Both claim Social Security at 70','instead of 67',LV.ss70],['Spend 5% less and claim at 70','a smaller change on both levers',LV.all]];
+  const scale=v=>Math.max(0,(v-.5)/.5*100);
+  return head(2,'Will your money last as long as you do?','How the plan holds up in good markets and bad, and what moves your odds.')
+  +panelInk((()=>{const lo=90000,hi=140000,x=v=>((v-lo)/(hi-lo)*100).toFixed(1)+'%';
+    return `<div class="pk"><div><div class="big">${pct(K.success)}</div><div class="lb">of 1,000 simulated markets last to 92</div></div>`
+     +`<div><div class="big">${mo(K.spend)}</div><div class="lb">a month, today’s dollars</div></div>`
+     +`<div><div class="big">${money(K.atRetire)}</div><div class="lb">saved by the end of 2039</div></div></div>`
+     +`<div><div class="meter"><div class="zone" style="left:0;width:${x(K.safeLo)};background:rgba(205,239,224,.55)"></div><div class="zone" style="left:${x(K.safeLo)};width:calc(${x(K.safeHi)} - ${x(K.safeLo)});background:#9FDCC2"></div><div class="zone" style="left:${x(K.safeHi)};right:0;background:rgba(251,189,4,.45)"></div><div class="pin" style="left:${x(K.spend)}"><span>Your plan ${mo(K.spend)}</span></div><div class="tick" style="left:${x(K.safeLo)}">${mo(K.safeLo)}</div><div class="tick" style="left:${x(K.safeHi)}">${mo(K.safeHi)}</div></div>`
+     +`<div class="legend"><span><i style="background:rgba(205,239,224,.55)"></i>Very safe (90%+)</span><span><i style="background:#9FDCC2"></i>Safe range</span><span><i style="background:rgba(251,189,4,.45)"></i>Cut back if markets fall</span></div></div>`;})())
+  +insight(`The plan fails in the same place every time it fails: early. <b>Timing beats sacrifice</b> — waiting to claim Social Security does more for your odds than cutting ${mo(K.spend-103500)} a month of spending.`)
+  +answer(`Your savings last to Maya’s age 92 in ${pct(K.success)} of markets, and claiming Social Security at 70 lifts that to ${pct(LV.ss70)}.`,['Should we both wait until 70?'])
+  +card({title:'What is the range of outcomes for my savings?',src:'Monte Carlo Analysis · Retirement Chance of Success',take:`The dark band is the middle half of outcomes. Even the 25th-percentile path ends with <b>${money(P.p25[P.p25.length-1])}</b>; in the weakest 10% of markets, savings end near <b>${money(P.p10[P.p10.length-1])}</b>.`,
+    draw:h=>tsChart(h,{years:YRS,fan:{bands:[{name:'10th–90th percentile',color:COL.fan1,lo:P.p10,hi:P.p90},{name:'25th–75th percentile',color:COL.fan2,lo:P.p25,hi:P.p75}],tip:[{name:'90th percentile',color:COL.fan1,values:P.p90},{name:'75th percentile',color:COL.fan2,values:P.p75},{name:'25th percentile',color:COL.fan2,values:P.p25},{name:'10th percentile',color:COL.fan1,values:P.p10}]},series:[S('Median',COL.c1,P.p50,'line',{width:2.5}),S('Average returns',COL.ink,M.map(r=>r.savings),'line',{dash:'5 4',width:1.8})],vlines:[{y:2037,label:'Luis retires'}],spans:[{from:2037,to:2041,label:'Bridge years'}],rowLabel:lab,height:280}),
+    table:()=>tsTable(YRS,[S('10th',0,P.p10),S('25th',0,P.p25),S('Median',0,P.p50),S('75th',0,P.p75),S('90th',0,P.p90)],lab)})
+  +card({title:'How will my income pay for retirement?',src:'Lifetime Income Projection · What You Need',take:'Bars are where each year’s money comes from. When the line sits above Social Security and RMDs, savings withdrawals make up the rest.',
+    draw:h=>tsChart(h,{years:ret.years,series:[S('Work',COL.c5,ret.sl(work)),S('Social Security',COL.c2,ret.sl(ss)),S('Required distributions',COL.c3,ret.sl(rmd)),S('Savings withdrawals',COL.c1,ret.sl(wd)),S('What you need',COL.ink,ret.sl(need),'line')],spans:[{from:2037,to:2041,label:'Bridge years'}],rowLabel:ret.lab,tipTotal:'Total income',height:270}),
+    table:()=>tsTable(ret.years,[S('Work',0,ret.sl(work)),S('Social Security',0,ret.sl(ss)),S('RMDs',0,ret.sl(rmd)),S('Withdrawals',0,ret.sl(wd)),S('Need',0,ret.sl(need))],ret.lab)})
+  +card({title:'What would raise my odds?',src:'New · What If · Social Security Explorer',take:`Each lever re-runs all 1,000 simulations. Black tick is today’s ${pct(K.success)}.`,
+    draw:h=>{h.innerHTML=lev.map(l=>`<div class="lever"><div class="nm"><b>${l[0]}</b><span>${l[1]}</span></div><div class="bar"><i style="width:${scale(l[2])}%"></i><s style="left:${scale(K.success)}%"></s></div><div class="pct">${pct(l[2])}<small>+${Math.round((l[2]-K.success)*100)} pts</small></div></div>`).join('');}})
+  +card({title:'When should we claim Social Security?',src:'Social Security Explorer',take:'Lifetime benefits to each planning age, in today’s dollars. Waiting to 70 pays the most for both of you because you both plan to live past the break-even age of about 80.',
+    draw:h=>hbars(h,{cats:['Claim at 62','Claim at 67 (plan)','Claim at 70'],series:[{name:'Luis (to 90)',color:COL.c2,values:[38000*.7*29,38000*24,38000*1.24*21]},{name:'Maya (to 92)',color:COL.c1,values:[32000*.7*31,32000*26,32000*1.24*23]}]})})
+  +nextRow(2);
+}
+
+/* ---------- 4. Investments ---------- */
+function vInvest(){
+  const r=sliceFrom(2037);
+  return head(3,'Are you invested the right way for what’s ahead?','Your mix against your target, and how a bad market at the wrong time lands.')
+  +split(`<div class="gap-fig"><div class="k">Stocks today</div><div class="v">62%</div>
+      <div class="bar"><i style="width:62%"></i><s style="left:55%"></s></div>
+      <div class="d">Tick marks your 55% target</div></div>`,
+    `<div class="gap-fig hi"><div class="k">Above target by</div><div class="v">7 pts</div>
+      <div class="d">About ${money(.07*K.sav0)} more in stocks than your risk survey calls for with 11 years to go</div></div>`)
+  +answer(`You hold 62% stocks against a 55% target, and a large drop right as Luis retires is the risk that costs you most.`,['How do I get back to my target?'])
+  +insight(`You are <b>7 points above your stock target</b>. That mattered less while you were saving; it matters most in the four years around Luis retiring, when a drop has no time to recover.`)
+  +`<div class="grid2">`
+  +card({title:'How am I invested today?',src:'Investments: Today',
+    draw:h=>donut(h,{items:[{name:'US stocks',v:48,color:COL.c1,amt:.48*K.sav0},{name:'International stocks',v:14,color:COL.c2,amt:.14*K.sav0},{name:'Bonds',v:26,color:COL.c3,amt:.26*K.sav0},{name:'Cash',v:6,color:COL.c4,amt:.06*K.sav0},{name:'Alternatives & other',v:6,color:COL.c5,amt:.06*K.sav0}],center:{v:money(K.sav0),label:'total invested'},label:'allocation'})})
+  +card({title:'Does my mix match my target?',src:'Investments: Today · risk profile',take:'Target comes from your risk survey, adjusted for 11 years to retirement.',
+    draw:h=>hbars(h,{cats:['Stocks','Bonds','Cash & other'],series:[{name:'Today',color:COL.c1,values:[62,26,12]},{name:'Target',color:COL.c0,values:[55,38,7]}],fmt:v=>v+'%'})})
+  +`</div>`
+  +strip([{k:'Invested today',v:money(K.sav0),d:'14 accounts, 11 linked'},{k:'Pre-tax share',v:pct(K.defShare),d:'401(k)s and traditional IRA'},{k:'Taxable runs out',v:String(K.txbOut),d:'then withdrawals come from pre-tax'}])
+  +card({title:'Where does my money sit, by tax treatment?',src:'Savings (account balances)',take:`Pre-tax accounts carry the plan. Taxable savings are spent first and run out in <b>${K.txbOut}</b>; Roth grows untouched as your last resort and best asset to leave behind.`,
+    draw:h=>tsChart(h,{years:YRS,series:[S('Pre-tax (401k, IRA)',COL.c1,M.map(x=>x.def),'area'),S('Roth',COL.c2,M.map(x=>x.roth),'area'),S('Taxable brokerage',COL.c3,M.map(x=>x.txb),'area'),S('Cash',COL.c4,M.map(x=>x.cash),'area')],rowLabel:lab,tipTotal:'Total savings',height:260}),
+    table:()=>tsTable(YRS,[S('Pre-tax',0,M.map(x=>x.def)),S('Roth',0,M.map(x=>x.roth)),S('Taxable',0,M.map(x=>x.txb)),S('Cash',0,M.map(x=>x.cash))],lab)})
+  +`<div class="grid2">`
+  +card({title:'Which accounts will I draw from, and when?',src:'Withdrawals · Retirement Withdrawals',take:'Taxable first, then pre-tax, with required distributions taking over from 2047.',
+    draw:h=>tsChart(h,{years:r.years,series:[S('Taxable',COL.c3,r.sl(M.map(x=>x.wTx))),S('Pre-tax',COL.c1,r.sl(M.map(x=>x.wDef))),S('Required distributions',COL.c5,r.sl(M.map(x=>x.rmd))),S('Roth',COL.c2,r.sl(M.map(x=>x.wRoth)))],rowLabel:r.lab,tipTotal:'Total',height:240}),
+    table:()=>tsTable(r.years,[S('Taxable',0,r.sl(M.map(x=>x.wTx))),S('Pre-tax',0,r.sl(M.map(x=>x.wDef))),S('RMD',0,r.sl(M.map(x=>x.rmd))),S('Roth',0,r.sl(M.map(x=>x.wRoth)))],r.lab)})
+  +card({title:'What if the market drops the year Luis retires?',src:'Market Risk Explorer',take:`A 28% fall in 2037, with average returns after. Your savings recover but end <b>${money(K.baseEnd-K.crashEnd)}</b> lower.`,
+    draw:h=>tsChart(h,{years:YRS,series:[S('Average returns',COL.c1,M.map(x=>x.savings),'line',{width:2.5}),S('28% drop in 2037',COL.gap,CR.map(x=>x.savings),'line',{width:2.5,dash:'6 4'})],vlines:[{y:2037,label:'Drop'}],spans:[{from:2037,to:2041,label:'No time to recover',color:'rgba(251,80,4,.08)',ink:'#B3261E'}],notes:[{y:2062,v:CR[CR.length-5].savings,text:`${money(K.baseEnd-K.crashEnd)} less at 92`,dy:-26,color:COL.gap}],rowLabel:lab,height:240}),
+    table:()=>tsTable(YRS,[S('Average',0,M.map(x=>x.savings)),S('Drop in 2037',0,CR.map(x=>x.savings))],lab)})
+  +`</div>`
+  +nextRow(3);
+}
+
+/* ---------- 5. Taxes ---------- */
+function vTax(){
+  const r=sliceFrom(2036);
+  return head(4,'Are you paying more tax than you need to?','The brackets you sit in year by year, and what converting early would change.')
+  +bracketRibbon()
+  +insight(`Between ${lowA} and ${lowB} your taxable income all but disappears before required distributions begin. <b>That window is the cheapest tax you will ever pay</b> on money that has never been taxed.`)
+  +strip([{k:'Lifetime federal tax',v:money(K.taxLife),d:'income tax and IRMAA'},{k:'Largest RMD',v:money(K.rmdMax),d:'a year, from 2047'},{k:'Tax your heirs would owe',v:money(END.def*HEIR),d:'on inherited pre-tax money at 24%'}])
+  +answer(`Your retirement income sits in the 10–12% bracket until RMDs push you into 22%, so converting in those quiet years leaves your heirs about ${money(K.afterTaxR-K.afterTax)} more.`,['Walk me through a Roth conversion'])
+  +card({title:'What is my marginal tax bracket each year?',src:'Taxes (tax bracket projection)',take:'The drop after retirement is the opportunity. Converting fills the 12% bracket early and keeps you out of 22% later.',
+    draw:h=>tsChart(h,{years:YRS,series:[S('Current plan',COL.c1,M.map(x=>x.marg),'line',{step:true,width:2.5}),S('With Roth conversions',COL.c4,RC.map(x=>x.marg),'line',{step:true,dash:'6 4',width:2.5})],spans:[{from:2039,to:2042,label:'Conversion years'}],yfmt:v=>pct(v),minY:0,maxY:.25,rowLabel:lab,height:230}),
+    table:()=>tsTable(YRS,[S('Current plan',0,M.map(x=>x.marg)),S('With conversions',0,RC.map(x=>x.marg))],lab,v=>pct(v))})
+  +`<div class="grid2">`
+  +card({title:'How much tax will I pay each year?',src:'Taxes (tax liability projection) · IRMAA',take:'Tax falls by three-quarters when paychecks stop, then rises again with RMDs. Dashed line shows the conversion plan.',
+    draw:h=>tsChart(h,{years:YRS,series:[S('Federal income tax',COL.c1,M.map(x=>x.fed)),S('Medicare IRMAA',COL.c4,M.map(x=>x.irmaa)),S('With conversions',COL.ink,RC.map(x=>x.fed+x.irmaa),'line',{dash:'5 4'})],rowLabel:lab,height:240}),
+    table:()=>tsTable(YRS,[S('Federal',0,M.map(x=>x.fed)),S('IRMAA',0,M.map(x=>x.irmaa)),S('With conversions',0,RC.map(x=>x.fed+x.irmaa))],lab)})
+  +card({title:'How large will my required distributions be?',src:'Required Distributions',take:`RMDs start when Luis turns 75 and top out near <b>${money(K.rmdMax)}</b> a year. Converting first cuts them by half.`,
+    draw:h=>tsChart(h,{years:r.years,series:[S('Current plan',COL.c3,r.sl(M.map(x=>x.rmd))),S('With conversions',COL.ink,r.sl(RC.map(x=>x.rmd)),'line',{width:2})],rowLabel:r.lab,height:240}),
+    table:()=>tsTable(r.years,[S('Current plan',0,r.sl(M.map(x=>x.rmd))),S('With conversions',0,r.sl(RC.map(x=>x.rmd)))],r.lab)})
+  +`</div>`
+  +card({title:'Could a Roth conversion leave me better off?',src:'Roth Conversion Explorer',take:'Convert up to the top of the 12% bracket each year from 2039 through 2042, paying the tax from taxable savings.',
+    draw:h=>{h.innerHTML=`<div class="cmp"><div class="col"><h4>Current plan</h4>
+      <div class="row">Lifetime federal tax<b>${money(K.taxLife)}</b></div><div class="row">Largest RMD<b>${money(K.rmdMax)}</b></div><div class="row">Pre-tax left to heirs<b>${money(END.def)}</b></div><div class="row">Estate after heirs’ tax<b>${money(K.afterTax)}</b></div></div>
+      <div class="col best"><h4>Convert to 12% bracket, 2039–2042 <span class="chip good">Better</span></h4>
+      <div class="row">Lifetime federal tax<b>${money(K.taxLifeR)}</b></div><div class="row">Largest RMD<b>${money(K.rmdMaxR)}</b></div><div class="row">Pre-tax left to heirs<b>${money(ENDR.def)}</b></div><div class="row">Estate after heirs’ tax<b>${money(K.afterTaxR)} <span style="color:var(--good)">(${money(K.afterTaxR-K.afterTax,{sign:true})})</span></b></div></div></div>`;}})
+  +nextRow(4);
+}
+
+/* ---------- 6. Estate ---------- */
+function vEstate(){
+  const endHome=END.home;const ends=MC.paths.map(p=>p[p.length-1]+endHome).sort((a,b)=>a-b);const q=x=>ends[Math.floor(x*ends.length)];
+  return head(5,'What will you leave, and to whom?','What your estate is worth, who it goes to, and which documents are missing.')
+  +card({plain:true,title:'Are my documents and beneficiaries in place?',src:'New · from Document Vault',take:'Three of five are done. The two that are not decide who acts for you and who inherits.',
+    draw:h=>{const d=[['crit','x','Healthcare directives','Not on file','Add'],['crit','x','Maya’s rollover IRA beneficiary','Names her late father','Update'],['good','check','Wills for both of you','Signed 2019 · in your Vault','Review'],['good','check','Durable financial powers of attorney','Signed 2019 · in your Vault','View'],['good','check','401(k) beneficiaries','Each other, then children · confirmed 2025','View']];
+      h.innerHTML=`<div class="docs">${d.map(x=>`<div class="doc"><span class="chip ${x[0]}" style="width:30px;height:30px;padding:0;justify-content:center;border-radius:50%">${ICON[x[1]]}</span><div><div class="h">${x[2]}</div><div class="b">${x[3]}</div></div><button class="tbtn noclick" type="button">${x[4]}</button></div>`).join('')}</div>`;}})
+  +insight(`The money side of your estate is in good shape. The <b>paperwork is not</b> — two documents decide who acts for you and who inherits, and both are an afternoon’s work.`)
+  +strip([{k:'Likely estate at 92',v:money(K.estate),d:'median markets, incl. home'},{k:'Legacy goal',v:'$1M',d:`met in ${pct(K.legacyP)} of simulations`},{k:'Heirs’ tax on pre-tax money',v:money(END.def*HEIR),d:'at an assumed 24% rate'}])
+  +answer(`You are likely to leave more than your $1M goal, but a missing healthcare directive and an out-of-date IRA beneficiary need fixing first.`,['What happens to our home?'])
+  +`<div class="grid2">`
+  +card({title:'How much am I likely to leave?',src:'Estate Planning (net worth at longevity) · Monte Carlo legacy',take:'Estate at Maya’s 92, including the home, across market outcomes.',
+    draw:h=>hbars(h,{cats:['Weak markets (10th)','Below average (25th)','Median','Above average (75th)','Strong markets (90th)'],series:[{name:'Estate value',color:COL.c1,values:[q(.1),q(.25),q(.5),q(.75),q(.9)]}]})})
+  +card({title:'What kind of money will my heirs inherit?',src:'Estate Planning (tax allocation at longevity)',take:'Pre-tax money is taxed as your heirs withdraw it within 10 years. Roth and your home pass tax-free.',
+    draw:h=>hstack(h,{parts:[{name:'Pre-tax',color:COL.c1},{name:'Roth',color:COL.c2},{name:'Taxable & cash',color:COL.c3},{name:'Home',color:COL.c5}],rows:[{name:'Current plan',values:[END.def,END.roth,END.txb+END.cash,END.home]},{name:'With Roth conversions',values:[ENDR.def,ENDR.roth,ENDR.txb+ENDR.cash,ENDR.home]}]})})
+  +`</div>`
+  +nextRow(5);
+}
+
+const VIEWS={first:vFirst,budget:vBudget,retire:vRetire,invest:vInvest,tax:vTax,estate:vEstate};
+
+/* ---------- mount + nav ---------- */
+const main=$('#xpChapters');
+CH.forEach(c=>{const s=document.createElement('section');s.className='view';s.id='v-'+c.id;s.setAttribute('aria-label',c.t);main.appendChild(s);});
+$('#xpNav').innerHTML=CH.map(c=>`<li data-xp="${c.id}"><span class="nav-dot done" aria-hidden="true"></span>${c.t}</li>`).join('');
+const built={},RAILS={};
+/* ---------- motion: replay the chapter's entrance and let the charts draw ---------- */
+const REDUCE=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function play(v){
+  if(REDUCE||!v) return;
+  v.classList.remove('anim'); void v.offsetWidth; v.classList.add('anim');
+  countUp(v);
+}
+/* the stat tiles count to their number rather than simply appearing at it */
+let counters=[];
+function countUp(root){
+  counters.forEach(cancelAnimationFrame); counters=[];
+  root.querySelectorAll('.stat .v, .strip .v, .hero .ring .n, .panel-ink .big, .gap-fig .v, .hero .rows b').forEach((elv,n)=>{
+    const fin=elv.dataset.fin||(elv.dataset.fin=elv.textContent);
+    const m=fin.match(/^([^0-9-]*)(-?[0-9,]*\.?[0-9]+)([^0-9]*)$/);
+    if(!m){elv.textContent=fin;return;}
+    const target=parseFloat(m[2].replace(/,/g,''));
+    const dec=(m[2].split('.')[1]||'').length;
+    /* a year is not a quantity — never roll it */
+    if(!m[1]&&!m[3]&&dec===0&&target>1900&&target<2200){elv.textContent=fin;return;}
+    const t0=performance.now(),D=820,lag=140+n*70;
+    const tick=now=>{
+      const p=Math.max(0,Math.min(1,(now-t0-lag)/D)), e=1-Math.pow(1-p,3);
+      elv.textContent=m[1]+(target*e).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})+m[3];
+      if(p<1)counters.push(requestAnimationFrame(tick)); else elv.textContent=fin;
+    };
+    elv.textContent=m[1]+(0).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})+m[3];
+    counters.push(requestAnimationFrame(tick));
+  });
+}
+function show(id,scroll){
+  if(!VIEWS[id])id='first';
+  const v=$('#v-'+id);
+  document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x===v));
+  if(!built[id]){MOUNTS=[];RAIL='';const html=VIEWS[id]();v.innerHTML=html;RAILS[id]=RAIL;
+    MOUNTS.forEach(m=>{const c=$('#'+m.id);m.draw(c.querySelector('.body'));c._table=m.table;});built[id]=true;}
+  const rail=$('#xpRail'); rail.innerHTML=RAILS[id]||''; stream(rail);
+  play(v);
+  document.body.classList.add('xp-open');
+  document.querySelectorAll('#xpNav li').forEach(b=>b.classList.toggle('active',b.dataset.xp===id));
+  /* the plan page's top level stays above; jump to the chapter, not the page top */
+  if(scroll){var top=v.getBoundingClientRect().top+window.scrollY-88;window.scrollTo({top:Math.max(0,top),behavior:'smooth'});}
+}
+document.addEventListener('click',e=>{
+  const x=e.target.closest('#xpNav [data-xp]');if(x){show(x.dataset.xp,true);return;}
+  const g=e.target.closest('#xpChapters [data-go]');if(g){show(g.dataset.go,true);return;}
+  /* anything else in the plan nav hands the column back to the app */
+  if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-goto], [data-view], [data-ins], [data-key]')) close();
+  const t=e.target.closest('#xpChapters [data-table]');if(t){const c=$('#'+t.dataset.table);const w=c.querySelector('.tablewrap');const on=t.getAttribute('aria-pressed')!=='true';t.setAttribute('aria-pressed',on);
+    if(on&&!w.innerHTML)w.innerHTML=tableHTML(c._table());w.hidden=!on;c.querySelector('.body').hidden=on;}
+});
+function close(){
+  document.body.classList.remove('xp-open');
+  document.querySelectorAll('#xpNav li').forEach(b=>b.classList.remove('active'));
+}
+
+/* chart map modal */
+
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+
+</script>
