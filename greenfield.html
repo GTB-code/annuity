@@ -3573,7 +3573,7 @@ body.mpanel-open{ overflow:hidden; }
     <div class="side-divider" role="presentation"></div>
 
     <div id="sideNav">
-      <div class="group-label" id="myMoneyLabel"><span class="grp-t">Plan inputs</span><button type="button" class="grp-chev" data-grp-chev="in" aria-label="Collapse plan inputs" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <div class="group-label" id="myMoneyLabel"><span class="grp-t">My plan inputs</span><button type="button" class="grp-chev" data-grp-chev="in" aria-label="Collapse My plan inputs" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
       <ul data-grp="in">
         <li data-key="assets"><span class="nav-dot done" aria-hidden="true"></span>Assets</li>
         <li data-key="debts"><span class="nav-dot done" aria-hidden="true"></span>Debts</li>
@@ -3594,7 +3594,7 @@ body.mpanel-open{ overflow:hidden; }
 
       <div class="side-divider ins-div" role="presentation"></div>
       <!-- Explore Plan (replaces the former Plan outputs group; items are filled in by the Explore Plan script) -->
-      <div class="group-label ins-lab"><span class="grp-t">Explore Plan</span><button type="button" class="grp-chev" data-grp-chev="xp" aria-label="Collapse Explore Plan" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <div class="group-label ins-lab"><span class="grp-t">Explore your plan</span><button type="button" class="grp-chev" data-grp-chev="xp" aria-label="Collapse Explore your plan" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
       <ul id="xpNav" data-grp="xp"></ul>
       <a class="side-download" role="button" tabindex="0">Download Plan <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a class="side-download sd-today" role="button" tabindex="0">Download TrueView <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -10468,7 +10468,7 @@ document.addEventListener('click', function(e){
     const sideH1 = document.querySelector('[data-page="plan"] .side h1');
     if(sideH1){ const t=sideH1.querySelector('.side-top-t'); (t||sideH1).textContent = (view==='today') ? 'Today' : 'Plan'; }
     const moneyLbl = document.getElementById('myMoneyLabel');
-    if(moneyLbl){ const mt=moneyLbl.querySelector('.grp-t'); (mt||moneyLbl).textContent = (view==='today') ? 'My Money' : 'Plan inputs'; }
+    if(moneyLbl){ const mt=moneyLbl.querySelector('.grp-t'); (mt||moneyLbl).textContent = (view==='today') ? 'My Money' : 'My plan inputs'; }
     modeLinks.forEach(a=>a.classList.remove('active'));
     if(clickedLink && clickedLink.matches && clickedLink.matches('.topnav nav.modes a')){
       clickedLink.classList.add('active');
@@ -23015,8 +23015,8 @@ body.xp-open .layout.page[data-page="plan"] > .rail > #xpRail{ display:block; }
     var nav=side.querySelector('#sideNav') || side;
     if(!document.getElementById('xpNav')) nav.insertAdjacentHTML('beforeend',
       '<div class="side-divider ins-div" role="presentation"></div>'+
-      '<div class="group-label ins-lab"><span class="grp-t">Explore Plan</span>'+
-      '<button type="button" class="grp-chev" data-grp-chev="xp" aria-label="Collapse Explore Plan" aria-expanded="true">'+
+      '<div class="group-label ins-lab"><span class="grp-t">Explore your plan</span>'+
+      '<button type="button" class="grp-chev" data-grp-chev="xp" aria-label="Collapse Explore your plan" aria-expanded="true">'+
       '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
       '</button></div><ul id="xpNav" data-grp="xp"></ul>');
 
