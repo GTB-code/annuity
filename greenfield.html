@@ -3542,7 +3542,7 @@ body.mpanel-open{ overflow:hidden; }
       <svg class="ic" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 19c.6-3.3 2.9-5 5.5-5s4.9 1.7 5.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 4.5a3 3 0 0 1 0 6M17 13.5c2 .5 3.3 2 3.8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>My Advisory</a>
   </nav>
   <div class="right">
-    <button class="iconbtn alert-btn" id="alertBtn" aria-label="Alerts" data-tip="Coach alerts">
+    <button class="iconbtn alert-btn" id="alertBtn" aria-label="Notifications" data-tip="Notifications">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10182C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
       <span class="alert-count" id="alertCount">3</span>
     </button>
@@ -3556,7 +3556,7 @@ body.mpanel-open{ overflow:hidden; }
 <div class="layout page" data-page="plan">
   <!-- ===== left sidebar ===== -->
   <aside class="side">
-    <h1 class="side-top" role="button" tabindex="0" title="Back to top"><span class="side-top-t">Plan</span><span class="plan-cmp" data-cmp role="button" tabindex="0" aria-label="Compare plans">Compare</span></h1>
+    <h1 class="side-top" role="button" tabindex="0" title="Back to top"><span class="side-top-t">My Plans</span><span class="plan-cmp" data-cmp role="button" tabindex="0" aria-label="Compare plans">Compare</span></h1>
 
     <div class="plan-select" role="radiogroup" aria-label="Active plan">
       <button class="plan-row" type="button" role="radio" aria-checked="true" data-plan="financial">
@@ -10467,7 +10467,7 @@ document.addEventListener('click', function(e){
     else if(view==='plan'){ document.body.classList.add('plan-view'); }
     // the shared planner rail is titled by the mode you're in
     const sideH1 = document.querySelector('[data-page="plan"] .side h1');
-    if(sideH1){ const t=sideH1.querySelector('.side-top-t'); (t||sideH1).textContent = (view==='today') ? 'Today' : 'Plan'; }
+    if(sideH1){ const t=sideH1.querySelector('.side-top-t'); (t||sideH1).textContent = (view==='today') ? 'My Money' : 'My Plans'; }
     const moneyLbl = document.getElementById('myMoneyLabel');
     if(moneyLbl){ const mt=moneyLbl.querySelector('.grp-t'); (mt||moneyLbl).textContent = (view==='today') ? 'My Money' : 'My plan inputs'; }
     modeLinks.forEach(a=>a.classList.remove('active'));
@@ -22574,10 +22574,10 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
 .tm-mex .n{ font-size:15.5px; color:var(--ink); line-height:1.3; }
 .tm-mex .s{ font-size:13px; color:var(--text-tertiary); line-height:1.3; }
 </style>
-<div class="top-menu alert-menu" id="alertMenu" role="dialog" aria-label="Coach alerts">
-  <div class="al-head"><span class="t">Boldin Coach</span><button type="button" class="clear" id="alClear">Mark all read</button></div>
+<div class="top-menu alert-menu" id="alertMenu" role="dialog" aria-label="Notifications">
+  <div class="al-head"><span class="t">Notifications</span><button type="button" class="clear" id="alClear">Mark all read</button></div>
   <div class="al-list" id="alList"></div>
-  <div class="al-foot"><button type="button" data-al-go="today">Open Today →</button></div>
+  <div class="al-foot"><button type="button" data-al-go="today">Open My Money →</button></div>
 </div>
 <script>
 (function(){
