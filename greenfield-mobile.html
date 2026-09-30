@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Boldin - Today</title>
+<title>Boldin - My Money</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
@@ -26,49 +26,88 @@ body{ font-family:var(--font); background:var(--white); color:var(--ink);
 /* ===== top app bar ===== */
 .mtop{ position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; z-index:60;
   display:flex; align-items:center; justify-content:space-between;
-  padding:calc(10px + env(safe-area-inset-top)) 18px 10px; background:var(--white);
+  padding:calc(12px + env(safe-area-inset-top)) 18px 14px; background:var(--white);
   transition:opacity .26s var(--push-ease); }
 body.pushed .mtop{ opacity:0; pointer-events:none; }
 .mtop .brand{ display:flex; align-items:center; }
-.mtop .brand svg{ display:block; height:25px; width:auto; }
+.mtop .brand svg{ display:block; height:32px; width:auto; }
 .mtop .mright{ display:flex; align-items:center; gap:10px; }
-.mtop .mico{ width:38px; height:38px; border-radius:999px; display:flex; align-items:center; justify-content:center;
+.mtop .mico{ width:42px; height:42px; border-radius:999px; display:flex; align-items:center; justify-content:center;
   color:#6E7480; background:var(--white); border:1px solid var(--hairline); }
-.mtop .mava{ width:38px; height:38px; border-radius:999px; background:var(--white); color:#6E7480;
-  border:1px solid var(--hairline); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; }
+.mtop .mico svg{ width:23px; height:23px; }
+.mtop .mava{ width:42px; height:42px; border-radius:999px; background:var(--white); color:#6E7480;
+  border:1px solid var(--hairline); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:600; }
 
 /* ===== root panel (Today) ===== */
-.mroot{ padding:calc(66px + env(safe-area-inset-top)) 18px calc(120px + env(safe-area-inset-bottom));
+.mroot{ padding:calc(82px + env(safe-area-inset-top)) 18px calc(120px + env(safe-area-inset-bottom));
   transition:transform .36s var(--push-ease), opacity .36s var(--push-ease); }
 body.pushed .mroot{ transform:translateX(-24%); opacity:.5; pointer-events:none; }
 
-.mgreet{ font-size:15px; color:var(--text-secondary); }
+.mgreet{ font-size:17px; color:var(--text-secondary); }
+.meye{ font-size:19px; font-weight:600; }
+.mv-ico{ width:38px; height:38px; flex:none; border-radius:12px; background:var(--mint); color:var(--green-cta);
+  display:flex; align-items:center; justify-content:center; }
+.mv-ico svg{ width:19px; height:19px; }
+/* the mobile index (marketing) page */
+.mx-hero{ margin-top:6px; }
+.mx-cta{ display:inline-flex; align-items:center; justify-content:center; height:50px; padding:0 28px;
+  border-radius:999px; background:#0E794E; color:#FFFFFF; border:0; font-family:inherit; font-size:18px; font-weight:600;
+  cursor:pointer; margin-top:20px; }
+.mx-cta:active{ background:#0B5F3D; transform:scale(.98); }
+.mx-proof{ display:block; margin-top:12px; font-size:15px; color:var(--text-tertiary); }
+.mx-proof b{ color:#FBBD04; font-weight:600; letter-spacing:1px; }
+.mx-voices{ margin-top:34px; padding-top:26px; border-top:1px solid var(--hairline); display:flex; flex-direction:column; gap:24px; }
+.mx-q{ font-size:19px; font-weight:500; line-height:1.5; letter-spacing:-0.1px; }
+.mx-who{ display:flex; align-items:center; gap:10px; margin-top:10px; }
+.mx-who .mh-ava{ width:34px; height:34px; font-size:14px; }
+.mx-meta{ font-size:15px; color:var(--text-tertiary); line-height:1.35; }
+.mx-meta b{ display:block; color:var(--ink); font-weight:600; font-size:17px; }
+.mx-note{ margin-top:34px; padding-top:26px; border-top:1px solid var(--hairline); display:flex; gap:13px; align-items:flex-start; }
+.mx-note-p{ font-size:17px; line-height:1.6; }
+.mx-note-a{ margin-top:9px; font-size:15px; font-weight:600; color:var(--text-secondary); }
+.mx-final{ margin-top:34px; padding:26px 0 10px; border-top:1px solid var(--hairline); }
+.mx-final-t{ font-size:21px; font-weight:600; letter-spacing:-0.2px; }
+.mx-final-s{ font-size:17px; color:var(--text-secondary); line-height:1.5; margin-top:6px; }
+.mv-upload{ display:flex; align-items:center; gap:12px; }
+body.vault-open .mv-upload{ position:fixed; left:50%; transform:translateX(-50%);
+  width:calc(100% - 36px); max-width:444px; bottom:calc(168px + env(safe-area-inset-bottom)); z-index:74; }
+/* let the last file clear the fixed bar */
+body.vault-open .msub-body{ padding-bottom:calc(180px + env(safe-area-inset-bottom)); }
+.mv-up-pill{ flex:1; height:54px; border-radius:999px; background:var(--green-cta); color:#FFFFFF; border:0;
+  display:inline-flex; align-items:center; justify-content:center; gap:9px; font-family:inherit; font-size:18px; font-weight:600; cursor:pointer;
+  transition:background .18s ease, transform .1s ease; }
+.mv-up-pill:active{ background:#0B5F3D; transform:scale(.99); }
+.mv-up-cam{ width:54px; height:54px; flex:none; border-radius:999px; background:var(--white); border:1px solid var(--hairline);
+  color:var(--green-cta); display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:background .18s ease, transform .1s ease; }
+.mv-up-cam:active{ background:#F7FCFA; transform:scale(.97); }
 .mhl{ font-size:33px; line-height:1.14; font-weight:500; letter-spacing:-0.3px; margin-top:10px; }
 .mhl-em{ color:#0E794E; font-style:italic; }
 .mhl-gold{ color:#FBBD04; font-style:normal; }
-.msubhead{ font-size:15px; color:var(--text-secondary); line-height:1.5; margin-top:8px; max-width:34ch; }
+.msubhead{ font-size:17px; color:var(--text-secondary); line-height:1.5; margin-top:8px; max-width:34ch; }
 #tabHome .msubhead{ max-width:none; }
 .mai-sub{ max-width:none; }
 .msubhead-today{ max-width:none; }
 .msubhead-opt{ max-width:none; }
+.msubhead-plan{ max-width:none; }
 /* the What's-already-yours card */
 .mcard{ border:1px solid var(--hairline); border-radius:18px; padding:18px 16px 16px; margin-top:20px; background:var(--white); }
-.mcard-t{ font-size:19px; font-weight:600; letter-spacing:-0.2px; }
+.mcard-t{ font-size:21px; font-weight:600; letter-spacing:-0.2px; }
 .mseg{ position:relative; display:grid; grid-template-columns:1fr 1fr 1fr; background:#F2F3F5; border-radius:11px; padding:3px; margin-top:14px; }
 .mseg-thumb{ position:absolute; top:3px; left:3px; width:calc((100% - 6px)/3); height:calc(100% - 6px);
   background:var(--white); border:1px solid var(--hairline); border-radius:9px;
   transition:transform .34s var(--push-ease); }
-.mseg-b{ position:relative; z-index:1; background:none; border:0; font-family:inherit; font-size:13.5px; font-weight:500;
+.mseg-b{ position:relative; z-index:1; background:none; border:0; font-family:inherit; font-size:15.5px; font-weight:500;
   color:var(--text-secondary); padding:8px 0; cursor:pointer; transition:color .2s ease; }
 .mseg-b.on{ color:var(--ink); font-weight:600; }
 .mpanel{ display:none; padding-top:18px; }
 .mpanel.on{ display:block; animation:mpin .3s var(--push-ease); }
 @keyframes mpin{ from{ opacity:0; transform:translateY(5px);} to{ opacity:1; transform:none;} }
 .mfig-row{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
-.mfig{ font:700 34px 'DM Sans',sans-serif; letter-spacing:-1.4px; font-variant-numeric:tabular-nums; }
+.mfig{ font:700 36px 'DM Sans',sans-serif; letter-spacing:-1.4px; font-variant-numeric:tabular-nums; }
 .mfig-green{ color:var(--green-cta); }
-.mdelta{ font:600 13px 'DM Sans',sans-serif; color:var(--green-cta); }
-.mfig-sub{ font-size:13.5px; color:var(--text-tertiary); margin-top:2px; }
+.mdelta{ font:600 15px 'DM Sans',sans-serif; color:var(--green-cta); }
+.mfig-sub{ font-size:15.5px; color:var(--text-tertiary); margin-top:2px; }
 .mstack-bar{ display:flex; gap:3px; height:14px; margin:16px 0 4px; }
 .mstack-bar i{ display:block; border-radius:99px; transform-origin:left; min-width:8px; }
 .c1{ background:var(--teal); } .c2{ background:#1B6B5C; } .c3{ background:#04B477; } .c4{ background:#CDEBDD; }
@@ -76,31 +115,31 @@ body.pushed .mroot{ transform:translateX(-24%); opacity:.5; pointer-events:none;
 .mleg-row{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #F1F2F4; }
 .mleg-row:last-child{ border-bottom:0; }
 .mdot{ width:10px; height:10px; border-radius:3.5px; flex:none; }
-.mleg-t{ flex:1; font-size:14.5px; font-weight:600; display:flex; align-items:baseline; gap:8px; }
-.mleg-s{ font-size:12.5px; font-weight:500; color:var(--text-tertiary); }
-.mleg-v{ font:500 14.5px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; color:var(--text-secondary); }
+.mleg-t{ flex:1; font-size:16.5px; font-weight:600; display:flex; align-items:baseline; gap:8px; }
+.mleg-s{ font-size:14.5px; font-weight:500; color:var(--text-tertiary); }
+.mleg-v{ font:500 16.5px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; color:var(--text-secondary); }
 .mflow{ margin-top:14px; display:flex; flex-direction:column; gap:12px; }
 .mflow-row{ display:flex; align-items:center; gap:10px; }
-.mflow-l{ width:64px; flex:none; font-size:13px; font-weight:600; color:var(--text-secondary); }
+.mflow-l{ width:64px; flex:none; font-size:15px; font-weight:600; color:var(--text-secondary); }
 .mflow-track{ flex:1; height:12px; display:block; }
 .mflow-track i{ display:block; height:100%; border-radius:99px; transform-origin:left; }
 .fin{ background:var(--teal); } .fout{ background:rgba(13,63,74,0.45); } .fkeep{ background:var(--green); }
-.mflow-v{ width:64px; flex:none; text-align:right; font:500 13.5px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; }
+.mflow-v{ width:64px; flex:none; text-align:right; font:500 15.5px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; }
 
 /* ===== Home: the Plan page's discipline. One scale: 33 / 19 / 17 / 13. ===== */
 .mh-sec{ margin-top:30px; }
 .mh-sec-head{ display:flex; align-items:baseline; justify-content:space-between; }
-.mh-sec-t{ font-size:19px; font-weight:600; letter-spacing:-0.2px; }
-.mh-meta{ font:500 13px 'DM Sans',sans-serif; color:var(--text-tertiary); font-variant-numeric:tabular-nums; }
+.mh-sec-t{ font-size:21px; font-weight:600; letter-spacing:-0.2px; }
+.mh-meta{ font:500 15px 'DM Sans',sans-serif; color:var(--text-tertiary); font-variant-numeric:tabular-nums; }
 .mh-viz{ display:block; width:100%; margin:30px 0 2px; background:none; border:0; padding:0; font-family:inherit; cursor:pointer; }
 .mh-viz svg{ display:block; width:100%; height:auto; }
 .mh-viz:active{ transform:scale(.995); }
 .mh-sec .mlist{ margin-top:8px; }
 .mrow-amt.g{ color:var(--green-cta); font-weight:600; }
 .mh-ava{ width:38px; height:38px; flex:none; border-radius:999px; color:#FFFFFF; display:flex; align-items:center; justify-content:center;
-  font-size:13px; font-weight:600; }
+  font-size:15px; font-weight:600; }
 .mh-ava.t{ background:var(--teal); } .mh-ava.g{ background:#0E794E; }
-.mh-link{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:15px; font-weight:600; cursor:pointer; margin-top:14px; }
+.mh-link{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:17px; font-weight:600; cursor:pointer; margin-top:14px; }
 .mh-classes{ display:flex; gap:11px; margin-top:14px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
   margin-left:-18px; margin-right:-18px; padding:0 18px 4px; }
 .mh-classes::-webkit-scrollbar{ display:none; }
@@ -109,16 +148,51 @@ body.pushed .mroot{ transform:translateX(-24%); opacity:.5; pointer-events:none;
 .mh-class:active{ background:#FAFBFC; }
 .mh-thumb{ width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center; color:#FFFFFF; }
 .mh-thumb.t{ background:var(--teal); } .mh-thumb.g{ background:#0E794E; } .mh-thumb.d{ background:#5B8A72; }
-.mh-class-t{ font-size:15px; font-weight:600; line-height:1.35; }
-.mh-class-m{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--text-tertiary); }
+.mh-class-t{ font-size:17px; font-weight:600; line-height:1.35; }
+.mh-class-m{ display:inline-flex; align-items:center; gap:6px; font-size:15px; color:var(--text-tertiary); }
 .mh-class-m .live{ width:7px; height:7px; border-radius:999px; background:#E5484D; display:inline-block; }
 .mh-comm{ display:flex; align-items:center; gap:13px; margin-top:18px; }
 .mh-faces{ display:flex; flex:none; }
 .mh-faces i{ width:28px; height:28px; border-radius:999px; border:2px solid var(--white); margin-left:-8px;
-  color:#FFFFFF; font-style:normal; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  color:#FFFFFF; font-style:normal; font-size:15px; font-weight:600; display:flex; align-items:center; justify-content:center; }
 .mh-faces i:first-child{ margin-left:0; }
 .mh-faces .f1{ background:var(--teal); } .mh-faces .f2{ background:#0E794E; } .mh-faces .f3{ background:#5B8A72; }
 .mh-faces .f4{ background:#FBBD04; color:#10182C; }
+/* ===== Home, ultra-lite: text only, no charts, no images, no motion ===== */
+.ml-intro{ max-width:none; }
+.ml-sec{ margin-top:28px; padding-top:22px; border-top:1px solid var(--hairline); }
+.ml-sec:first-of-type{ border-top:0; padding-top:0; margin-top:24px; }
+.ml-eye{ display:inline-flex; align-items:baseline; gap:8px; font-size:17px; font-weight:600; letter-spacing:-0.1px; }
+.ml-eye b{ font:700 12px 'DM Sans',sans-serif; color:var(--text-tertiary); letter-spacing:1px; }
+.ml-more{ display:inline-flex; align-items:center; gap:4px; font-size:15px; font-weight:600; color:var(--green-cta); cursor:pointer; white-space:nowrap; }
+.ml-fig-row{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-top:12px; }
+.ml-home .mfig{ font-size:32px; letter-spacing:-1.1px; }
+.ml-chip{ font:600 13px 'DM Sans',sans-serif; color:var(--green-cta); background:var(--mint); border-radius:999px; padding:4px 10px; }
+.ml-p{ font-size:16.5px; line-height:1.5; color:var(--text-secondary); margin-top:10px; }
+.ml-p b{ color:var(--ink); font-weight:600; }
+.ml-stat3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:16px; }
+.ml-stat3 > div{ min-width:0; }
+.ml-stat3 .lab{ display:block; font-size:13px; color:var(--text-tertiary); }
+.ml-stat3 b{ display:block; font:700 18px 'DM Sans',sans-serif; letter-spacing:-0.4px; margin-top:2px; font-variant-numeric:tabular-nums; }
+.ml-stat3 b.g{ color:var(--green-cta); font-family:var(--font); letter-spacing:-0.2px; }
+.ml-stat3 i{ display:block; font-style:normal; font-size:12.5px; color:var(--text-tertiary); margin-top:1px; }
+.ml-list{ margin-top:12px; border-top:0; }
+.ml-row{ padding:13px 2px; }
+.ml-row .mrow-t{ font-size:17px; }
+.ml-row .mrow-s{ font-size:14.5px; }
+.ml-row .mrow-amt{ font-size:15.5px; }
+.ml-badge{ flex:none; font:600 13px 'DM Sans',sans-serif; border-radius:999px; padding:4px 10px; white-space:nowrap; }
+.ml-badge.yes{ background:var(--mint); color:var(--green-cta); }
+.ml-badge.maybe{ background:#FFF6D6; color:#8A6A00; }
+.ml-badge.dark{ background:var(--teal); color:#FFFFFF; }
+.ml-quiz{ font-size:15.5px; margin-top:12px; }
+.ml-viz{ display:block; width:100%; margin-top:16px; background:none; border:0; padding:0; font-family:inherit; cursor:pointer; }
+.ml-viz svg{ display:block; width:100%; height:auto; }
+.ml-viz:active{ transform:scale(.995); }
+.ml-legend{ display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:10px; }
+.ml-leg{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--text-secondary); }
+.ml-leg i{ width:9px; height:9px; border-radius:3px; display:inline-block; }
+.ml-leg b{ font:600 13px 'DM Sans',sans-serif; color:var(--ink); font-variant-numeric:tabular-nums; }
 /* ===== Optimize tab ===== *//* ===== Optimize tab ===== */
 .mop-cards{ margin-top:20px; display:flex; flex-direction:column; gap:12px; }
 .mop-card{ display:flex; align-items:center; gap:13px; text-align:left; width:100%;
@@ -129,47 +203,47 @@ body.pushed .mroot{ transform:translateX(-24%); opacity:.5; pointer-events:none;
   display:flex; align-items:center; justify-content:center; }
 .mop-ico svg{ width:21px; height:21px; }
 .mop-txt{ flex:1; min-width:0; }
-.mop-t{ display:flex; align-items:center; gap:7px; font-size:16.5px; font-weight:600; color:var(--ink); }
+.mop-t{ display:flex; align-items:center; gap:7px; font-size:18.5px; font-weight:600; color:var(--ink); }
 .mop-alert{ width:17px; height:17px; border-radius:999px; background:#FBBD04; color:#10182C; font-style:normal;
-  font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
-.mop-s{ display:block; font-size:13px; color:var(--text-secondary); line-height:1.4; margin-top:3px; }
+  font-size:13px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
+.mop-s{ display:block; font-size:15px; color:var(--text-secondary); line-height:1.4; margin-top:3px; }
 .mop-val{ flex:none; text-align:right; display:flex; flex-direction:column; gap:1px; }
-.mop-val b{ font:700 16px 'DM Sans',sans-serif; letter-spacing:-0.3px; color:var(--green-cta); font-variant-numeric:tabular-nums; }
-.mop-val i{ font-style:normal; font-size:11px; color:var(--text-tertiary); }
+.mop-val b{ font:700 18px 'DM Sans',sans-serif; letter-spacing:-0.3px; color:var(--green-cta); font-variant-numeric:tabular-nums; }
+.mop-val i{ font-style:normal; font-size:13px; color:var(--text-tertiary); }
 /* detail widgets */
 .mo-hero{ margin-top:20px; }
-.mo-fig{ font:700 34px 'DM Sans',sans-serif; letter-spacing:-1.4px; font-variant-numeric:tabular-nums; }
+.mo-fig{ font:700 36px 'DM Sans',sans-serif; letter-spacing:-1.4px; font-variant-numeric:tabular-nums; }
 .mo-fig.g{ color:var(--green-cta); }
-.mo-fig-sub{ font-size:13.5px; color:var(--text-tertiary); margin-top:2px; }
+.mo-fig-sub{ font-size:15.5px; color:var(--text-tertiary); margin-top:2px; }
 .mss-rows{ margin-top:20px; display:flex; flex-direction:column; gap:10px; }
 .mss-row{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; font-family:inherit;
   border:1px solid var(--hairline); border-radius:15px; background:var(--white); padding:15px 16px; cursor:pointer;
   transition:border-color .22s ease, background .22s ease; }
 .mss-row.on{ border-color:#0E794E; background:#F7FCFA; }
-.mss-age{ font-size:16px; font-weight:700; width:52px; flex:none; }
-.mss-note{ flex:1; font-size:12.5px; color:var(--text-secondary); }
-.mss-amt{ font:600 16px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; }
-.mss-tag{ display:none; font-size:11px; font-weight:700; color:#FFFFFF; background:#0E794E; border-radius:999px; padding:3px 8px; }
+.mss-age{ font-size:18px; font-weight:700; width:52px; flex:none; }
+.mss-note{ flex:1; font-size:14.5px; color:var(--text-secondary); }
+.mss-amt{ font:600 18px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; }
+.mss-tag{ display:none; font-size:13px; font-weight:700; color:#FFFFFF; background:#0E794E; border-radius:999px; padding:3px 8px; }
 .mss-row.on .mss-tag{ display:inline-block; }
-.mo-note{ margin-top:16px; background:var(--mint); border-radius:13px; padding:13px 15px; font-size:13.5px; line-height:1.5; color:var(--ink); }
+.mo-note{ margin-top:16px; background:var(--mint); border-radius:13px; padding:13px 15px; font-size:15.5px; line-height:1.5; color:var(--ink); }
 .mo-bars{ margin-top:20px; display:flex; flex-direction:column; gap:16px; }
-.mo-bar-l{ font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-bottom:7px; display:flex; justify-content:space-between; }
+.mo-bar-l{ font-size:14.5px; font-weight:600; color:var(--text-secondary); margin-bottom:7px; display:flex; justify-content:space-between; }
 .mo-sbar{ display:flex; gap:3px; height:13px; }
 .mo-sbar i{ display:block; border-radius:99px; transform-origin:left; min-width:6px; }
 .mo-rows{ margin-top:18px; }
 .mo-row{ display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid var(--hairline); }
 .mo-row:last-child{ border-bottom:0; }
 .mo-num{ width:26px; height:26px; flex:none; border-radius:999px; background:#F2F3F5; color:var(--ink);
-  font:700 12.5px 'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; }
-.mo-row-t{ flex:1; font-size:15px; font-weight:600; }
-.mo-row-s{ font-size:12.5px; color:var(--text-tertiary); }
+  font:700 14.5px 'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; }
+.mo-row-t{ flex:1; font-size:17px; font-weight:600; }
+.mo-row-s{ font-size:14.5px; color:var(--text-tertiary); }
 .mo-decs{ display:flex; gap:8px; margin-top:20px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
 .mo-decs::-webkit-scrollbar{ display:none; }
 .mo-dec{ flex:none; border:1px solid var(--hairline); border-radius:13px; padding:10px 13px; text-align:center; }
 .mo-dec.hot{ border-color:#FBBD04; background:#FFFBEE; }
-.mo-dec b{ display:block; font:700 15px 'DM Sans',sans-serif; }
-.mo-dec i{ font-style:normal; font-size:11px; color:var(--text-tertiary); }
-.mo-cta{ display:inline-flex; align-items:center; gap:6px; margin-top:18px; color:var(--green-cta); font-size:14.5px; font-weight:600; cursor:pointer; }
+.mo-dec b{ display:block; font:700 17px 'DM Sans',sans-serif; }
+.mo-dec i{ font-style:normal; font-size:13px; color:var(--text-tertiary); }
+.mo-cta{ display:inline-flex; align-items:center; gap:6px; margin-top:18px; color:var(--green-cta); font-size:16.5px; font-weight:600; cursor:pointer; }
 /* tab switching inside the root */
 .mtab[hidden]{ display:none; }
 .mtab.tab-in{ animation:mtabin .3s var(--push-ease); }
@@ -179,29 +253,62 @@ body.pushed .mroot{ transform:translateX(-24%); opacity:.5; pointer-events:none;
   scrollbar-width:none; padding-bottom:2px; margin-left:-18px; margin-right:-18px; padding-left:18px; padding-right:18px; }
 .mlens-row::-webkit-scrollbar{ display:none; }
 .mlens{ flex:none; border:1px solid var(--hairline); background:var(--white); border-radius:999px;
-  padding:8px 15px; font-family:inherit; font-size:13.5px; font-weight:500; color:var(--text-secondary);
+  padding:11px 19px; font-family:inherit; font-size:16.5px; font-weight:500; color:var(--text-secondary);
   cursor:pointer; transition:background .2s ease, color .2s ease, border-color .2s ease; }
 .mlens.on{ background:var(--teal); border-color:var(--teal); color:#FFFFFF; font-weight:600; }
 .mhl-plan{ min-height:2.28em; }
 .mhl-plan.hl-sw{ opacity:0; transform:translateY(4px); }
 .mhl-plan{ transition:opacity .18s ease, transform .18s ease; }
 /* the plan chart card */
-.mplan-card{ margin-top:18px; }
-.mplan-chart{ margin-top:14px; }
+.mplan-card{ margin-top:16px; }
+/* the 3 stat cards, like desktop */
+.mplan-stats3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; margin-top:16px; }
+.mstat3{ border:1px solid var(--hairline); border-radius:14px; padding:9px 11px; }
+.mstat3 .lab{ font-size:13px; color:var(--text-tertiary); line-height:1.2; }
+.mstat3 .fig{ font:700 20px 'DM Sans',sans-serif; letter-spacing:-0.6px; margin-top:3px; font-variant-numeric:tabular-nums; }
+.mstat3 .sub{ font-size:12px; color:var(--text-tertiary); margin-top:1px; }
+/* chart head: portfolio dropdown + filter */
+.mplan-chead{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.mplan-dd{ display:inline-flex; align-items:center; gap:5px; background:none; border:0; font-family:inherit;
+  font-size:18px; font-weight:700; letter-spacing:-0.3px; color:var(--ink); cursor:pointer; padding:0; }
+.mplan-dd svg{ color:var(--text-secondary); }
+.mplan-filter{ width:34px; height:34px; border-radius:10px; border:1px solid var(--hairline); background:var(--white);
+  color:var(--text-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.mplan-chart{ margin-top:4px; }
 .mplan-chart svg{ display:block; width:100%; height:auto; }
-.mplan-stats{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:14px; padding-top:14px; border-top:1px solid #F1F2F4; }
+.pcgrid{ stroke:#F1F2F4; stroke-width:1; }
+.pcax{ font-size:9px; fill:#9AA0AE; font-family:'DM Sans',sans-serif; }
+/* chips row */
+.mplan-chips{ display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; margin-top:16px; padding-top:16px; border-top:1px solid #F1F2F4; }
+.mchip4{ min-width:0; }
+.mchip4 .lab{ font-size:11px; color:var(--text-tertiary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mchip4 .val{ font:600 15px 'DM Sans',sans-serif; letter-spacing:-0.3px; margin-top:3px; font-variant-numeric:tabular-nums; }
+/* boost your confidence card */
+.mplan-seclabel{ font-size:15px; font-weight:600; color:var(--text-secondary); margin:24px 2px 8px; }
+.mplan-boost{ margin-top:0; }
+.mboost-hd{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.mboost-t{ font-size:17px; font-weight:600; letter-spacing:-0.2px; line-height:1.3; }
+.mboost-badge{ flex:none; font-size:12px; font-weight:700; color:#0E794E; background:var(--mint); border-radius:999px; padding:4px 10px; white-space:nowrap; }
+.mboost-sub{ font-size:13.5px; color:var(--text-secondary); line-height:1.5; margin-top:8px; }
+.mlever{ margin-top:16px; }
+.mlever-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:7px; }
+.mlever-name{ font-size:14.5px; font-weight:500; }
+.mlever-pts{ flex:none; font:700 13px 'DM Sans',sans-serif; color:var(--green-cta); white-space:nowrap; }
+.mlever-bar{ height:7px; border-radius:99px; background:#EEF0F2; overflow:hidden; }
+.mlever-bar i{ display:block; height:100%; border-radius:99px; background:var(--green); transform-origin:left; }
+.mboost-cta{ display:inline-flex; align-items:center; gap:6px; margin-top:18px; color:var(--green-cta); font-size:14.5px; font-weight:600; cursor:pointer; }
 .mps{ display:flex; flex-direction:column; gap:2px; }
-.mps-v{ font:700 17px 'DM Sans',sans-serif; letter-spacing:-0.4px; font-variant-numeric:tabular-nums; }
-.mps-l{ font-size:12px; color:var(--text-tertiary); }
+.mps-v{ font:700 19px 'DM Sans',sans-serif; letter-spacing:-0.4px; font-variant-numeric:tabular-nums; }
+.mps-l{ font-size:14px; color:var(--text-tertiary); }
 /* the section list: rows push detail pages */
 .mlist{ margin-top:26px; border-top:1px solid var(--hairline); }
 .mrow{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:none; border:0;
   border-bottom:1px solid var(--hairline); padding:17px 2px; font-family:inherit; cursor:pointer; }
 .mrow:active{ background:#FAFBFC; }
 .mrow-txt{ flex:1; min-width:0; }
-.mrow-t{ font-size:17px; font-weight:600; color:var(--ink); }
-.mrow-s{ font-size:13px; color:var(--text-tertiary); margin-top:2px; }
-.mrow-amt{ font:500 15px 'DM Sans',sans-serif; color:var(--text-secondary); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.mrow-t{ font-size:19px; font-weight:600; color:var(--ink); }
+.mrow-s{ font-size:15px; color:var(--text-tertiary); margin-top:2px; }
+.mrow-amt{ font:500 17px 'DM Sans',sans-serif; color:var(--text-secondary); font-variant-numeric:tabular-nums; white-space:nowrap; }
 .mrow-chev{ color:#C4C8CF; flex:none; }
 .mrow-chev svg{ display:block; }
 
@@ -213,42 +320,42 @@ body.pushed .msub{ transform:translateX(0); }
 .msub-head{ flex:none; display:flex; align-items:center; gap:4px;
   padding:calc(10px + env(safe-area-inset-top)) 10px 10px; background:var(--white); min-height:58px; box-sizing:border-box; }
 .mback{ display:inline-flex; align-items:center; gap:2px; background:none; border:0; font-family:inherit;
-  font-size:17px; font-weight:500; color:var(--green-cta); cursor:pointer; padding:6px 8px; }
+  font-size:19px; font-weight:500; color:var(--green-cta); cursor:pointer; padding:6px 8px; }
 .mback svg{ display:block; }
 .msub-body{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch;
   padding:6px 18px calc(130px + env(safe-area-inset-bottom)); }
-.msub-title{ font-size:28px; font-weight:700; letter-spacing:-0.4px; }
-.msub-sub{ font-size:14px; color:var(--text-secondary); margin-top:3px; }
+.msub-title{ font-size:30px; font-weight:700; letter-spacing:-0.4px; }
+.msub-sub{ font-size:17px; color:var(--text-secondary); margin-top:3px; }
 .mbucket{ margin-top:24px; }
-.mbucket-label{ font-size:13.5px; font-weight:600; color:var(--green-cta); margin-bottom:2px; }
+.mbucket-label{ font-size:16.5px; font-weight:600; color:var(--text-tertiary); margin-bottom:2px; }
 .macct{ display:flex; align-items:center; justify-content:space-between; gap:12px;
   border-bottom:1px solid var(--hairline); padding:14px 0; }
-.macct-nm{ font-size:16px; font-weight:600; }
-.macct-ty{ font-size:13px; color:var(--text-secondary); margin-top:2px; display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.macct-amt{ font:500 15.5px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.macct-nm{ font-size:19px; font-weight:600; }
+.macct-ty{ font-size:16px; color:var(--text-secondary); margin-top:2px; display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.macct-amt{ font:500 18.5px 'DM Sans',sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap; }
 .mlinked{ display:inline-flex; align-items:center; gap:4px; background:var(--mint); color:var(--green-cta);
-  border-radius:999px; padding:2px 8px; font-size:11.5px; font-weight:600; }
+  border-radius:999px; padding:2px 8px; font-size:14.5px; font-weight:600; }
 .macct-edit{ cursor:pointer; }
 .macct-edit:active{ background:#FAFBFC; }
 .medit{ overflow:hidden; }
 .medit-card{ background:linear-gradient(180deg, rgba(255,231,128,0.04) 0%, rgba(255,231,128,0.16) 100%);
   border:1px solid #EFEFEF; border-radius:18px; padding:18px 16px 20px; margin:8px 0 10px; }
 .medit-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px; }
-.medit-t{ font-size:20px; font-weight:700; letter-spacing:-0.3px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.medit-t{ font-size:22px; font-weight:700; letter-spacing:-0.3px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .medit-x{ width:34px; height:34px; flex:none; border-radius:999px; background:#EFEFEA; border:0; color:var(--ink);
   display:flex; align-items:center; justify-content:center; cursor:pointer; }
 .mf{ position:relative; background:var(--white); border:1px solid #E3E4E6; border-radius:10px; padding:13px 12px 11px; margin-bottom:12px; }
 .mf label{ position:absolute; top:-8px; left:12px; padding:0 6px; background:var(--white); border-radius:4px;
-  font-size:12px; color:var(--text-secondary); line-height:1; }
-.mf input{ width:100%; border:0; background:none; outline:none; font-family:var(--font); font-size:16px; font-weight:500; color:var(--ink); }
+  font-size:14px; color:var(--text-secondary); line-height:1; }
+.mf input{ width:100%; border:0; background:none; outline:none; font-family:var(--font); font-size:18px; font-weight:500; color:var(--ink); }
 .medit-save{ height:44px; padding:0 30px; border-radius:999px; background:#127154; color:#FFFFFF; border:0;
-  font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; margin-top:4px; }
+  font-family:inherit; font-size:17px; font-weight:600; cursor:pointer; margin-top:4px; }
 .medit-save:active{ transform:scale(.98); }
-.madd{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:15px; font-weight:600;
+.madd{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:18px; font-weight:600;
   padding:14px 0 4px; background:none; border:0; font-family:inherit; cursor:pointer; }
 .mempty{ background:#FBFCFD; border-radius:12px; padding:16px; margin-top:8px; }
-.mempty-t{ font-size:15px; font-weight:600; }
-.mempty-s{ font-size:13.5px; color:var(--text-secondary); margin-top:4px; line-height:1.45; }
+.mempty-t{ font-size:18px; font-weight:600; }
+.mempty-s{ font-size:16.5px; color:var(--text-secondary); margin-top:4px; line-height:1.45; }
 
 /* ===== AI screen ===== */
 /* ===== the AI tab ===== */
@@ -258,22 +365,22 @@ body.pushed .msub{ transform:translateX(0); }
 .mai-spark{ color:var(--green); display:inline-flex; animation:msparkle 3.2s ease-in-out infinite; }
 .mai-new{ display:none; align-items:center; gap:5px; margin-left:auto; align-self:center;
   border:1px solid var(--hairline); background:var(--white); border-radius:999px; padding:7px 13px;
-  font-family:inherit; font-size:13px; font-weight:600; color:var(--green-cta); cursor:pointer; }
+  font-family:inherit; font-size:15px; font-weight:600; color:var(--green-cta); cursor:pointer; }
 .mai-new:active{ background:#F7FCFA; transform:scale(.97); }
 body.ai-live .mai-new{ display:inline-flex; }
 @keyframes msparkle{ 0%,100%{ transform:scale(1) rotate(0deg); opacity:1; } 50%{ transform:scale(1.12) rotate(8deg); opacity:.85; } }
 .mai-recents{ margin-top:24px; }
-.mai-rec-label{ font-size:12.5px; font-weight:600; color:var(--text-tertiary); margin-bottom:4px; }
+.mai-rec-label{ font-size:14.5px; font-weight:600; color:var(--text-tertiary); margin-bottom:4px; }
 .mai-rec{ display:flex; align-items:center; gap:11px; width:100%; text-align:left; background:none; border:0;
   border-bottom:1px solid #F1F2F4; padding:13px 2px; font-family:inherit; cursor:pointer; }
 .mai-rec:last-child{ border-bottom:0; }
 .mai-rec:active{ background:#FAFBFC; }
 .mai-rec-dot{ width:8px; height:8px; flex:none; border-radius:999px; background:#D6D9DE; }
 .mai-rec-dot.gold{ background:#FBBD04; }
-.mai-rec-t{ font-size:15px; font-weight:600; color:var(--ink); display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
-.mai-rec-s{ font-size:12.5px; font-weight:500; color:var(--text-tertiary); }
+.mai-rec-t{ font-size:17px; font-weight:600; color:var(--ink); display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+.mai-rec-s{ font-size:14.5px; font-weight:500; color:var(--text-tertiary); }
 .mai-thread{ display:flex; flex-direction:column; gap:14px; margin-top:22px; }
-.mai-msg{ font-size:16px; line-height:1.5; max-width:60ch; }
+.mai-msg{ font-size:18px; line-height:1.5; max-width:60ch; }
 .mai-msg .w{ opacity:0; animation:mwin .3s ease forwards; display:inline; }
 @keyframes mwin{ to{ opacity:1; } }
 .mai-msg.user{ align-self:flex-end; background:var(--teal); color:#FFFFFF; border-radius:16px 16px 4px 16px;
@@ -284,24 +391,24 @@ body.ai-live .mai-new{ display:inline-flex; }
 @keyframes mth{ 0%,100%{ opacity:.35; transform:translateY(0);} 50%{ opacity:1; transform:translateY(-3px);} }
 /* the agent run card */
 .magr{ border:1px solid var(--hairline); border-radius:16px; padding:15px 16px; }
-.magr-h{ display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; }
+.magr-h{ display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; }
 .magr-h svg{ color:var(--green); }
 .magr-steps{ margin-top:11px; display:flex; flex-direction:column; gap:9px; }
-.magr-step{ display:flex; align-items:flex-start; gap:9px; font-size:13.5px; color:var(--text-secondary); line-height:1.4;
+.magr-step{ display:flex; align-items:flex-start; gap:9px; font-size:15.5px; color:var(--text-secondary); line-height:1.4;
   opacity:0; transform:translateY(5px); transition:opacity .3s ease, transform .3s cubic-bezier(0.22,1,0.36,1); }
 .magr-step.on{ opacity:1; transform:none; }
 .magr-step svg{ width:15px; height:15px; flex:none; margin-top:1.5px; color:#04B477; }
 .magr-foot{ margin-top:13px; padding-top:12px; border-top:1px solid #F1F2F4; display:flex; align-items:center; justify-content:space-between; gap:10px;
   opacity:0; transition:opacity .35s ease; }
 .magr-foot.on{ opacity:1; }
-.magr-rcpt{ font:500 12px 'DM Sans',sans-serif; color:var(--text-tertiary); letter-spacing:.02em; }
-.magr-done{ font-size:11.5px; font-weight:700; color:#0E794E; background:var(--mint); border-radius:999px; padding:4px 10px; }
-.magr-note{ margin-top:9px; font-size:11.5px; color:var(--text-tertiary); line-height:1.45; opacity:0; transition:opacity .35s ease; }
+.magr-rcpt{ font:500 14px 'DM Sans',sans-serif; color:var(--text-tertiary); letter-spacing:.02em; }
+.magr-done{ font-size:13.5px; font-weight:700; color:#0E794E; background:var(--mint); border-radius:999px; padding:4px 10px; }
+.magr-note{ margin-top:9px; font-size:13.5px; color:var(--text-tertiary); line-height:1.45; opacity:0; transition:opacity .35s ease; }
 .magr-note.on{ opacity:1; }
 /* chips: rise in from the bottom, pinned low on the empty state */
 .mai-chips2{ margin-top:auto; padding-top:26px; display:flex; flex-direction:column; gap:10px; align-items:flex-start; }
 .mai-chip{ border:1px solid var(--hairline); background:var(--white); border-radius:999px;
-  padding:11px 16px; font-family:inherit; font-size:15px; color:var(--ink); cursor:pointer; text-align:left; }
+  padding:11px 16px; font-family:inherit; font-size:17px; color:var(--ink); cursor:pointer; text-align:left; }
 .mai-chip:active{ background:#F7F8F9; transform:scale(.98); }
 body.ai-live .mai-chips2, body.ai-live .mai-recents, body.ai-live .mai-sub{ display:none; }
 /* the ask bar, shown on the AI tab only */
@@ -314,22 +421,114 @@ body.ai-tab .mai-bar2{ display:flex; }
   color:var(--text-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer;
   transition:transform .28s cubic-bezier(0.22,1,0.36,1); }
 .mai-plus.open{ transform:rotate(45deg); }
-.mai-bar2 input{ flex:1; min-width:0; border:0; background:none; outline:none; font-family:var(--font); font-size:16px; color:var(--ink); }
+.mai-bar2 input{ flex:1; min-width:0; border:0; background:none; outline:none; font-family:var(--font); font-size:18px; color:var(--ink); }
 .mai-send{ width:34px; height:34px; flex:none; border-radius:999px; background:var(--green-cta); color:#FFFFFF;
   border:0; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 /* the + sheet springs up above the bar */
 .mai-sheet{ position:fixed; left:50%; transform:translateX(-50%); width:calc(100% - 36px); max-width:444px;
-  bottom:calc(148px + env(safe-area-inset-bottom)); z-index:73;
+  bottom:calc(146px + env(safe-area-inset-bottom)); z-index:73;
   background:var(--white); border:1px solid var(--hairline); border-radius:18px; padding:6px;
   transform-origin:bottom left; }
 .mai-sheet[hidden]{ display:none; }
 .mai-sheet.spring{ animation:msheet .32s cubic-bezier(0.22,1,0.36,1); }
 @keyframes msheet{ from{ opacity:0; transform:translateX(-50%) translateY(10px) scale(.96); } to{ opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }
 .mai-sheet-row{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:0;
-  font-family:inherit; font-size:14.5px; font-weight:500; color:var(--ink); padding:13px 12px; border-radius:12px; cursor:pointer; }
+  font-family:inherit; font-size:16.5px; font-weight:500; color:var(--ink); padding:13px 12px; border-radius:12px; cursor:pointer; }
 .mai-sheet-row:active{ background:#F6F7F8; }
 .mai-sheet-row svg{ color:var(--text-secondary); flex:none; }
 .mai-sheet-div{ height:1px; background:#F1F2F4; margin:2px 10px; }
+/* ===== the hamburger menu ===== */
+/* the scrim behind the slide-over */
+.mmenu-scrim{ position:fixed; inset:0; z-index:84; background:rgba(16,24,44,0.32);
+  opacity:0; pointer-events:none; transition:opacity .32s var(--push-ease); }
+body.menu-open .mmenu-scrim{ opacity:1; pointer-events:auto; }
+/* the drawer slides in from the right, full height, like an iOS sheet */
+.mmenu{ position:fixed; top:0; right:0; height:100%; width:82%; max-width:340px; z-index:85;
+  background:var(--white); box-sizing:border-box;
+  padding:calc(20px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom));
+  transform:translateX(100%); transition:transform .34s var(--push-ease);
+  display:flex; flex-direction:column; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+body.menu-open #mmenu{ transform:translateX(0); }
+.mmenu-hd{ display:flex; align-items:center; justify-content:space-between; padding:2px 8px 12px; }
+.mmenu-title{ font-size:22px; font-weight:700; letter-spacing:-0.3px; }
+.mmenu-close{ width:38px; height:38px; flex:none; border-radius:999px; background:#F2F3F5; border:0; color:var(--ink);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.mmenu-row{ display:flex; align-items:center; gap:13px; width:100%; text-align:left; background:none; border:0;
+  font-family:inherit; font-size:17px; font-weight:500; color:var(--ink); padding:14px 8px; border-radius:12px; cursor:pointer; }
+.mmenu-row:active{ background:#F6F7F8; }
+.mmenu-row svg{ width:20px; height:20px; flex:none; color:var(--text-secondary); }
+.mmenu-div{ height:1px; background:#F1F2F4; margin:6px 8px; }
+.mmenu-sp{ flex:1; }
+.mmenu-out{ color:#B4231F; }
+.mmenu-out svg{ color:#B4231F; }
+@media (prefers-reduced-motion: reduce){ .mmenu, .mmenu-scrim{ transition:none; } }
+/* profile row at the head of the More menu, like desktop */
+.mmenu-me{ gap:11px; padding:10px 8px; }
+.mmenu-av{ flex:none; width:40px; height:40px; border-radius:999px; background:#F5F1E8; color:var(--teal);
+  display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600; }
+.mmenu-mex{ display:flex; flex-direction:column; min-width:0; }
+.mmenu-mex .n{ font-size:17px; font-weight:600; color:var(--ink); line-height:1.3; }
+.mmenu-mex .s{ font-size:14px; color:var(--text-tertiary); line-height:1.3; }
+/* the bell and its count */
+.malert-btn{ position:relative; }
+.malert-count{ position:absolute; top:-4px; right:-5px; width:21px; height:21px; border-radius:50%;
+  background:#9F1D1D; color:#FFFFFF; font:600 12px 'DM Sans',sans-serif; line-height:1; display:flex; align-items:center; justify-content:center;
+  border:2px solid var(--white); font-variant-numeric:tabular-nums; }
+.malert-count[hidden]{ display:none; }
+/* the alerts drawer reuses the menu shell */
+body.alerts-open .mmenu-scrim{ opacity:1; pointer-events:auto; }
+body.alerts-open .malerts{ transform:translateX(0); }
+.mal-clear{ align-self:flex-start; background:none; border:0; font-family:inherit; font-size:15px; font-weight:600;
+  color:var(--green-cta); padding:0 8px 8px; cursor:pointer; }
+.mal-list{ display:flex; flex-direction:column; }
+.mal-row{ display:flex; gap:12px; width:100%; text-align:left; border:0; background:none; font-family:inherit;
+  padding:13px 8px; border-radius:12px; cursor:pointer; }
+.mal-row:active{ background:#F6F7F8; }
+.mal-ic{ flex:none; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:#F5F1E8; color:var(--green-cta); margin-top:1px; }
+.mal-ic svg{ width:17px; height:17px; }
+.mal-ic.warn{ background:#FFF6E3; color:#8A6212; }
+.mal-ic.teal{ background:#E3EEF0; color:var(--teal); }
+.mal-bd{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.mal-t{ font-size:16px; font-weight:600; color:var(--ink); line-height:1.35; }
+.mal-s{ font-size:14.5px; color:var(--text-secondary); line-height:1.45; margin-top:3px; }
+.mal-w{ font-size:13px; color:var(--text-tertiary); margin-top:5px; }
+.mal-new{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--green); margin-top:8px; }
+.mal-row.read .mal-new{ background:transparent; }
+.mal-row.read .mal-t{ color:var(--text-secondary); font-weight:500; }
+/* ===== the stat detail modal (mirrors desktop sx-modal) ===== */
+.msx{ position:fixed; inset:0; z-index:90; }
+.msx[hidden]{ display:none; }
+.msx-scrim{ position:absolute; inset:0; background:rgba(16,24,44,0.34); opacity:0; transition:opacity .3s var(--push-ease); }
+.msx.on .msx-scrim{ opacity:1; }
+.msx-sheet{ position:absolute; left:0; right:0; bottom:0; margin:0 auto; width:100%; max-width:480px;
+  max-height:92%; overflow-y:auto; -webkit-overflow-scrolling:touch; background:var(--white);
+  border-radius:24px 24px 0 0; padding:10px 20px calc(28px + env(safe-area-inset-bottom));
+  transform:translateY(100%); transition:transform .38s var(--push-ease); }
+.msx.on .msx-sheet{ transform:translateY(0); }
+.msx-grip{ width:38px; height:5px; border-radius:99px; background:#D6D9DE; margin:2px auto 14px; }
+.msx-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
+.msx-title{ font-size:15px; color:var(--text-secondary); font-weight:500; }
+.msx-fig{ font:700 34px 'DM Sans',sans-serif; letter-spacing:-1px; color:var(--green-cta); margin-top:2px; line-height:1.1; font-variant-numeric:tabular-nums; }
+.msx-sub{ font-size:14px; color:var(--text-secondary); margin-top:6px; line-height:1.45; }
+.msx-x{ width:36px; height:36px; flex:none; border-radius:999px; background:#F2F3F5; border:0; color:var(--ink);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.msx-chart{ margin:18px 0 4px; }
+.msx-chart svg{ display:block; width:100%; height:auto; }
+.msx-note{ font-size:13px; color:var(--text-tertiary); line-height:1.5; margin-top:8px; }
+.msx-sec{ margin-top:22px; }
+.msx-sec-label{ font-size:12.5px; font-weight:700; letter-spacing:0.02em; text-transform:none; color:var(--text-tertiary); margin-bottom:10px; }
+.msx-item{ display:flex; gap:11px; align-items:flex-start; padding:2px 0 12px; }
+.msx-dot{ width:7px; height:7px; border-radius:999px; background:var(--green); flex:none; margin-top:7px; }
+.msx-num{ width:22px; height:22px; flex:none; border-radius:999px; background:var(--mint); color:var(--green-cta);
+  font:700 12px 'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; }
+.msx-it-t{ font-size:15px; font-weight:600; line-height:1.35; }
+.msx-it-t .gain{ color:var(--green-cta); font-weight:700; margin-left:6px; font-size:13.5px; }
+.msx-it-s{ font-size:13.5px; color:var(--text-secondary); line-height:1.5; margin-top:3px; }
+.msx-it-s b{ font-weight:600; color:var(--ink); }
+.msx-link{ display:inline-flex; align-items:center; gap:5px; margin-top:6px; color:var(--green-cta); font-size:13.5px; font-weight:600; cursor:pointer; }
+.msx-learn{ display:inline-flex; align-items:center; gap:6px; margin-top:22px; color:var(--green-cta); font-size:14.5px; font-weight:600; cursor:pointer; }
+@media (prefers-reduced-motion: reduce){ .msx-scrim, .msx-sheet{ transition:none; } }
 /* ===== the simulated iOS keyboard ===== */
 .mkb{ position:fixed; left:50%; transform:translateX(-50%) translateY(102%); width:100%; max-width:480px;
   bottom:0; z-index:80; background:#D6D9DE; padding:8px 4px calc(10px + env(safe-area-inset-bottom));
@@ -339,15 +538,15 @@ body.kb-open .mkb{ transform:translateX(-50%) translateY(0); }
 .mkb-row:last-child{ margin-bottom:0; }
 .mkb-row2{ padding:0 20px; }
 .mkb-k{ flex:1; height:43px; border:0; border-radius:6px; background:var(--white);
-  border-bottom:1px solid #9AA0AB; font-family:inherit; font-size:19px; font-weight:400; color:var(--ink);
+  border-bottom:1px solid #9AA0AB; font-family:inherit; font-size:21px; font-weight:400; color:var(--ink);
   cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center; }
 .mkb-k:active{ background:#EDEFF2; }
-.mkb-fn{ background:#B4BAC4; flex:1.4; font-size:14px; }
+.mkb-fn{ background:#B4BAC4; flex:1.4; font-size:16px; }
 .mkb-fn:active{ background:#A5ACB8; }
 .mkb.caps .mkb-k:not(.mkb-fn):not(.mkb-space):not(.mkb-return){ text-transform:uppercase; }
 .mkb.caps .mkb-k[data-k="shift"]{ background:var(--white); color:var(--ink); }
-.mkb-space{ flex:4.6; font-size:15px; }
-.mkb-return{ flex:2; background:#0E794E; border-bottom-color:#0B5F3D; color:#FFFFFF; font-size:15px; font-weight:600; }
+.mkb-space{ flex:4.6; font-size:17px; }
+.mkb-return{ flex:2; background:#0E794E; border-bottom-color:#0B5F3D; color:#FFFFFF; font-size:17px; font-weight:600; }
 .mkb-return:active{ background:#0B5F3D; }
 /* the ask bar rides up above the keyboard */
 .mai-bar2{ transition:transform .32s var(--push-ease), border-color .25s ease; }
@@ -364,14 +563,31 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
 .mnav button{ background:none; border:0; padding:6px 12px; cursor:pointer; color:#6E7268; display:flex; }
 .mnav button.on{ color:var(--green-cta); }
 .mnav svg{ display:block; width:31px; height:31px; }
+/* the AI sparkle: a living green aura swells continuously (never a hard pulse),
+   and the small accent star twinkles, matching the desktop ask-bar sparkle. */
+.mnav button[data-tab="ai"]{ color:#6E7268; }
+.mnav .mai-spk .sp-body{ animation:mnav-aura 5.5s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.mnav .mai-spk .sp-tw{ transform-box:fill-box; transform-origin:center; fill:#5FA8F0; animation:mnav-tw 5.5s ease-in-out infinite; animation-delay:-1.2s; }
+@keyframes mnav-aura{
+  0%{ filter:drop-shadow(0 0 0px rgba(95,168,240,0)); }
+  50%{ filter:drop-shadow(0 0 5px rgba(95,168,240,.8)); }
+  100%{ filter:drop-shadow(0 0 0px rgba(95,168,240,0)); }
+}
+@keyframes mnav-tw{
+  0%,100%{ opacity:.5; transform:scale(0.9); }
+  40%{ opacity:1; transform:scale(1.2); }
+  70%{ opacity:.7; transform:scale(1); }
+}
+body.ai-tab .mnav .mai-spk .sp-body, body.ai-tab .mnav .mai-spk .sp-tw{ animation:none; }
+@media (prefers-reduced-motion: reduce){ .mnav .mai-spk .sp-body, .mnav .mai-spk .sp-tw{ animation:none; } }
 
 /* the fade behind the nav: content scrolls away beneath it */
-.mnav-fade{ position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px;
-  height:calc(150px + env(safe-area-inset-bottom)); z-index:68; pointer-events:none;
-  background:linear-gradient(to top, #FFFFFF 0%, #FFFFFF 45%, rgba(255,255,255,0.9) 68%, rgba(255,255,255,0) 100%); }
+.mnav-fade{ position:fixed; left:50%; transform:translateX(-50%); bottom:-60px; width:100%; max-width:480px;
+  height:calc(210px + env(safe-area-inset-bottom)); z-index:68; pointer-events:none;
+  background:linear-gradient(to top, #FFFFFF 0%, #FFFFFF 70%, rgba(255,255,255,0.92) 85%, rgba(255,255,255,0) 100%); }
 /* a light "coming next" toast for the other tabs */
 .mtoast{ position:fixed; left:50%; transform:translateX(-50%) translateY(8px); bottom:calc(92px + env(safe-area-inset-bottom));
-  background:var(--ink); color:#FFFFFF; font-size:13.5px; font-weight:500; border-radius:999px; padding:9px 16px;
+  background:var(--ink); color:#FFFFFF; font-size:15.5px; font-weight:500; border-radius:999px; padding:9px 16px;
   opacity:0; pointer-events:none; transition:opacity .22s ease, transform .22s ease; z-index:80; white-space:nowrap; }
 .mtoast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
@@ -395,96 +611,113 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
     </svg>
   </span>
   <span class="mright">
+    <button class="mico malert-btn" id="malertBtn" aria-label="Alerts"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg><span class="malert-count" id="malertCount">3</span></button>
     <button class="mico" aria-label="File vault"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="12" cy="12" r="3.2"/><path d="M12 10.4v1.6l1.1 1.1" stroke-linecap="round"/></svg></button>
-    <span class="mava">ML</span>
     <button class="mico" aria-label="More"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></button>
   </span>
 </header>
 
 <main class="mroot" id="mroot">
-<div class="mtab" id="tabHome">
-  <div class="mgreet" id="mhGreet">Good afternoon, Marshall</div>
-  <h1 class="mhl">Confidence <em class="mhl-gold" id="mhNum">87</em>, on track for <em class="mhl-em">December 2028.</em></h1>
-  <p class="msubhead">Funded to age 99, peaking at $2.16M in 2056.</p>
+<div class="mtab ml-home" id="tabHome">
+  <div class="mgreet meye" id="mhGreet">Good afternoon, Marshall</div>
+  <p class="msubhead ml-intro">On track for 2045, and getting steadier every quarter.</p>
 
-  <button class="mh-viz" id="mhViz" type="button" aria-label="See the plan">
-    <svg viewBox="0 0 360 196" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif" aria-hidden="true">
-      <defs>
-        <linearGradient id="mhLine" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#0D3F4A"/>
-          <stop offset="52%" stop-color="#0E794E"/>
-          <stop offset="78%" stop-color="#04B477"/>
-          <stop offset="100%" stop-color="#04B477"/>
-        </linearGradient>
-        <linearGradient id="mhArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#04B477" stop-opacity="0.26"/>
-          <stop offset="62%" stop-color="#04B477" stop-opacity="0.07"/>
-          <stop offset="100%" stop-color="#04B477" stop-opacity="0"/>
-        </linearGradient>
-        <radialGradient id="mhHalo">
-          <stop offset="0%" stop-color="#FBBD04" stop-opacity="0.4"/>
-          <stop offset="100%" stop-color="#FBBD04" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <path id="mhAreaP" d="M8,140 C 60,128 100,112 140,88 C 180,64 216,44 252,38 C 278,34 300,44 320,60 C 334,72 346,82 352,92 L352,168 L8,168 Z" fill="url(#mhArea)" opacity="0"/>
-      <path id="mhLineP" d="M8,140 C 60,128 100,112 140,88 C 180,64 216,44 252,38 C 278,34 300,44 320,60 C 334,72 346,82 352,92" fill="none" stroke="url(#mhLine)" stroke-width="3" stroke-linecap="round" pathLength="1"/>
-      <line x1="8" y1="168" x2="352" y2="168" stroke="#E7E9EC" stroke-width="1.5"/>
-      <g id="mhPt" opacity="0">
-        <line x1="252" y1="44" x2="252" y2="168" stroke="#E7E9EC" stroke-width="1.2" stroke-dasharray="3 4"/>
-        <g class="mh-halo" style="transform-box:fill-box; transform-origin:center;"><circle cx="252" cy="38" r="20" fill="url(#mhHalo)"/></g>
-        <circle cx="252" cy="38" r="6" fill="#FBBD04" stroke="#FFFFFF" stroke-width="2.5"/>
-        <text x="252" y="18" font-size="12.5" font-weight="700" fill="#0E794E" text-anchor="middle">Peak $2.16M &#183; 2056</text>
-      </g>
-      <text x="8" y="188" font-size="11" fill="#9AA0AE">Today</text>
-      <text x="352" y="188" font-size="11" fill="#9AA0AE" text-anchor="end">Age 99</text>
-    </svg>
-  </button>
-
-  <section class="mh-sec">
-    <div class="mh-sec-head"><span class="mh-sec-t" style="color:var(--green-cta)">Your next best moves</span></div>
-    <div class="mlist">
-      <button class="mrow" type="button" data-go="opt-ss"><span class="mrow-txt"><span class="mrow-t">Claim Social Security at 70</span><span class="mrow-s" style="display:block">Guaranteed, inflation-adjusted, for life</span></span><span class="mrow-amt g">+$760/mo</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
-      <button class="mrow" type="button" data-go="opt-tax"><span class="mrow-txt"><span class="mrow-t">Fill the December Roth window</span><span class="mrow-s" style="display:block">The first closes December 31, 2029</span></span><span class="mrow-amt g">$61,000</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+  <!-- 01 My Money -->
+  <section class="mh-sec ml-sec">
+    <div class="mh-sec-head"><span class="ml-eye"><b>01</b>My Money</span><a class="ml-more" data-go="tab:today">Accounts <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M9 5.5l6.5 6.5L9 18.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+    <div class="ml-fig-row"><span class="mfig">$620,000</span><span class="mdelta">&#9650; $18.4k this quarter</span></div>
+    <div class="mfig-sub">Net worth today</div>
+    <button class="ml-viz" type="button" data-go="tab:today" aria-label="See your accounts">
+      <svg class="ml-tmap" viewBox="0 0 344 150" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="166.6" height="102.0" rx="6" fill="#0E8FA8"/>
+      <text x="9.5" y="18.5" font-size="11.5" font-weight="600" fill="#FFFFFF">401(k)</text>
+      <text x="9.5" y="34.5" font-size="12.5" font-weight="700" fill="#FFFFFF" opacity=".92">$214K</text>
+      <rect x="171.1" y="1.5" width="54.1" height="102.0" rx="6" fill="#43A8BB"/>
+      <text x="178.1" y="56.5" font-size="11.5" font-weight="700" fill="#10182C">$72K</text>
+      <rect x="228.2" y="1.5" width="114.3" height="102.0" rx="6" fill="#FB5004"/>
+      <text x="236.2" y="18.5" font-size="11.5" font-weight="600" fill="#FFFFFF">Home equity</text>
+      <text x="236.2" y="34.5" font-size="12.5" font-weight="700" fill="#FFFFFF" opacity=".92">$148K</text>
+      <rect x="1.5" y="106.5" width="128.3" height="42.0" rx="6" fill="#0FA36F"/>
+      <text x="9.5" y="123.5" font-size="11.5" font-weight="600" fill="#FFFFFF">Brokerage</text>
+      <text x="9.5" y="139.5" font-size="12.5" font-weight="700" fill="#FFFFFF" opacity=".92">$71K</text>
+      <rect x="132.8" y="106.5" width="87.6" height="42.0" rx="6" fill="#44B78F"/>
+      <text x="140.8" y="123.5" font-size="11.5" font-weight="600" fill="#10182C">Cash</text>
+      <text x="140.8" y="139.5" font-size="12.5" font-weight="700" fill="#10182C" opacity=".92">$49K</text>
+      <rect x="223.4" y="106.5" width="93.2" height="42.0" rx="6" fill="#BC0278"/>
+      <text x="231.4" y="123.5" font-size="11.5" font-weight="600" fill="#FFFFFF">Roth IRA</text>
+      <text x="231.4" y="139.5" font-size="12.5" font-weight="700" fill="#FFFFFF" opacity=".92">$52K</text>
+      <rect x="319.6" y="106.5" width="22.9" height="42.0" rx="6" fill="#CB3A96"/>
+      <text x="331.1" y="131.0" font-size="10" font-weight="700" fill="#10182C" text-anchor="middle">HSA</text>
+      </svg>
+    </button>
+    <div class="ml-legend"><span class="ml-leg"><i style="background:#0E8FA8"></i>Tax-deferred <b>$286K</b></span><span class="ml-leg"><i style="background:#FB5004"></i>Real estate <b>$148K</b></span><span class="ml-leg"><i style="background:#0FA36F"></i>Taxable <b>$120K</b></span><span class="ml-leg"><i style="background:#BC0278"></i>Tax-free <b>$66K</b></span></div>
+    <div class="ml-stat3">
+      <div><span class="lab">Income</span><b>$11,300</b><i>a month, after tax</i></div>
+      <div><span class="lab">Spending</span><b>$6,450</b><i>12-mo avg $6,180</i></div>
+      <div><span class="lab">Wellness</span><b class="g">Excelling</b><i>88 of 100</i></div>
     </div>
   </section>
 
-  <section class="mh-sec">
-    <div class="mh-sec-head"><span class="mh-sec-t">Real people, when you want them</span></div>
-    <div class="mlist">
-      <button class="mrow" type="button" data-toast="Booking lands next in the mobile build"><span class="mh-ava t">RO</span><span class="mrow-txt"><span class="mrow-t">Advice from a CFP&#174;</span><span class="mrow-s" style="display:block">Renee Okafor reads your plan before you meet</span></span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
-      <button class="mrow" type="button" data-toast="Coaching signup lands next in the mobile build"><span class="mh-ava g">DP</span><span class="mrow-txt"><span class="mrow-t">Coaching</span><span class="mrow-s" style="display:block">Eight-week cohorts that turn the plan into habits</span></span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+  <!-- 02 My Plans -->
+  <section class="mh-sec ml-sec">
+    <div class="mh-sec-head"><span class="ml-eye"><b>02</b>My Plans</span><a class="ml-more" data-go="tab:plan">Compare <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M9 5.5l6.5 6.5L9 18.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+    <div class="ml-fig-row"><span class="mfig">Retiring 2045</span><span class="ml-chip">Baseline &#183; On track</span></div>
+    <button class="ml-viz" type="button" data-go="tab:plan" aria-label="See the plan">
+      <svg class="ml-graph" viewBox="0 0 344 120" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif" aria-hidden="true">
+        <defs><linearGradient id="mlArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#04B477" stop-opacity=".28"/><stop offset="100%" stop-color="#04B477" stop-opacity="0"/></linearGradient></defs>
+        <path d="M4.0,88.9 L18.9,86.8 L33.9,84.3 L48.8,81.3 L63.7,77.9 L78.7,74.0 L93.6,69.6 L108.5,64.6 L123.5,58.9 L138.4,52.6 L145.9,49.3 L153.3,46.9 L168.3,42.2 L183.2,38.0 L205.6,32.4 L228.0,27.7 L257.9,21.7 L287.7,16.7 L317.6,15.4 L340.0,14.0 L340.0,96.0 L4.0,96.0 Z" fill="url(#mlArea)"/>
+        <path d="M4.0,88.9 L18.9,86.8 L33.9,84.3 L48.8,81.3 L63.7,77.9 L78.7,74.0 L93.6,69.6 L108.5,64.6 L123.5,58.9 L138.4,52.6 L145.9,49.3 L153.3,46.9 L168.3,42.2 L183.2,38.0 L205.6,32.4 L228.0,27.7 L257.9,21.7 L287.7,16.7 L317.6,15.4 L340.0,14.0" fill="none" stroke="#0E794E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="145.9" y1="14" x2="145.9" y2="96" stroke="#C4C8CF" stroke-width="1.2" stroke-dasharray="3 4"/>
+        <circle cx="145.9" cy="49.3" r="5" fill="#FBBD04" stroke="#FFFFFF" stroke-width="2"/>
+        <line x1="4" y1="96" x2="340.0" y2="96" stroke="#E7E9EC" stroke-width="1.2"/>
+        <text x="4" y="114" font-size="11" fill="#9AA0AE">Today &#183; $620K</text>
+        <text x="145.9" y="114" font-size="11" font-weight="600" fill="#0E794E" text-anchor="middle">Retire 2045</text>
+        <text x="340.0" y="114" font-size="11" fill="#9AA0AE" text-anchor="end">Age 91 &#183; $7.2M</text>
+      </svg>
+    </button>
+    <p class="ml-p">Your plan holds up in <b>87 of 100</b> simulated market histories and leaves <b>$7.2M</b> at age 91.</p>
+  </section>
+
+  <!-- 03 Strengthen my plan -->
+  <section class="mh-sec ml-sec">
+    <div class="mh-sec-head"><span class="ml-eye"><b>03</b>Strengthen my plan</span><a class="ml-more" data-go="tab:optimize">All <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M9 5.5l6.5 6.5L9 18.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+    <p class="ml-p">Three moves lift your <b>87%</b> chance of success the most.</p>
+    <div class="mlist ml-list">
+      <button class="mrow ml-row" type="button" data-go="opt-ss"><span class="mrow-txt"><span class="mrow-t">Delay Social Security to 70</span></span><span class="mrow-amt g">+6 &rarr; 93%</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="tab:plan"><span class="mrow-txt"><span class="mrow-t">Trim spending $400/mo for 5 years</span></span><span class="mrow-amt g">+4 &rarr; 91%</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="tab:plan"><span class="mrow-txt"><span class="mrow-t">Work through age 64, not 62</span></span><span class="mrow-amt g">+3 &rarr; 90%</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="tab:optimize"><span class="mrow-txt"><span class="mrow-t">Retirement checkup</span><span class="mrow-s" style="display:block">Four things worth a second look</span></span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="tab:plan"><span class="mrow-txt"><span class="mrow-t">Stress test your plan</span><span class="mrow-s" style="display:block">A 2008-style drop takes you to 71%</span></span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
     </div>
   </section>
 
-  <section class="mh-sec">
-    <div class="mh-sec-head"><span class="mh-sec-t">Classes and community</span></div>
-    <div class="mh-classes">
-      <button class="mh-class" type="button" data-toast="Class player lands next in the mobile build">
-        <span class="mh-thumb t"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
-        <span class="mh-class-t">Social Security Masterclass</span>
-        <span class="mh-class-m"><i class="live"></i>Live &#183; Thursday 10am</span>
-      </button>
-      <button class="mh-class" type="button" data-toast="Video player lands next in the mobile build">
-        <span class="mh-thumb g"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
-        <span class="mh-class-t">The Roth window, in 12 minutes</span>
-        <span class="mh-class-m">Video &#183; 12 min</span>
-      </button>
-      <button class="mh-class" type="button" data-toast="Class player lands next in the mobile build">
-        <span class="mh-thumb d"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
-        <span class="mh-class-t">Budgeting for the last mile</span>
-        <span class="mh-class-m">Class &#183; 4 parts</span>
-      </button>
+  <!-- 04 Get support -->
+  <section class="mh-sec ml-sec">
+    <div class="mh-sec-head"><span class="ml-eye"><b>04</b>Get support</span><a class="ml-more" data-toast="Advisory lands next in the mobile build">Compare <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M9 5.5l6.5 6.5L9 18.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+    <div class="mlist ml-list">
+      <button class="mrow ml-row" type="button" data-go="toast:Community lands next in the mobile build"><span class="mrow-txt"><span class="mrow-t">Community &amp; classes</span><span class="mrow-s" style="display:block">Live events and free classes</span></span><span class="mrow-amt ">Free</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="toast:Coaching signup lands next in the mobile build"><span class="mrow-txt"><span class="mrow-t">1:1 coaching</span><span class="mrow-s" style="display:block">An hour with a Boldin expert</span></span><span class="mrow-amt ">$250</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="toast:Booking lands next in the mobile build"><span class="mrow-txt"><span class="mrow-t">Advisor checkup</span><span class="mrow-s" style="display:block">Real advice from a CFP&#174;</span></span><span class="mrow-amt ">$3,200</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
     </div>
-    <div class="mh-comm">
-      <span class="mh-faces"><i class="f1">D</i><i class="f2">P</i><i class="f3">T</i><i class="f4">+</i></span>
-      <span class="mrow-s">8,200 planners are in the Boldin community, comparing notes on exactly this.</span>
+    <a class="mh-link ml-quiz" data-toast="Match quiz lands next in the mobile build">Not sure? Take the 1-minute match quiz <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M9 5.5l6.5 6.5L9 18.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </section>
+
+  <!-- 05 Your questions -->
+  <section class="mh-sec ml-sec">
+    <div class="mh-sec-head"><span class="ml-eye"><b>05</b>Your questions</span><a class="ml-more" data-go="tab:ai">Ask <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M9 5.5l6.5 6.5L9 18.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+    <div class="mlist ml-list">
+      <button class="mrow ml-row" type="button" data-go="tab:plan"><span class="mrow-txt"><span class="mrow-t">Can I retire?</span></span><span class="ml-badge yes">Yes</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="tab:plan"><span class="mrow-txt"><span class="mrow-t">Am I on track to retire at 65?</span></span><span class="ml-badge yes">On track</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="tab:today"><span class="mrow-txt"><span class="mrow-t">How much can I spend?</span></span><span class="ml-badge dark">$8,200 / mo</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="opt-tax"><span class="mrow-txt"><span class="mrow-t">Am I paying too much lifetime tax?</span></span><span class="ml-badge maybe">Maybe</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="opt-ss"><span class="mrow-txt"><span class="mrow-t">Am I taking Social Security at the right time?</span></span><span class="ml-badge maybe">Maybe</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
+      <button class="mrow ml-row" type="button" data-go="opt-tax"><span class="mrow-txt"><span class="mrow-t">Should I do Roth conversions?</span></span><span class="ml-badge maybe">Maybe</span><span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span></button>
     </div>
-    <a class="mh-link" data-toast="Community lands next in the mobile build">Join the conversation <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </section>
 </div>
 
 <div class="mtab" id="tabToday" hidden>
-  <div class="mgreet">Where you stand today</div>
+  <div class="mgreet meye">My Money</div>
   <h1 class="mhl">You&rsquo;ve done <em class="mhl-em">better</em> than you <em class="mhl-gold">think</em>.</h1>
   <p class="msubhead msubhead-today">Fact, not forecast. Your real numbers, today.</p>
   <section class="mcard" id="mwhats">
@@ -538,54 +771,56 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
 </div>
 
 <div class="mtab" id="tabPlan" hidden>
-  <div class="mgreet">Your plan, stress-tested</div>
+  <div class="mgreet meye">My Plans</div>
   <h1 class="mhl mhl-plan" id="planHl">Retire in <em class="mhl-em">8 years</em> on <em class="mhl-gold">$7,200</em> a month.</h1>
-  <p class="msubhead">Monte Carlo plus your real numbers, run to age 99.</p>
-  <div class="mlens-row" role="tablist" aria-label="Plan lenses">
+  <p class="msubhead msubhead-plan">Monte Carlo, run on your real numbers.</p>
+  <div class="mlens-row" role="tablist" aria-label="My Plans lenses">
     <button class="mlens on" type="button" data-lens="snapshot" role="tab" aria-selected="true">SnapShot</button>
     <button class="mlens" type="button" data-lens="fl" role="tab" aria-selected="false">Financial Life</button>
     <button class="mlens" type="button" data-lens="retirement" role="tab" aria-selected="false">Retirement</button>
     <button class="mlens" type="button" data-lens="tax" role="tab" aria-selected="false">Tax Strategy</button>
   </div>
 
+  <!-- 3 stat cards, like desktop -->
+  <div class="mplan-stats3" id="mplanStats3"></div>
+
   <section class="mcard mplan-card">
-    <div class="mcard-t">Where the plan goes</div>
+    <div class="mplan-chead">
+      <button class="mplan-dd" type="button" id="mplanDD"><span id="mplanDDl">Portfolio</span><svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="mplan-filter" type="button" aria-label="Filters" data-toast="Filters land next in the mobile build"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
     <div class="mplan-chart">
-      <svg viewBox="0 0 356 156" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif" aria-label="Plan trajectory to age 99">
+      <svg viewBox="0 0 356 176" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif" aria-label="Projected portfolio value">
         <defs>
           <linearGradient id="pcg" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#04B477" stop-opacity="0.20"/>
             <stop offset="100%" stop-color="#04B477" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path id="pcArea" d="M4,120 C 30,116 48,110 64,104 C 120,80 200,44 258,30 C 280,25 300,32 318,44 C 332,53 344,63 350,72 L350,150 L4,150 Z" fill="url(#pcg)" opacity="0"/>
-        <path id="pcLine" d="M4,120 C 30,116 48,110 64,104 C 120,80 200,44 258,30 C 280,25 300,32 318,44 C 332,53 344,63 350,72" fill="none" stroke="#0E794E" stroke-width="2.4" stroke-linecap="round" pathLength="1"/>
+        <line class="pcgrid" x1="34" y1="14" x2="352" y2="14"/><line class="pcgrid" x1="34" y1="46" x2="352" y2="46"/><line class="pcgrid" x1="34" y1="78" x2="352" y2="78"/><line class="pcgrid" x1="34" y1="110" x2="352" y2="110"/><line class="pcgrid" x1="34" y1="142" x2="352" y2="142"/>
+        <text class="pcax" x="30" y="17" text-anchor="end">$2.5M</text><text class="pcax" x="30" y="49" text-anchor="end">$2M</text><text class="pcax" x="30" y="81" text-anchor="end">$1.5M</text><text class="pcax" x="30" y="113" text-anchor="end">$1M</text><text class="pcax" x="30" y="145" text-anchor="end">$0</text>
+        <path id="pcArea" d="M40,132 C 80,124 120,108 170,86 C 220,64 270,40 300,32 C 320,27 340,26 352,26 L352,142 L40,142 Z" fill="url(#pcg)" opacity="0"/>
+        <path id="pcLine" d="M40,132 C 80,124 120,108 170,86 C 220,64 270,40 300,32 C 320,27 340,26 352,26" fill="none" stroke="#0E794E" stroke-width="2.4" stroke-linecap="round" pathLength="1"/>
         <g id="pcMarks" opacity="0">
-          <circle cx="4" cy="120" r="3.4" fill="#0D3F4A"/>
-          <circle cx="64" cy="104" r="3.4" fill="#0D3F4A"/>
-          <circle cx="258" cy="30" r="4.2" fill="#04B477"/>
-          <circle cx="258" cy="30" r="8" fill="none" stroke="#04B477" stroke-width="1.4" opacity="0.45"/>
-          <circle cx="350" cy="72" r="3.4" fill="#FFFFFF" stroke="#0E794E" stroke-width="2"/>
-          <text x="4" y="140" font-size="10.5" fill="#6E7480">Now</text>
-          <text x="100" y="140" font-size="10.5" fill="#6E7480" text-anchor="middle">Retire &#183; Dec 2028</text>
-          <text x="258" y="16" font-size="10.5" font-weight="700" fill="#0E794E" text-anchor="middle">Peak $2.16M &#183; 2056</text>
-          <text x="350" y="140" font-size="10.5" fill="#6E7480" text-anchor="end">Age 99</text>
+          <text class="pcax" x="40" y="162" text-anchor="start">2026</text>
+          <text class="pcax" x="196" y="162" text-anchor="middle">2041</text>
+          <text class="pcax" x="352" y="162" text-anchor="end">2057</text>
         </g>
       </svg>
     </div>
-    <div class="mplan-stats">
-      <div class="mps"><span class="mps-v">87</span><span class="mps-l">Confidence</span></div>
-      <div class="mps"><span class="mps-v">$2.16M</span><span class="mps-l">Peak &#183; 2056</span></div>
-      <div class="mps"><span class="mps-v">Age 99</span><span class="mps-l">Funded to</span></div>
-    </div>
+    <div class="mplan-chips" id="mplanChips"></div>
   </section>
+
+  <!-- Boost your confidence: the desktop levers card -->
+  <div class="mplan-seclabel" id="mplanBoostLabel">Boost your confidence</div>
+  <section class="mcard mplan-boost" id="mplanBoost"></section>
 
   <div class="mlist" id="mlistPlan"></div>
 </div>
 
 <div class="mtab" id="tabOptimize" hidden>
-  <div class="mgreet">Your big opportunities</div>
-  <h1 class="mhl"><em class="mhl-em">Between</em> the lines: <em class="mhl-gold">$412,000</em>.</h1>
+  <div class="mgreet meye">Optimize</div>
+  <h1 class="mhl"><em class="mhl-gold">$412,000</em> is <em class="mhl-em">still on the table.</em></h1>
   <p class="msubhead msubhead-opt">The same life, funded better.</p>
   <div class="mop-cards" id="mopCards">
     <button class="mop-card" type="button" data-op="ss">
@@ -620,7 +855,7 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
   <div class="mai-hero">
     <h1 class="mhl mai-title">Ask anything <span class="mai-spark"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>
       <button class="mai-new" id="maiNew" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New chat</button></h1>
-    <p class="msubhead mai-sub">Grounded in your plan, never the open internet.</p>
+    <p class="msubhead mai-sub">Grounded in your plan, not the open web.</p>
   </div>
 
   <div class="mai-recents" id="maiRecents">
@@ -651,6 +886,10 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
   <button class="mai-sheet-row" type="button" data-idea="What if we downsize the house in 2030?">What if we downsize the house in 2030?</button>
   <button class="mai-sheet-row" type="button" data-idea="Rebalance my 401(k) to the target mix">Rebalance my 401(k) to the target mix</button>
 </div>
+<div class="msx" id="msx" hidden>
+  <div class="msx-scrim" id="msxScrim"></div>
+  <div class="msx-sheet" role="dialog" aria-modal="true" id="msxSheet"></div>
+</div>
 <div class="mkb" id="mkb" aria-hidden="true">
   <div class="mkb-row">
     <button class="mkb-k" data-k="q">q</button><button class="mkb-k" data-k="w">w</button><button class="mkb-k" data-k="e">e</button><button class="mkb-k" data-k="r">r</button><button class="mkb-k" data-k="t">t</button><button class="mkb-k" data-k="y">y</button><button class="mkb-k" data-k="u">u</button><button class="mkb-k" data-k="i">i</button><button class="mkb-k" data-k="o">o</button><button class="mkb-k" data-k="p">p</button>
@@ -671,9 +910,38 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
   </div>
 </div>
 
+<div class="mmenu-scrim" id="mmenuScrim" aria-hidden="true"></div>
+<div class="mmenu" id="mmenu" role="dialog" aria-modal="true" aria-label="More">
+  <div class="mmenu-hd"><span class="mmenu-title">More</span>
+    <button class="mmenu-close" id="mmenuClose" type="button" aria-label="Close"><svg width="17" height="17" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  </div>
+  <button class="mmenu-row mmenu-me" type="button" id="mmenuProfile"><span class="mmenu-av">ML</span><span class="mmenu-mex"><span class="n">Margaret Lee</span><span class="s">Your profile &amp; settings</span></span></button>
+  <div class="mmenu-div"></div>
+  <button class="mmenu-row" type="button" data-toast="Classes land next in the mobile build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M10 9.5l4.5 2.5L10 14.5z" fill="currentColor" stroke="none"/></svg>Classes &amp; live events</button>
+  <button class="mmenu-row" type="button" data-toast="Coach booking lands next in the mobile build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 19.5c1.2-3.6 3.6-5.4 6.5-5.4s5.3 1.8 6.5 5.4"/></svg>Book a coach</button>
+  <button class="mmenu-row" type="button" data-toast="Advisor intro lands next in the mobile build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 4l9 5.5"/><path d="M5 10v7M12 10v7M19 10v7"/><path d="M3.5 20h17"/></svg>Talk to a financial advisor</button>
+  <button class="mmenu-row" type="button" data-toast="Community lands next in the mobile build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10.5" r="2.4"/><path d="M3.5 19c.9-2.9 2.9-4.4 5.5-4.4s4.6 1.5 5.5 4.4M15.5 15.4c2 .3 3.5 1.6 4.3 3.6"/></svg>Community</button>
+  <button class="mmenu-row" type="button" data-toast="Help center lands next in the mobile build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.2a2.5 2.5 0 0 1 4.9.7c0 1.6-2.4 2-2.4 3.3"/><circle cx="12" cy="16.6" r=".4" fill="currentColor"/></svg>Help center</button>
+  <div class="mmenu-sp"></div>
+  <div class="mmenu-div"></div>
+  <button class="mmenu-row" type="button" data-toast="Release notes land next in the mobile build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V9z"/><path d="M13 3v6h6M9 13h6M9 16.5h4"/></svg>Release notes</button>
+  <button class="mmenu-row mmenu-out" type="button" data-toast="Signed out, in the full product"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>Log out</button>
+</div>
+
+<div class="mmenu malerts" id="malerts" role="dialog" aria-modal="true" aria-label="Boldin Coach alerts">
+  <div class="mmenu-hd"><span class="mmenu-title">Boldin Coach</span>
+    <button class="mmenu-close" id="malertsClose" type="button" aria-label="Close"><svg width="17" height="17" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  </div>
+  <button class="mal-clear" id="malClear" type="button">Mark all read</button>
+  <div class="mal-list" id="malList"></div>
+  <div class="mmenu-sp"></div>
+  <div class="mmenu-div"></div>
+  <button class="mmenu-row" type="button" data-al-go="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Open My Money</button>
+</div>
+
 <section class="msub" id="msub" aria-hidden="true">
   <div class="msub-head">
-    <button class="mback" id="mback"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>Today</button>
+    <button class="mback" id="mback"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>My Money</button>
   </div>
   <div class="msub-body" id="msubBody"></div>
 </section>
@@ -681,10 +949,10 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
 <div class="mnav-fade" aria-hidden="true"></div>
 <nav class="mnav" id="mnav">
   <button data-tab="home" class="on" aria-label="Home"><svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2 3.6 10v10.3h5.9v-6.2h5v6.2h5.9V10z"/></svg></button>
-  <button data-tab="today" aria-label="Today"><svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 5.5h15a1.5 1.5 0 0 1 1.5 1.5v10a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17V7a1.5 1.5 0 0 1 1.5-1.5z" opacity=".95"/><path d="M12 8.4c.4 0 .7.3.7.7v.3c.8.2 1.4.7 1.5 1.5h-1.2c-.1-.4-.5-.6-1-.6-.6 0-1 .3-1 .7 0 .3.3.5.9.7l.7.2c1.1.3 1.7.8 1.7 1.7 0 .9-.7 1.5-1.6 1.7v.3a.7.7 0 0 1-1.4 0v-.3c-.9-.2-1.6-.8-1.7-1.7h1.3c.1.5.5.7 1.1.7.6 0 1-.3 1-.7 0-.3-.3-.5-.9-.7l-.8-.2c-1-.3-1.6-.8-1.6-1.7 0-.8.6-1.4 1.5-1.6v-.3c0-.4.3-.7.8-.7z" fill="#F4F5F2"/></svg></button>
-  <button data-tab="plan" aria-label="Plan"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.2l1.2 1.2 2-2.2M4 12l1.2 1.2 2-2.2M4 17.8l1.2 1.2 2-2.2M11 6.4h9M11 12h9M11 17.6h9"/></svg></button>
+  <button data-tab="today" aria-label="My Money"><svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 3.5h17a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 19V5a1.5 1.5 0 0 1 1.5-1.5z" opacity=".95"/><path d="M12 6.4c.45 0 .8.35.8.8v.5c1 .25 1.7.9 1.85 1.9h-1.5c-.12-.5-.6-.8-1.25-.8-.75 0-1.25.38-1.25.9 0 .4.35.63 1.15.87l.9.26c1.35.38 2.1 1 2.1 2.12 0 1.1-.85 1.85-2 2.1v.55a.8.8 0 0 1-1.6 0v-.55c-1.1-.25-1.95-1-2.1-2.1h1.6c.13.6.6.9 1.35.9.75 0 1.25-.35 1.25-.87 0-.4-.35-.63-1.15-.87l-.95-.28c-1.25-.36-2-.98-2-2.08 0-1 .8-1.72 1.9-1.97v-.5c0-.45.35-.8.8-.8z" fill="#F4F5F2"/></svg></button>
+  <button data-tab="plan" aria-label="My Plans"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.2l1.2 1.2 2-2.2M4 12l1.2 1.2 2-2.2M4 17.8l1.2 1.2 2-2.2M11 6.4h9M11 12h9M11 17.6h9"/></svg></button>
   <button data-tab="optimize" aria-label="Optimize"><svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2.5 5.4 13.3h5l-1.6 8.2 7.8-10.8h-5z"/></svg></button>
-  <button data-tab="ai" aria-label="Boldin AI"><svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor"><path d="M10 3.5l1.3 5.2L16.5 10l-5.2 1.3L10 16.5l-1.3-5.2L3.5 10l5.2-1.3z"/><path d="M18 13l.8 3.2L22 17l-3.2.8L18 21l-.8-3.2L14 17l3.2-.8z"/></svg></button>
+  <button data-tab="ai" aria-label="Boldin AI"><svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor" class="mai-spk"><path class="sp-body" d="M10 3.5l1.3 5.2L16.5 10l-5.2 1.3L10 16.5l-1.3-5.2L3.5 10l5.2-1.3z"/><path class="sp-tw" d="M18 13l.8 3.2L22 17l-3.2.8L18 21l-.8-3.2L14 17l3.2-.8z"/></svg></button>
 </nav>
 
 <div class="mtoast" id="mtoast"></div>
@@ -705,7 +973,7 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
       (add?'<button class="madd" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'+add+'</button>':'')+'</div>';
   }
   var SECTIONS=[
-    { key:'assets', t:'Assets', s:'Savings, taxable, tax-deferred, and tax-free accounts', amt:'$229,750',
+    { key:'assets', t:'Assets', s:'Everything you own that grows', amt:'$229,750',
       body: bucket('Savings (4)',
               acct('JPMorgan Chase Bank, N.A.','Checking','$8,450',true,true)+
               acct('Ally Bank','Savings','$12,000')+
@@ -737,13 +1005,21 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
   ];
 
   var CHEV='<span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span>';
-  var ROWS_HTML=SECTIONS.map(function(s){
+  function rowFor(s){
     return '<button class="mrow" type="button" data-sec="'+s.key+'">'+
       '<span class="mrow-txt"><span class="mrow-t">'+s.t+'</span><span class="mrow-s" style="display:block">'+s.s+'</span></span>'+
       '<span class="mrow-amt">'+s.amt+'</span>'+CHEV+'</button>';
-  }).join('');
+  }
+  var ROWS_HTML=SECTIONS.map(rowFor).join('');
   document.getElementById('mlist').innerHTML=ROWS_HTML;
   document.getElementById('mlistPlan').innerHTML=ROWS_HTML;
+  /* build the Plan section list for a given lens: a heading + the relevant sections */
+  window.__planSections=function(keys, heading){
+    var rows=keys.map(function(k){
+      var s=SECTIONS.find(function(x){ return x.key===k; }); return s?rowFor(s):'';
+    }).join('');
+    return '<div class="mplan-seclabel">'+heading+'</div>'+rows;
+  };
 
   /* ===== What's already yours: segmented control ===== */
   (function(){
@@ -780,10 +1056,11 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
   var pushOrigin='home';
   function backLabel(){
     var b=document.getElementById('mback');
-    var lbl=pushOrigin==='plan'?'Plan':pushOrigin==='optimize'?'Optimize':pushOrigin==='home'?'Home':'Today';
+    var lbl=pushOrigin==='plan'?'My Plans':pushOrigin==='optimize'?'Optimize':pushOrigin==='home'?'Home':'My Money';
     b.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>'+lbl;
   }
   function push(html, isAI){
+    document.body.classList.remove('vault-open');
     pushOrigin=activeTab;
     backLabel();
     subBody.innerHTML=html;
@@ -795,6 +1072,7 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
   function pop(){
     document.body.classList.remove('pushed');
     document.body.classList.remove('ai-open');
+    document.body.classList.remove('vault-open');
     sub.setAttribute('aria-hidden','true');
     setNav(pushOrigin);
   }
@@ -862,62 +1140,16 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
       });
     }
   }
-  function drawHome(){
-    var num=document.getElementById('mhNum'); if(!num) return;
-    var target=87;
-    if(reduce){ num.textContent=target; return; }
-    var t0=null;
-    function step(ts){
-      if(!t0) t0=ts;
-      var p=Math.min(1,(ts-t0)/900);
-      var e=1-Math.pow(1-p,3);
-      num.textContent=Math.round(target*e);
-      if(p<1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-    var line=document.getElementById('mhLineP');
-    if(line && line.animate){
-      line.style.strokeDasharray='1';
-      line.animate([{strokeDashoffset:1},{strokeDashoffset:0}],
-        {duration:950, delay:150, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
-      document.getElementById('mhAreaP').animate([{opacity:0},{opacity:1}],
-        {duration:600, delay:520, easing:'ease', fill:'both'});
-      var pt=document.getElementById('mhPt');
-      pt.animate([{opacity:0},{opacity:1}],{duration:350, delay:820, easing:'ease', fill:'both'});
-      pt.querySelector('circle[stroke]').animate(
-        [{transform:'scale(0.3)'},{transform:'scale(1)'}],
-        {duration:480, delay:820, easing:'cubic-bezier(0.22,1.4,0.36,1)', fill:'backwards',
-         composite:'replace'});
-      pt.querySelector('circle[stroke]').style.transformBox='fill-box';
-      pt.querySelector('circle[stroke]').style.transformOrigin='center';
-      var halo=document.querySelector('#mhViz .mh-halo');
-      halo.animate([{transform:'scale(1)', opacity:1},{transform:'scale(1.35)', opacity:0.35},{transform:'scale(1)', opacity:1}],
-        {duration:3000, delay:1400, iterations:Infinity, easing:'ease-in-out'});
-    } else {
-      document.getElementById('mhAreaP').style.opacity='1';
-      document.getElementById('mhPt').style.opacity='1';
-    }
-    document.querySelectorAll('#tabHome .mh-sec').forEach(function(s,i){
-      if(s.animate) s.animate([{opacity:0, transform:'translateY(10px)'},{opacity:1, transform:'none'}],
-        {duration:420, delay:140+i*90, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
-    });
-  }
+  function drawHome(){ /* ultra-lite home: no animation */ }
   function drawPlanChart(){
-    var line=document.getElementById('pcLine'); if(!line || !line.animate || reduce){
-      if(line){ document.getElementById('pcArea').style.opacity='1'; document.getElementById('pcMarks').style.opacity='1'; }
-      return;
-    }
+    var line=document.getElementById('pcLine'); if(!line) return;
+    var marks=document.getElementById('pcMarks'), area=document.getElementById('pcArea');
+    if(!line.animate || reduce){ area.style.opacity='1'; marks.style.opacity='1'; return; }
     line.style.strokeDasharray='1';
     line.animate([{strokeDashoffset:1},{strokeDashoffset:0}],
-      {duration:800, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'both'});
-    document.getElementById('pcArea').animate([{opacity:0},{opacity:1}],
-      {duration:500, delay:380, easing:'ease', fill:'both'});
-    document.getElementById('pcMarks').animate([{opacity:0},{opacity:1}],
-      {duration:380, delay:540, easing:'ease', fill:'both'});
-    document.querySelectorAll('.mps').forEach(function(s,i){
-      s.animate([{opacity:0, transform:'translateY(6px)'},{opacity:1, transform:'none'}],
-        {duration:380, delay:520+i*80, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
-    });
+      {duration:850, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'both'});
+    area.animate([{opacity:0},{opacity:1}],{duration:520, delay:400, easing:'ease', fill:'both'});
+    marks.animate([{opacity:0},{opacity:1}],{duration:380, delay:560, easing:'ease', fill:'both'});
   }
   document.getElementById('mnav').addEventListener('click', function(e){
     var b=e.target.closest('button'); if(!b) return;
@@ -993,10 +1225,138 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
     if(!reduce && r.animate) r.animate([{transform:'scale(0.985)'},{transform:'scale(1)'}],{duration:260,easing:'cubic-bezier(0.22,1,0.36,1)'});
   });
 
+  /* ===== the index page, from the logo ===== */
+  var INDEX_HTML='<div class="mx-hero">'+
+    '<h1 class="mhl">Confidence you <em class="mhl-em">can see.</em></h1>'+
+    '<p class="msubhead" style="max-width:none">Your whole retirement, planned in one place.</p>'+
+    '<button class="mx-cta" type="button" data-toast="Signup lands next in the mobile build">Get started for free</button>'+
+    '<span class="mx-proof"><b>&#9733;&#9733;&#9733;&#9733;&#9733;</b> 4.8 &#183; 5,295 reviews &#183; no credit card</span>'+
+    '</div>'+
+    '<div class="mx-voices">'+
+      '<div class="mx-voice"><div class="mx-q">&#8220;We stopped arguing about money the week we could both see the same plan.&#8221;</div>'+
+        '<div class="mx-who"><span class="mh-ava t">D&amp;B</span><span class="mx-meta"><b>Diane &amp; Bob</b>Tucson &#183; retired 2024</span></div></div>'+
+      '<div class="mx-voice"><div class="mx-q">&#8220;I used to check the market every morning. Now I check my confidence score. It is a much calmer habit.&#8221;</div>'+
+        '<div class="mx-who"><span class="mh-ava g">P</span><span class="mx-meta"><b>Priya</b>Sacramento &#183; retiring 2027</span></div></div>'+
+      '<div class="mx-voice"><div class="mx-q">&#8220;Boldin found a Roth window my old advisor never mentioned. One afternoon paid for itself.&#8221;</div>'+
+        '<div class="mx-who"><span class="mh-ava" style="background:#5B8A72">T</span><span class="mx-meta"><b>Tom</b>Grand Rapids &#183; planning since 2022</span></div></div>'+
+    '</div>'+
+    '<div class="mx-note"><span class="mh-ava t" style="flex:none">S</span>'+
+      '<div><p class="mx-note-p">We started Boldin because retirement math felt like a test nobody had studied for. It should feel like your life, thought through.</p>'+
+      '<div class="mx-note-a">Steve, founder of Boldin</div></div></div>'+
+    '<div class="mx-final"><div class="mx-final-t">Your future is worth an honest look.</div>'+
+      '<div class="mx-final-s">A few real numbers are all it takes. Free to start, and your first plan takes minutes.</div>'+
+      '<button class="mx-cta" type="button" data-toast="Signup lands next in the mobile build">Get started for free</button></div>';
+  var brandEl=document.querySelector('.mtop .brand');
+  brandEl.style.cursor='pointer';
+  brandEl.setAttribute('role','button'); brandEl.setAttribute('tabindex','0'); brandEl.setAttribute('aria-label','About Boldin');
+  brandEl.addEventListener('click', function(){ push(INDEX_HTML, false); });
+
+  /* ===== Vault + Profile, from the top bar ===== */
+  var DOC='<span class="mv-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V9z"/><path d="M13 3v6h6"/></svg></span>';
+  var VCHEV='<span class="mrow-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg></span>';
+  function vrow(nm, meta, ico){
+    return '<button class="mrow" type="button" data-toast="File preview lands next in the mobile build">'+(ico||DOC)+
+      '<span class="mrow-txt"><span class="mrow-t">'+nm+'</span><span class="mrow-s" style="display:block">'+meta+'</span></span>'+VCHEV+'</button>';
+  }
+  var VAULT_HTML='<div class="msub-title">File vault</div><div class="msub-sub">Statements, deeds, and policies, in one place.</div>'+
+    '<div class="mlist" style="margin-top:16px">'+
+      vrow('2025 tax return.pdf','Added March 2026')+
+      vrow('Home deed, 555 Market St.pdf','Added January 2026')+
+      vrow('Term life policy, Lily.pdf','Renews September')+
+      vrow('Living trust.docx','Reviewed 2025')+
+    '</div>'+
+    '<div class="mv-upload">'+
+      '<button class="mv-up-pill" type="button" data-toast="Upload lands next in the mobile build"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>Upload a file</button>'+
+      '<button class="mv-up-cam" type="button" data-toast="Camera lands next in the mobile build" aria-label="Take a photo"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5h2.5l1.3-2h8.4l1.3 2H20a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18v-8A1.5 1.5 0 0 1 4 8.5z"/><circle cx="12" cy="13.5" r="3.4"/></svg></button>'+
+    '</div>';
+  var PROFILE_HTML='<div class="msub-title">Marshall &amp; Lily</div><div class="msub-sub">Two people. One plan.</div>'+
+    '<div class="mlist" style="margin-top:16px">'+
+      '<button class="mrow" type="button" data-toast="Member editing lands next in the mobile build"><span class="mh-ava t">M</span><span class="mrow-txt"><span class="mrow-t">Marshall</span><span class="mrow-s" style="display:block">61 &#183; retiring December 2028</span></span>'+VCHEV+'</button>'+
+      '<button class="mrow" type="button" data-toast="Member editing lands next in the mobile build"><span class="mh-ava g">L</span><span class="mrow-txt"><span class="mrow-t">Lily</span><span class="mrow-s" style="display:block">59 &#183; retiring December 2028</span></span>'+VCHEV+'</button>'+
+    '</div>'+
+    '<div class="mh-sec"><div class="mh-sec-head"><span class="mh-sec-t">Settings</span></div>'+
+    '<div class="mlist">'+
+      '<button class="mrow" type="button" data-toast="Account settings land next in the mobile build"><span class="mrow-txt"><span class="mrow-t">Account settings</span><span class="mrow-s" style="display:block">Sign-in, security, and subscription</span></span>'+VCHEV+'</button>'+
+      '<button class="mrow" type="button" data-toast="Notifications land next in the mobile build"><span class="mrow-txt"><span class="mrow-t">Notifications</span><span class="mrow-s" style="display:block">What Boldin can nudge you about</span></span>'+VCHEV+'</button>'+
+      '<button class="mrow" type="button" data-toast="Preferences land next in the mobile build"><span class="mrow-txt"><span class="mrow-t">Preferences</span><span class="mrow-s" style="display:block">Currency, rounding, and assumptions</span></span>'+VCHEV+'</button>'+
+    '</div></div>';
+  document.querySelector('.mtop .mico[aria-label="File vault"]').addEventListener('click', function(){ push(VAULT_HTML, false); document.body.classList.add('vault-open'); });
+  document.getElementById('mmenuProfile').addEventListener('click', function(){ push(PROFILE_HTML, false); });
+
+  /* the hamburger opens an iOS-style slide-over drawer */
+  (function(){
+    var burger=document.querySelector('.mtop .mico[aria-label="More"]');
+    var menu=document.getElementById('mmenu');
+    function openMenu(){ document.body.classList.add('menu-open'); burger.setAttribute('aria-expanded','true'); }
+    function closeMenu(){ document.body.classList.remove('menu-open'); burger.setAttribute('aria-expanded','false'); }
+    burger.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(document.body.classList.contains('menu-open')) closeMenu(); else openMenu();
+    });
+    document.getElementById('mmenuClose').addEventListener('click', closeMenu);
+    document.getElementById('mmenuScrim').addEventListener('click', closeMenu);
+    menu.addEventListener('click', function(e){
+      if(e.target.closest('.mmenu-row')) closeMenu();   /* the global toast handler shows the message */
+    });
+  })();
+
+  /* Boldin Coach alerts: the bell opens a drawer with the same six flags as desktop */
+  (function(){
+    var ICON={
+      conv:'<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+      drift:'<path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>',
+      doc:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+      cal:'<path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/>',
+      shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+      cash:'<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>'
+    };
+    var ALERTS=[
+      { ic:'conv',  tone:'',     t:'Your December conversion window is open', s:'About $17,800 fits under the 12% band this year. Last December you left $9,400 of it unused.', w:'2 hours ago', go:'plan' },
+      { ic:'drift', tone:'warn', t:'The brokerage has drifted to 71% equities', s:'Your target is 60/40. Two years without a rebalance, three years before you retire.', w:'Yesterday', go:'optimize' },
+      { ic:'doc',   tone:'',     t:'Three plan inputs are still empty', s:'Estate documents, long-term care, and the home equity plan. Each one moves your score.', w:'2 days ago', go:'plan' },
+      { ic:'cal',   tone:'teal', t:'Medicare\u2019s look-back starts with your 2028 return', read:true, s:'What you convert in 2028 sets your 2030 premiums. Worth a look before year end.', w:'Last week', go:'plan' },
+      { ic:'cash',  tone:'',     t:'Your surplus rose to $3,450 a month', read:true, s:'Three months running. Coach suggests routing the increase to the Roth before December.', w:'Last week', go:'today' },
+      { ic:'shield',tone:'teal', t:'Your plan survived this quarter\u2019s stress test', read:true, s:'A 2022-style drop the year before retirement still leaves you funded to 99.', w:'2 weeks ago', go:'plan' }
+    ];
+    var btn=document.getElementById('malertBtn'), drawer=document.getElementById('malerts');
+    var list=document.getElementById('malList'), count=document.getElementById('malertCount');
+    function render(){
+      list.innerHTML=ALERTS.map(function(a,i){
+        return '<button type="button" class="mal-row'+(a.read?' read':'')+'" data-al="'+i+'" data-al-go="'+a.go+'">'+
+          '<span class="mal-ic '+(a.tone||'')+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+ICON[a.ic]+'</svg></span>'+
+          '<span class="mal-bd"><span class="mal-t">'+a.t+'</span><span class="mal-s">'+a.s+'</span><span class="mal-w">'+a.w+'</span></span>'+
+          '<span class="mal-new"></span></button>';
+      }).join('');
+      var n=ALERTS.filter(function(a){ return !a.read; }).length;
+      count.textContent=n; count.hidden=(n===0);
+    }
+    function openA(){ render(); document.body.classList.add('alerts-open'); btn.setAttribute('aria-expanded','true'); }
+    function closeA(){ document.body.classList.remove('alerts-open'); btn.setAttribute('aria-expanded','false'); }
+    btn.setAttribute('aria-haspopup','dialog'); btn.setAttribute('aria-expanded','false');
+    btn.addEventListener('click', function(e){ e.stopPropagation(); if(document.body.classList.contains('alerts-open')) closeA(); else openA(); });
+    document.getElementById('malertsClose').addEventListener('click', closeA);
+    document.getElementById('mmenuScrim').addEventListener('click', closeA);
+    document.getElementById('malClear').addEventListener('click', function(){ ALERTS.forEach(function(a){ a.read=true; }); render(); });
+    drawer.addEventListener('click', function(e){
+      var row=e.target.closest('.mal-row');
+      if(row){ ALERTS[+row.dataset.al].read=true; render(); }
+      var go=e.target.closest('[data-al-go]');
+      if(go){ closeA(); setTimeout(function(){ activateTab(go.dataset.alGo); }, 120); }
+    });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeA(); });
+    render();
+  })();
+
+  /* one global handler for every data-toast */
+  document.addEventListener('click', function(e){
+    var l=e.target.closest('[data-toast]'); if(!l) return;
+    if(e.target.closest('[data-go]')) return;
+    toast(l.dataset.toast);
+  });
+
   /* ===== Home wiring ===== */
   (function(){
     setTimeout(drawHome, 350);
-    document.getElementById('mhViz').addEventListener('click', function(){ activateTab('plan'); });
     var gh=document.getElementById('mhGreet');
     var hh=new Date().getHours();
     gh.textContent=(hh<12?'Good morning':hh<18?'Good afternoon':'Good evening')+', Marshall';
@@ -1004,7 +1364,9 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
       var el=e.target.closest('[data-go]');
       if(el){
         var go=el.dataset.go;
-        if(go==='opt-ss'){ push(OPT.ss, false); }
+        if(go.indexOf('tab:')===0){ activateTab(go.slice(4)); }
+        else if(go.indexOf('toast:')===0){ toast(go.slice(6)); }
+        else if(go==='opt-ss'){ push(OPT.ss, false); }
         else if(go==='opt-tax'){ push(OPT.tax, false); }
         else {
           var s=SECTIONS.find(function(x){ return x.key===go; });
@@ -1012,30 +1374,215 @@ body.nav-mini .mnav{ transform:translateX(-50%) scale(0.7); }
         }
         return;
       }
-      var l=e.target.closest('[data-toast]');
-      if(l){ toast(l.dataset.toast); }
     });
   })();
 
-  /* plan lenses: the headline follows the lens, desktop copy verbatim */
+  /* plan lenses: each pill mirrors the full desktop lens card */
   (function(){
-    var days=Math.max(0, Math.ceil((new Date('2028-12-31')-new Date())/86400000));
-    var HLS={
-      snapshot:'Retire in <em class="mhl-em">8 years</em> on <em class="mhl-gold">$7,200</em> a month.',
-      fl:'Saving <em class="mhl-gold">28%</em>, compounding into <em class="mhl-em">freedom.</em>',
-      retirement:'<em class="mhl-gold">$1.14M</em> working toward your <em class="mhl-em">retirement.</em>',
-      tax:'One conversion saves <em class="mhl-gold">$430</em> a <em class="mhl-em">month.</em>'
+    var LENS={
+      snapshot:{
+        hl:'Retire in <em class="mhl-em">8 years</em> on <em class="mhl-gold">$7,200</em> a month.',
+        dd:'Portfolio',
+        stats:[['Confidence','87%','Monte Carlo +','conf'],['Fire number','$2.16M','50% funded','fire'],['Funds depleted','2099','Age 82 &middot; 12 yrs','depleted']],
+        chips:[['Surplus/mo','$3,450'],['Portfolio','$1.09M'],['Savings rate','28%'],['Cash runway','14 mo']],
+        boostT:'Three moves that lift your score the most', badge:'87% today',
+        boostSub:'Your plan already survives most markets. These close the gap in the toughest 1-in-10 outcomes.',
+        levers:[['Delay Social Security to 70','+6 pts &rarr; 93%',100],['Trim spending $400/mo for the first 5 years','+4 pts &rarr; 91%',67],['Work through age 64 instead of 62','+3 pts &rarr; 90%',50]],
+        cta:'Compare these scenarios',
+        secKeys:['assets','debts','income','home','expenses'], secHeading:'Your full picture'
+      },
+      fl:{
+        hl:'Saving <em class="mhl-gold">28%</em>, growing into <em class="mhl-em">freedom.</em>',
+        dd:'Net worth',
+        stats:[['Net worth','$1.14M','Assets &minus; debts'],['Surplus','$3,450','After expenses'],['Savings rate','28%','Above target']],
+        chips:[['Income/mo','$12,300'],['Spending/mo','$8,850'],['Into Roth','$2,400'],['Into taxable','$1,050']],
+        boostT:'Put your surplus to work', badge:'28% saved',
+        boostSub:'Your $3,450 monthly surplus is above target. Directing it deliberately compounds into years of freedom.',
+        levers:[['Automate a monthly Roth transfer','+$2,400/mo',100],['Top up the brokerage','+$1,050/mo',44],['Sweep the year-end bonus','once a year',30]],
+        cta:'See the full breakdown',
+        secKeys:['income','expenses','assets'], secHeading:'What drives your surplus'
+      },
+      retirement:{
+        hl:'<em class="mhl-gold">$1.14M</em> working toward your <em class="mhl-em">retirement.</em>',
+        dd:'Retirement income',
+        stats:[['Success','87%','Monte Carlo +'],['To retirement','7 yrs','Dec 2028'],['Safe spending','$8,400','per month']],
+        chips:[['SS at 70','$3,940'],['Withdrawals','$3,100'],['Pension','$1,360'],['Total/mo','$8,400']],
+        boostT:'Claim Social Security at 70', badge:'+$420/mo',
+        boostSub:'Waiting to 70 adds $420 a month for life and gives the Roth window more room to work.',
+        levers:[['Delay Social Security to 70','+$420/mo',100],['Hold spending steady to 72','+2 yrs funded',60],['Keep the bond glide-path','lower drawdown',45]],
+        cta:'Model your retirement income',
+        secKeys:['assets','income','expenses'], secHeading:'What funds retirement'
+      },
+      tax:{
+        hl:'One conversion saves <em class="mhl-gold">$430</em> a <em class="mhl-em">month.</em>',
+        dd:'Lifetime taxes',
+        stats:[['Effective rate','19.4%','This year'],['Lifetime rate','23.1%','Projected'],['Lifetime tax','$648K','If unchanged']],
+        chips:[['12% bracket','$106,750'],['Convert/yr','~$17,800'],['Windows','6 yrs'],['Tax saved','$61,000']],
+        boostT:'Fill the December Roth window', badge:'&minus;$61K tax',
+        boostSub:'Six low-bracket Decembers between 2029 and 2035, before Social Security starts. Filling them erases $61,000 of lifetime tax.',
+        levers:[['Convert to the top of the 12% bracket','&minus;$61,000',100],['Start with 2029 before it closes','&minus;$10,200',52],['Coordinate with Medicare IRMAA','avoid surcharge',35]],
+        cta:'Plan your conversions',
+        secKeys:['assets','income'], secHeading:'What the strategy works on'
+      }
     };
     var row=document.querySelector('.mlens-row'); if(!row) return;
+    var hl=document.getElementById('planHl');
+    var stats3=document.getElementById('mplanStats3');
+    var chipsEl=document.getElementById('mplanChips');
+    var boostEl=document.getElementById('mplanBoost');
+    var ddl=document.getElementById('mplanDDl');
+    var listEl=document.getElementById('mlistPlan');
+    function stagger(nodes, dy){
+      if(reduce) return;
+      nodes.forEach(function(n,i){ if(n.animate) n.animate(
+        [{opacity:0,transform:'translateY('+(dy||6)+'px)'},{opacity:1,transform:'none'}],
+        {duration:360,delay:40+i*55,easing:'cubic-bezier(0.22,1,0.36,1)',fill:'backwards'}); });
+    }
+    function renderStats(L){
+      stats3.innerHTML=L.stats.map(function(s){ return '<div class="mstat3"'+(s[3]?' data-msx="'+s[3]+'" role="button" tabindex="0"':'')+'><div class="lab">'+s[0]+'</div><div class="fig">'+s[1]+'</div><div class="sub">'+s[2]+'</div></div>'; }).join('');
+      stagger([].slice.call(stats3.children));
+    }
+    function renderChips(L){
+      chipsEl.innerHTML=L.chips.map(function(c){ return '<div class="mchip4"><div class="lab">'+c[0]+'</div><div class="val">'+c[1]+'</div></div>'; }).join('');
+      stagger([].slice.call(chipsEl.children),4);
+    }
+    function renderBoost(L){
+      boostEl.innerHTML='<div class="mboost-hd"><div class="mboost-t">'+L.boostT+'</div><span class="mboost-badge">'+L.badge+'</span></div>'+
+        '<div class="mboost-sub">'+L.boostSub+'</div>'+
+        L.levers.map(function(lv){ return '<div class="mlever"><div class="mlever-top"><span class="mlever-name">'+lv[0]+'</span><span class="mlever-pts">'+lv[1]+'</span></div><div class="mlever-bar"><i style="width:'+lv[2]+'%"></i></div></div>'; }).join('')+
+        '<span class="mboost-cta" data-toast="Scenario comparison lands next in the mobile build">'+L.cta+' <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+      if(!reduce){
+        boostEl.querySelectorAll('.mlever-bar i').forEach(function(bar,i){
+          if(bar.animate) bar.animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{duration:620,delay:180+i*120,easing:'cubic-bezier(0.22,1,0.36,1)',fill:'backwards'});
+        });
+      }
+    }
+    function renderSections(L){
+      listEl.innerHTML=window.__planSections(L.secKeys, L.secHeading);
+      stagger([].slice.call(listEl.querySelectorAll('.mrow')));
+    }
+    function apply(lens, animate){
+      var L=LENS[lens]; if(!L) return;
+      ddl.textContent=L.dd;
+      renderStats(L); renderChips(L); renderBoost(L); renderSections(L);
+      if(reduce || !animate){ hl.innerHTML=L.hl; return; }
+      hl.classList.add('hl-sw');
+      setTimeout(function(){ hl.innerHTML=L.hl; hl.classList.remove('hl-sw'); }, 180);
+    }
     row.addEventListener('click', function(e){
       var p=e.target.closest('.mlens'); if(!p || p.classList.contains('on')) return;
       row.querySelectorAll('.mlens').forEach(function(x){ x.classList.toggle('on', x===p); x.setAttribute('aria-selected', x===p?'true':'false'); });
       p.scrollIntoView({behavior: reduce?'auto':'smooth', inline:'center', block:'nearest'});
-      var hl=document.getElementById('planHl');
-      if(reduce){ hl.innerHTML=HLS[p.dataset.lens]; return; }
-      hl.classList.add('hl-sw');
-      setTimeout(function(){ hl.innerHTML=HLS[p.dataset.lens]; hl.classList.remove('hl-sw'); }, 180);
+      apply(p.dataset.lens, true);
     });
+    document.getElementById('mplanDD').addEventListener('click', function(){ toast('Portfolio views land next in the mobile build'); });
+    apply('snapshot', false);
+    window.__applyLens=apply;
+  })();
+
+  /* ===== stat detail modal — mirrors the desktop sx-modal ===== */
+  (function(){
+    var SX={
+      conf:{ label:'Confidence', fig:'87%',
+        pts:[79,80,81,82,80,82,83,84,85,86,86,87], fmt:'pct',
+        sub:'87 of every 100 simulated futures end with money left over.',
+        note:'Eight points in a year. Confidence climbs when you keep saving through the dips.',
+        opps:{t:'Push past 90 with the catch-up window', g:'+3 pts', s:'Maxing the 2026 super catch-up (<b>$35,750</b> each) lifts confidence about three points.'},
+        risks:{t:'Sequence risk in the first five years', s:'A 2028 to 2029 bear market costs roughly <b>9 points</b>. The order of returns matters most at the start.'},
+        decide:{t:'Retire in 2028 or 2029', s:'One more working year adds about <b>6 points</b> and $86K of contributions plus growth.'},
+        step:{t:'Run the catch-up contribution scenario', act:'plan'} },
+      fire:{ label:'Fire number', fig:'$2.16M',
+        pts:[42,42.6,43.3,43.5,42.4,43.6,44.6,45.5,46.6,47.8,49.0,50.0], fmt:'pct',
+        sub:'The portfolio that funds your life from 2028 on. Half is already yours.',
+        note:'Half funded. Each month of saving buys about 0.7% more of the finish line.',
+        opps:{t:'The super catch-up adds $286K by 2028', s:'Both of you maxing the age 60 to 63 window (<b>$35,750</b> each) closes 13% of the gap alone.'},
+        risks:{t:'The number assumes the 4% trim', s:'Skip the retirement spending trim and the target grows to <b>$2.41M</b>.'},
+        decide:{t:'Count the house or leave it out', s:'Tapping <b>$190K</b> of equity at 75 cuts the target 9%. It is a choice, not an assumption.'},
+        step:{t:'See the funded-percent path in your plan', act:'plan'} },
+      depleted:{ label:'Funds depleted', fig:'2099',
+        pts:[2093,2093,2094,2094,2093,2095,2096,2096,2097,2098,2098,2099], fmt:'year',
+        sub:'The year the money runs out. Twelve years past the plan\u2019s test age.',
+        note:'Six years gained in twelve months. Every good saving month pushes the horizon out.',
+        opps:{t:'Delay Social Security to 70', s:'The larger check compounds across decades and pushes depletion past <b>2105</b>.'},
+        risks:{t:'Care costs in the late years', s:'Four years of long-term care pulls the horizon back to <b>2094</b>.'},
+        decide:{t:'Plan to 92 or to 95', s:'The age you test is the risk you accept. Three years is the whole margin.'},
+        step:{t:'Model claiming at 70 side by side', act:'plan'} }
+    };
+    var MONTHS=['Jul','Oct','Jan','Apr','Jun'];
+    function fmtV(v, fmt){
+      var r=Math.round(v*10)/10;
+      if(fmt==='pct') return r+'%';
+      if(fmt==='year') return String(Math.round(v));
+      return '$'+Math.round(v).toLocaleString('en-US');
+    }
+    function chart(d){
+      var W=356,H=150,padL=10,padR=52,padT=14,padB=26;
+      var iw=W-padL-padR, ih=H-padT-padB, pts=d.pts;
+      var min=Math.min.apply(null,pts), max=Math.max.apply(null,pts);
+      var span=(max-min)||1, lo=min-span*0.18, hi=max+span*0.16, rng=hi-lo;
+      var X=function(i){ return padL+iw*(i/(pts.length-1)); };
+      var Y=function(v){ return padT+ih*(1-(v-lo)/rng); };
+      var line=pts.map(function(v,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ');
+      var area=line+' L'+X(pts.length-1).toFixed(1)+' '+(H-padB)+' L'+padL+' '+(H-padB)+' Z';
+      var last=pts[pts.length-1], lx=X(pts.length-1), ly=Y(last);
+      var grid=[min,max].map(function(v){ return '<line x1="'+padL+'" x2="'+(W-padR)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="#EEEEEE" stroke-width="1"/>'+
+        '<text x="'+(W-padR+8)+'" y="'+(Y(v)+4).toFixed(1)+'" font-size="11" fill="#9AA0AE">'+fmtV(v,d.fmt)+'</text>'; }).join('');
+      var mstep=(pts.length-1)/(MONTHS.length-1);
+      var mlab=MONTHS.map(function(m,i){ return '<text x="'+X(Math.round(i*mstep)).toFixed(1)+'" y="'+(H-6)+'" font-size="11" fill="#9AA0AE" text-anchor="middle">'+m+'</text>'; }).join('');
+      return '<div class="msx-chart"><svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif">'+
+        '<defs><linearGradient id="msxFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#04B477" stop-opacity="0.16"/><stop offset="1" stop-color="#04B477" stop-opacity="0"/></linearGradient></defs>'+
+        grid+
+        '<path class="msx-area" d="'+area+'" fill="url(#msxFill)" opacity="0"/>'+
+        '<path class="msx-line" d="'+line+'" fill="none" stroke="#04B477" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" pathLength="1"/>'+
+        '<circle class="msx-enddot" cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="4.5" fill="#04B477" stroke="#fff" stroke-width="2"/>'+
+        '<text x="'+(lx-6).toFixed(1)+'" y="'+(ly-10).toFixed(1)+'" font-size="12.5" font-weight="700" fill="#10182C" text-anchor="end">'+fmtV(last,d.fmt)+'</text>'+
+        mlab+'</svg></div>';
+    }
+    function item(it, numbered){
+      var marker = numbered ? '<span class="msx-num">1</span>' : '<span class="msx-dot"></span>';
+      var gain = it.g ? ' <span class="gain">'+it.g+'</span>' : '';
+      var body = it.s ? '<div class="msx-it-s">'+it.s+'</div>' : '';
+      var link = it.act ? '<span class="msx-link" data-toast="Deep link lands next in the mobile build">Take me there <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' : '';
+      return '<div class="msx-item">'+marker+'<div><div class="msx-it-t">'+it.t+gain+'</div>'+body+link+'</div></div>';
+    }
+    function sec(label, it, numbered){ return '<div class="msx-sec"><div class="msx-sec-label">'+label+'</div>'+item(it,numbered)+'</div>'; }
+    function build(d){
+      return '<div class="msx-grip"></div>'+
+        '<div class="msx-head"><div><div class="msx-title">'+d.label+'</div><div class="msx-fig">'+d.fig+'</div><div class="msx-sub">'+d.sub+'</div></div>'+
+        '<button class="msx-x" aria-label="Close" data-msx-close><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'+
+        chart(d)+'<div class="msx-note">'+d.note+'</div>'+
+        sec('Top opportunities', d.opps, false)+
+        sec('Key risks', d.risks, false)+
+        sec('Key decisions', d.decide, false)+
+        sec('Suggested next steps', d.step, true)+
+        '<span class="msx-learn" data-toast="Learn more lands next in the mobile build">Learn more <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+    }
+    var modal=document.getElementById('msx'), sheet=document.getElementById('msxSheet'), scrim=document.getElementById('msxScrim');
+    function open(key){
+      var d=SX[key]; if(!d) return;
+      sheet.innerHTML=build(d);
+      modal.hidden=false; void modal.offsetWidth; modal.classList.add('on');
+      document.body.style.overflow='hidden';
+      if(!reduce){
+        var line=sheet.querySelector('.msx-line'), area=sheet.querySelector('.msx-area');
+        if(line && line.animate){ line.style.strokeDasharray='1';
+          line.animate([{strokeDashoffset:1},{strokeDashoffset:0}],{duration:800,delay:220,easing:'cubic-bezier(0.22,1,0.36,1)',fill:'both'});
+          area.animate([{opacity:0},{opacity:1}],{duration:500,delay:520,easing:'ease',fill:'both'});
+        }
+      }
+    }
+    function close(){
+      modal.classList.remove('on'); document.body.style.overflow='';
+      setTimeout(function(){ modal.hidden=true; sheet.innerHTML=''; }, reduce?0:380);
+    }
+    /* clicks on the 3 stat cards */
+    document.getElementById('tabPlan').addEventListener('click', function(e){
+      var c=e.target.closest('.mstat3[data-msx]'); if(!c) return;
+      open(c.dataset.msx);
+    });
+    scrim.addEventListener('click', close);
+    sheet.addEventListener('click', function(e){ if(e.target.closest('[data-msx-close]')) close(); });
+    window.__openStat=open;
   })();
 
   /* ===== the Chase row opens an inline field editor, desktop-smooth ===== */
