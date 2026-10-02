@@ -16762,6 +16762,14 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
     'will my money last if i live to 95?': 'It does. At 95 the median path still shows $5.1M, and even the weakest 10% of markets leave you funded. Longevity is not the risk in this plan; sequence of returns in the first retirement years is, and the cash buffer covers that.',
     'can i afford long-term care?': 'Partly. The plan can absorb about three years of care at $9,500 a month from the brokerage and home equity, but a longer stay would eat into what Lily keeps. A hybrid life and care policy at around $320 a month closes that gap, and the Roth conversions make room for the premium.',
     'am i saving enough right now?': 'You are saving 11% of pay, down from 14% two years ago. At 11% you still make 2045. At 14% you reach the same number by 2043, or retire in 2045 with $600 more a month. The 401(k) match covers the first 4%, so the cheapest move is moving 6% to 8%.',
+    'which of my accounts is quietly costing me the most?': 'The Chase checking. It holds $8,450 at 0.01% while Ally pays 4.1%, so the idle balance above a one-month cushion costs you about $200 a year. Second is the old Fidelity 401(k): its funds average 0.62% a year against 0.05% in the Vanguard plan, about $60 a year today and far more as it grows.',
+    'what single change moves my retirement date the most?': 'Your savings rate, by a wide margin. Going from 11% back to the 14% you were at two years ago brings retirement forward from 2045 to 2043 on the same spending. Claiming Social Security at 70 changes how safe retirement is, not when it starts.',
+    'what question should i be asking that i am not?': 'What happens if one of you needs care for three years. Everything else in the plan is covered, but long-term care is still an empty input, and a $9,500-a-month stay from 2050 is the one scenario that takes confidence below 60%. It is also the cheapest risk to close while you are both healthy.',
+    'when does it make sense to pay a human advisor?': 'When a decision is large, hard to undo, and depends on things outside the model: claiming Social Security, the first Roth conversion, selling the house, long-term care. For you that is the next 18 months. A flat-fee checkup at $3,200 is about 0.5% of one year of your savings growth.',
+    'spend now or save for later, which is the better move for me?': 'Right now, both. Your plan has about $500k of room at 2045, so a trip this year does not change the date. What it cannot absorb is a lower savings rate for the next decade. Spend from the surplus, protect the 14%, and the marshmallow test takes care of itself.',
+    'what would a cfp change about my plan first?': 'Three things, in order: lock in the December Roth conversion before the window closes, rebalance the brokerage off 71% stocks, and fund long-term care while premiums are still priced on your age today. None of them changes your lifestyle; all of them change your odds.',
+    'what do most people get wrong in their first year of retirement?': 'They treat the first year like every other year. The first two years decide whether a bad market hurts you, so the plan holds fourteen months of cash and a spending guardrail for exactly that stretch. The other mistake is claiming Social Security the day they stop working; waiting to 70 is worth $720 a month to you.',
+    'how will financial advice change by the time i retire?': 'Mostly in who does the routine work. Software now handles the conversions, rebalancing and withdrawal order that used to fill an advisor\u2019s year, which is why flat-fee advice at $3,200 exists at all. What stays human is judgment on the big, irreversible calls, and that is where your advisor time should go.',
     'what will i leave behind?': 'On the median path, about $7.2M at 91, most of it in the Roth and the home, which pass tax-free. The Rollover IRA is the one piece heirs would owe tax on, and the December conversions shrink it every year. Your estate documents are still the missing input; adding them is the next step.'
   };
   function aiReply(q){
@@ -24169,6 +24177,7 @@ document.addEventListener('click', function(e){
       window.scrollTo({top:0, behavior:'auto'});
     })();
   }).observe(document.body, {attributes:true, attributeFilter:['class']});
+  window.__guided={ ask:function(q){ openAndAsk(q); } };
   function openAndAsk(q){
     var ai=window.__railAI; if(!ai) return;
     ai.expand();
@@ -24283,5 +24292,43 @@ document.addEventListener('click', function(e){
   }, true);
   /* 4. no window.open from anywhere in the prototype */
   window.open=function(){ return null; };
+})();
+</script>
+
+<!-- ===================== Ask the AI from every home module ===================== -->
+<style id="aiAskCSS">
+.hm-page .ai-ask{display:flex; align-items:center; gap:9px; margin-top:var(--s-4); padding-top:14px; border-top:1px solid var(--hairline);
+  font-size:14.5px; font-weight:600; color:var(--green-cta); text-decoration:none; cursor:pointer; line-height:1.35;}
+.hm-page .ai-ask .spk{width:16px; height:16px; flex:none; color:var(--green);}
+.hm-page .ai-ask .arr{margin-left:auto; color:#9BA0AC; font-size:18px; transition:transform .2s var(--ease-out);}
+.hm-page .ai-ask:hover{text-decoration:underline;} .hm-page .ai-ask:hover .arr{transform:translateX(3px); color:var(--green-cta);}
+.hm-page .topzone .ai-ask{margin-top:10px; padding-top:10px;}
+.hm-page .qcard .ai-ask{margin-top:0; padding:14px 22px 16px;}
+</style>
+<script>
+(function(){
+  var ASK={
+    's-money':     'Which of my accounts is quietly costing me the most?',
+    's-plans':     'What single change moves my retirement date the most?',
+    's-questions': 'What question should I be asking that I am not?',
+    's-support':   'When does it make sense to pay a human advisor?',
+    's-videos':    'Spend now or save for later, which is the better move for me?',
+    's-advisors':  'What would a CFP change about my plan first?',
+    's-events':    'What do most people get wrong in their first year of retirement?',
+    's-podcast':   'How will financial advice change by the time I retire?'
+  };
+  var SPK='<svg class="spk" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
+  Object.keys(ASK).forEach(function(id){
+    var sec=document.getElementById(id); if(!sec) return;
+    var card=sec.querySelector('.cell-card') || sec.querySelector('.qcard'); if(!card || card.querySelector('.ai-ask')) return;
+    var a=document.createElement('a'); a.className='ai-ask'; a.href='#'; a.dataset.ask=ASK[id];
+    a.innerHTML=SPK+'<span>'+ASK[id]+'</span><span class="arr">›</span>';
+    card.appendChild(a);
+  });
+  document.addEventListener('click', function(e){
+    var a=e.target.closest('.hm-page .ai-ask'); if(!a) return;
+    e.preventDefault(); e.stopPropagation();
+    if(window.__guided && window.__guided.ask) window.__guided.ask(a.dataset.ask);
+  }, true);
 })();
 </script>
