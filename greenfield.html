@@ -4063,7 +4063,7 @@ body.mpanel-open{ overflow:hidden; }
 
         <div class="snap-ultra">
         <div class="rm-head snap-uhead">
-          <button type="button" class="rm-dd" aria-haspopup="listbox" aria-expanded="false"><span class="rm-dd-l">Summary</span><svg class="caret" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="rm-dd" aria-haspopup="listbox" aria-expanded="false"><span class="rm-dd-l">My financial journey</span><svg class="caret" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <button type="button" class="rm-filter" aria-label="Filters"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="rm-menu" hidden></div><div class="rm-fmenu" hidden></div>
@@ -4705,11 +4705,25 @@ body.mpanel-open{ overflow:hidden; }
     <!-- ============ Welcome ============ -->
     <section class="welcome">
       <h2>Welcome back, Marshall!</h2>
+      <!-- ---------- NEXT BEST ACTION: one move, beside the welcome. Rotates through the top notifications. ---------- -->
+      <aside id="s-next" class="nba-mini" aria-label="Next best action" aria-live="polite">
+        <span class="nba-big-ic" id="nbaIcon" aria-hidden="true"></span>
+        <div class="nba-txt">
+          <div class="nba-kicker">Next best action</div>
+          <div class="nba-title" id="nbaTitle"></div>
+          <p class="nba-say" id="nbaSay"></p>
+        </div>
+        <a class="btn btn-green nba-cta" id="nbaCta" href="#" data-hm-go="plan">Plan it</a>
+      </aside>
       <button class="reset" id="resetLayout" type="button" hidden>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 108-8 8 8 0 00-5.7 2.3L4 8.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4v4.6h4.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Reset layout
       </button>
     </section>
+    <!-- ============ TOP STRIP: a full-width, thin slot any section can be dragged into ============ -->
+    <div class="topzone dropzone" data-zone="top" id="zoneTop" aria-label="Full-width strip">
+    </div>
+
     <!-- ============ 2 × 2 SECTION GRID ============ -->
     <div class="grid2">
 
@@ -4754,6 +4768,108 @@ body.mpanel-open{ overflow:hidden; }
           </div>
         </div>
       </section>
+
+      <!-- ---------- YOUR QUESTIONS (moved from the full-width zone) ---------- -->
+      <section id="s-questions" class="hm-cell">
+      <div class="cell-head">
+        <div>
+          <div class="sec-eyebrow"><b>05</b>Your questions</div>
+          <h3>Your questions, answered</h3>
+        </div>
+        <a class="headlink" href="#" data-hm-go="ask">Ask something else <span>&rarr;</span></a>
+      </div>
+
+      <div class="qcard">
+        <div class="qrow">
+          <div class="qtxt">
+            <h4>Can I retire?</h4>
+            <p>Your plan shows a path to retirement.</p>
+            <a class="textlink" href="#" data-hm-go="plan"><svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5 13.9 11.4 12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg>How we got here &#8599;</a>
+          </div>
+          <span class="qbadge yes"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Yes</span>
+        </div>
+        <div class="qrow">
+          <div class="qtxt">
+            <h4>Am I on track to retire at 65?</h4>
+            <p>Your projections clear your target with room to spare.</p>
+            <a class="textlink" href="#" data-hm-go="ins:worth"><svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5 13.9 11.4 12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg>See the numbers &#8599;</a>
+          </div>
+          <span class="qbadge track">On track</span>
+        </div>
+        <div class="qrow hl">
+          <div class="qtxt">
+            <h4>How much can I spend?</h4>
+            <p>Your safe spending range, adjusted as markets move.</p>
+            <a class="textlink" href="#" data-hm-go="ins:safe">See your guardrails &#8599;</a>
+          </div>
+          <span class="qbadge dark">$8,200 / mo</span>
+        </div>
+        <div class="qrow">
+          <div class="qtxt">
+            <h4>Am I paying too much lifetime tax?</h4>
+            <p>There may be room to lower your lifetime tax bill.</p>
+            <a class="textlink" href="#" data-hm-go="ins:taxes">See your tax score &#8599;</a>
+          </div>
+          <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
+        </div>
+        <div class="qrow">
+          <div class="qtxt">
+            <h4>Am I taking Social Security at the right time?</h4>
+            <p>Your claiming age is worth a second look.</p>
+            <a class="textlink" href="#" data-hm-go="optimize"><svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5 13.9 11.4 12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg>Explore claiming ages &#8599;</a>
+          </div>
+          <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
+        </div>
+        <div class="qrow">
+          <div class="qtxt">
+            <h4>Should I do Roth conversions?</h4>
+            <p>Conversions could help — it depends on your timing.</p>
+            <a class="textlink" href="#" data-hm-go="stress"><svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5 13.9 11.4 12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg>Run the scenario &#8599;</a>
+          </div>
+          <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
+        </div>
+
+        <div id="qExtra">
+          <div class="qrow">
+            <div class="qtxt">
+              <h4>Will my money last if I live to 95?</h4>
+              <p>Your plan funds a longer life with a cushion left over.</p>
+              <a class="textlink" href="#" data-hm-go="ins:last">See longevity scenarios &#8599;</a>
+            </div>
+            <span class="qbadge yes"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Yes</span>
+          </div>
+          <div class="qrow">
+            <div class="qtxt">
+              <h4>Can I afford long-term care?</h4>
+              <p>A three-year care event is the biggest hole in your plan.</p>
+              <a class="textlink" href="#" data-hm-go="stress">Model a care event &#8599;</a>
+            </div>
+            <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
+          </div>
+          <div class="qrow">
+            <div class="qtxt">
+              <h4>Am I saving enough right now?</h4>
+              <p>You're at 11% — you were at 14% a year ago.</p>
+              <a class="textlink" href="#" data-hm-go="ins:savings">Review your savings rate &#8599;</a>
+            </div>
+            <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
+          </div>
+          <div class="qrow">
+            <div class="qtxt">
+              <h4>What will I leave behind?</h4>
+              <p>Your plan projects an estate at age 91.</p>
+              <a class="textlink" href="#" data-hm-go="ins:worth">See your legacy &#8599;</a>
+            </div>
+            <span class="qbadge dark">$7.2M</span>
+          </div>
+        </div>
+
+        <button class="qmore" id="qMore" aria-expanded="false" aria-controls="qExtra">
+          <span id="qMoreLabel">See more questions</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </section>
 
       <!-- ---------- 03 STRENGTHEN MY PLAN ---------- -->
       <section id="s-strengthen" class="hm-cell">
@@ -4854,7 +4970,7 @@ body.mpanel-open{ overflow:hidden; }
           </div>
 
           <div class="jwrap" id="jwrap"><svg class="jchart" id="jchart" viewBox="0 0 510 300" role="img" aria-label="Projected net worth for the selected plan, 2026 to 2071"></svg></div>
-          <p class="card-sub" id="planNote">Your plan holds up in 87 of 100 simulated market histories, and leaves $7.2M at age 91.</p>
+          <p class="card-sub" id="planNote">Holds up in 87 of 100 market histories, leaving $7.2M at age 91.</p>
 
           <div class="todaystrip">
             <span class="eyebrow">This plan</span>
@@ -4921,106 +5037,7 @@ body.mpanel-open{ overflow:hidden; }
 
     <!-- ============ 05 YOUR QUESTIONS ============ -->
     <div class="fullzone dropzone" data-zone="full" id="zoneFull">
-    <section id="s-questions" class="hm-cell">
-      <div class="cell-head">
-        <div>
-          <div class="sec-eyebrow"><b>05</b>Your questions</div>
-          <h3>Your questions, answered</h3>
-        </div>
-        <a class="headlink" href="#" data-hm-go="ask">Ask something else <span>&rarr;</span></a>
-      </div>
-
-      <div class="qcard">
-        <div class="qrow">
-          <div class="qtxt">
-            <h4>Can I retire?</h4>
-            <p>Your plan shows a path to retirement.</p>
-            <a class="textlink" href="#" data-hm-go="plan"><svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5 13.9 11.4 12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg>How we got here &#8599;</a>
-          </div>
-          <span class="qbadge yes"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Yes</span>
-        </div>
-        <div class="qrow">
-          <div class="qtxt">
-            <h4>Am I on track to retire at 65?</h4>
-            <p>Your projections clear your target with room to spare.</p>
-            <a class="textlink" href="#" data-hm-go="ins:worth"><svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5 13.9 11.4 12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg>See the numbers &#8599;</a>
-          </div>
-          <span class="qbadge track">On track</span>
-        </div>
-        <div class="qrow hl">
-          <div class="qtxt">
-            <h4>How much can I spend?</h4>
-            <p>Your safe spending range, adjusted as markets move.</p>
-            <a class="textlink" href="#" data-hm-go="ins:safe">See your guardrails &#8599;</a>
-          </div>
-          <span class="qbadge dark">$8,200 / mo</span>
-        </div>
-        <div class="qrow">
-          <div class="qtxt">
-            <h4>Am I paying too much lifetime tax?</h4>
-            <p>There may be room to lower your lifetime tax bill.</p>
-            <a class="textlink" href="#" data-hm-go="ins:taxes">See your tax score &#8599;</a>
-          </div>
-          <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
-        </div>
-        <div class="qrow">
-          <div class="qtxt">
-            <h4>Am I taking Social Security at the right time?</h4>
-            <p>Your claiming age is worth a second look.</p>
-            <a class="textlink" href="#" data-hm-go="optimize"><svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5 13.9 11.4 12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg>Explore claiming ages &#8599;</a>
-          </div>
-          <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
-        </div>
-        <div class="qrow">
-          <div class="qtxt">
-            <h4>Should I do Roth conversions?</h4>
-            <p>Conversions could help — it depends on your timing.</p>
-            <a class="textlink" href="#" data-hm-go="stress"><svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5 13.9 11.4 12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg>Run the scenario &#8599;</a>
-          </div>
-          <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
-        </div>
-
-        <div id="qExtra">
-          <div class="qrow">
-            <div class="qtxt">
-              <h4>Will my money last if I live to 95?</h4>
-              <p>Your plan funds a longer life with a cushion left over.</p>
-              <a class="textlink" href="#" data-hm-go="ins:last">See longevity scenarios &#8599;</a>
-            </div>
-            <span class="qbadge yes"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Yes</span>
-          </div>
-          <div class="qrow">
-            <div class="qtxt">
-              <h4>Can I afford long-term care?</h4>
-              <p>A three-year care event is the biggest hole in your plan.</p>
-              <a class="textlink" href="#" data-hm-go="stress">Model a care event &#8599;</a>
-            </div>
-            <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
-          </div>
-          <div class="qrow">
-            <div class="qtxt">
-              <h4>Am I saving enough right now?</h4>
-              <p>You're at 11% — you were at 14% a year ago.</p>
-              <a class="textlink" href="#" data-hm-go="ins:savings">Review your savings rate &#8599;</a>
-            </div>
-            <span class="qbadge maybe"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maybe</span>
-          </div>
-          <div class="qrow">
-            <div class="qtxt">
-              <h4>What will I leave behind?</h4>
-              <p>Your plan projects an estate at age 91.</p>
-              <a class="textlink" href="#" data-hm-go="ins:worth">See your legacy &#8599;</a>
-            </div>
-            <span class="qbadge dark">$7.2M</span>
-          </div>
-        </div>
-
-        <button class="qmore" id="qMore" aria-expanded="false" aria-controls="qExtra">
-          <span id="qMoreLabel">See more questions</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </section>
+    
     </div>
 
     <!-- ============ prototype notes ============ -->
@@ -8492,6 +8509,7 @@ document.addEventListener('click', function(e){
           const fields=ed.querySelectorAll('.field');
           const getVal=f=>{ const t=f?.querySelector('.vtext'); return t && !t.classList.contains('is-placeholder') ? t.textContent.trim() : ''; };
           const nmEl=row.querySelector('.nm'), amtEl=row.querySelector('.amt'), tyEl=row.querySelector('.ty');
+          const _prevAmt=amtEl ? parseFloat((amtEl.textContent||'').replace(/[^0-9.]/g,'')) : NaN;
           // Name is always the first text field; amount is the last field whose label looks monetary
           if(nmEl && fields[0]){ const v=getVal(fields[0]); if(v) nmEl.textContent=v; }
           if(tyEl){
@@ -8514,6 +8532,8 @@ document.addEventListener('click', function(e){
               if(digits && /^[0-9.,\s$]+$/.test(v)){
                 var n=parseFloat(digits);
                 amtEl.textContent = isNaN(n) ? ('$'+v.replace(/[^0-9.,]/g,'')) : ('$'+n.toLocaleString('en-US'));
+                /* let the page react to the committed number (the debt payoff celebration listens for this) */
+                window.dispatchEvent(new CustomEvent('boldin:rowsaved', {detail:{row:row, amount:isNaN(n)?null:n, was:_prevAmt}}));
               } else { amtEl.textContent = /^\$/.test(v) ? v : ('$'+v.replace(/[^0-9.,]/g,'')); }
             }
           }
@@ -16664,8 +16684,24 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
   };
 
   var CHIPS=['What if I retire a year earlier?','Where is my biggest tax move?','Is my cash buffer too big?'];
+
+  /* the nine home-page questions, answered in full when they arrive as a question */
+  var HOME_QA = {
+    'can i retire?': 'Yes. On today’s numbers you retire in 2045 at 65 with $8,200 a month to spend, and the plan holds in 87 of 100 market histories. The two things that would change that answer are a long bear market in your first five years, or claiming Social Security early. Both are in your control.',
+    'am i on track to retire at 65?': 'You are. Savings reach about $4.1M by 2045, your target was $3.6M, so there is roughly $500k of room. If you kept saving at today’s rate you could stop as early as 2043 and still clear the line.',
+    'how much can i spend?': 'Your safe range is $9,030 to $10,461 a month. The plan uses $8,200, which is why confidence sits at 87% rather than closer to 75%. If markets have a good run, the guardrail lets that number rise; if they fall, it asks you to trim about $400 a month for a year or two.',
+    'am i paying too much lifetime tax?': 'A little. The Rollover IRA will throw off required withdrawals from 75 that push you into the 22% bracket. Converting about $17,800 to Roth each December while you are in the 12% band saves roughly $61,000 of lifetime tax. That window closes when Social Security starts.',
+    'am i taking social security at the right time?': 'Probably not yet. Claiming at 67 gives you $2,980 a month. Waiting to 70 gives $3,700, for life, and lifts plan confidence from 87% to 93%. The gap years are covered by the brokerage and the Roth conversions, so the wait costs you little.',
+    'should i do roth conversions?': 'Yes, in measured amounts. Six Decembers of about $17,800 each, all under the 12% bracket. It lowers your required withdrawals later, trims Medicare premiums from 2030, and leaves more to Lily tax-free. The first window is open now.',
+    'will my money last if i live to 95?': 'It does. At 95 the median path still shows $5.1M, and even the weakest 10% of markets leave you funded. Longevity is not the risk in this plan; sequence of returns in the first retirement years is, and the cash buffer covers that.',
+    'can i afford long-term care?': 'Partly. The plan can absorb about three years of care at $9,500 a month from the brokerage and home equity, but a longer stay would eat into what Lily keeps. A hybrid life and care policy at around $320 a month closes that gap, and the Roth conversions make room for the premium.',
+    'am i saving enough right now?': 'You are saving 11% of pay, down from 14% two years ago. At 11% you still make 2045. At 14% you reach the same number by 2043, or retire in 2045 with $600 more a month. The 401(k) match covers the first 4%, so the cheapest move is moving 6% to 8%.',
+    'what will i leave behind?': 'On the median path, about $7.2M at 91, most of it in the Roth and the home, which pass tax-free. The Rollover IRA is the one piece heirs would owe tax on, and the December conversions shrink it every year. Your estate documents are still the missing input; adding them is the next step.'
+  };
   function aiReply(q){
-    q=(q||'').toLowerCase();
+    var key=(q||'').trim().toLowerCase();
+    if(HOME_QA[key]) return HOME_QA[key];
+    q=key;
     if(/earlier|sooner|62\b|2027/.test(q)) return 'Retiring at 62 instead of 63 moves confidence from 87% to 81%. Still solid. Delaying Social Security to 70 buys most of it back, so the two moves pair well.';
     if(/tax|roth|convert/.test(q)) return 'The window is the six low bracket Decembers before Social Security starts. Converting about $40,000 a year to Roth keeps roughly $61,000 that would otherwise go to taxes.';
     if(/cash|buffer|runway/.test(q)) return 'Fourteen months of cash is safety with a little drag. Holding twelve and laddering the rest into short Treasuries earns about $1,900 a year without giving up reach.';
@@ -17133,7 +17169,7 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
   }
   /* ---------- ULTRA: flagship interactive infographic (Plan snapshot) ---------- */
   var ULTRA={ view:'portfolio', range:'to92', dollars:'future' };
-  var U_VIEWS=[['portfolio','Summary'],['networth','Net worth'],['cashflow','Cash flow'],['confidence','Confidence']];
+  var U_VIEWS=[['portfolio','My financial journey'],['networth','Net worth'],['cashflow','Cash flow'],['confidence','Confidence']];
   var U_RANGES=[['y10','10 years'],['y20','20 years'],['to92','To age 92']];
   var U_DOLLARS=[['future','Future dollars'],['real',"Today's dollars"]];
   function uLerp(keys, y){
@@ -17278,7 +17314,10 @@ body.ai-collapsing .snap-seg{ flex-wrap:wrap; }
 
   function refresh(){ decorate(visibleRail()); enhanceAskbar(); ultraRender(); }
   window.__railAI={ refresh:refresh, expand:expand, collapse:function(){ setExpanded(false); },
-                    isOpen:function(){ return document.body.classList.contains('ai-expanded'); } };
+                    isOpen:function(){ return document.body.classList.contains('ai-expanded'); },
+                    send:sendChat, push:function(m){ CHAT.push(m); renderAll(); },
+                    prune:function(sub){ for(var i=CHAT.length-1;i>=0;i--){ if(CHAT[i].html && CHAT[i].html.indexOf(sub)!==-1) CHAT.splice(i,1); } },
+                    isBusy:function(){ return replying; } };
   if(document.readyState!=='loading') refresh(); else document.addEventListener('DOMContentLoaded', refresh);
   document.addEventListener('click', function(e){
     if(e.target.closest && e.target.closest('.topnav nav.modes a, [data-goto], [data-view]')) setTimeout(refresh, 260);
@@ -21526,6 +21565,134 @@ renderBrowse(); markPlans();
   border-radius:var(--r-pill); padding:8px 15px; cursor:pointer;}
 .hm-page .reset:hover{border-color:var(--ink); color:var(--ink);}
 .hm-page .fullzone{margin-top:var(--s-16);}
+/* ---- top strip: full width, thin. Empty it takes no room; while a section is being
+   dragged it shows itself as a target; with a section in it the content lays out sideways ---- */
+.hm-page .topzone{margin:0 0 var(--s-6); min-height:0; border-radius:var(--r-card);}
+.hm-page .topzone:not(:has(.hm-cell)){margin:0; height:0;}
+.hm-page.is-dragging .topzone:not(:has(.hm-cell)){height:auto; min-height:64px; margin:0 0 var(--s-6);
+  border:2px dashed var(--hairline-strong); display:grid; place-items:center;
+  font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted);}
+.hm-page.is-dragging .topzone:not(:has(.hm-cell))::before{content:'Drop here for a full-width strip';}
+.hm-page.is-dragging .topzone:not(:has(.hm-cell)) .drop-ph{display:none;}
+.hm-page .topzone .drop-ph{margin-bottom:0; min-height:64px;}
+.hm-page .topzone .hm-cell{margin-bottom:0;}
+.hm-page .topzone .hm-cell + .hm-cell{margin-top:var(--s-5);}
+.hm-page .topzone .cell-head{min-height:0; margin-bottom:10px; align-items:center;}
+.hm-page .topzone .cell-head > div{display:flex; align-items:baseline; gap:12px;}
+.hm-page .topzone .cell-head h3{font-size:18px;}
+.hm-page .topzone .cell-card{padding:10px 20px;}
+/* next best action lives here by default: one label, three moves, three buttons */
+.hm-page .topzone #s-next .cell-head{margin-bottom:8px; min-height:0;}
+.hm-page .topzone #s-next .cell-head h3{display:none;}
+.hm-page .topzone #s-next .sec-eyebrow{font-size:12px;}
+.hm-page .topzone .nba-ic, .hm-page .topzone .nba-h .chip{display:none;}
+.hm-page .topzone .nba-h{font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block;}
+/* next best action: three moves side by side, title and button on one line */
+.hm-page .topzone .nba{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 24px; padding:4px 20px;}
+.hm-page .topzone .nba-row{border-bottom:0; border-right:1px solid var(--hairline); padding:13px 24px 13px 0;
+  grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto; gap:0 14px; align-items:center;}
+.hm-page .topzone .nba-row:last-child{border-right:0; padding-right:0;}
+.hm-page .topzone .nba-t p{display:none;}
+.hm-page .topzone .nba-cta{grid-column:2; padding:0; border:0; background:none; color:var(--green-cta); font-size:14px; white-space:nowrap;}
+.hm-page .topzone .nba-cta::after{content:' \2192';}
+.hm-page .topzone .nba-cta:hover{text-decoration:underline; color:var(--green-cta);}
+/* your questions: the first three, side by side */
+.hm-page .topzone .qcard{display:grid; grid-template-columns:repeat(3,minmax(0,1fr));}
+.hm-page .topzone .qrow{border-bottom:0; border-right:1px solid var(--hairline); padding:14px 20px;}
+.hm-page .topzone .qrow:nth-child(n+4), .hm-page .topzone #qExtra, .hm-page .topzone #qMore{display:none;}
+.hm-page .topzone .qrow:nth-child(3){border-right:0;}
+.hm-page .topzone .qtxt p{display:none;}
+/* get support: the three paths in a row */
+.hm-page .topzone .paths{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 24px;}
+.hm-page .topzone .path{border-bottom:0; border-right:1px solid var(--hairline);}
+.hm-page .topzone .path:last-child{border-right:0;}
+.hm-page .topzone .cell-card > .card-sub, .hm-page .topzone .cell-card > p{display:none;}
+/* my money / my plans: headline only, the big visuals stay in the column view */
+.hm-page .topzone #s-money .tmap-wrap, .hm-page .topzone #s-money .tlegend,
+.hm-page .topzone #s-plans .jwrap, .hm-page .topzone #s-plans #planNote{display:none;}
+.hm-page .topzone #s-money .money-total, .hm-page .topzone #s-plans .money-total{margin-bottom:4px;}
+@media (max-width:900px){
+  .hm-page .topzone .nba, .hm-page .topzone .qcard, .hm-page .topzone .paths{grid-template-columns:1fr;}
+  .hm-page .topzone .nba-row, .hm-page .topzone .qrow, .hm-page .topzone .path{border-right:0; border-bottom:1px solid var(--hairline);}
+}
+
+/* ---- next best action: arrives after a beat, then rotates; the icon swaps with each move ---- */
+.hm-page .nba-mini{opacity:1; transform:none;}
+.hm-page .nba-mini .nba-big-ic{transition:background .35s ease, box-shadow .35s ease;}
+.hm-page .nba-mini .nba-big-ic.warn{background:#E0A800; box-shadow:0 0 0 3px #FBF1D3;}
+.hm-page .nba-mini .nba-big-ic.teal{background:var(--teal); box-shadow:0 0 0 3px #E3EEF0;}
+.hm-page .nba-mini .nba-big-ic svg{transition:transform .45s var(--ease-out), opacity .3s ease;}
+.hm-page .nba-mini.swap .nba-big-ic svg{transform:rotate(-90deg) scale(.4); opacity:0;}
+.hm-page .nba-mini .nba-txt > *{transition:opacity .28s ease, transform .35s var(--ease-out);}
+.hm-page .nba-mini.swap .nba-txt > *{opacity:0; transform:translateY(6px);}
+.hm-page .nba-mini .nba-cta{position:relative; transition:transform .2s var(--ease-out), background .2s;}
+.hm-page .nba-mini .nba-cta::before{content:''; position:absolute; inset:-3px; border-radius:inherit; border:2px solid var(--green); opacity:0; pointer-events:none;}
+.hm-page .nba-mini .nba-cta.ping::before{animation:nbaPing .9s cubic-bezier(.22,1,.36,1) 1;}
+.hm-page .nba-mini .nba-cta{gap:4px;}
+.hm-page .nba-mini .nba-cta::after{content:'\2192'; display:inline-block; margin-left:0; transition:transform .2s var(--ease-out);}
+.hm-page .nba-mini .nba-cta:hover{transform:none;}
+.hm-page .nba-mini .nba-cta:hover::after{transform:translateX(3px);}
+@keyframes nbaPing{0%{opacity:.45; transform:scale(1);} 100%{opacity:0; transform:scale(1.14);}}
+@media (prefers-reduced-motion:reduce){
+  .hm-page .nba-mini .nba-cta.ping::before{animation:none;}
+  .hm-page .nba-mini.swap .nba-big-ic svg, .hm-page .nba-mini.swap .nba-txt > *{transition:none;}
+}
+/* ---- Next best action, compact, beside the welcome ---- */
+/* the welcome row shares the 2-column grid, so the card is exactly as wide as My Plans */
+.hm-page .welcome{display:grid; grid-template-columns:1fr 1fr; gap:var(--s-6); align-items:center; margin:-14px 0 -8px;}   /* tighter above and below the welcome row */
+.hm-page .welcome h2{grid-column:1;}
+.hm-page .welcome .reset{grid-column:1; grid-row:2; justify-self:start;}
+.hm-page .nba-mini{grid-column:2; display:flex; align-items:center; gap:12px; margin:0; max-width:none; min-width:0;
+  padding:8px 10px 8px 10px; border:1px solid var(--hairline); border-radius:var(--r-card); background:#fff;}
+.hm-page .nba-mini .nba-big-ic{width:36px; height:36px; box-shadow:0 0 0 3px var(--eggshell); margin-left:3px;}
+.hm-page .nba-mini .nba-big-ic svg{width:18px; height:18px;}
+.hm-page .nba-mini .nba-kicker{font-size:10px; margin-bottom:1px;}
+.hm-page .nba-mini .nba-title{font-size:14.5px; font-weight:600; line-height:1.3; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.hm-page .nba-mini .nba-title b{font-weight:700;}
+.hm-page .nba-mini .nba-say{font-size:12.5px; color:var(--text-secondary); margin:1px 0 0; line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.hm-page .nba-mini .nba-cta{flex:none; white-space:nowrap; padding:8px 14px; font-size:13px;}
+@media (max-width:1100px){ .hm-page .welcome{grid-template-columns:1fr;} .hm-page .nba-mini{grid-column:1;} .hm-page .welcome .reset{grid-row:auto;} }
+@media (max-width:600px){ .hm-page .nba-mini{flex-wrap:wrap;} .hm-page .nba-mini .nba-cta{margin-left:54px;} }
+/* ---- (older strip rules) ---- */
+.hm-page .nba-big-ic{width:56px; height:56px; flex:none; border-radius:var(--r-pill); background:var(--green); color:#fff; display:grid; place-items:center;
+  box-shadow:0 0 0 6px var(--eggshell);}
+.hm-page .nba-big-ic svg{width:28px; height:28px;}
+.hm-page .nba-txt{flex:1; min-width:0;}
+.hm-page .nba-kicker{font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-cta); margin-bottom:4px;}
+.hm-page .nba-title{font-size:21px; font-weight:600; line-height:1.25; letter-spacing:-0.2px; margin:0 0 4px;}
+.hm-page .topzone #s-next .nba-one{gap:22px; padding:2px 0;}
+.hm-page .topzone #s-next .nba-say{font-size:15px; color:var(--text-secondary);}
+.hm-page .topzone #s-next .nba{padding:18px 24px 18px 26px;}
+.hm-page .nba-one{display:flex; align-items:center; gap:28px; padding:6px 0;}
+.hm-page .nba-say{font-size:16px; line-height:1.5; color:var(--ink); margin:0; flex:1; min-width:0;}
+.hm-page .nba-say b{font-weight:600;}
+.hm-page .nba-one .nba-cta{flex:none; white-space:nowrap; padding:11px 20px; font-size:14px;}
+.hm-page .topzone #s-next .nba{display:block; padding:14px 24px;}
+.hm-page .topzone .nba-one .nba-cta{border:0; background:#127154; color:#fff; padding:11px 20px; font-size:14px;}
+.hm-page .topzone .nba-one .nba-cta::after{content:none;}
+.hm-page .topzone .nba-one .nba-cta:hover{background:#0F5D45; text-decoration:none; color:#fff;}
+@media (max-width:900px){ .hm-page .nba-one{flex-direction:column; align-items:flex-start; gap:14px;} }
+/* (older three-row rules, kept for the column rendering) */
+.hm-page .nba{padding-top:6px; padding-bottom:6px;}
+.hm-page .nba-row{display:grid; grid-template-columns:38px minmax(0,1fr) auto; gap:14px; align-items:center;
+  padding:18px 0; border-bottom:1px solid var(--hairline);}
+.hm-page .nba-row:last-child{border-bottom:0;}
+.hm-page .nba-ic{width:38px; height:38px; border-radius:var(--r-pill); background:var(--eggshell); color:var(--green-cta);
+  display:grid; place-items:center;}
+.hm-page .nba-ic svg{width:18px; height:18px;}
+.hm-page .nba-ic.warn{background:#FBF1D3; color:#8A6A00;}
+.hm-page .nba-t{min-width:0;}
+.hm-page .nba-h{font-size:16px; font-weight:600; line-height:1.35; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.hm-page .nba-h .chip{font-size:12px; padding:2px 9px;}
+.hm-page .nba-t p{font-size:13.5px; color:var(--text-secondary); line-height:1.5; margin-top:4px;}
+.hm-page .nba-cta{white-space:nowrap; padding:9px 16px; font-size:14px;}
+.hm-page .nba-cta:hover{border-color:var(--green-cta); color:var(--green-cta);}
+@media (max-width:1180px){
+  .hm-page .nba-row{grid-template-columns:38px minmax(0,1fr);}
+  .hm-page .nba-cta{grid-column:2; justify-self:start;}
+}
+
+.hm-page .fullzone:not(:has(.hm-cell)){display:none;}
 .hm-page .cell-tools{display:flex; align-items:center; gap:6px; margin-left:auto; opacity:0;
   transition:opacity 160ms var(--ease-out);}
 .hm-page .hm-cell:hover .cell-tools, .hm-page .hm-cell:focus-within .cell-tools, .hm-page .hm-cell.pinned .cell-tools{opacity:1;}
@@ -21555,7 +21722,7 @@ renderBrowse(); markPlans();
 .hm-page .wtag .dot{width:8px; height:8px; border-radius:50%; background:var(--green);}
 .hm-page .sec-head{display:flex; align-items:flex-end; justify-content:space-between; gap:var(--s-4); margin-bottom:var(--s-5);}
 .hm-page .sec-eyebrow{font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted);}
-.hm-page .sec-eyebrow b{color:var(--green); font-weight:700; margin-right:8px;}
+.hm-page .sec-eyebrow b{display:none;}   /* section numbers dropped from the eyebrows */
 .hm-page .sec-head h3{font-size:30px; font-weight:600; letter-spacing:-0.4px; margin-top:6px; line-height:1.15;}
 .hm-page .sec-head .sub{font-size:16px; color:var(--text-secondary); margin-top:6px; max-width:60ch;}
 .hm-page .headlink{font-size:14px; font-weight:600; color:var(--ink); text-decoration:none; white-space:nowrap;
@@ -21591,7 +21758,7 @@ renderBrowse(); markPlans();
 .hm-page .chip.warn{color:#8A6A00; background:#FBF1D3;}
 .hm-page .chip.flat{color:var(--text-secondary); background:#F1F2F4;}
 .hm-page .grid2{display:grid; grid-template-columns:1fr 1fr; gap:var(--s-6); align-items:start;}
-.hm-page .col{display:flex; flex-direction:column; gap:var(--s-8); min-width:0;}
+.hm-page .col{display:flex; flex-direction:column; gap:var(--s-16); min-width:0;}   /* 64px between stacked sections */
 .hm-page .hm-cell{display:flex; flex-direction:column; min-width:0;}
 .hm-page .cell-head{display:flex; align-items:flex-end; justify-content:space-between; gap:var(--s-3); margin-bottom:var(--s-3); min-height:46px;}
 .hm-page .cell-head h3{font-size:21px; font-weight:600; letter-spacing:-0.3px; margin-top:4px; line-height:1.2;}
@@ -21653,6 +21820,16 @@ body:not([data-view="home"]) .hm-tip{ display:none !important; }
 .hm-tip.on{opacity:1; transform:translateY(0);}
 .hm-tip .th{font-weight:600; display:block;}
 .hm-tip .ts{color:rgba(255,255,255,.72); font-size:12px;}
+.hm-tip{max-width:272px; padding:12px 14px 11px; line-height:1.42;}
+.hm-tip .th{font-size:14px; display:flex; justify-content:space-between; gap:12px; align-items:baseline;}
+.hm-tip .th .thv{font-weight:600; font-variant-numeric:tabular-nums;}
+.hm-tip .ts{display:block; margin-top:1px;}
+.hm-tip .tdelta{display:inline-block; margin-top:7px; color:#9FDFC6; font-weight:600; font-size:12.5px; font-variant-numeric:tabular-nums;}
+.hm-tip .tgrow{margin-top:7px; font-size:12.5px; color:rgba(255,255,255,.9);}
+.hm-tip .tact{margin-top:9px; padding-top:9px; border-top:1px solid rgba(255,255,255,.16); font-size:12.5px; color:#fff;}
+.hm-tip .tact .tl{display:block; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#9FDFC6; margin-bottom:3px;}
+.hm-tip .tcta{display:inline-block; margin-top:8px; font-size:12px; font-weight:600; color:#A4E8CE;}
+.hm-page .tnode{cursor:pointer;}
 .hm-page .tfoot{font-size:13px; color:var(--text-muted); margin-top:10px;}
 .hm-page .ctrl{border-top:1px solid var(--hairline); padding-top:var(--s-5); margin-top:var(--s-5);}
 .hm-page .readout{gap:var(--s-4) !important;}
@@ -21706,6 +21883,14 @@ body:not([data-view="home"]) .hm-tip{ display:none !important; }
 .hm-page .plan-total .big{white-space:nowrap;}
 .hm-page #s-plans .jwrap{margin-top:16px;}            /* same gap as eyebrow → treemap on the left */
 .hm-page #s-plans .todaystrip{margin-top:25.3px;}     /* squares "This plan" with "Right now" */
+/* 03 Strengthen my plan is hidden for now */
+.hm-page #s-strengthen{display:none;}
+/* the Right now / This plan stat rows are hidden for now */
+.hm-page .todaystrip{display:none;}
+.hm-page #s-plans #planNote{padding-bottom:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}   /* one line */
+/* legend on one line: four items share the width */
+.hm-page #s-money .tlegend{flex-wrap:nowrap; justify-content:space-between; gap:0 10px; font-size:12.5px; padding-bottom:1.25px;}
+.hm-page #s-money .tlegend > *{white-space:nowrap;}
 .hm-page .ptrack{display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
   scrollbar-width:none; -ms-overflow-style:none; outline:none;}
 .hm-page .ptrack::-webkit-scrollbar{display:none;}
@@ -21825,8 +22010,9 @@ var tip = document.getElementById('tip');
 function showTip(e, html){
   tip.innerHTML = html; tip.classList.add('on');
   var x = e.clientX + 14, y = e.clientY + 16;
-  if(x + 240 > window.innerWidth) x = e.clientX - 240;
-  if(y + 90 > window.innerHeight) y = e.clientY - 90;
+  var tw = tip.offsetWidth || 272, th = tip.offsetHeight || 180;
+  if(x + tw > window.innerWidth - 8) x = e.clientX - tw - 14;
+  if(y + th > window.innerHeight - 8) y = e.clientY - th - 14;
   tip.style.left = x + 'px'; tip.style.top = y + 'px';
 }
 function hideTip(){ tip.classList.remove('on'); }
@@ -21848,6 +22034,34 @@ var GROUPS = [
     items:[{n:'Roth IRA', v:52000},{n:'HSA', v:14000}] }
 ];
 GROUPS.forEach(function(g){ g.v = g.items.reduce(function(s,i){ return s + i.v; }, 0); });
+/* what each tile says on hover: the quarter's move, where it is headed, and the one thing to do next */
+var TILE_INSIGHT = {
+  '401(k)':         { d:6100, grow:'Left alone, about {g} by 2045 before a single new contribution.',
+                      act:'You put in 6%. Moving to 8% adds roughly $94k by retirement, and the match covers part of it.' },
+  'Rollover IRA':   { d:1900, grow:'About {g} by 2045, every dollar of it taxed on the way out.',
+                      act:'$17,800 fits under the 12% bracket this December. Converting it now saves tax for life.' },
+  'Home equity':    { d:3200, grow:'The mortgage clears in 2039. From then on the whole home is yours, outright.',
+                      act:'A paid-off home means $2,350 a month your retirement never has to fund.' },
+  'Brokerage':      { d:2400, grow:'About {g} by 2045 at today\u2019s pace, and it is yours to tap any time.',
+                      act:'It sits at 71% stocks against a 60/40 target. Rebalance before the next statement.' },
+  'Cash & savings': { d:1100, grow:'That is 5.5 months of spending in reach. A real cushion.',
+                      act:'Keep six months here. Anything above that earns more in the Ally savings at 4.1%.' },
+  'Roth IRA':       { d:1700, grow:'Tax-free to about {g} by 2045. Nothing owed, ever.',
+                      act:'Your $3,450 monthly surplus fills this year\u2019s $8,000 limit by December.' },
+  'HSA':            { d:600,  grow:'Triple tax advantage: about {g} by 2045 if you let it ride.',
+                      act:'Pay medical bills from cash and let this compound untouched.' }
+};
+function tileTip(it, g){
+  var ins = TILE_INSIGHT[it.n] || {};
+  var pct = (it.v / TOTAL * 100).toFixed(1);
+  var grow = (ins.grow || '').replace('{g}', money(Math.round(it.v * 3.0)));
+  return '<span class="th">' + it.n + ' <span class="thv">' + money(it.v) + '</span></span>' +
+         '<span class="ts">' + pct + '% of net worth · ' + g.name + '</span>' +
+         (ins.d ? '<span class="tdelta">\u25B2 ' + '$' + ins.d.toLocaleString('en-US') + ' this quarter</span>' : '') +
+         (grow ? '<div class="tgrow">' + grow + '</div>' : '') +
+         (ins.act ? '<div class="tact"><span class="tl">Next step</span>' + ins.act + '</div>' : '') +
+         '<span class="tcta">Open account \u2192</span>';
+}
 var TOTAL = GROUPS.reduce(function(s,g){ return s + g.v; }, 0);
 
 /* squarified treemap: lays items [{v:...}] into rect, sets .rect on each */
@@ -21929,10 +22143,10 @@ function drawTreemap(){
       el.style.background = tint(g.color, idx === 0 ? 1 : (idx === 1 ? 0.78 : 0.6));
       el.innerHTML = '<span class="tn">' + it.n + '</span><span class="tv">' + money(it.v) + '</span>';
       var pct = (it.v / TOTAL * 100).toFixed(1);
-      el.addEventListener('mousemove', function(e){
-        showTip(e, '<span class="th">' + it.n + '</span>' + money(it.v) + ' · ' + pct + '% of net worth<br><span class="ts">' + g.name + ' — ' + g.note + '</span>');
-      });
+      el.addEventListener('mousemove', function(e){ showTip(e, tileTip(it, g)); });
       el.addEventListener('mouseleave', hideTip);
+      el.setAttribute('role','button'); el.tabIndex = 0;
+      el.addEventListener('click', function(){ hideTip(); var a=document.querySelector('.hm-page [data-hm-go="today:assets"]'); if(a) a.click(); });
       host.appendChild(el);
     });
   });
@@ -21946,7 +22160,7 @@ function drawTreemap(){
 var PLANS = [
   { name:'Baseline', chip:'Retiring 2045 · age 65', status:'On track', cls:'up',
     score:87, spend:'$8,200', spendSub:'Safe range', longevity:'$7.2M', retire:2045,
-    note:'Your plan holds up in 87 of 100 simulated market histories, and leaves $7.2M at age 91.',
+    note:'Holds up in 87 of 100 market histories, leaving $7.2M at age 91.',
     series:[[2026,620],[2028,810],[2030,1030],[2032,1290],[2034,1590],[2036,1930],[2038,2320],
             [2040,2760],[2042,3260],[2044,3810],[2045,4100],[2046,4310],[2048,4720],[2050,5090],
             [2053,5580],[2056,6000],[2060,6520],[2064,6960],[2068,7080],[2071,7200]] },
@@ -22172,7 +22386,7 @@ var ICON_PIN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><pa
 var ICON_GRIP = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>';
 
 var zones = Array.prototype.slice.call(document.querySelectorAll('.dropzone'));
-var cells = Array.prototype.slice.call(document.querySelectorAll('.hm-cell'));
+var cells = Array.prototype.slice.call(document.querySelectorAll('.hm-cell')).filter(function(c){ return !c.classList.contains('nba-fixed'); });
 var HOME = cells.map(function(c){ return { el:c, zone:c.closest('.dropzone'), next:c.nextElementSibling }; });
 var ph = document.createElement('div');
 ph.className = 'drop-ph';
@@ -22234,6 +22448,7 @@ cells.forEach(function(cell){
   grip.addEventListener('mouseup',   function(){ cell.draggable = false; });
   cell.addEventListener('dragstart', function(e){
     dragged = cell;
+    var hp=cell.closest('.hm-page'); if(hp) hp.classList.add('is-dragging');
     ph.style.height = cell.offsetHeight + 'px';
     setTimeout(function(){ cell.classList.add('dragging'); }, 0);
     e.dataTransfer.effectAllowed = 'move';
@@ -22241,6 +22456,7 @@ cells.forEach(function(cell){
   });
   cell.addEventListener('dragend', function(){
     cell.classList.remove('dragging');
+    var hp=cell.closest('.hm-page'); if(hp) hp.classList.remove('is-dragging');
     cell.draggable = false;
     if(ph.parentNode) ph.parentNode.removeChild(ph);
     dragged = null;
@@ -22425,6 +22641,10 @@ body.ai-expanded:not(.ai-fullscreen) .layout.hm-page.on > .rail.hm-ai-rail{ disp
 body.ai-fullscreen .layout.hm-page.on > .rail.hm-ai-rail{ display:grid; }
 body.ai-fullscreen .layout.hm-page > *:not(.rail){ display:none; }
 body.ai-fullscreen .layout.hm-page{ padding-top:calc(73px + var(--s-3)); padding-bottom:var(--s-6); }
+/* the rail's sticky offset (top:96px) must not push the full-screen chat down */
+body.ai-fullscreen .layout.hm-page.on > .rail.hm-ai-rail{ top:auto; }
+body.ai-fullscreen .layout.hm-page{ padding-top:calc(73px + 22px); }
+body.ai-fullscreen .layout.hm-page .rail-ai-head{ margin-top:0; }   /* title sits level with the shrink and close controls */
 #chatRail .quota{ font-size:15px; }
 #chatRail .quota .qr{ flex-direction:column; align-items:flex-start; gap:2px; margin-bottom:8px; }
 #chatRail .quota .qr b{ font-size:17px; }
@@ -23343,7 +23563,7 @@ const peakGap=Math.min(...M.map(r=>r.surplus));const peakYear=M.find(r=>r.surplu
 
 /* ---------- chapter defs ---------- */
 const CH=[
- {id:'first',t:'Start here',q:'Am I on track?',chip:['good',`${pct(K.success)} on track`]},
+ {id:'first',t:'Summary',q:'Am I on track?',chip:['good',`${pct(K.success)} on track`]},
  {id:'budget',t:'Budgeting',q:'Where does my money come from and go?',chip:['good',`${money(K.surplus0)}/yr left over`]},
  {id:'retire',t:'Retirement',q:'Will my money last?',chip:['warn','Watch 2037–2041']},
  {id:'invest',t:'Investments',q:'Am I invested for what’s ahead?',chip:['warn','7 pts above target']},
@@ -23655,4 +23875,252 @@ function close(){
   else boot();
 })();
 
+</script>
+
+<script>
+/* "All notifications" on the Next best action card opens the bell menu */
+document.addEventListener('click', function(e){
+  var a=e.target.closest && e.target.closest('[data-nba-notify]'); if(!a) return;
+  e.preventDefault(); var b=document.getElementById('alertBtn'); if(b) b.click();
+});
+</script>
+
+<script>
+/* Next best action: shows up a few seconds after the home page, then rotates through
+   the top notifications. Each move brings its own icon; the button pings when it lands. */
+(function(){
+  var box=document.getElementById('s-next'); if(!box) return;
+  var ic=document.getElementById('nbaIcon'), tt=document.getElementById('nbaTitle'), say=document.getElementById('nbaSay'), cta=document.getElementById('nbaCta');
+  var SV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  var MOVES=[
+    { tone:'', icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 3.5l1.9 5.9 5.9 1.9-5.9 1.9L11 19.1l-1.9-5.9-5.9-1.9 5.9-1.9z"/><path d="M18.5 2.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" opacity=".9"/><path d="M18 16.5l.6 1.7 1.7.6-1.7.6-.6 1.7-.6-1.7-1.7-.6 1.7-.6z" opacity=".75"/></svg>',
+      t:'Convert <b>$17,800</b> to Roth before December ends', s:'Still under the 12% bracket this year.', cta:'Plan it', go:'plan' },
+    { tone:'warn', icon:SV+'<path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>',
+      t:'Rebalance the brokerage back to <b>60/40</b>', s:'It has drifted to 71% stocks, three years from retirement.', cta:'See the fix', go:'optimize' },
+    { tone:'teal', icon:SV+'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 14h6M9 17h4"/></svg>',
+      t:'Fill in the <b>three</b> empty plan inputs', s:'Estate, long-term care, home equity. Each moves your score.', cta:'Finish inputs', go:'plan' }
+  ];
+  var i=0, timer=null, started=false, paused=false;
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function paint(m){
+    ic.innerHTML=m.icon; ic.className='nba-big-ic'+(m.tone?' '+m.tone:'');
+    tt.innerHTML=m.t; say.textContent=m.s; cta.textContent=m.cta; cta.setAttribute('data-hm-go', m.go);
+  }
+  function ping(){ if(reduce) return; cta.classList.remove('ping'); void cta.offsetWidth; cta.classList.add('ping'); }
+  function show(n){
+    i=(n+MOVES.length)%MOVES.length;
+    if(reduce){ paint(MOVES[i]); return; }
+    box.classList.add('swap');
+    setTimeout(function(){ paint(MOVES[i]); box.classList.remove('swap'); setTimeout(ping, 420); }, 320);
+  }
+  function loop(){ clearInterval(timer); timer=setInterval(function(){ if(!paused && document.body.dataset.view==='home') show(i+1); }, 9000); }
+  function start(){
+    if(started) return; started=true;
+    paint(MOVES[0]);
+    loop();
+  }
+  box.addEventListener('mouseenter', function(){ paused=true; });
+  box.addEventListener('mouseleave', function(){ paused=false; });
+  if(document.body.dataset.view==='home' || !document.body.dataset.view) start();
+  window.addEventListener('boldin:view', function(e){ if(e.detail==='home') start(); });
+})();
+</script>
+
+<!-- ===================== Debt paid off: confetti + a moment to mark it ===================== -->
+<style id="payoffCSS">
+#payoffCanvas{position:fixed; inset:0; z-index:400; pointer-events:none;}
+.payoff{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(.96); z-index:401; width:min(440px, calc(100vw - 32px));
+  background:#fff; border:1px solid var(--hairline); border-radius:20px; padding:30px 30px 26px; text-align:center;
+  opacity:0; transition:opacity .32s ease, transform .5s cubic-bezier(.22,1,.36,1);}
+.payoff.on{opacity:1; transform:translate(-50%,-50%) scale(1);}
+.payoff .pk{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green-cta);}
+.payoff .pt{font-size:28px; font-weight:600; line-height:1.15; letter-spacing:-.3px; margin:10px 0 8px; color:var(--ink);}
+.payoff .pt b{color:var(--green-cta); font-weight:600;}
+.payoff .ps{font-size:16px; line-height:1.5; color:var(--text-secondary); margin:0 auto; max-width:34ch; border:0 !important; background:none !important; padding:0 !important; box-shadow:none !important;}
+.payoff .pa{display:flex; justify-content:center; gap:12px; margin-top:22px;}
+.payoff .pa button{height:46px; padding:0 22px; border-radius:999px; font:600 15px var(--font); cursor:pointer;}
+.payoff .pa .go{background:#127154; color:#fff; border:0;}
+.payoff .pa .go:hover{background:#0F5D45;}
+.payoff .pa .ok{background:#fff; color:var(--ink); border:1px solid var(--hairline-strong);}
+.payoff .pa .ok:hover{border-color:var(--ink);}
+.payoff .ring{width:64px; height:64px; margin:0 auto 14px; border-radius:50%; background:var(--green); color:#fff; display:grid; place-items:center;
+  box-shadow:0 0 0 8px var(--eggshell);}
+.payoff .ring svg{width:30px; height:30px;}
+.payoff-dim{position:fixed; inset:0; z-index:399; background:rgba(16,24,44,.18); opacity:0; transition:opacity .3s;}
+.payoff-dim.on{opacity:1;}
+.acct .paidoff{display:inline-flex; align-items:center; gap:5px; margin-left:8px; height:20px; padding:0 8px; border-radius:999px;
+  background:var(--eggshell); color:var(--green-cta); font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; vertical-align:middle;}
+@media (prefers-reduced-motion:reduce){ .payoff{transition:none;} }
+</style>
+<script>
+(function(){
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var COLORS=['#04B477','#A4E8CE','#FBBD04','#FB5004','#0D3F4A','#EBF8F2'];
+  function confetti(){
+    if(reduce) return;
+    var c=document.createElement('canvas'); c.id='payoffCanvas'; document.body.appendChild(c);
+    var ctx=c.getContext('2d'), W=c.width=innerWidth, H=c.height=innerHeight;
+    var P=[]; for(var i=0;i<180;i++){
+      var fromLeft=i%2===0;
+      P.push({x:fromLeft? -10 : W+10, y:H*0.55+Math.random()*H*0.2,
+        vx:(fromLeft?1:-1)*(7+Math.random()*9), vy:-(9+Math.random()*9),
+        w:6+Math.random()*6, h:8+Math.random()*8, r:Math.random()*Math.PI, vr:(Math.random()-.5)*.3,
+        col:COLORS[i%COLORS.length], drag:0.985+Math.random()*0.01});
+    }
+    var t0=performance.now();
+    (function frame(now){
+      var t=(now-t0)/1000; ctx.clearRect(0,0,W,H);
+      P.forEach(function(p){ p.vx*=p.drag; p.vy=p.vy*p.drag+0.42; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.globalAlpha=Math.max(0, Math.min(1, 3.2-t));
+        ctx.fillStyle=p.col; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); });
+      if(t<3.4) requestAnimationFrame(frame); else c.remove();
+    })(t0);
+  }
+  function celebrate(row, was){
+    var name=(row.querySelector('.nm')||{}).textContent||'this debt';
+    var amt=isFinite(was)&&was>0 ? '$'+Math.round(was).toLocaleString('en-US') : '';
+    var dim=document.createElement('div'); dim.className='payoff-dim';
+    var card=document.createElement('div'); card.className='payoff'; card.setAttribute('role','dialog'); card.setAttribute('aria-label','Debt paid off');
+    card.innerHTML='<div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>'
+      +'<div class="pk">Milestone</div>'
+      +'<div class="pt">You paid off <b>'+name+'</b></div>'
+      +'<p class="ps">'+(amt? amt+' of debt, gone for good. ' : '')+'That is one less payment every month for the rest of your life, and your plan just got stronger because of it.</p>'
+      +'<div class="pa"><button type="button" class="go">See what it changes</button><button type="button" class="ok">Keep going</button></div>';
+    document.body.appendChild(dim); document.body.appendChild(card);
+    requestAnimationFrame(function(){ dim.classList.add('on'); card.classList.add('on'); });
+    confetti();
+    function close(){ dim.classList.remove('on'); card.classList.remove('on'); setTimeout(function(){ dim.remove(); card.remove(); }, 350); }
+    card.querySelector('.ok').addEventListener('click', close);
+    card.querySelector('.go').addEventListener('click', function(){ close();
+      var a=document.querySelector('.topnav nav.modes a[data-view="plan"]'); if(a) a.click(); });
+    dim.addEventListener('click', close);
+    document.addEventListener('keydown', function esc(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown', esc); } });
+    var nm=row.querySelector('.nm');
+    if(nm && !nm.querySelector('.paidoff')){ var chip=document.createElement('span'); chip.className='paidoff'; chip.textContent='Paid off'; nm.appendChild(chip); }
+  }
+  window.addEventListener('boldin:rowsaved', function(e){
+    var d=e.detail||{}, row=d.row; if(!row || d.amount!==0) return;
+    var acc=row.closest('.acc'); var h=acc && acc.querySelector('h2');
+    if(!h || !/debt/i.test(h.textContent)) return;
+    if(!(d.was>0)) return;
+    setTimeout(function(){ celebrate(row, d.was); }, 250);
+  });
+})();
+</script>
+
+<!-- ===================== Your questions: a guided walk through the chat ===================== -->
+<style id="guidedQCSS">
+.aic-next{margin-top:12px; display:flex; flex-direction:column; gap:8px; align-items:flex-start;}
+.aic-next .nl{font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-secondary);}
+.aic-next .nq{display:inline-flex; align-items:center; gap:10px; max-width:100%; text-align:left; padding:12px 16px; border-radius:14px;
+  border:1px solid var(--hairline-strong); background:#fff; font:600 16px var(--font); color:var(--ink); cursor:pointer;
+  transition:border-color .15s, background .15s;}
+.aic-next .nq:hover{border-color:var(--green-cta); background:#F4FBF7;}
+.aic-next .nq .arr{color:var(--green-cta); flex:none;}
+.aic-next .nrow{display:flex; gap:8px; flex-wrap:wrap;}
+.aic-next .nskip{background:none; border:0; font:500 14px var(--font); color:var(--text-secondary); cursor:pointer; padding:6px 4px;}
+.aic-next .nskip:hover{color:var(--ink); text-decoration:underline;}
+.aic-next .nprog{font-size:12.5px; color:var(--text-secondary);}
+.hm-page .qrow{cursor:pointer;}
+.hm-page .qrow:hover .qtxt h4{color:var(--green-cta);}
+</style>
+<script>
+(function(){
+  var Q=['Can I retire?','Am I on track to retire at 65?','How much can I spend?','Am I paying too much lifetime tax?',
+         'Am I taking Social Security at the right time?','Should I do Roth conversions?','Will my money last if I live to 95?',
+         'Can I afford long-term care?','Am I saving enough right now?','What will I leave behind?'];
+  var done={}, active=false;
+  function nextAfter(q){
+    var i=Q.indexOf(q); for(var k=1;k<=Q.length;k++){ var c=Q[(i+k)%Q.length]; if(!done[c]) return c; } return null;
+  }
+  function count(){ return Object.keys(done).length; }
+  function ask(q){
+    if(!window.__railAI || !window.__railAI.send) return;
+    done[q]=true;
+    if(window.__railAI.prune) window.__railAI.prune('aic-next');   /* one prompt at a time: the earlier one leaves when it is used */
+    window.__railAI.send(q);
+    /* the answer lands about a second later; offer the next question right under it */
+    var wait=setInterval(function(){
+      if(window.__railAI.isBusy()) return; clearInterval(wait);
+      setTimeout(function(){
+        var n=nextAfter(q);
+        var html = n
+          ? '<div class="aic-next"><span class="nl">Next question</span>'
+            +'<button type="button" class="nq" data-gq="'+n.replace(/"/g,'&quot;')+'">'+n+' <span class="arr">→</span></button>'
+            +'<div class="nrow"><button type="button" class="nskip" data-gskip="'+n.replace(/"/g,'&quot;')+'">Skip this one</button>'
+            +'<span class="nprog">'+count()+' of '+Q.length+' answered</span></div></div>'
+          : '<div class="aic-next"><span class="nl">All '+Q.length+' answered</span>'
+            +'<span class="nprog">That is the whole list. Ask me anything else, or we can go deeper on any of them.</span></div>';
+        window.__railAI.push({role:'ai', text:'', html:html});
+      }, 350);
+    }, 120);
+  }
+  /* opened from the home page: leaving full screen means going back to the home page, not to a docked chat */
+  var fromHome=false;
+  new MutationObserver(function(){
+    if(!fromHome) return;
+    var c=document.body.classList;
+    if(c.contains('ai-fullscreen')) return;
+    fromHome=false;
+    var tries=0;
+    (function settle(){
+      tries++;
+      /* the exit animation holds the chat busy for a moment; keep asking until the dock closes */
+      if(c.contains('ai-expanded') && window.__railAI) window.__railAI.collapse();
+      if(c.contains('ai-expanded') && tries<12){ setTimeout(settle, 220); return; }
+      if(document.body.dataset.view!=='home'){ var a=document.querySelector('.topnav nav.modes a[data-view="home"]'); if(a) a.click(); }
+      window.scrollTo({top:0, behavior:'auto'});
+    })();
+  }).observe(document.body, {attributes:true, attributeFilter:['class']});
+  function openAndAsk(q){
+    var ai=window.__railAI; if(!ai) return;
+    ai.expand();
+    var tries=0;
+    (function fs(){
+      tries++;
+      if(!document.body.classList.contains('ai-fullscreen') && window.setFullscreen) window.setFullscreen(true);
+      if(document.body.classList.contains('ai-fullscreen') || tries>8){ fromHome=document.body.dataset.view==='home'; setTimeout(function(){ ask(q); }, 420); }
+      else setTimeout(fs, 260);
+    })();
+  }
+  document.addEventListener('click', function(e){
+    var nq=e.target.closest('.aic-next .nq'); if(nq){ ask(nq.dataset.gq); return; }
+    var sk=e.target.closest('.aic-next .nskip'); if(sk){ var n=nextAfter(sk.dataset.gskip); done[sk.dataset.gskip]=true;
+      if(n){ ask(n); } return; }
+    var row=e.target.closest('.hm-page .qrow'); if(!row) return;
+    var h=row.querySelector('h4'); if(!h) return;
+    e.preventDefault(); e.stopPropagation();
+    openAndAsk(h.textContent.trim());
+  }, true);
+})();
+</script>
+
+<!-- ===================== Home chart -> My Plans with the route open; closing the route returns home ===================== -->
+<style id="homeRouteCSS">.hm-page #jwrap{cursor:pointer;} .hm-page #jwrap:hover .jchart{filter:brightness(.98);}</style>
+<script>
+(function(){
+  var fromHome=false;
+  document.addEventListener('click', function(e){
+    var j=e.target.closest('.hm-page #jwrap'); if(!j) return;
+    if(e.target.closest('.hm-mile')) return;           /* milestone dots keep their own tooltips */
+    var a=document.querySelector('.topnav nav.modes a[data-view="plan"]'); if(a) a.click();
+    var tries=0;
+    (function open(){
+      tries++;
+      if(window.__sum2 && document.body.dataset.view==='plan'){ window.__sum2.open(); fromHome=true; }
+      else if(tries<10) setTimeout(open, 120);
+    })();
+  }, true);
+  new MutationObserver(function(){
+    if(!fromHome) return;
+    var c=document.body.classList;
+    if(c.contains('sum-open')) return;
+    fromHome=false;
+    /* closed by its own X or Escape while still on the plan page: go home. A nav click already moved on. */
+    if(document.body.dataset.view==='plan'){
+      var h=document.querySelector('.topnav nav.modes a[data-view="home"]'); if(h) h.click();
+      window.scrollTo({top:0, behavior:'auto'});
+    }
+  }).observe(document.body, {attributes:true, attributeFilter:['class']});
+})();
 </script>
