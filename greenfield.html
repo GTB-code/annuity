@@ -5009,6 +5009,34 @@ body.mpanel-open{ overflow:hidden; }
       </section>
 
       <!-- ---------- 04 GET SUPPORT ---------- -->
+
+      <!-- ---------- MY INVESTMENTS (mirrors the mobile block) ---------- -->
+      <section id="s-invest" class="hm-cell">
+        <div class="cell-head">
+          <div><div class="sec-eyebrow">My investments</div><h3>How you&#8217;re invested today</h3></div>
+          <a class="headlink" href="#" data-hm-go="today:invest">Details <span>&rarr;</span></a>
+        </div>
+        <div class="card card-pad cell-card">
+          <a class="inv-mini" href="#" data-hm-go="today:invest" aria-label="See how you are invested today">
+            <svg viewBox="0 0 90 90" class="inv-mini-donut" aria-hidden="true">
+              <circle cx="45" cy="45" r="34" fill="none" stroke="#E6F3EE" stroke-width="12"/>
+              <circle cx="45" cy="45" r="34" fill="none" stroke="#1D9E75" stroke-width="12" stroke-dasharray="81.2 132.4" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="34" fill="none" stroke="#0E3A44" stroke-width="12" stroke-dasharray="132.4 81.2" stroke-dashoffset="-81.2" transform="rotate(-90 45 45)"/>
+              <text x="45" y="42" font-size="15" font-weight="700" fill="#10182C" text-anchor="middle" font-family="DM Sans, sans-serif">62%</text>
+              <text x="45" y="55" font-size="8" fill="#5B6472" text-anchor="middle" font-family="DM Sans, sans-serif">stocks</text>
+            </svg>
+            <span class="inv-mini-txt">
+              <span class="inv-mini-h"><b>2 points</b> above your Moderate target.</span>
+              <span class="inv-mini-bars">
+                <span class="r"><i>Your mix</i><span class="bar"><em style="width:62%"></em></span><b>62 / 38</b></span>
+                <span class="r"><i>Target</i><span class="bar"><em style="width:60%"></em></span><b>60 / 40</b></span>
+              </span>
+              <span class="inv-mini-link">See how you&#8217;re invested today <span class="chev">&#8250;</span></span>
+            </span>
+          </a>
+        </div>
+      </section>
+
       <section id="s-support" class="hm-cell">
         <div class="cell-head">
           <div>
@@ -15526,6 +15554,1008 @@ body.fire-page .fire-side{ display:block; }
   svg.innerHTML=g;
 })();
 </script>
+
+<style id="invTodayCSS">
+/* ===== My Money: Explore your money + Investments: Today =====
+   Mirrors planner/investments-today, in greenfield's own idiom. */
+#sideNav .xm-div, #sideNav .xm-lab, #sideNav #xmNav{ display:none; }
+body[data-view="today"] [data-page="plan"] #sideNav .side-divider.xm-div{ display:block; margin-top:var(--s-5); }
+body[data-view="today"] #sideNav .xm-lab{ display:flex; }
+body[data-view="today"] #sideNav #xmNav{ display:block; }
+body[data-view="today"] #sideNav.xm-shut #xmNav{ display:none; }
+#sideNav.xm-shut [data-grp-chev="xm"] svg{ transform:none; }
+
+#invToday{ display:none; }
+body.inv-open .layout.page[data-page="plan"] > .center > #invToday{ display:block; }
+body.inv-open .layout.page[data-page="plan"] > .center > :not(#invToday){ display:none; }
+body.inv-open .layout.page[data-page="plan"] > .rail > :not(#invRail){ display:none; }
+#invRail{ display:none; }
+body.inv-open .layout.page[data-page="plan"] > .rail > #invRail{ display:block; }
+
+#invToday{ padding-bottom:var(--s-16); }
+#invToday .inv-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s-6); margin:0 0 var(--s-8); }
+#invToday .inv-eyebrow{ font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:#7A7D8C; margin-bottom:8px; }
+#invToday .inv-title{ font-size:34px; line-height:1.12; font-weight:400; color:var(--ink); margin:0 0 6px; }
+#invToday .inv-title em{ font-style:normal; color:var(--green-cta); }
+#invToday .inv-sub{ font-size:17px; color:var(--text-secondary); line-height:1.5; max-width:560px; margin:0; }
+#invToday .inv-tog{ display:inline-flex; flex:none; border:1px solid var(--hairline-strong); border-radius:999px; padding:3px; margin-top:6px; }
+#invToday .inv-tog button{ border:0; background:none; font:inherit; font-size:14px; font-weight:600; color:var(--text-secondary); padding:7px 16px; border-radius:999px; cursor:pointer; }
+#invToday .inv-tog button.on{ background:var(--ink); color:#fff; }
+
+#invToday .inv-sec{ margin-top:var(--s-10); }
+#invToday .inv-sec:first-of-type{ margin-top:0; }
+#invToday .inv-num{ font-size:12px; font-weight:700; letter-spacing:.08em; color:var(--green-cta); margin-bottom:6px; }
+#invToday .inv-sec h2{ font-size:23px; font-weight:600; letter-spacing:0; color:var(--ink); margin:0; }
+#invToday .inv-sec .sub{ font-size:15px; color:var(--text-secondary); margin:4px 0 var(--s-4); line-height:1.5; }
+#invToday .inv-card{ background:#fff; border:1px solid var(--hairline); border-radius:var(--r-card); padding:var(--s-6); }
+
+/* 01 donut + legend */
+#invToday .inv-mix{ display:grid; grid-template-columns:200px 1fr; gap:var(--s-8); align-items:center; }
+#invToday .inv-donut{ width:200px; height:200px; display:block; }
+#invToday .inv-leg{ display:flex; flex-direction:column; gap:0; }
+#invToday .inv-lrow{ display:grid; grid-template-columns:12px 1fr auto; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--hairline); font-size:15.5px; color:var(--ink); }
+#invToday .inv-lrow:last-child{ border-bottom:0; }
+#invToday .inv-lrow .dot{ width:12px; height:12px; border-radius:4px; }
+#invToday .inv-lrow b{ font-weight:600; font-variant-numeric:tabular-nums; }
+#invToday .inv-lrow.sub{ padding:6px 0 6px 26px; font-size:14px; color:var(--text-secondary); border-bottom:0; }
+#invToday .inv-lrow.sub .dot{ width:9px; height:9px; border-radius:3px; }
+#invToday .inv-note{ margin-top:var(--s-5); padding-top:var(--s-4); border-top:1px solid var(--hairline); font-size:14.5px; color:var(--text-secondary); line-height:1.5; display:flex; align-items:center; justify-content:space-between; gap:var(--s-4); flex-wrap:wrap; }
+#invToday .inv-note b{ color:var(--ink); font-weight:600; }
+
+/* 02 mix vs target */
+#invToday .inv-bar{ margin-bottom:16px; }
+#invToday .inv-bar .top{ display:flex; justify-content:space-between; font-size:15px; margin-bottom:8px; }
+#invToday .inv-bar .top b{ font-weight:600; font-variant-numeric:tabular-nums; }
+#invToday .inv-bar .bar{ height:14px; border-radius:999px; background:#E6F3EE; overflow:hidden; position:relative; }
+#invToday .inv-bar .bar i{ display:block; height:100%; background:#0E3A44; border-radius:999px; }
+#invToday .inv-bar.target .bar i{ background:#1D9E75; }
+#invToday .inv-axis{ display:flex; justify-content:space-between; font-size:12.5px; color:#7A7D8C; margin-top:-4px; }
+#invToday .inv-cap{ margin:var(--s-5) 0 0; font-size:15.5px; line-height:1.55; color:var(--text-secondary); }
+#invToday .inv-cap b{ color:var(--ink); font-weight:600; }
+#invToday .inv-fine{ margin:8px 0 0; font-size:13px; color:#7A7D8C; line-height:1.5; }
+#invToday .inv-foot{ display:flex; align-items:center; gap:var(--s-4); margin-top:var(--s-5); }
+#invToday .inv-btn{ display:inline-flex; align-items:center; gap:8px; border:1.5px solid var(--hairline-strong); background:#fff; color:var(--ink); font:inherit; font-size:14.5px; font-weight:600; border-radius:999px; padding:10px 20px; cursor:pointer; text-decoration:none; }
+#invToday .inv-btn:hover{ border-color:var(--ink); }
+#invToday .inv-btn.green{ background:#127154; color:#fff; border-color:#127154; }
+#invToday .inv-btn.green:hover{ background:#0F5D45; }
+#invToday .inv-link{ color:var(--green-cta); font-size:14.5px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:5px; }
+#invToday .inv-link:hover{ text-decoration:underline; }
+
+/* 03 accounts */
+#invToday .inv-accts{ background:#fff; border:1px solid var(--hairline); border-radius:var(--r-card); overflow:hidden; }
+#invToday .inv-acct{ border-bottom:1px solid var(--hairline); }
+#invToday .inv-acct:last-child{ border-bottom:0; }
+#invToday .inv-ahd{ display:flex; align-items:center; justify-content:space-between; gap:var(--s-4); padding:16px 20px 12px; }
+#invToday .inv-ahd .nm{ font-size:17px; font-weight:600; color:var(--ink); }
+#invToday .inv-ahd .nm i{ font-style:normal; font-weight:400; color:var(--text-secondary); margin-left:6px; }
+#invToday .inv-ahd .chips{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+#invToday .inv-ahd .amt{ font-size:17px; font-weight:500; font-variant-numeric:tabular-nums; }
+#invToday .inv-chip{ display:inline-flex; align-items:center; gap:5px; font-size:12.5px; font-weight:600; padding:3px 10px; border-radius:999px; background:#F1F2F4; color:var(--text-secondary); line-height:1.3; }
+#invToday .inv-chip.ok{ background:#E7F7F0; color:#0E794E; }
+#invToday .inv-chip.warn{ background:#FBF1D3; color:#8A6A00; }
+#invToday .inv-chip.add{ background:#EAF1FF; color:#1D4ED8; }
+#invToday .inv-abar{ display:flex; height:7px; margin:0 20px 14px; border-radius:999px; overflow:hidden; gap:2px; }
+#invToday .inv-abar i{ display:block; height:100%; }
+#invToday .inv-abar.empty{ background:repeating-linear-gradient(90deg,#E6E8EB 0 6px,transparent 6px 10px); }
+#invToday .inv-tgl{ display:flex; align-items:center; gap:6px; width:100%; border:0; border-top:1px solid var(--hairline); background:#FAFBFB; font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); padding:11px 20px; cursor:pointer; }
+#invToday .inv-tgl:hover{ background:#F3F6F5; }
+#invToday .inv-body{ padding:4px 20px 18px; }
+#invToday .inv-mixcard{ background:#F9FAFB; border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+#invToday .inv-mixcard .t{ font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:#7A7D8C; margin-bottom:6px; }
+#invToday .inv-mixcard .r{ display:flex; justify-content:space-between; font-size:14.5px; padding:5px 0; }
+#invToday .inv-mixcard .r b{ font-weight:600; font-variant-numeric:tabular-nums; }
+#invToday .inv-warn{ border:1px solid #F1D98A; background:#FFF8E1; border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+#invToday .inv-warn b{ display:block; font-size:14.5px; color:var(--ink); margin-bottom:4px; }
+#invToday .inv-warn p{ margin:0 0 10px; font-size:14px; color:var(--text-secondary); line-height:1.5; }
+#invToday .inv-prow{ display:flex; align-items:center; justify-content:space-between; gap:var(--s-4); padding:10px 0; border-bottom:1px solid var(--hairline); }
+#invToday .inv-prow:last-child{ border-bottom:0; }
+#invToday .inv-prow .pn{ font-size:15px; font-weight:600; color:var(--ink); }
+#invToday .inv-prow .pc{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+#invToday .inv-prow .pv{ font-size:15px; font-weight:500; font-variant-numeric:tabular-nums; }
+#invToday .inv-addrow{ display:flex; align-items:center; gap:12px; margin-top:12px; font-size:14px; color:var(--text-secondary); }
+#invToday .inv-addrow .inv-link{ font-size:14px; }
+#invToday .inv-addt{ font-size:15.5px; font-weight:600; color:var(--ink); }
+#invToday .inv-adds{ font-size:14px; color:var(--text-secondary); margin:2px 0 12px; }
+#invToday .inv-opts{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+#invToday .inv-opt{ display:flex; flex-direction:column; gap:8px; text-align:left; border:1px solid var(--hairline-strong); background:#fff; border-radius:12px; padding:14px; font:inherit; cursor:pointer; }
+#invToday .inv-opt:hover{ border-color:var(--ink); }
+#invToday .inv-opt .ic{ width:30px; height:30px; border-radius:8px; background:#E7F7F0; color:#0E794E; display:flex; align-items:center; justify-content:center; }
+#invToday .inv-opt b{ font-size:14.5px; color:var(--ink); display:block; }
+#invToday .inv-opt b em{ font-style:normal; font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#0E794E; margin-left:6px; }
+#invToday .inv-opt i{ font-style:normal; font-size:13px; color:var(--text-secondary); line-height:1.45; }
+
+/* 04 insights */
+#invToday .inv-soon{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s-4); }
+#invToday .inv-soon > div{ background:#fff; border:1px solid var(--hairline); border-radius:var(--r-card); padding:18px 20px; }
+#invToday .inv-soon .tag{ display:inline-block; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#7A7D8C; background:#F1F2F4; border-radius:999px; padding:3px 9px; margin-bottom:10px; }
+#invToday .inv-soon b{ display:block; font-size:15.5px; color:var(--ink); margin-bottom:4px; }
+#invToday .inv-soon i{ font-style:normal; font-size:13.5px; color:var(--text-secondary); line-height:1.5; }
+
+/* right rail context */
+#invRail .rh{ margin-bottom:12px; }
+#invRail .inv-rail-q{ margin-top:var(--s-5); display:flex; flex-direction:column; gap:8px; }
+#invRail .inv-rail-q button{ text-align:left; font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:#fff; border:1px solid var(--hairline); border-radius:12px; padding:10px 12px; cursor:pointer; }
+#invRail .inv-rail-q button:hover{ border-color:var(--ink); }
+
+@media (max-width:1100px){
+  #invToday .inv-mix{ grid-template-columns:1fr; }
+  #invToday .inv-opts, #invToday .inv-soon{ grid-template-columns:1fr; }
+}
+</style>
+<script id="invTodayJS">
+/* Explore your money (My Money rail) + Investments: Today. Self-contained; data matches the mobile build. */
+(function(){
+  var plan=document.querySelector('.layout.page[data-page="plan"]'); if(!plan) return;
+  var nav=document.getElementById('sideNav'), center=plan.querySelector(':scope > .center'), rail=plan.querySelector(':scope > .rail');
+  if(!nav || !center) return;
+
+  /* ---- rail group ---- */
+  var xp=document.getElementById('xpNav'); var anchor=xp || nav.querySelector('.side-download') || null;
+  var grp=document.createElement('div'); grp.innerHTML=
+    '<div class="side-divider xm-div" role="presentation"></div>'+
+    '<div class="group-label xm-lab"><span class="grp-t">Explore your money</span><button type="button" class="grp-chev" data-grp-chev="xm" aria-label="Collapse Explore your money" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
+    '<ul id="xmNav" data-grp="xm">'+
+      '<li data-xm="invest" data-xp="invest"><span class="nav-dot done" aria-hidden="true"></span>Investments</li>'+
+      '<li data-xm="budget" data-xp="budget"><span class="nav-dot done" aria-hidden="true"></span>Budgeting</li>'+
+    '</ul>';
+  var frag=document.createDocumentFragment(); while(grp.firstChild) frag.appendChild(grp.firstChild);
+  if(xp) xp.parentNode.insertBefore(frag, xp.nextSibling); else nav.appendChild(frag);
+  var chev=nav.querySelector('[data-grp-chev="xm"]');
+  chev.addEventListener('click', function(e){ e.stopPropagation(); var shut=nav.classList.toggle('xm-shut'); chev.setAttribute('aria-expanded', shut?'false':'true'); });
+
+  /* ---- data (same as mobile) ---- */
+  var AC=[['Equities','#0E3A44',62,[['US large cap','#0E3A44',48],['Intl developed','#469DB2',14]]],['Fixed Income','#1D9E75',21],['Alternative Investment','#8A6FBF',0],['Cash & Cash Equivalents','#E3A14A',13],['Unclassified','#78716C',4]];
+  function donut(){
+    var R=92, r=64, cx=100, cy=100, a0=-Math.PI/2, out='';
+    AC.forEach(function(c){ var v=c[2]; if(!v) return; var a1=a0+v/100*2*Math.PI;
+      var x0=cx+R*Math.cos(a0), y0=cy+R*Math.sin(a0), x1=cx+R*Math.cos(a1), y1=cy+R*Math.sin(a1), xi0=cx+r*Math.cos(a1), yi0=cy+r*Math.sin(a1), xi1=cx+r*Math.cos(a0), yi1=cy+r*Math.sin(a0), lg=(a1-a0)>Math.PI?1:0;
+      out+='<path d="M'+x0.toFixed(1)+','+y0.toFixed(1)+' A'+R+','+R+' 0 '+lg+',1 '+x1.toFixed(1)+','+y1.toFixed(1)+' L'+xi0.toFixed(1)+','+yi0.toFixed(1)+' A'+r+','+r+' 0 '+lg+',0 '+xi1.toFixed(1)+','+yi1.toFixed(1)+' Z" fill="'+c[1]+'" stroke="#fff" stroke-width="2"/>'; a0=a1; });
+    return '<svg class="inv-donut" viewBox="0 0 200 200" aria-hidden="true">'+out+'<text x="100" y="92" font-size="12" fill="#5B6472" text-anchor="middle" font-family="DM Sans, sans-serif">Total portfolio</text><text x="100" y="116" font-size="22" font-weight="700" fill="#10182C" text-anchor="middle" font-family="DM Sans, sans-serif">$744.6K</text></svg>';
+  }
+  function legend(){ return '<div class="inv-leg">'+AC.map(function(c){ return '<div class="inv-lrow"><span class="dot" style="background:'+c[1]+'"></span><span>'+c[0]+'</span><b>'+c[2]+'%</b></div>'+(c[3]?c[3].map(function(s){ return '<div class="inv-lrow sub"><span class="dot" style="background:'+s[1]+'"></span><span>'+s[0]+'</span><b>'+s[2]+'%</b></div>'; }).join(''):''); }).join('')+'</div>'; }
+  function mixbar(label,eq,val,cls){ return '<div class="inv-bar '+(cls||'')+'"><div class="top"><span>'+label+'</span><b>'+val+'</b></div><div class="bar"><i style="width:'+eq+'%"></i></div></div>'; }
+  function chip(t,k){ return '<span class="inv-chip '+(k||'')+'">'+t+'</span>'; }
+  var LINK='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5a4.6 4.6 0 0 0 6.5 0l2-2a4.6 4.6 0 0 0-6.5-6.5L11.2 6.3"/><path d="M13.5 10.5a4.6 4.6 0 0 0-6.5 0l-2 2a4.6 4.6 0 0 0 6.5 6.5l1.3-1.3"/></svg>';
+  var ACCTS=[
+    {n:'Fidelity Investments',ty:'401(k)',amt:'$296,000',st:'conn',upd:'Updated Sep 26',pos:12,mix:[['#0E3A44',52],['#469DB2',14],['#1D9E75',24],['#E3A14A',10]],
+      rows:[['Equities &middot; US large cap','$153,900'],['Fixed Income','$71,000'],['Equities &middot; Intl developed','$41,400'],['Cash & Cash Equivalents','$29,700']],
+      positions:[['FXAIX: Fidelity 500 Index','Equities &middot; US large cap','$112,400'],['FXNAX: Fidelity US Bond Index','Fixed Income','$71,000'],['FSPSX: Fidelity International Index','Equities &middot; Intl developed','$41,400'],['FSKAX: Fidelity Total Market Index','Equities &middot; US large cap','$41,500'],['SPAXX: Fidelity Government Money Market','Cash & Cash Equivalents','$29,700']]},
+    {n:'Vanguard',ty:'Rollover IRA',amt:'$142,000',st:'conn',upd:'Updated Sep 26',pos:3,mix:[['#0E3A44',60],['#1D9E75',40]],
+      rows:[['Equities &middot; US large cap','$85,200'],['Fixed Income','$56,800']],
+      positions:[['VTI: Vanguard Total Stock Market ETF','Equities &middot; US large cap','$85,200'],['BND: Vanguard Total Bond Market ETF','Fixed Income','$42,600'],['VTIP: Vanguard Short-Term TIPS ETF','Fixed Income','$14,200']]},
+    {n:'Schwab',ty:'Brokerage',amt:'$150,000',st:'mismatch',pos:6,mix:[['#0E3A44',58],['#469DB2',12],['#78716C',20],['#E3A14A',10]],
+      rows:[['Equities &middot; US large cap','$89,900'],['Unclassified','$31,000'],['Equities &middot; Intl developed','$18,600'],['Cash & Cash Equivalents','$15,500']],
+      warn:'Positions total <b>$155,000</b>. The balance in your plan is <b>$150,000</b>. Your forecast uses the balance, so the difference is not classified in the mix above.',
+      positions:[['SCHB: Schwab US Broad Market ETF','Equities &middot; US large cap','$62,300'],['AAPL: Apple Inc.','Equities &middot; US large cap','$27,600'],['SBSI: Southside Bancshares Inc.','Unclassified','$19,400'],['SCHF: Schwab International Equity ETF','Equities &middot; Intl developed','$18,600'],['SWVXX: Schwab Value Advantage Money','Cash & Cash Equivalents','$15,500'],['Trp Equity Income','Unclassified','$11,600']]},
+    {n:'Roth IRA',ty:'Tax-free',amt:'$95,000',st:'add'},
+    {n:'Ally Bank',ty:'Savings',amt:'$61,600',st:'cash'}
+  ];
+  function acct(a){
+    var head='<div class="inv-ahd"><div><div class="nm">'+a.n+'<i>'+a.ty+'</i></div><div class="chips">'+(a.st==='conn'?chip(LINK+'Connected','ok')+chip(a.upd):a.st==='mismatch'?chip('Positions don’t match balance','warn'):a.st==='add'?chip('Add positions','add'):chip('Cash & Cash Equivalents'))+'</div></div><div class="amt">'+a.amt+'</div></div>';
+    var bar=a.mix?'<div class="inv-abar">'+a.mix.map(function(m){ return '<i style="flex:'+m[1]+';background:'+m[0]+'"></i>'; }).join('')+'</div>':(a.st==='cash'?'<div class="inv-abar"><i style="flex:1;background:#E3A14A"></i></div>':'<div class="inv-abar empty"></div>');
+    var body='';
+    if(a.positions){
+      body='<div class="inv-body" hidden><div class="inv-mixcard"><div class="t">Asset mix</div>'+a.rows.map(function(r){ return '<div class="r"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'; }).join('')+'</div>'
+        +(a.warn?'<div class="inv-warn"><b>Your positions add up to more than this account’s balance</b><p>'+a.warn+'</p><button class="inv-btn" type="button" data-inv-toast="Balance set to $155,000">Set balance to $155,000</button></div>':'')
+        +'<div class="inv-pos">'+a.positions.map(function(q){ return '<div class="inv-prow"><div><div class="pn">'+q[0]+'</div><div class="pc">'+q[1]+'</div></div><div class="pv">'+q[2]+'</div></div>'; }).join('')+'</div>'
+        +'<div class="inv-addrow"><button class="inv-btn" type="button" data-inv-toast="Add position is next in the prototype">+ Add position</button><span>or <a class="inv-link" data-inv-toast="Import is next in the prototype">import instead</a></span></div></div>'
+        +'<button class="inv-tgl" type="button" data-inv-toggle data-n="'+a.pos+'">View '+a.pos+' positions <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+    } else if(a.st==='add'){
+      body='<div class="inv-body"><div class="inv-addt">Add positions</div><div class="inv-adds">Not included in the mix above until you add positions.</div><div class="inv-opts">'
+        +[['Connect this account','Positions and balances update automatically every day, no upkeep',true],['Upload a statement','We read it and ask you to confirm before anything changes',false],['Enter positions manually','Best for one or two holdings. You keep it current yourself',false]]
+          .map(function(o){ return '<button class="inv-opt" type="button" data-inv-toast="'+o[0]+' is next in the prototype"><span class="ic">'+LINK+'</span><b>'+o[0]+(o[2]?'<em>Recommended</em>':'')+'</b><i>'+o[1]+'</i></button>'; }).join('')+'</div></div>';
+    }
+    return '<div class="inv-acct">'+head+bar+body+'</div>';
+  }
+
+  /* ---- the page ---- */
+  var host=document.createElement('div'); host.id='invToday';
+  host.innerHTML=
+    '<div class="inv-top"><div><div class="inv-eyebrow">My Money &middot; Investments</div><h1 class="inv-title">How you&#8217;re <em>invested</em> today</h1><p class="inv-sub">Holdings across your accounts, combined, checked against your target, and kept up to date.</p></div>'
+    +'<div class="inv-tog" role="tablist" aria-label="Today or future"><button type="button" class="on">Today</button><button type="button" data-inv-future>Future</button></div></div>'
+    +'<div class="inv-sec"><div class="inv-num">01</div><h2>How are you invested today?</h2><p class="sub">Holdings across your accounts, combined and grouped by asset class.</p>'
+      +'<div class="inv-card"><div class="inv-mix">'+donut()+legend()+'</div><div class="inv-note"><span>Holdings information is available for <b>$683,000</b> of your <b>$744,600</b> across 5 accounts.</span><a class="inv-link" data-inv-jump="roth">Add positions to complete your picture &#8250;</a></div></div></div>'
+    +'<div class="inv-sec"><div class="inv-num">02</div><h2>Does your allocation match your target?</h2><p class="sub">Your classified holdings against the Moderate target in your plan.</p>'
+      +'<div class="inv-card">'+mixbar('Your mix',62,'62 / 38')+mixbar('Moderate target',60,'60 / 40','target')+'<div class="inv-axis"><span>More fixed income</span><span>More equities</span></div>'
+      +'<p class="inv-cap">Of the <b>$654,000</b> in holdings we can classify, your mix is <b>62% equities / 38% fixed income and cash</b>, 2 points above your Moderate target of 60 / 40.</p><p class="inv-fine">Alternatives, unclassified holdings, and balances without positions are not included in this comparison.</p>'
+      +'<div class="inv-foot"><button class="inv-btn" type="button" data-inv-details>View details</button><a class="inv-link" data-inv-ask="Should I rebalance to 60 / 40 now, or let it ride?">Ask Boldin AI about it &#8250;</a></div></div></div>'
+    +'<div class="inv-sec"><div class="inv-num">03</div><h2>Enter, review, or update your positions</h2><p class="sub">Review the investments in each account, or add missing holdings to make the picture above more accurate.</p>'
+      +'<div class="inv-accts" id="invAccts">'+ACCTS.map(acct).join('')+'</div>'
+      +'<div class="inv-foot"><a class="inv-link" data-inv-toast="CSV export is next in the prototype">Download all positions (CSV) &#8250;</a></div></div>'
+    +'<div class="inv-sec"><div class="inv-num">04</div><h2>Insights</h2><p class="sub">More ways to read your portfolio, coming as we build them out.</p><div class="inv-soon">'
+      +[['What you pay in fund fees','Total annual cost and which holdings drive it'],['Cash drag','What idle cash may be costing you in expected growth'],['Concentration risk','A flag when a lot rides on a single position']].map(function(x){ return '<div><span class="tag">Coming soon</span><b>'+x[0]+'</b><i>'+x[1]+'</i></div>'; }).join('')+'</div></div>';
+  center.appendChild(host);
+
+  if(rail){
+    var r=document.createElement('aside'); r.id='invRail'; r.setAttribute('aria-label','Helpful context');
+    r.innerHTML='<div class="rh">Two points over <span class="spark"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'
+      +'<div class="rail-ctx"><div class="ctx-eyebrow">Equities today</div><div class="ctx-figure">62%</div><p class="ctx-body">Close to your Moderate target. Three years from retirement, the question is less about today’s drift and more about the glide path you want from here.</p></div>'
+      +'<div class="inv-rail-q"><button type="button" data-inv-ask="Should I rebalance to 60 / 40 now, or let it ride?">Should I rebalance now?</button><button type="button" data-inv-ask="Which of my accounts should hold the bonds for tax reasons?">Which account should hold the bonds?</button><button type="button" data-inv-ask="What is the $31,000 unclassified at Schwab, and does it matter?">What is the unclassified $31k?</button></div>';
+    rail.appendChild(r);
+  }
+
+  /* ---- open / close ---- */
+  function setActive(id){ if(id) nav.querySelectorAll('li.active').forEach(function(li){ if(!li.closest('#xmNav')) li.classList.remove('active'); }); nav.querySelectorAll('#xmNav li').forEach(function(li){ li.classList.toggle('active', li.dataset.xm===id); }); }
+  function open(){
+    document.body.classList.remove('xp-open');
+    document.body.classList.add('inv-open');
+    setActive('invest');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function close(){ if(!document.body.classList.contains('inv-open')) return; document.body.classList.remove('inv-open'); setActive(null); }
+  window.__invToday={open:open, close:close, isOpen:function(){ return document.body.classList.contains('inv-open'); }};
+  /* the app's scroll spy keeps re-marking its own rows while the column is hidden; hold the line */
+  var holding=false;
+  new MutationObserver(function(){
+    if(holding || !document.body.classList.contains('inv-open')) return;
+    var stray=nav.querySelector('li.active:not([data-xm])'); if(!stray) return;
+    holding=true; setActive('invest'); holding=false;
+  }).observe(nav,{attributes:true, subtree:true, attributeFilter:['class']});
+
+  document.addEventListener('click', function(e){
+    var li=e.target.closest && e.target.closest('#xmNav li'); if(!li) return;
+    e.preventDefault(); e.stopPropagation();
+    if(li.dataset.xm==='invest'){ open(); return; }
+    /* Budgeting reuses the Explore chapter of the same name */
+    close(); setActive('budget');
+    var x=document.querySelector('#xpNav li[data-xp="'+li.dataset.xp+'"]'); if(x) setTimeout(function(){ x.click(); setActive('budget'); }, 0);
+  }, true);
+
+  /* anything else in the nav hands the column back */
+  document.addEventListener('click', function(e){
+    if(!document.body.classList.contains('inv-open')) return;
+    if(e.target.closest('#invToday, #invRail, #xmNav')) return;
+    if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-goto], [data-view], [data-ins], [data-key], #xpNav')) close();
+  }, true);
+  window.addEventListener('boldin:view', function(){ if(document.body.dataset.view!=='today') close(); });
+  new MutationObserver(function(){ if(document.body.dataset.view!=='today') close(); }).observe(document.body,{attributes:true, attributeFilter:['data-view']});
+
+  /* in-page actions */
+  host.addEventListener('click', function(e){
+    var t=e.target.closest('[data-inv-toggle]');
+    if(t){ var body=t.previousElementSibling; var wasOpen=!body.hidden; body.hidden=wasOpen;
+      t.innerHTML=(wasOpen?'View ':'Hide ')+t.dataset.n+' positions <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="'+(wasOpen?'M6 9l6 6 6-6':'M6 15l6-6 6 6')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'; return; }
+    var j=e.target.closest('[data-inv-jump]'); if(j){ var el=host.querySelectorAll('.inv-acct')[3]; if(el) el.scrollIntoView({behavior:'smooth', block:'center'}); return; }
+    var d=e.target.closest('[data-inv-details], [data-inv-future]');
+    if(d){ var x=document.querySelector('#xpNav li[data-xp="invest"]'); var a=document.querySelector('.topnav nav.modes a[data-view="plan"]'); close(); if(a) a.click(); if(x) setTimeout(function(){ x.click(); }, 320); return; }
+    var k=e.target.closest('[data-inv-toast]'); if(k){ if(typeof window.toast==='function') window.toast(k.dataset.invToast); return; }
+  });
+  document.addEventListener('click', function(e){
+    var q=e.target.closest && e.target.closest('[data-inv-ask]'); if(!q) return;
+    e.preventDefault();
+    if(window.__railAI && window.__railAI.send){ if(window.__railAI.expand) window.__railAI.expand(); window.__railAI.send(q.dataset.invAsk); }
+    else if(window.__guided && window.__guided.ask) window.__guided.ask(q.dataset.invAsk);
+  });
+})();
+</script>
+
+<style id="invFutureCSS">
+/* ===== Investments: Future (My Plans > Explore your plan > Investments) =====
+   Content mirrors staging planner/investments/future. Scoped under #xpChapters. */
+#xpChapters .if-title{font-size:34px;font-weight:400;line-height:1.1;letter-spacing:0;color:var(--ink);margin:0 0 12px;}
+#xpChapters .if-intro{font-size:17px;line-height:1.55;color:var(--text-secondary);max-width:62ch;margin:0 0 28px;}
+#xpChapters .if-link{color:var(--green-cta);font-weight:500;cursor:pointer;text-decoration:none;background:none;border:0;padding:0;font:inherit;font-size:inherit;}
+#xpChapters .if-link:hover{text-decoration:underline;}
+#xpChapters .if-h2{font-size:23px;font-weight:600;letter-spacing:0;color:var(--ink);margin:0 0 14px;}
+#xpChapters .if-ctl{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px;}
+#xpChapters .if-seg{display:inline-flex;border:1px solid var(--hairline-strong);border-radius:12px;padding:3px;background:#fff;}
+#xpChapters .if-seg button{font:inherit;font-size:14.5px;font-weight:500;color:var(--text-secondary);background:none;border:0;border-radius:9px;padding:9px 26px;cursor:pointer;}
+#xpChapters .if-seg button.on{background:var(--eggshell);color:var(--green-cta);font-weight:600;}
+#xpChapters .if-prof{display:flex;align-items:center;gap:12px;position:relative;}
+#xpChapters .if-prof > span{font-size:15.5px;font-weight:600;color:var(--ink);}
+#xpChapters .if-dd{position:relative;}
+#xpChapters .if-ddbtn{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;min-width:220px;font:inherit;font-size:14.5px;font-weight:500;color:var(--green-cta);background:#fff;border:1px solid var(--hairline-strong);border-radius:10px;padding:9px 12px 9px 14px;cursor:pointer;}
+#xpChapters .if-ddbtn svg{width:14px;height:14px;color:var(--ink);transition:transform .2s;}
+#xpChapters .if-dd.open .if-ddbtn svg{transform:rotate(180deg);}
+#xpChapters .if-menu{position:absolute;right:0;top:calc(100% + 6px);width:340px;background:#fff;border:1px solid var(--hairline);border-radius:12px;box-shadow:0 10px 30px rgba(16,24,44,.10);padding:6px;z-index:30;display:none;}
+#xpChapters .if-dd.open .if-menu{display:block;}
+#xpChapters .if-opt{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;width:100%;text-align:left;font:inherit;background:none;border:0;border-radius:9px;padding:10px 12px;cursor:pointer;}
+#xpChapters .if-opt:hover{background:#F6F7F8;}
+#xpChapters .if-opt.sel{background:var(--eggshell);}
+#xpChapters .if-opt b{display:block;font-size:14.5px;font-weight:600;color:var(--ink);}
+#xpChapters .if-opt b em{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green-cta);background:#DDF3E8;border-radius:4px;padding:2px 6px;margin-left:8px;vertical-align:middle;}
+#xpChapters .if-opt i{display:block;font-style:normal;font-size:12.5px;line-height:1.45;color:var(--text-secondary);margin-top:3px;}
+#xpChapters .if-opt .ck{flex:none;color:var(--green-cta);margin-top:12px;}
+#xpChapters .if-hr{height:1px;background:var(--hairline);margin:0 0 22px;}
+#xpChapters .if-lead{font-size:15.5px;line-height:1.55;color:var(--text-secondary);margin:0 0 20px;}
+#xpChapters .if-card{border:1px solid var(--hairline);border-radius:var(--r-card);background:#fff;padding:24px;}
+#xpChapters .if-mix{display:grid;grid-template-columns:230px 1fr;gap:32px;align-items:center;}
+#xpChapters .if-donut{width:230px;height:230px;display:block;}
+#xpChapters .if-leg{display:flex;flex-direction:column;}
+#xpChapters .if-lrow{display:grid;grid-template-columns:12px 1fr auto;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--hairline);font-size:15px;color:var(--ink);}
+#xpChapters .if-lrow.hd{font-weight:600;}
+#xpChapters .if-lrow .sw{width:12px;height:12px;border-radius:3px;}
+#xpChapters .if-lrow .sw.none{visibility:hidden;}
+#xpChapters .if-lrow b{font-weight:600;font-variant-numeric:tabular-nums;}
+#xpChapters .if-lrow.sub{padding-left:0;font-size:14.5px;}
+#xpChapters .if-ret{display:flex;align-items:flex-start;gap:12px;margin-top:22px;}
+#xpChapters .if-ret .big{font-size:38px;font-weight:400;line-height:1;color:var(--green-cta);letter-spacing:-.01em;}
+#xpChapters .if-ret .lab{font-size:14.5px;font-weight:600;line-height:1.35;color:var(--ink);padding-top:4px;}
+#xpChapters .if-desc{font-size:14.5px;line-height:1.5;color:var(--text-secondary);margin:10px 0 0;}
+#xpChapters .if-acc{margin-top:18px;border-top:1px solid var(--hairline);}
+#xpChapters .if-accbtn{display:flex;align-items:center;justify-content:space-between;width:100%;font:inherit;font-size:15px;font-weight:600;color:var(--ink);background:none;border:0;padding:14px 0 4px;cursor:pointer;text-align:left;}
+#xpChapters .if-accbtn svg{width:16px;height:16px;transition:transform .2s;}
+#xpChapters .if-acc.open .if-accbtn svg{transform:rotate(180deg);}
+#xpChapters .if-accbody{display:none;font-size:14.5px;line-height:1.55;color:var(--text-secondary);padding:8px 0 4px;}
+#xpChapters .if-acc.open .if-accbody{display:block;}
+#xpChapters .if-sec{margin-top:36px;}
+#xpChapters .if-sub{font-size:15.5px;line-height:1.5;color:var(--text-secondary);margin:-6px 0 18px;}
+#xpChapters .if-glide{width:100%;height:auto;display:block;}
+#xpChapters .if-glide text{font-family:inherit;}
+#xpChapters .if-gleg{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;}
+#xpChapters .if-gleg span{display:inline-flex;align-items:center;gap:6px;}
+#xpChapters .if-gleg i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+#xpChapters .if-stage{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;border-top:1px solid var(--hairline);font-size:15.5px;font-weight:600;color:var(--ink);}
+#xpChapters .if-stage .v{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;}
+#xpChapters .if-stage .cur{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green-cta);background:#DDF3E8;border-radius:4px;padding:3px 7px;margin-left:10px;vertical-align:middle;}
+#xpChapters .if-note{background:var(--eggshell);border-radius:12px;padding:16px 18px;margin-top:6px;}
+#xpChapters .if-note b{display:block;font-size:15px;color:var(--ink);margin-bottom:4px;}
+#xpChapters .if-note b em{font-style:normal;color:var(--green-cta);}
+#xpChapters .if-note p{margin:0;font-size:14.5px;line-height:1.5;color:var(--text-secondary);}
+#xpChapters .if-fine{font-size:13.5px;color:var(--text-secondary);margin:14px 0 0;}
+#xpChapters .if-table{width:100%;border-collapse:collapse;}
+#xpChapters .if-table th{font-size:13px;font-weight:500;color:var(--text-secondary);text-align:right;padding:0 0 14px;}
+#xpChapters .if-table th:first-child{text-align:left;}
+#xpChapters .if-table td{padding:16px 0;border-top:1px solid var(--hairline);text-align:right;font-size:20px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink);}
+#xpChapters .if-table td:first-child{text-align:left;font-size:15.5px;font-weight:600;}
+#xpChapters .if-table td:first-child small{display:block;font-size:12.5px;font-weight:400;color:var(--text-secondary);margin-top:2px;}
+#xpChapters .if-table td.g{color:var(--green-cta);}
+#xpChapters .if-table td.chg{font-size:14px;font-weight:500;color:var(--text-secondary);}
+#xpChapters .if-retake{font-size:15px;color:var(--text-secondary);margin:30px 0 22px;}
+#xpChapters .if-disc{font-size:12px;line-height:1.55;color:#7A7D8C;margin:0 0 8px;}
+@media (max-width:900px){#xpChapters .if-mix{grid-template-columns:1fr;}#xpChapters .if-donut{margin:0 auto;}}
+
+/* "Understanding Investments: Future" modal (lives outside #xpChapters) */
+#ifModal{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(16,24,44,.42);}
+#ifModal.on{display:flex;}
+#ifModal .box{background:#fff;border-radius:18px;max-width:640px;width:100%;max-height:86vh;overflow:auto;padding:28px 30px;box-shadow:0 24px 60px rgba(16,24,44,.25);font-family:var(--font);color:var(--ink);}
+#ifModal h3{font-size:22px;font-weight:600;margin:0 0 18px;letter-spacing:0;}
+#ifModal h4{font-size:15px;font-weight:600;margin:16px 0 4px;}
+#ifModal p{font-size:14.5px;line-height:1.55;color:var(--text-secondary);margin:0;}
+#ifModal .close{margin-top:22px;height:42px;padding:0 22px;border-radius:999px;border:1.5px solid var(--hairline-strong);background:#fff;font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;}
+</style>
+<script id="invFutureJS">
+(function(){
+  var COL={lc:'#0E3A44',sc:'#1E6A7C',id:'#469DB2',em:'#8FCBDB',fi:'#1D9E75',cash:'#E3A14A',hrEq:'#0E3A44',hrFi:'#4CA67C'};
+  var PROF=[
+    {k:'aggressive',n:'Aggressive',short:'Aggressive',desc:'You’re playing the long game. Maximum growth, full commitment to the plan through the ups and downs.',
+      hr:{eq:90,fi:10,ret:'10.25%',line:'Almost entirely in equities with only a small fixed income cushion — designed for investors with a long time horizon and high tolerance for year-to-year swings.'},
+      ap:{eq:[80,70,70],cash:[5,6,8],ret:['7.2%','6.9%','6.9%'],spend:'$8,800',chg:'-$313 / mo'}},
+    {k:'modagg',n:'Moderately aggressive',short:'Mod. Aggressive',desc:'You’re building for the long term and willing to absorb some turbulence to get there.',
+      hr:{eq:70,fi:30,ret:'8.8%',line:'Equity-heavy with a meaningful fixed income allocation to soften the roughest swings — built for growth-oriented investors who still want some ballast.'},
+      ap:{eq:[75,60,60],cash:[5,7,10],ret:['7.1%','6.5%','6.5%'],spend:'$8,919',chg:'-$194 / mo'}},
+    {k:'moderate',n:'Moderate',short:'Moderate',desc:'You’re comfortable with the give-and-take of markets. Growth matters, and you have the patience to let it compound.',
+      hr:{eq:60,fi:40,ret:'8.08%',line:'A balanced split between equities and fixed income — Boldin’s default allocation, designed to balance long-term growth with meaningful downside protection.'},
+      ap:{eq:[70,50,50],cash:[5,8,12],ret:['6.9%','6.2%','6.1%'],spend:'$8,964',chg:'-$149 / mo'}},
+    {k:'modcons',n:'Moderately conservative',short:'Mod. Conservative',desc:'You want your money working for you — just not at the cost of too many sleepless nights.',
+      hr:{eq:40,fi:60,ret:'6.64%',line:'More fixed income than equities, providing ballast against volatility while still allowing your portfolio to participate in market growth.'},
+      ap:{eq:[65,40,40],cash:[5,9,14],ret:['6.7%','5.7%','5.7%'],spend:'$8,844',chg:'-$269 / mo'}},
+    {k:'conservative',n:'Conservative',short:'Conservative',mine:true,desc:'Stability and capital preservation come first. Your plan is built to protect what you’ve built while still keeping pace with inflation.',
+      hr:{eq:30,fi:70,ret:'5.92%',line:'Heavily weighted toward fixed income, with a smaller equity position to provide modest growth.'},
+      ap:{eq:[60,30,30],cash:[5,10,16],ret:['6.6%','5.3%','5.2%'],spend:'$8,800',chg:'-$313 / mo'}}
+  ];
+  var SPLIT=[['US large cap',COL.lc,.56],['US small cap',COL.sc,.14],['Intl developed',COL.id,.21],['Intl emerging',COL.em,.09]];
+  var STAGES=['Pre-Retirement','Retirement Risk Zone','Retirement Income'];
+  var state={tab:'hr',prof:'conservative',acc:false,dd:false};
+  var CHEV='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CHECK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function P(){ return PROF.filter(function(p){ return p.k===state.prof; })[0]; }
+  function f1(v){ return (Math.round(v*10)/10).toString().replace(/\.0$/,''); }
+  function arc(cx,cy,R,r,a0,a1,fill){
+    var lg=(a1-a0)>Math.PI?1:0;
+    var x0=cx+R*Math.cos(a0),y0=cy+R*Math.sin(a0),x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1),xi0=cx+r*Math.cos(a1),yi0=cy+r*Math.sin(a1),xi1=cx+r*Math.cos(a0),yi1=cy+r*Math.sin(a0);
+    return '<path d="M'+x0.toFixed(2)+','+y0.toFixed(2)+' A'+R+','+R+' 0 '+lg+',1 '+x1.toFixed(2)+','+y1.toFixed(2)+' L'+xi0.toFixed(2)+','+yi0.toFixed(2)+' A'+r+','+r+' 0 '+lg+',0 '+xi1.toFixed(2)+','+yi1.toFixed(2)+' Z" fill="'+fill+'" stroke="#fff" stroke-width="2"/>';
+  }
+  function donut(parts,center){
+    var cx=115,cy=115,R=108,r=84,a=-Math.PI/2,out='';
+    parts.forEach(function(p){ if(!p[1]) return; var a1=a+p[1]/100*2*Math.PI; out+=arc(cx,cy,R,r,a,a1,p[0]); a=a1; });
+    return '<svg class="if-donut" viewBox="0 0 230 230" aria-hidden="true">'+out+center+'</svg>';
+  }
+  function ddHTML(p){
+    var label=p.mine?p.n:'Preview: '+p.short;
+    return '<div class="if-prof"><span>Risk Profiles</span><div class="if-dd'+(state.dd?' open':'')+'"><button class="if-ddbtn" type="button" data-if-dd aria-expanded="'+state.dd+'">'+label+CHEV+'</button>'
+      +'<div class="if-menu" role="listbox">'+PROF.map(function(q){ return '<button class="if-opt'+(q.k===state.prof?' sel':'')+'" type="button" role="option" data-if-prof="'+q.k+'"><span><b>'+q.n+(q.mine?'<em>Your profile</em>':'')+'</b><i>'+q.desc+'</i></span>'+(q.k===state.prof?'<span class="ck">'+CHECK+'</span>':'')+'</button>'; }).join('')+'</div></div></div>';
+  }
+  function accHTML(){
+    return '<div class="if-acc'+(state.acc?' open':'')+'"><button class="if-accbtn" type="button" data-if-acc aria-expanded="'+state.acc+'">Which return assumption is more accurate?'+CHEV+'</button>'
+      +'<div class="if-accbody">This isn’t a choice about your rate of return. It’s a choice about how we forecast you. A linear forecast holds one blended return steady for life and rates an investment account differently from a savings account. A glide path forecast models six asset classes moving independently and takes risk down as retirement approaches. Both are defensible. Neither is a recommendation.</div></div>';
+  }
+  function hrHTML(p){
+    var center='<text x="115" y="108" font-size="17" fill="#10182C" text-anchor="middle">Sample Asset</text><text x="115" y="130" font-size="17" fill="#10182C" text-anchor="middle">Allocation</text>';
+    return '<p class="if-lead">A single fixed rate of return, held constant for the life of the plan, based on ~30 years of historical market data (1994–2024).</p>'
+      +'<div class="if-card"><div class="if-mix">'+donut([[COL.hrEq,p.hr.eq],[COL.hrFi,p.hr.fi]],center)
+      +'<div><div class="if-leg"><div class="if-lrow hd"><span class="sw" style="background:'+COL.hrEq+'"></span><span>Equities</span><b>'+p.hr.eq+'%</b></div><div class="if-lrow hd"><span class="sw" style="background:'+COL.hrFi+'"></span><span>Fixed Income</span><b>'+p.hr.fi+'%</b></div></div>'
+      +'<div class="if-ret"><span class="big">'+p.hr.ret+'</span><span class="lab">Nominal Return Assumption based on Boldin’s historical rates of return</span></div>'
+      +'<p class="if-desc">'+p.hr.line+'</p>'+accHTML()+'</div></div></div>';
+  }
+  function stageMix(p,i){ var eq=p.ap.eq[i], cash=p.ap.cash[i], fi=100-eq-cash; return {eq:eq,cash:cash,fi:fi,parts:SPLIT.map(function(s){ return [s[1],eq*s[2]]; }).concat([[COL.fi,fi],[COL.cash,cash]])}; }
+  function glide(p){
+    var W=854,H=320,x0=45,x1=846,y0=44,y1=290,Y0=2026,Y1=2064;
+    var X=function(y){ return x0+(y-Y0)/(Y1-Y0)*(x1-x0); }, Y=function(v){ return y1-v/100*(y1-y0); };
+    var cuts=[2030,2040]; var mixes=[0,1,2].map(function(i){ return stageMix(p,i).parts; });
+    var keys=[COL.lc,COL.sc,COL.id,COL.em,COL.fi,COL.cash];
+    var out='';
+    // stacked step areas, bottom to top
+    var base=[0,0,0];
+    keys.forEach(function(c,k){
+      var tops=mixes.map(function(m,i){ return base[i]+m[k][1]; });
+      var segs=[[Y0,cuts[0],0],[cuts[0],cuts[1],1],[cuts[1],Y1,2]];
+      var d='M'+X(Y0)+','+Y(base[0]);
+      segs.forEach(function(s){ d+=' L'+X(s[0]).toFixed(1)+','+Y(tops[s[2]]).toFixed(1)+' L'+X(s[1]).toFixed(1)+','+Y(tops[s[2]]).toFixed(1); });
+      segs.slice().reverse().forEach(function(s){ d+=' L'+X(s[1]).toFixed(1)+','+Y(base[s[2]]).toFixed(1)+' L'+X(s[0]).toFixed(1)+','+Y(base[s[2]]).toFixed(1); });
+      out+='<path d="'+d+' Z" fill="'+c+'" opacity=".92"/>';
+      base=tops;
+    });
+    [0,25,50,75,100].forEach(function(v){ out+='<line x1="'+x0+'" x2="'+x1+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="rgba(255,255,255,.55)" stroke-dasharray="6 6"/><text x="'+(x0-8)+'" y="'+(Y(v)+4)+'" font-size="11" fill="#7A7D8C" text-anchor="end">'+v+'%</text>'; });
+    [2026,2036,2046,2056,2064].forEach(function(y){ out+='<text x="'+X(y)+'" y="'+(y1+16)+'" font-size="11" fill="#7A7D8C" text-anchor="middle">'+y+'</text>'; });
+    cuts.forEach(function(y){ out+='<line x1="'+X(y)+'" x2="'+X(y)+'" y1="'+y0+'" y2="'+y1+'" stroke="#fff" stroke-width="1.5"/>'; });
+    out+='<line x1="'+X(2035)+'" x2="'+X(2035)+'" y1="'+y0+'" y2="'+y1+'" stroke="#fff" stroke-dasharray="4 4"/>';
+    out+='<text x="'+X(2035)+'" y="'+(y0-6)+'" font-size="11" fill="#7A7D8C" text-anchor="middle">Retirement</text>';
+    out+='<text x="'+((X(Y0)+X(2030))/2)+'" y="'+(y0-20)+'" font-size="11" fill="#47495A" text-anchor="middle">Pre-Retirement</text>';
+    out+='<text x="'+((X(2030)+X(2040))/2)+'" y="'+(y0-20)+'" font-size="11" fill="#47495A" text-anchor="middle">Retirement Risk Zone</text>';
+    out+='<text x="'+((X(2040)+X(Y1))/2)+'" y="'+(y0-20)+'" font-size="11" fill="#47495A" text-anchor="middle">Retirement Income</text>';
+    return '<svg class="if-glide" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Allocation by life stage">'+out+'</svg>';
+  }
+  function apHTML(p){
+    var m=stageMix(p,0);
+    var nm=p.n.replace('Moderately ','Moderately\n');
+    var center=nm.indexOf('\n')>0
+      ? '<text x="115" y="98" font-size="17" fill="#10182C" text-anchor="middle">Moderately</text><text x="115" y="118" font-size="17" fill="#10182C" text-anchor="middle">'+nm.split('\n')[1]+'</text><text x="115" y="140" font-size="11.5" fill="#47495A" text-anchor="middle">Pre-Retirement</text>'
+      : '<text x="115" y="112" font-size="17" fill="#10182C" text-anchor="middle">'+p.n+'</text><text x="115" y="134" font-size="11.5" fill="#47495A" text-anchor="middle">Pre-Retirement</text>';
+    var leg='<div class="if-lrow hd"><span class="sw none"></span><span>Equities</span><b>'+m.eq+'%</b></div>'
+      +SPLIT.map(function(s){ return '<div class="if-lrow sub"><span class="sw" style="background:'+s[1]+'"></span><span>'+s[0]+'</span><b>'+f1(m.eq*s[2])+'%</b></div>'; }).join('')
+      +'<div class="if-lrow hd"><span class="sw" style="background:'+COL.fi+'"></span><span>Fixed Income</span><b>'+m.fi+'%</b></div>'
+      +'<div class="if-lrow hd"><span class="sw" style="background:'+COL.cash+'"></span><span>Cash &amp; Cash Equivalents</span><b>'+m.cash+'%</b></div>';
+    return '<p class="if-lead">A glide-path forecast across six asset classes that shifts as you approach and move through retirement.</p>'
+      +'<div class="if-card"><div class="if-mix">'+donut(m.parts,center)+'<div><div class="if-leg">'+leg+'</div>'+accHTML()+'</div></div></div>'
+      +'<div class="if-sec"><h3 class="if-h2">How does your target change by life stage?</h3><p class="if-sub">Equity steps down ahead of the years when a downturn hurts most — not after one.</p>'
+      +'<div class="if-card">'+glide(p)
+      +'<div class="if-gleg">'+SPLIT.map(function(s){ return '<span><i style="background:'+s[1]+'"></i>'+s[0]+'</span>'; }).join('')+'<span><i style="background:'+COL.fi+'"></i>Fixed Income</span><span><i style="background:'+COL.cash+'"></i>Cash &amp; Cash Equivalents</span></div>'
+      +STAGES.map(function(s,i){ return '<div class="if-stage"><span>'+s+(i===0?'<span class="cur">Current stage</span>':'')+'</span><span class="v">'+p.ap.ret[i]+'</span></div>'; }).join('')
+      +'<div class="if-note"><b>You are in the <em>Pre-Retirement</em> stage</b><p>9 years from retirement, January 2035. If you elected this model, your target would step down through the stages ahead.</p></div>'
+      +'<p class="if-fine">Return comes down as the mix shifts to fixed income and cash. That trade is deliberate. <button class="if-link" type="button" data-if-why>Learn more</button></p></div></div>'
+      +'<div class="if-sec"><h3 class="if-h2">What would this mean for your plan?</h3><p class="if-sub">Nothing here changes your plan. It’s a projection run alongside it.</p>'
+      +'<div class="if-card"><table class="if-table"><thead><tr><th></th><th>Your plan today</th><th>With Allocation Path</th><th>Change</th></tr></thead><tbody>'
+      +'<tr><td>Chance of success</td><td>99%</td><td class="g">99%</td><td class="chg">0 pt</td></tr>'
+      +'<tr><td>Safe spending target<small>In today’s dollars</small></td><td>$9,113</td><td class="g">'+p.ap.spend+'</td><td class="chg">'+p.ap.chg+'</td></tr>'
+      +'</tbody></table></div></div>';
+  }
+  function html(){
+    var p=P();
+    return '<h2 class="if-title">Investments: Future</h2>'
+      +'<p class="if-intro">Explore different ways to forecast how your investments, asset allocation, and expected returns could change over your lifetime. <button class="if-link" type="button" data-if-why>Why does this matter?</button></p>'
+      +'<h3 class="if-h2">Projection Models</h3>'
+      +'<div class="if-ctl"><div class="if-seg" role="tablist"><button type="button" role="tab" class="'+(state.tab==='hr'?'on':'')+'" data-if-tab="hr">Historical Rates</button><button type="button" role="tab" class="'+(state.tab==='ap'?'on':'')+'" data-if-tab="ap">Allocation Path</button></div>'+ddHTML(p)+'</div>'
+      +'<div class="if-hr"></div>'
+      +(state.tab==='hr'?hrHTML(p):apHTML(p))
+      +'<p class="if-retake">Not sure this fits? <button class="if-link" type="button" data-if-retake>Retake the survey</button></p>'
+      +'<p class="if-disc">This survey is designed to help you think about your comfort with investment risk and to provide general educational information. It is not investment advice, a recommendation to buy or sell any security, or a guarantee of future results.</p>'
+      +'<p class="if-disc">Your responses reflect your stated preferences and circumstances at the time you complete the survey. Investment risk tolerance is only one factor to consider when making financial decisions. Your actual investment strategy should also take into account your financial goals, time horizon, income needs, tax situation, liquidity needs, and overall financial circumstances.</p>'
+      +'<p class="if-disc">All investments involve risk, including the possible loss of principal. Market conditions and personal circumstances can change over time, and you should periodically review your investment approach to ensure it remains appropriate for your situation. Past performance is not indicative of future results.</p>';
+  }
+  function rerender(){ var r=document.getElementById('ifRoot'); if(r) r.innerHTML=html(); }
+  window.__invFuture={html:html, rerender:rerender, state:state};
+
+  var MODAL='<div class="box" role="dialog" aria-modal="true" aria-labelledby="ifModalT"><h3 id="ifModalT">Understanding Investments: Future</h3>'
+    +'<h4>What this page is for</h4><p>Two questions, in order. How much investment risk suits you, and what mix of investments matches that answer at your stage of life. Boldin does not recommend specific securities and will never tell you what to buy or sell — a target allocation is a planning input, not an instruction.</p>'
+    +'<h4>Where the risk profile comes from</h4><p>A short survey about your time horizon, your reaction to losses and your income needs.</p>'
+    +'<h4>Historical Rates and Allocation Path, side by side</h4><p>Historical Rates are Boldin’s default portfolio models, which allow for different rates for each account and align with where you actually hold your assets. What Historical Rates doesn’t do is model what those investments are, how the classes move relative to each other, or change the mix as you age. Allocation Path does all three, but applies one blended rate across every account it covers. Each model is right about something the other is not.</p>'
+    +'<h4>What Allocation Path cannot do yet</h4><p>These are fixed portfolios. You can’t set your own asset mix, define your own life stages, or change when a stage begins. If members find these useful, that flexibility is what we build next.</p>'
+    +'<h4>Where the assumptions come from</h4><p>Expected returns and volatility for each asset class come primarily from BlackRock’s capital market assumptions, cross-checked against J.P. Morgan and Vanguard. The correlations between classes are measured on twenty years of realized market history.</p>'
+    +'<h4>Why the expected return falls in later stages</h4><p>Each stage’s return reflects that stage’s allocation. As the path shifts toward fixed income and cash the expected return comes down. That is an intentional trade-off, building protection from volatility into the portfolio.</p>'
+    +'<button class="close" type="button" data-if-close>Close</button></div>';
+  function modal(on){
+    var m=document.getElementById('ifModal');
+    if(!m){ m=document.createElement('div'); m.id='ifModal'; m.innerHTML=MODAL; document.body.appendChild(m); }
+    m.classList.toggle('on',!!on);
+  }
+  document.addEventListener('click', function(e){
+    var t=e.target.closest && e.target.closest('[data-if-tab],[data-if-dd],[data-if-prof],[data-if-acc],[data-if-why],[data-if-close],[data-if-retake]');
+    if(!t){ if(state.dd && !e.target.closest('.if-dd')){ state.dd=false; rerender(); } if(e.target.id==='ifModal') modal(false); return; }
+    if(t.hasAttribute('data-if-tab')){ state.tab=t.dataset.ifTab; state.dd=false; rerender(); }
+    else if(t.hasAttribute('data-if-dd')){ state.dd=!state.dd; rerender(); }
+    else if(t.hasAttribute('data-if-prof')){ state.prof=t.dataset.ifProf; state.dd=false; rerender(); }
+    else if(t.hasAttribute('data-if-acc')){ state.acc=!state.acc; rerender(); }
+    else if(t.hasAttribute('data-if-why')){ modal(true); }
+    else if(t.hasAttribute('data-if-close')){ modal(false); }
+    else if(t.hasAttribute('data-if-retake')){ if(typeof window.toast==='function') window.toast('The risk survey is next in the prototype'); }
+    e.preventDefault(); e.stopPropagation();
+  }, true);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ modal(false); if(state.dd){ state.dd=false; rerender(); } } });
+})();
+</script>
+
+<style id="viewPlanCSS">
+/* ===== View Plan: full-screen "Your Plan" report in greenfield's idiom ===== */
+#vpModal{position:fixed;inset:0;z-index:650;display:none;background:#fff;font-family:var(--font);color:var(--ink);}
+#vpModal.open{display:block;}
+#vpModal *{box-sizing:border-box;}
+#vpModal .vp-top{position:sticky;top:0;z-index:5;height:73px;width:100%;max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:0 var(--s-8);background:#fff;}
+#vpModal .vp-top::after{content:"";position:absolute;left:var(--s-8);right:var(--s-8);bottom:0;height:1px;background:var(--hairline);}
+#vpModal .vp-top{position:relative;}
+#vpModal .vp-x{width:44px;height:44px;border:1px solid var(--hairline-strong);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink);border-radius:50%;}
+#vpModal .vp-x:hover{border-color:var(--ink);}
+#vpModal .vp-secbtn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:17px;font-weight:600;color:var(--ink);background:none;border:0;cursor:pointer;padding:8px 10px;border-radius:10px;}
+#vpModal .vp-secbtn:hover{background:#F6F7F8;}
+#vpModal .vp-secbtn svg{width:14px;height:14px;color:#9A9CA6;}
+#vpModal .vp-secmenu{position:absolute;left:88px;top:62px;background:#fff;border:1px solid var(--hairline);border-radius:14px;box-shadow:0 12px 32px rgba(16,24,44,.12);padding:6px;min-width:250px;display:none;z-index:6;}
+#vpModal .vp-secmenu.on{display:block;}
+#vpModal .vp-secmenu button{display:block;width:100%;text-align:left;font:inherit;font-size:15px;color:var(--ink);background:none;border:0;border-radius:10px;padding:10px 12px;cursor:pointer;}
+#vpModal .vp-secmenu button:hover{background:#F6F7F8;}
+#vpModal .vp-secmenu button.on{color:var(--green-cta);font-weight:600;background:var(--eggshell);}
+#vpModal .vp-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+#vpModal .vp-viewin{font-size:13px;color:var(--text-secondary);}
+#vpModal .vp-seg{display:inline-flex;border:1px solid var(--hairline-strong);border-radius:999px;padding:3px;background:#fff;}
+#vpModal .vp-seg button{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:14px;font-weight:600;color:var(--text-secondary);background:none;border:0;border-radius:999px;padding:7px 12px;cursor:pointer;}
+#vpModal .vp-seg button svg{width:15px;height:15px;}
+#vpModal .vp-seg button.on{background:var(--ink);color:#fff;}
+#vpModal .vp-seg button span{display:none;}
+#vpModal .vp-seg button.on span{display:inline;}
+#vpModal .vp-ask{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:14.5px;font-weight:600;color:var(--ink);background:#fff;border:1.5px solid var(--hairline-strong);border-radius:999px;padding:10px 18px;cursor:pointer;}
+#vpModal .vp-ask:hover{border-color:var(--ink);}
+#vpModal .vp-ask svg{color:var(--green);}
+#vpModal .vp-scroll{position:absolute;top:73px;left:0;right:0;bottom:0;overflow-y:auto;}
+#vpModal .vp-body{max-width:1180px;margin:0 auto;padding:40px var(--s-8) 170px;}
+#vpModal .vp-h1{max-width:760px;}
+#vpModal .vp-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:28px;}
+#vpModal .vp-kicker{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#7A7D8C;margin:0 0 10px;}
+#vpModal .vp-h1{font-size:34px;font-weight:400;line-height:1.12;letter-spacing:0;margin:0;color:var(--ink);max-width:680px;text-wrap:pretty;}
+#vpModal .vp-h1 .g{font-style:normal;color:var(--green-cta);}
+#vpModal .vp-h1 .y{font-style:normal;color:var(--green-cta);}
+#vpModal .vp-info{display:inline-flex;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--hairline-strong);color:var(--text-secondary);font-size:10.5px;font-weight:700;align-items:center;justify-content:center;vertical-align:middle;margin-left:8px;cursor:help;font-style:normal;}
+#vpModal .vp-dl{flex:none;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:14.5px;font-weight:600;color:#fff;background:#127154;border:0;border-radius:999px;padding:12px 22px;cursor:pointer;margin-top:4px;}
+#vpModal .vp-dl:hover{background:#0F5D45;}
+#vpModal .vp-dl::after{content:"";width:14px;height:14px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>') center/contain no-repeat;}
+#vpModal .vp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4);margin-bottom:var(--s-4);}
+#vpModal .vp-stat{background:#fff;border:1px solid var(--hairline);border-radius:var(--r-card);padding:18px 20px;}
+#vpModal .vp-stat .k{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#7A7D8C;margin-bottom:8px;}
+#vpModal .vp-stat .v{font-size:28px;font-weight:600;letter-spacing:-.01em;color:var(--ink);}
+#vpModal .vp-card{background:#fff;border:1px solid var(--hairline);border-radius:var(--r-card);padding:var(--s-6);}
+#vpModal .vp-card + .vp-card{margin-top:var(--s-4);}
+#vpModal .vp-card .vp-eye{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#7A7D8C;margin:0 0 14px;}
+#vpModal .vp-two{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-4);margin-top:var(--s-4);}
+#vpModal .vp-mini{background:#fff;border:1px solid var(--hairline);border-radius:var(--r-card);padding:18px 20px;display:flex;gap:14px;align-items:center;}
+#vpModal .vp-mini .ic{width:40px;height:40px;flex:none;border-radius:12px;background:var(--eggshell);color:var(--green-cta);display:flex;align-items:center;justify-content:center;}
+#vpModal .vp-mini .t{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#7A7D8C;margin-bottom:4px;}
+#vpModal .vp-mini .s{font-size:17px;font-weight:600;color:var(--ink);line-height:1.4;}
+#vpModal .vp-h2{font-size:34px;font-weight:400;color:var(--ink);margin:56px 0 8px;letter-spacing:0;line-height:1.12;}
+#vpModal .vp-sec{border-top:1px solid var(--hairline);margin-top:var(--s-4);padding-top:var(--s-2);}
+#vpModal .vp-sec:first-of-type{border-top:0;margin-top:0;}
+#vpModal .vp-sechead{display:flex;align-items:center;justify-content:space-between;width:100%;font:inherit;font-size:23px;font-weight:600;letter-spacing:0;color:var(--ink);background:none;border:0;padding:16px 4px;cursor:pointer;text-align:left;}
+#vpModal .vp-sechead .chev{width:44px;height:44px;border-radius:50%;background:#F1F2F4;display:flex;align-items:center;justify-content:center;transition:transform 300ms var(--ease-in-out);color:var(--ink);}
+#vpModal .vp-sechead .chev svg{width:18px;height:18px;}
+#vpModal .vp-sec.shut .vp-sechead .chev{transform:rotate(180deg);}
+#vpModal .vp-sec.shut .vp-secbody{display:none;}
+#vpModal .vp-secbody{padding:0 4px 18px;}
+#vpModal .vp-h3{font-size:18px;font-weight:600;color:var(--ink);margin:22px 0 4px;letter-spacing:0;}
+#vpModal .vp-q{font-size:15px;color:var(--text-secondary);margin:0 0 14px;line-height:1.5;}
+#vpModal .vp-ai{display:flex;gap:13px;align-items:flex-start;background:var(--eggshell);border:1px solid rgba(4,180,119,.22);border-radius:14px;padding:18px 20px;margin-bottom:var(--s-4);}
+#vpModal .vp-ai .spk{flex:none;width:20px;height:20px;color:var(--green-cta);margin-top:2px;}
+#vpModal .vp-ai p{margin:0 0 10px;font-size:15.5px;line-height:1.55;color:var(--ink);}
+#vpModal .vp-ai .qs{display:flex;flex-wrap:wrap;gap:8px 18px;}
+#vpModal .vp-ai .qs a{display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:600;color:var(--green-cta);cursor:pointer;text-decoration:none;}
+#vpModal .vp-ai .qs a:hover{text-decoration:underline;}
+#vpModal .vp-ai .qs a::after{content:"\203A";font-size:18px;line-height:1;color:#9BA0AC;}
+#vpModal .vp-chart{width:100%;height:auto;display:block;}
+#vpModal .vp-chart text{font-family:inherit;}
+#vpModal .vp-leg{display:flex;flex-wrap:wrap;gap:7px 18px;font-size:14px;color:var(--text-secondary);margin-top:12px;}
+#vpModal .vp-leg span{display:inline-flex;align-items:center;gap:7px;}
+#vpModal .vp-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+#vpModal .vp-leg i.ln{width:16px;height:0;border-top:2px dashed currentColor;border-radius:0;}
+#vpModal .vp-sim .vp-h3{margin-top:0;}
+#vpModal .vp-sim .sub{font-size:13px;color:#7A7D8C;margin:0 0 14px;}
+#vpModal .vp-sim .claim{font-size:17px;font-weight:500;line-height:1.5;color:var(--ink);margin:0 0 18px;text-wrap:pretty;}
+#vpModal table.vp-t{width:100%;border-collapse:collapse;font-size:15px;margin-top:var(--s-4);}
+#vpModal table.vp-t th{font-size:13px;font-weight:600;color:#7A7D8C;text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--hairline);}
+#vpModal table.vp-t th:first-child{text-align:left;padding-left:4px;}
+#vpModal table.vp-t td{padding:13px 12px;border-bottom:1px solid var(--hairline);text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:500;}
+#vpModal table.vp-t td:first-child{text-align:left;padding-left:4px;font-weight:600;}
+#vpModal table.vp-t tr.grp td{font-weight:600;background:none;}
+#vpModal table.vp-t tr.grp + tr td:first-child, #vpModal table.vp-t tr:not(.grp):not(.tot) td:first-child{font-weight:500;padding-left:20px;}
+#vpModal table.vp-t tr.tot td{font-weight:600;border-bottom:0;border-top:2px solid var(--hairline-strong);}
+#vpModal table.vp-t tr.tot td:first-child{padding-left:4px;}
+#vpModal table.vp-t .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:10px;vertical-align:middle;}
+#vpModal table.vp-t .lk{display:inline-block;width:13px;height:13px;margin-right:6px;vertical-align:-2px;color:#0E794E;}
+#vpModal .vp-donut{display:flex;justify-content:center;margin:6px 0;}
+#vpModal .vp-donut svg{width:220px;height:220px;}
+#vpModal .vp-trow{margin-top:var(--s-4);border:1px solid var(--hairline);border-radius:14px;background:#fff;}
+#vpModal .vp-trow > button{display:flex;align-items:center;justify-content:space-between;width:100%;font:inherit;font-size:15px;font-weight:600;color:var(--ink);background:none;border:0;padding:15px 18px;cursor:pointer;text-align:left;border-radius:14px;}
+#vpModal .vp-trow > button:hover{background:#F6F7F8;}
+#vpModal .vp-trow > button svg{width:14px;height:14px;color:#9A9CA6;}
+#vpModal .vp-trow .tb{display:none;padding:0 18px 16px;overflow-x:auto;}
+#vpModal .vp-trow.on .tb{display:block;}
+#vpModal .vp-trow table.vp-t{margin-top:0;}
+#vpModal .vp-trow table.vp-t td,#vpModal .vp-trow table.vp-t th{padding:8px 10px;font-size:13.5px;white-space:nowrap;}
+#vpModal .vp-trow table.vp-t td:first-child{padding-left:4px;font-weight:600;}
+#vpModal .vp-arow{border-bottom:1px solid var(--hairline);}
+#vpModal .vp-arow > button{display:flex;align-items:center;justify-content:space-between;width:100%;font:inherit;font-size:17px;font-weight:600;color:var(--ink);background:none;border:0;padding:18px 4px;cursor:pointer;text-align:left;}
+#vpModal .vp-arow > button svg{width:16px;height:16px;color:#9A9CA6;transition:transform .2s;}
+#vpModal .vp-arow.on > button svg{transform:rotate(180deg);}
+#vpModal .vp-arow .ab{display:none;padding:0 4px 18px;}
+#vpModal .vp-arow.on .ab{display:block;}
+#vpModal .vp-kv{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;font-size:15px;}
+#vpModal .vp-kv div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--hairline);}
+#vpModal .vp-kv span{color:var(--text-secondary);}
+#vpModal .vp-kv b{font-weight:600;font-variant-numeric:tabular-nums;}
+#vpModal .vp-pa .vp-secbody{padding-left:4px;}
+
+/* Ask anything, docked at the bottom of the report (same bar as the app's dock) */
+#vpModal .vp-dock{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:44px 0 32px;pointer-events:none;
+  background:linear-gradient(to top,#FFFFFF 0%,#FFFFFF 58%,rgba(255,255,255,.88) 78%,rgba(255,255,255,0) 100%);}
+#vpModal .vp-dock-inner{max-width:1180px;margin:0 auto;padding:0 var(--s-8);display:flex;justify-content:center;}
+#vpModal .vp-dock .askbar{pointer-events:auto;width:100%;max-width:620px;}
+#vpModal .vp-dock .askbar input{flex:1;min-width:0;}
+/* Download/Print dialog */
+#vpDl{position:fixed;inset:0;z-index:660;display:none;align-items:center;justify-content:center;background:rgba(16,24,44,.32);padding:24px;font-family:var(--font);}
+#vpDl.open{display:flex;}
+#vpDl .box{position:relative;background:#fff;border:1px solid var(--hairline);border-radius:20px;width:100%;max-width:880px;padding:32px 32px 28px;box-shadow:0 24px 60px rgba(16,24,44,.18);color:var(--ink);}
+#vpDl h3{font-size:30px;font-weight:400;margin:0 0 6px;letter-spacing:0;line-height:1.15;}
+#vpDl .sub{font-size:16px;color:var(--text-secondary);margin:0 0 22px;}
+#vpDl .x{position:absolute;top:18px;right:18px;width:40px;height:40px;border:1px solid var(--hairline-strong);border-radius:50%;background:#fff;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center;}
+#vpDl .x:hover{border-color:var(--ink);}
+#vpDl .cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-4);}
+#vpDl .col{border:1px solid var(--hairline);border-radius:var(--r-card);padding:22px 22px 12px;}
+#vpDl h4{font-size:18px;font-weight:600;margin:0 0 10px;letter-spacing:0;}
+#vpDl p{font-size:14.5px;line-height:1.55;color:var(--text-secondary);margin:0 0 12px;}
+#vpDl p b{color:var(--ink);font-weight:600;}
+#vpDl .opt{display:block;width:100%;font:inherit;font-size:14.5px;font-weight:600;color:var(--ink);background:#fff;border:1.5px solid var(--hairline-strong);border-radius:999px;padding:11px 18px;margin:0 0 10px;cursor:pointer;text-align:center;}
+#vpDl .opt:hover{border-color:var(--ink);}
+#vpDl .col:first-child .opt:nth-of-type(2), #vpDl .col:last-child .opt:first-of-type{background:#127154;color:#fff;border-color:#127154;}
+#vpDl .col:first-child .opt:nth-of-type(2):hover, #vpDl .col:last-child .opt:first-of-type:hover{background:#0F5D45;}
+@media (max-width:860px){#vpModal .vp-stats,#vpModal .vp-two,#vpDl .cols,#vpModal .vp-kv{grid-template-columns:1fr;}#vpModal .vp-body{padding:28px 18px 100px;}#vpModal .vp-top{padding:0 16px;}#vpModal .vp-top::after{left:16px;right:16px;}}
+</style>
+<script id="viewPlanJS">
+(function(){
+  /* ---------- the plan behind the report (Marshall, as on the home page) ---------- */
+  var Y0=2026, RET=2045, END=2071, AGE0=46, INFL=0.03;
+  var C={deep:'#0B84A5',teal:'#0D3F4A',blue:'#5FB0C8',sky:'#A6D2E2',green:'#04B477',mint:'#A4E8CE',sand:'#E0A800',orange:'#E4572E',salmon:'#F2C94C',berry:'#BC0278',grey:'#A7ACB8',red:'#E4572E',gold:'#E0A800'};
+  var GROUPS=[
+    {k:'tax',n:'Tax-Advantaged Savings',c:C.deep,accts:[{n:'Fidelity 401(k)',g:.068,b:214000,link:true},{n:'Rollover IRA',g:.068,b:72000,link:true}]},
+    {k:'roth',n:'Roth Savings',c:C.green,accts:[{n:'Roth IRA',g:.068,b:50000,link:true},{n:'HSA',g:.068,b:16000}]},
+    {k:'after',n:'After-Tax Savings',c:C.salmon,accts:[{n:'Brokerage',g:.074,b:71000,link:true},{n:'Cash & savings',g:.02,b:49000,link:true}]},
+    {k:'other',n:'Other Assets',c:C.grey,accts:[{n:'2019 Subaru Outback',g:-.04,b:14000}]},
+    {k:'re',n:'Real Estate',c:C.berry,accts:[{n:'Primary home',g:.03,b:480000}]}
+  ];
+  var DEBTS=[
+    {k:'mort',n:'Mortgage Debt',c:C.salmon,accts:[{n:'Primary mortgage',g:.0525,b:-332000,pay:26400}]},
+    {k:'non',n:'Non-Mortgage Debt',c:C.berry,accts:[{n:'Toyota Financial',g:.049,b:-9400,pay:4800},{n:'Chase Sapphire',g:.18,b:-2200,pay:2200}]}
+  ];
+  var YEARS=[]; for(var y=Y0;y<=END;y++) YEARS.push(y);
+  var N=YEARS.length;
+  /* per-account balance paths */
+  function proj(a,isDebt){
+    var out=[],b=a.b;
+    for(var i=0;i<N;i++){ var y=YEARS[i]; out.push(b);
+      if(isDebt){ b=Math.min(0,b*(1+a.g)+a.pay); if(b>-1) b=0; }
+      else {
+        var contrib=0, draw=0;
+        if(y<RET){ if(a.n==='Fidelity 401(k)') contrib=19200; if(a.n==='Roth IRA') contrib=7000; if(a.n==='HSA') contrib=4150; if(a.n==='Brokerage') contrib=6000; }
+        b=b*(1+a.g)+contrib;
+      }
+    }
+    return out;
+  }
+  var paths={}; GROUPS.forEach(function(g){ g.accts.forEach(function(a){ paths[a.n]=proj(a,false); }); });
+  DEBTS.forEach(function(g){ g.accts.forEach(function(a){ paths[a.n]=proj(a,true); }); });
+  /* retirement withdrawals: spending less Social Security, drawn taxable -> pre-tax -> Roth */
+  var SPEND0=98400, SS0=40800, SSAGE=67;
+  var inc=[],exp=[],tax=[],wTax=[],wPre=[],wRoth=[],ss=[],work=[],rmd=[];
+  var contribs=[],returns=[];
+  (function(){
+    var bal={}; Object.keys(paths).forEach(function(k){ bal[k]=paths[k][0]; });
+    for(var i=0;i<N;i++){
+      var y=YEARS[i], age=AGE0+i, infl=Math.pow(1+INFL,i);
+      var wk=y<RET? 142000*Math.pow(1.025,i):0;
+      var s=age>=SSAGE? SS0*infl:0;
+      var spend=(y<RET? 77400:SPEND0)*infl + (y<RET?0:0);
+      var debtPay=0; DEBTS.forEach(function(g){ g.accts.forEach(function(a){ if(paths[a.n][i]<0) debtPay+=a.pay; }); });
+      var ex=spend+debtPay;
+      var t=y<RET? wk*0.21 : 0;
+      var r=0; if(age>=75){ r=bal['Fidelity 401(k)']/Math.max(10,(99-age)); }
+      var need=Math.max(0, ex+t-wk-s);
+      var wt=0,wp=0,wr=0;
+      if(y>=RET){
+        var fromTax=Math.min(need, Math.max(0,bal['Brokerage']+bal['Cash & savings']-20000)); wt=fromTax; need-=fromTax;
+        wp=Math.max(r, Math.min(need, bal['Fidelity 401(k)']+bal['Rollover IRA'])); need-=Math.min(wp,need);
+        wr=Math.min(need, bal['Roth IRA']); need-=wr;
+        t=(wp+s*0.5)*0.12;
+        var gap=ex+t-(wk+s+wt+wp+wr); if(gap>0) wp+=gap;
+      }
+      var cont=y<RET? 36350:0;
+      inc.push(wk+s+wt+wp+wr); exp.push(ex+t); tax.push(t); wTax.push(wt); wPre.push(wp); wRoth.push(wr); ss.push(s); work.push(wk); rmd.push(r);
+      /* roll balances with returns */
+      var ret=0, pre={}; Object.keys(bal).forEach(function(k){ pre[k]=bal[k]; });
+      var wBrok=Math.min(wt, pre['Brokerage']*1.074), wCash=Math.min(Math.max(0,wt-wBrok), pre['Cash & savings']*1.02);
+      var wFid=Math.min(wp, pre['Fidelity 401(k)']*1.068), wRoll=Math.min(Math.max(0,wp-wFid), pre['Rollover IRA']*1.068);
+      GROUPS.forEach(function(g){ g.accts.forEach(function(a){ var b0=pre[a.n]; var growth=b0*a.g; ret+=g.k==='re'||g.k==='other'?0:growth; var c=0;
+        if(y<RET){ if(a.n==='Fidelity 401(k)') c=19200; if(a.n==='Roth IRA') c=7000; if(a.n==='HSA') c=4150; if(a.n==='Brokerage') c=6000; }
+        var w={'Brokerage':wBrok,'Cash & savings':wCash,'Fidelity 401(k)':wFid,'Rollover IRA':wRoll,'Roth IRA':wr}[a.n]||0;
+        bal[a.n]=Math.max(0,b0+growth+c-w); paths[a.n][i]=b0; }); });
+      DEBTS.forEach(function(g){ g.accts.forEach(function(a){ paths[a.n][i]=bal[a.n]; var b=bal[a.n]; b=Math.min(0,b*(1+a.g)+a.pay); if(b>-1) b=0; bal[a.n]=b; }); });
+      contribs.push(cont); returns.push(ret);
+    }
+  })();
+  function sumAt(list,i){ var s=0; list.forEach(function(g){ g.accts.forEach(function(a){ s+=paths[a.n][i]; }); }); return s; }
+  var savings=YEARS.map(function(_,i){ var s=0; GROUPS.slice(0,3).forEach(function(g){ g.accts.forEach(function(a){ s+=paths[a.n][i]; }); }); return s; });
+  var networth=YEARS.map(function(_,i){ return sumAt(GROUPS,i)+sumAt(DEBTS,i); });
+  var iRet=RET-Y0, iEnd=N-1;
+  /* Monte Carlo bands from the average path */
+  var mc={p10:[],p25:[],p50:[],p75:[],p90:[]};
+  savings.forEach(function(v,i){ var t=i/(N-1); mc.p50.push(v*(1-0.03*t)); mc.p25.push(v*(1-0.26*t)); mc.p10.push(v*(1-0.38*t)); mc.p75.push(v*(1+0.42*t)); mc.p90.push(v*(1+1.05*t)); });
+
+  /* ---------- state + formatting ---------- */
+  var st={today:false, open:{}, trows:{}, arows:{}, menu:false, sec:'plan'};
+  function defl(i){ return st.today? Math.pow(1+INFL,-i):1; }
+  function money(v){ var s=v<0?'−':''; v=Math.abs(v); return s+'$'+Math.round(v).toLocaleString('en-US'); }
+  function short(v){ var s=v<0?'−':''; v=Math.abs(v); if(v>=1e6) return s+'$'+(v/1e6).toFixed(v>=1e7?0:1).replace(/\.0$/,'')+'M'; if(v>=1e3) return s+'$'+Math.round(v/1e3)+'k'; return s+'$'+Math.round(v); }
+  function pct(v){ return (v*100).toFixed(2)+'%'; }
+  function nice(max){ var p=Math.pow(10,Math.floor(Math.log10(max))); var m=max/p; var step=m<=2?0.25:m<=5?0.5:1; return Math.ceil(m/step)*step*p; }
+
+  /* ---------- SVG charts ---------- */
+  var W=1040,H=320,L=64,R=16,T=18,B=34;
+  function frame(top){ var h=top||0; return {x:function(i){ return L+(i/(N-1))*(W-L-R); }, y:function(v){ return T+(1-v/h)*(H-T-B); }, top:h}; }
+  function axes(f,fmt,yr){
+    var out=''; var ticks=[0,.2,.4,.6,.8,1]; if(yr) ticks=yr;
+    ticks.forEach(function(p){ var v=f.top*p, y=f.y(v); out+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="rgba(16,24,44,.08)"/><text x="'+(L-10)+'" y="'+(y+4).toFixed(1)+'" font-size="12" fill="#7A7D8C" text-anchor="end">'+(fmt||short)(v)+'</text>'; });
+    YEARS.forEach(function(y,i){ if((y-Y0)%4===0 || (i===N-1 && (y-Y0)%4>=2)) out+='<text x="'+f.x(i).toFixed(1)+'" y="'+(H-10)+'" font-size="12" fill="#7A7D8C" text-anchor="middle">'+y+'</text>'; });
+    return out;
+  }
+  function svg(inner,h){ return '<svg class="vp-chart" viewBox="0 0 '+W+' '+(h||H)+'" aria-hidden="true">'+inner+'</svg>'; }
+  function lineChart(series,opts){
+    opts=opts||{}; var max=0; series.forEach(function(s){ s.v.forEach(function(v,i){ max=Math.max(max,Math.abs(v*defl(i))); }); }); var f=frame(nice(max||1));
+    var out=axes(f);
+    if(opts.retire){ out+='<line x1="'+f.x(iRet)+'" x2="'+f.x(iRet)+'" y1="'+T+'" y2="'+(H-B)+'" stroke="#9AA0AE" stroke-dasharray="4 4"/><text x="'+f.x(iRet)+'" y="'+(T-6)+'" font-size="12" fill="#7A7D8C" text-anchor="middle">Retirement</text>'; }
+    series.forEach(function(s){
+      var d=''; s.v.forEach(function(v,i){ d+=(i?' L':'M')+f.x(i).toFixed(1)+','+f.y(v*defl(i)).toFixed(1); });
+      if(s.fill){ out+='<path d="'+d+' L'+f.x(N-1)+','+f.y(0)+' L'+f.x(0)+','+f.y(0)+' Z" fill="'+s.c+'" opacity=".12"/>'; }
+      out+='<path d="'+d+'" fill="none" stroke="'+s.c+'" stroke-width="'+(s.w||2)+'"'+(s.dash?' stroke-dasharray="'+s.dash+'"':'')+'/>';
+      if(s.dots){ s.v.forEach(function(v,i){ if(i%2===0) out+='<circle cx="'+f.x(i).toFixed(1)+'" cy="'+f.y(v*defl(i)).toFixed(1)+'" r="3.2" fill="'+s.c+'"/>'; }); }
+    });
+    return svg(out);
+  }
+  function fanChart(){
+    var max=0; mc.p90.forEach(function(v,i){ max=Math.max(max,v*defl(i)); }); var f=frame(nice(max));
+    var out=axes(f);
+    function band(a,b,c,o){ var d=''; a.forEach(function(v,i){ d+=(i?' L':'M')+f.x(i).toFixed(1)+','+f.y(v*defl(i)).toFixed(1); }); for(var i=N-1;i>=0;i--){ d+=' L'+f.x(i).toFixed(1)+','+f.y(b[i]*defl(i)).toFixed(1); } return '<path d="'+d+' Z" fill="'+c+'" opacity="'+o+'"/>'; }
+    out+=band(mc.p90,mc.p10,'#D3EAF2',.9)+band(mc.p75,mc.p25,'#A6D2E2',.9);
+    function ln(a,c,w,dash,dots){ var d=''; a.forEach(function(v,i){ d+=(i?' L':'M')+f.x(i).toFixed(1)+','+f.y(v*defl(i)).toFixed(1); }); var s='<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="'+w+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+'/>'; if(dots) a.forEach(function(v,i){ if(i%2===0) s+='<circle cx="'+f.x(i).toFixed(1)+'" cy="'+f.y(v*defl(i)).toFixed(1)+'" r="3" fill="'+c+'"/>'; }); return s; }
+    out+=ln(mc.p50,'#0B84A5',2.2,null,true)+ln(savings,'#10182C',1.8,'6 4');
+    return svg(out);
+  }
+  function stackChart(stacks,opts){
+    opts=opts||{}; var max=0; for(var i=0;i<N;i++){ var s=0; stacks.forEach(function(k){ s+=Math.max(0,k.v[i])*defl(i); }); max=Math.max(max,s); } var f=frame(nice(max||1));
+    var out=axes(f); var bw=(W-L-R)/N*0.68;
+    for(var i=0;i<N;i++){ var base=0; stacks.forEach(function(k){ var v=Math.max(0,k.v[i])*defl(i); if(v<=0) return; var y1=f.y(base+v), y0=f.y(base); out+='<rect x="'+(f.x(i)-bw/2).toFixed(1)+'" y="'+y1.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(y0-y1).toFixed(1)+'" rx="1.5" fill="'+k.c+'"/>'; base+=v; }); }
+    if(opts.retire){ out+='<line x1="'+f.x(iRet)+'" x2="'+f.x(iRet)+'" y1="'+T+'" y2="'+(H-B)+'" stroke="#9AA0AE" stroke-dasharray="4 4"/>'; }
+    return svg(out);
+  }
+  function donut(parts,label,total){
+    var cx=105,cy=105,Rr=96,r=70,a=-Math.PI/2,out='';
+    var sum=0; parts.forEach(function(p){ sum+=p.v; });
+    parts.forEach(function(p){ if(!p.v) return; var a1=a+p.v/sum*2*Math.PI; var lg=(a1-a)>Math.PI?1:0;
+      out+='<path d="M'+(cx+Rr*Math.cos(a)).toFixed(1)+','+(cy+Rr*Math.sin(a)).toFixed(1)+' A'+Rr+','+Rr+' 0 '+lg+',1 '+(cx+Rr*Math.cos(a1)).toFixed(1)+','+(cy+Rr*Math.sin(a1)).toFixed(1)+' L'+(cx+r*Math.cos(a1)).toFixed(1)+','+(cy+r*Math.sin(a1)).toFixed(1)+' A'+r+','+r+' 0 '+lg+',0 '+(cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1)+' Z" fill="'+p.c+'" stroke="#fff" stroke-width="1.5"/>'; a=a1; });
+    return '<div class="vp-donut"><svg viewBox="0 0 210 210" aria-hidden="true">'+out+'<text x="105" y="98" font-size="11" font-weight="600" letter-spacing="1" fill="#7A7D8C" text-anchor="middle">'+label.toUpperCase()+'</text><text x="105" y="126" font-size="22" font-weight="600" fill="#10182C" text-anchor="middle">'+money(total)+'</text></svg></div>';
+  }
+  function legend(items){ return '<div class="vp-leg">'+items.map(function(k){ return '<span><i style="background:'+k.c+'"></i>'+k.n+'</span>'; }).join('')+'</div>'; }
+
+  /* ---------- pieces ---------- */
+  var SPK='<svg class="spk" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3.5l1.9 5.9 5.9 1.9-5.9 1.9L11 19.1l-1.9-5.9-5.9-1.9 5.9-1.9z"/><path d="M18.5 2.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" opacity=".9"/></svg>';
+  var CHEV='<svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var DOWN='<svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var LINK='<svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5a4.6 4.6 0 0 0 6.5 0l2-2a4.6 4.6 0 0 0-6.5-6.5L11.2 6.3"/><path d="M13.5 10.5a4.6 4.6 0 0 0-6.5 0l-2 2a4.6 4.6 0 0 0 6.5 6.5l1.3-1.3"/></svg>';
+  function ai(text,qs){ return '<div class="vp-ai">'+SPK+'<div><p>'+text+'</p><div class="qs">'+qs.map(function(q){ return '<a data-vp-ask="'+q[1]+'">'+q[0]+'</a>'; }).join('')+'</div></div></div>'; }
+  function h3(t,q){ return '<h3 class="vp-h3">'+t+'</h3><p class="vp-q">'+q+'</p>'; }
+  function trow(id,title,cols,rows){
+    var on=st.trows[id];
+    return '<div class="vp-trow'+(on?' on':'')+'" data-vp-trow="'+id+'"><button type="button">'+title+(on?CHEV:DOWN)+'</button><div class="tb">'+(on?yearTable(cols,rows):'')+'</div></div>';
+  }
+  function yearTable(cols,rows){
+    var idx=[]; for(var i=0;i<N;i+=2) idx.push(i); if(idx[idx.length-1]!==N-1) idx.push(N-1);
+    var out='<table class="vp-t"><thead><tr><th>Year</th>'+cols.map(function(c){ return '<th>'+c+'</th>'; }).join('')+'</tr></thead><tbody>';
+    idx.forEach(function(i){ out+='<tr><td>'+YEARS[i]+'</td>'+rows.map(function(r){ return '<td>'+money(r[i]*defl(i))+'</td>'; }).join('')+'</tr>'; });
+    return out+'</tbody></table>';
+  }
+  function sec(id,title,body,cls){ var shut=st.open[id]===false; return '<section class="vp-sec'+(shut?' shut':'')+(cls?' '+cls:'')+'" data-vp-sec="'+id+'"><button class="vp-sechead" type="button" data-vp-toggle="'+id+'" aria-expanded="'+!shut+'"><span>'+title+'</span><span class="chev">'+CHEV+'</span></button><div class="vp-secbody">'+body+'</div></section>'; }
+
+  function groupTable(list,isDebt){
+    var out='';
+    list.forEach(function(g){
+      var b0=0,br=0,be=0; g.accts.forEach(function(a){ b0+=paths[a.n][0]; br+=paths[a.n][iRet]; be+=paths[a.n][iEnd]; });
+      out+='<tr class="grp"><td><span class="dot" style="background:'+g.c+'"></span>'+g.n+'</td><td></td><td>'+money(b0)+'</td><td>'+money(br*defl(iRet))+'</td><td>'+money(be*defl(iEnd))+'</td></tr>';
+      g.accts.forEach(function(a){ out+='<tr><td>'+(a.link?LINK:'')+a.n+'</td><td>'+pct(a.g)+'</td><td>'+money(paths[a.n][0])+'</td><td>'+money(paths[a.n][iRet]*defl(iRet))+'</td><td>'+money(paths[a.n][iEnd]*defl(iEnd))+'</td></tr>'; });
+    });
+    return out;
+  }
+
+  /* ---------- the report ---------- */
+  function body(){
+    var yrs=RET-Y0, spendMo=Math.round(SPEND0/12/100)*100;
+    var nw0=networth[0], nwEnd=networth[iEnd]*defl(iEnd);
+    var assetsTotal=sumAt(GROUPS,0), debtsTotal=-sumAt(DEBTS,0);
+    var h='';
+    h+='<div class="vp-head"><div><h2 class="vp-kicker">Your Plan</h2><h1 class="vp-h1">Retire in <span class="g">'+yrs+' years</span> and safely spend <span class="y">$'+spendMo.toLocaleString()+'</span> per month.<span class="vp-info" title="What you plan to spend, on average, throughout retirement.">i</span></h1></div><button class="vp-dl" type="button" data-vp-download>Download</button></div>';
+    h+='<div class="vp-stats"><div class="vp-stat"><div class="k">Net worth today</div><div class="v">'+short(nw0)+'</div></div><div class="vp-stat"><div class="k">Projected at 91</div><div class="v">'+short(nwEnd)+'</div></div><div class="vp-stat"><div class="k">Funded for life</div><div class="v">10+ years</div></div></div>';
+    h+='<div class="vp-card"><div class="vp-eye">My financial journey</div>'+lineChart([{v:networth,c:'#1D9E75',w:2.2,fill:true}],{retire:true})+'<div class="vp-leg"><span><i style="background:#1D9E75"></i>Projected net worth</span></div></div>';
+    h+='<div class="vp-two"><div class="vp-mini"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M6 19V9l6-5 6 5v10"/><path d="M10 19v-5h4v5"/></svg></span><div><div class="t">Retirement age</div><div class="s">Marshall: 65y0m in '+RET+'</div></div></div>'
+      +'<div class="vp-mini"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V9a6 6 0 0 1 12 0v11"/><path d="M4 20h16"/></svg></span><div><div class="t">Longevity age</div><div class="s">Marshall: 91 in '+END+'</div></div></div></div>';
+    h+='<h2 class="vp-h2">Your wealth, year by year</h2>';
+
+    /* Chance of Success */
+    h+=sec('cos','Chance of Success',
+      h3('Projected Savings Simulation','Are you prepared to retire with confidence and how much flexibility might you need?')
+      +ai('Marshall, your plan holds up in 87 of 100 market histories. The two levers that move that number most are the year you stop work and the first five years of spending after it; a $600 a month trim in those years lifts you past 95% without touching the rest of the plan.',[['Plan confidence?','How confident should I be in my plan?'],['Worst-case prep?','What does the worst case look like, and how do I prepare for it?'],['Lift confidence?','What is the cheapest way to lift my chance of success?']])
+      +'<div class="vp-card vp-sim"><h3 class="vp-h3">Simulated Projected Savings</h3><p class="sub">Showing Average Assumptions With Varying Investment Returns.</p>'
+      +'<p class="claim">After running 1,000 simulations, the probability that your savings will last until your goal age of 91 is 87%. The probability that your legacy goal of $500,000 will be achieved is 81%.</p>'
+      +fanChart()
+      +'<div class="vp-leg"><span><i class="ln" style="color:#10182C"></i>Average Assumptions</span><span><i style="background:#D3EAF2"></i>10th to 90th percentile</span><span><i style="background:#A6D2E2"></i>25th to 75th percentile</span><span><i class="ln" style="color:#0B84A5"></i>Monte Carlo Median</span></div>'
+      +'<table class="vp-t"><thead><tr><th></th><th>End of Plan</th></tr></thead><tbody>'
+      +[['Average Assumptions',savings[iEnd],'#10182C'],['Monte Carlo 90th Percentile',mc.p90[iEnd],'#D3EAF2'],['Monte Carlo 75th Percentile',mc.p75[iEnd],'#A6D2E2'],['Monte Carlo Median',mc.p50[iEnd],'#0B84A5'],['Monte Carlo 25th Percentile',mc.p25[iEnd],'#A6D2E2'],['Monte Carlo 10th Percentile',mc.p10[iEnd],'#D3EAF2']].map(function(r){ return '<tr><td><span class="dot" style="background:'+r[2]+'"></span>'+r[0]+'</td><td>'+money(r[1]*defl(iEnd))+'</td></tr>'; }).join('')
+      +'</tbody></table></div>');
+
+    /* Current Net Worth */
+    var aParts=GROUPS.map(function(g){ var s=0; g.accts.forEach(function(a){ s+=paths[a.n][0]; }); return {n:g.n,c:g.c,v:s}; });
+    var dParts=DEBTS.map(function(g){ var s=0; g.accts.forEach(function(a){ s+=-paths[a.n][0]; }); return {n:g.n.replace('Debt','Debts'),c:g.c,v:s}; });
+    h+=sec('nw','Current Net Worth',
+      h3('Your Assets','What do you own — and which assets are doing the most work?')
+      +ai('Your assets lean on your home and your 401(k), which is normal at 46. The part doing the quiet work is the $120,000 in taxable accounts: it is what lets you retire before 59½ without penalties, so keep it growing rather than spending it down.',[['Right account mix?','Is my account mix right for retiring at 65?'],['Diversification gaps?','Where are the diversification gaps in my assets?'],['Asset location?','Which accounts should hold which investments?']])
+      +donut(aParts,'All Assets',assetsTotal)
+      +'<table class="vp-t"><thead><tr><th>Assets</th><th>Weight</th><th>Value</th></tr></thead><tbody>'+aParts.map(function(p){ return '<tr><td><span class="dot" style="background:'+p.c+'"></span>'+p.n+'</td><td>'+(p.v/assetsTotal*100).toFixed(1)+'%</td><td>'+money(p.v)+'</td></tr>'; }).join('')+'<tr class="tot"><td>Total</td><td></td><td>'+money(assetsTotal)+'</td></tr></tbody></table>'
+      +h3('Your Debts','What do you owe — and how does it affect your path to retirement?')
+      +ai('The 18% card is the only debt costing you real money. Paying it off this year frees $180 a month; the mortgage and the Toyota loan are cheap enough to ride along on schedule.',[['Pay off or invest?','Should I pay off debt or invest the difference?'],['When am I debt-free?','When will I be debt-free on the current plan?'],['Refinance worth it?','Is refinancing the mortgage worth it?']])
+      +donut(dParts,'All Debts',debtsTotal)
+      +'<table class="vp-t"><thead><tr><th>Debts</th><th>Weight</th><th>Value</th></tr></thead><tbody>'+dParts.map(function(p){ return '<tr><td><span class="dot" style="background:'+p.c+'"></span>'+p.n+'</td><td>'+(p.v/debtsTotal*100).toFixed(1)+'%</td><td>'+money(p.v)+'</td></tr>'; }).join('')+'<tr class="tot"><td>Total</td><td></td><td>'+money(debtsTotal)+'</td></tr></tbody></table>'
+      +h3('Detailed Account Breakdown','Where is every dollar — and what is each one projected to become?')
+      +ai('Your Fidelity 401(k) does the heavy lifting: it carries most of the growth to retirement and funds the first decade of withdrawals. The Roth IRA is the account you never touch, which is why it ends the plan as your largest.',[['Which accounts grow most?','Which of my accounts grow the most by retirement?'],['Where do I draw first?','Which account should I draw from first in retirement?'],['Estate impact?','What does my account mix mean for my estate?']])
+      +'<table class="vp-t"><thead><tr><th>Account</th><th>Growth Assumption</th><th>Current Balance</th><th>Retirement</th><th>End of Plan</th></tr></thead><tbody>'
+      +groupTable(GROUPS)+groupTable(DEBTS,true)
+      +'<tr class="grp tot"><td>Total Net Worth</td><td></td><td>'+money(networth[0])+'</td><td>'+money(networth[iRet]*defl(iRet))+'</td><td>'+money(networth[iEnd]*defl(iEnd))+'</td></tr></tbody></table>');
+
+    /* Savings */
+    var acctStacks=[]; GROUPS.slice(0,3).forEach(function(g){ g.accts.forEach(function(a,j){ acctStacks.push({n:a.n,c:[g.c,g.k==='tax'?C.teal:g.k==='roth'?C.mint:C.sand][j]||g.c,v:paths[a.n]}); }); });
+    var wd=[{n:'Taxable',c:C.sand,v:wTax},{n:'Tax-deferred',c:C.deep,v:wPre},{n:'Roth',c:C.green,v:wRoth}];
+    h+=sec('sav','Savings',
+      h3('Balances','Where do your savings live today and where are they headed — by account')
+      +ai('Your savings grow from about '+short(savings[0])+' today to '+short(savings[iRet]*defl(iRet))+' at retirement, then keep rising because Social Security and a 4% draw cover most of your spending. Savings never dip toward zero in the average case.',[['Will my savings last?','Will my savings last to 91?'],['Which accounts carry me furthest?','Which accounts carry me furthest into retirement?'],['What if returns are lower?','What happens to my savings if returns are lower?']])
+      +stackChart(acctStacks,{retire:true})+legend(acctStacks)+trow('bal','Balances table',acctStacks.map(function(s){ return s.n; }),acctStacks.map(function(s){ return s.v; }))
+      +h3('Contributions and Investment Returns','How much of your wealth comes from what you saved — versus what the market built for you?')
+      +ai('Compounding does most of the work. You add about $36,000 a year until '+RET+'; by the mid-2040s the market adds more in a single year than you contribute, so the priority is staying invested, not saving harder.',[['Saving enough?','Am I saving enough?'],['Compounding impact','How much of my wealth comes from compounding?'],['Boost contributions?','What would boosting contributions do to my plan?']])
+      +stackChart([{n:'Contributions',c:C.deep,v:contribs},{n:'Investment returns',c:C.green,v:returns}],{retire:true})+legend([{n:'Contributions',c:C.deep},{n:'Investment returns',c:C.green}])+trow('cir','Contributions and investment returns table',['Contributions','Investment returns'],[contribs,returns])
+      +h3('Withdrawals','When and how will you draw from your savings — and in what order?')
+      +ai('Your plan draws taxable first, then tax-deferred, then Roth. That keeps your taxable income low in the first years of retirement, which is also the window where Roth conversions would be cheapest.',[['Best withdrawal order?','What is the best withdrawal order for me?'],['Avoid running short?','How do I avoid running short late in retirement?'],['Roth conversions help?','Would Roth conversions help my plan?']])
+      +stackChart(wd)+legend(wd)+trow('wd','Withdrawals table',wd.map(function(s){ return s.n; }),wd.map(function(s){ return s.v; })));
+
+    /* Cash Flow */
+    h+=sec('cf','Cash Flow',
+      h3('Projected Cash Flow','How does money flow through your life — what comes in, what goes out, and where does it go?')
+      +ai('You run a surplus every working year and a small, planned draw after '+RET+'. The only pinch is 2045 to 2047, before Social Security starts, when withdrawals carry the whole load.',[['When do I dip into savings?','When do I start dipping into savings?'],['Surplus best use?','What is the best use of my yearly surplus?'],['Smooth deficits?','How can I smooth the deficit years?']])
+      +lineChart([{n:'Income',v:inc,c:C.deep,dots:true},{n:'Expenses',v:exp,c:C.orange,dots:true}])+'<div class="vp-leg"><span><i style="background:'+C.deep+'"></i>Income</span><span><i style="background:'+C.orange+'"></i>Expenses</span></div>'
+      +trow('cf','Projected cash flow table',['Income','Expenses'],[inc,exp]));
+
+    /* Income & Expenses */
+    var incS=[{n:'Work income',c:C.sand,v:work},{n:'Social Security',c:C.sky,v:ss},{n:'Withdrawals',c:C.green,v:YEARS.map(function(_,i){ return wTax[i]+wPre[i]+wRoth[i]; })}];
+    var expS=[{n:'Living expenses',c:C.sand,v:YEARS.map(function(_,i){ return exp[i]-tax[i]; })},{n:'Taxes',c:C.teal,v:tax}];
+    h+=sec('ie','Income & Expenses',
+      h3('Estimated Income, Drawdowns, and Debts','What are your key sources of income over your lifetime?')
+      +ai('Your plan shifts from paychecks to drawing down savings in '+RET+', with Social Security arriving two years later at 67. Claiming at 70 instead would raise that check by about a quarter.',[['Social Security timing','When should I claim Social Security?'],['Income gaps?','Where are the income gaps in my plan?'],['Reduce sequence risk?','How do I reduce sequence-of-returns risk?']])
+      +stackChart(incS,{retire:true})+legend(incS)+trow('inc','Income table',incS.map(function(s){ return s.n; }),incS.map(function(s){ return s.v; }))
+      +h3('Estimated Expenses','Where does your money actually go — and does your spending match your priorities?')
+      +ai('Spending steps up at retirement to the $8,200 a month you planned, then grows with inflation. Taxes are the smaller line and drop sharply once paychecks stop.',[['Spending realistic?','Is my retirement spending realistic?'],['Where can I trim?','Where could I trim without feeling it?'],['Healthcare costs?','How much should I expect for healthcare?']])
+      +stackChart(expS,{retire:true})+legend(expS)+trow('exp','Expenses table',expS.map(function(s){ return s.n; }),expS.map(function(s){ return s.v; })));
+
+    /* Taxes */
+    var gross=[{n:'Wages',c:C.deep,v:work},{n:'Social Security (taxable)',c:C.sky,v:ss.map(function(v){ return v*0.5; })},{n:'Tax-deferred withdrawals',c:C.green,v:wPre}];
+    var ded=[{n:'Standard deduction',c:C.teal,v:YEARS.map(function(_,i){ return 15000*Math.pow(1.025,i); })}];
+    var brackets=[{n:'10%',c:C.sky,v:[]},{n:'12%',c:C.blue,v:[]},{n:'22%',c:C.teal,v:[]},{n:'24%',c:C.deep,v:[]}];
+    YEARS.forEach(function(_,i){ var ti=Math.max(0,gross[0].v[i]+gross[1].v[i]+gross[2].v[i]-ded[0].v[i]); var cuts=[11925,48475,103350,197300].map(function(c){ return c*Math.pow(1.025,i); }); var prev=0; cuts.forEach(function(c,k){ brackets[k].v.push(Math.max(0,Math.min(ti,c)-prev)); prev=c; }); });
+    h+=sec('tx','Taxes',
+      h3('Estimated Taxes','How much will you owe in taxes each year — and how does that change over your lifetime?')
+      +ai('Your tax bill falls by about three-quarters when paychecks stop and stays low until required distributions begin at 75. Those quiet years are the window for Roth conversions.',[['Lower lifetime taxes?','How can I lower my lifetime taxes?'],['RMD impact?','How much will required distributions raise my taxes?'],['Convert now or later?','Should I convert to Roth now or later?']])
+      +stackChart([{n:'Federal taxes',c:C.deep,v:tax}],{retire:true})+trow('tax','Estimated taxes table',['Federal taxes'],[tax])
+      +h3('Gross Taxable Income by Source','What’s driving your taxable income — and which sources contribute the most?')
+      +stackChart(gross,{retire:true})+legend(gross)+trow('gti','Federal taxable income table',gross.map(function(s){ return s.n; }),gross.map(function(s){ return s.v; }))+trow('sti','State taxable income table',gross.map(function(s){ return s.n; }),gross.map(function(s){ return s.v.map(function(v){ return v*0.9; }); }))
+      +h3('Tax Deductions','How much are deductions reducing your taxable income — and when do they matter most?')
+      +stackChart(ded,{retire:true})+trow('fded','Federal tax deductions table',['Standard deduction'],[ded[0].v])+trow('sded','State tax deductions table',['State deduction'],[ded[0].v.map(function(v){ return v*0.35; })])
+      +h3('Net Taxable Income by Tax Bracket','Which tax brackets will you land in — and how much of your income gets taxed at each rate?')
+      +stackChart(brackets,{retire:true})+legend(brackets)+trow('fbr','Federal net taxable income by tax bracket table',brackets.map(function(s){ return s.n; }),brackets.map(function(s){ return s.v; }))+trow('sbr','State net taxable income by tax bracket table',brackets.map(function(s){ return s.n; }),brackets.map(function(s){ return s.v.map(function(v){ return v*0.9; }); })));
+
+    /* Plan Assumptions */
+    var PA=[
+      ['Estate Planning',[['Legacy goal','$500,000'],['Will','On file'],['Healthcare directive','Missing'],['IRA beneficiary','Missing'],['Heirs’ tax rate','24%']]],
+      ['Assets and Debts',[['Accounts','9 (6 linked)'],['Savings today',money(savings[0])],['Debts today',money(debtsTotal)],['Withdrawal order','Taxable, tax-deferred, Roth'],['Default growth','6.80%']]],
+      ['Home and Real Estate',[['Primary home','$480,000'],['Appreciation','3.0%'],['Mortgage','$332,000 at 5.25%'],['Payoff','2052'],['Plan to sell','No']]],
+      ['Income',[['Work income','$142,000 a year'],['Raises','2.5% a year'],['Stop work',RET],['Social Security','$3,400 a month at 67'],['Pension','None']]],
+      ['Money Flows',[['401(k) contribution','$19,200 a year with match'],['Roth IRA','$7,000 a year'],['HSA','$4,150 a year'],['Brokerage','$6,000 a year'],['Savings rate','26%']]],
+      ['Expenses and Healthcare',[['Spending today','$6,450 a month'],['Retirement spending','$8,200 a month'],['Healthcare before 65','$1,100 a month'],['Medicare from 65','$420 a month'],['Long-term care','Not modeled']]],
+      ['Rates',[['Inflation','3.0%'],['Healthcare inflation','5.0%'],['Pessimistic returns','4.5%'],['Optimistic returns','9.5%'],['Tax filing','Single']]],
+      ['Toggles',[['Model in','Future dollars'],['Monte Carlo','1,000 runs'],['RMDs','On'],['Social Security haircut','None'],['Plan','My Financial Plan']]]
+    ];
+    h+=sec('pa','Plan Assumptions',PA.map(function(p,i){ var on=st.arows[i]; return '<div class="vp-arow'+(on?' on':'')+'" data-vp-arow="'+i+'"><button type="button">'+p[0]+DOWN+'</button><div class="ab"><div class="vp-kv">'+p[1].map(function(kv){ return '<div><span>'+kv[0]+'</span><b>'+kv[1]+'</b></div>'; }).join('')+'</div></div></div>'; }).join(''),'vp-pa');
+    return h;
+  }
+  var SECS=[['plan','Your Plan'],['cos','Chance of Success'],['nw','Current Net Worth'],['sav','Savings'],['cf','Cash Flow'],['ie','Income & Expenses'],['tx','Taxes'],['pa','Plan Assumptions']];
+  function secName(id){ for(var i=0;i<SECS.length;i++) if(SECS[i][0]===id) return SECS[i][1]; return 'Your Plan'; }
+  var ICON_TODAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/></svg>';
+  var ICON_FUTURE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M12 6.5v3l2 1.2"/><path d="M8 20h8M10 14.5v3M14 14.5v3"/></svg>';
+  function shell(){
+    return '<div class="vp-top"><button class="vp-x" type="button" data-vp-close aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>'
+      +'<button class="vp-secbtn" type="button" data-vp-menu><span id="vpSecName">'+secName(st.sec)+'</span>'+DOWN+'</button>'
+      +'<div class="vp-secmenu" id="vpSecMenu">'+SECS.map(function(s){ return '<button type="button" data-vp-jump="'+s[0]+'">'+s[1]+'</button>'; }).join('')+'</div>'
+      +'<div class="vp-right"><span class="vp-viewin">View in:</span><div class="vp-seg" role="radiogroup" aria-label="Dollars"><button type="button" class="'+(st.today?'on':'')+'" data-vp-dollars="today" aria-pressed="'+st.today+'">'+ICON_TODAY+'<span>Today’s dollars</span></button><button type="button" class="'+(!st.today?'on':'')+'" data-vp-dollars="future" aria-pressed="'+!st.today+'">'+ICON_FUTURE+'<span>Future dollars</span></button></div>'
+      +'</div></div>'
+      +'<div class="vp-scroll" id="vpScroll"><div class="vp-body" id="vpBody">'+body()+'</div></div>'
+      +'<div class="vp-dock"><div class="vp-dock-inner"><div class="askbar"><span class="spark"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path class="sp-body" d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" fill="currentColor"/><path class="sp-draw" d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><input type="text" id="vpAskInput" placeholder="Ask anything about your plan" aria-label="Ask anything about your plan" /></div></div></div>';
+  }
+  var DL='<div class="box" role="dialog" aria-modal="true" aria-labelledby="vpDlT"><button class="x" type="button" data-vp-dlclose aria-label="Close download dialog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>'
+    +'<h3 id="vpDlT">Download/Print</h3><p class="sub">Print a report or download your data for review.</p><div class="cols">'
+    +'<div class="col"><h4>Print Your Plan</h4><p>Download a completed customized PDF report summarizing your retirement plan. Save the PDF to your computer or print it out. Your report is always shown in future dollars, regardless of the toggle above.</p><p><b>Select which assumptions to use in your report:</b></p>'
+    +'<button class="opt" type="button" data-vp-toast="Printing your plan with optimistic assumptions">Print Plan with Optimistic Assumptions</button><button class="opt" type="button" data-vp-toast="Printing your plan with average assumptions">Print Plan with Average Assumptions</button><button class="opt" type="button" data-vp-toast="Printing your plan with pessimistic assumptions">Print Plan with Pessimistic Assumptions</button></div>'
+    +'<div class="col"><h4>Export Your Plan Data</h4><p>Export all of the data used in your plan. See all of the annual values used in the retirement plan calculations.</p><p><b>Select a download option:</b></p>'
+    +'<button class="opt" type="button" data-vp-toast="Downloading your plan data as a spreadsheet">Download Data to a Spreadsheet</button><button class="opt" type="button" data-vp-dlclose data-vp-jump="nw">View your Plan’s Data Online</button></div></div></div>';
+
+  /* ---------- mount + behaviour ---------- */
+  var modal=document.createElement('div'); modal.id='vpModal'; modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true'); modal.setAttribute('aria-label','Your Plan'); document.body.appendChild(modal);
+  var dl=document.createElement('div'); dl.id='vpDl'; dl.innerHTML=DL; document.body.appendChild(dl);
+  var built=false, prevOverflow='';
+  function render(keepScroll){ var sc=document.getElementById('vpScroll'); var top=sc?sc.scrollTop:0; modal.innerHTML=shell(); built=true; if(keepScroll){ var s2=document.getElementById('vpScroll'); s2.scrollTop=top; } if(modal.classList.contains('open')) spy(); }
+  function open(){ if(!built) render(); modal.classList.add('open'); spy(); prevOverflow=document.body.style.overflow; document.body.style.overflow='hidden'; }
+  function close(){ modal.classList.remove('open'); dl.classList.remove('open'); document.body.style.overflow=prevOverflow; }
+  window.__viewPlan={open:open, close:close};
+
+  function spy(){
+    var sc=document.getElementById('vpScroll'); if(!sc || !modal.classList.contains('open')) return;
+    var cur='plan'; sc.querySelectorAll('[data-vp-sec]').forEach(function(s){ if(s.getBoundingClientRect().top-sc.getBoundingClientRect().top<=120) cur=s.dataset.vpSec; });
+    st.sec=cur; var n=document.getElementById('vpSecName'); if(n) n.textContent=secName(cur);
+    modal.querySelectorAll('[data-vp-jump]').forEach(function(b){ b.classList.toggle('on', b.dataset.vpJump===cur); });
+  }
+  modal.addEventListener('scroll', spy, true);
+  function jump(id){ var sc=document.getElementById('vpScroll'); if(id==='plan'){ sc.scrollTo({top:0,behavior:'smooth'}); return; } var s=sc.querySelector('[data-vp-sec="'+id+'"]'); if(!s) return; st.open[id]=true; s.classList.remove('shut'); var top=s.getBoundingClientRect().top-sc.getBoundingClientRect().top+sc.scrollTop-8; sc.scrollTo({top:top,behavior:'smooth'}); }
+
+  document.addEventListener('click', function(e){
+    var t=e.target.closest && e.target.closest('[data-vp-close],[data-vp-menu],[data-vp-jump],[data-vp-dollars],[data-vp-toggle],[data-vp-trow] > button,[data-vp-arow] > button,[data-vp-download],[data-vp-dlclose],[data-vp-toast],[data-vp-ask],[data-vp-focus]');
+    if(!t){ if(st.menu && !e.target.closest('#vpSecMenu')){ st.menu=false; var m=document.getElementById('vpSecMenu'); if(m) m.classList.remove('on'); } if(e.target===dl) dl.classList.remove('open'); return; }
+    if(t.hasAttribute('data-vp-close')){ close(); }
+    else if(t.hasAttribute('data-vp-menu')){ st.menu=!st.menu; document.getElementById('vpSecMenu').classList.toggle('on',st.menu); }
+    else if(t.hasAttribute('data-vp-jump')){ st.menu=false; var mm=document.getElementById('vpSecMenu'); if(mm) mm.classList.remove('on'); if(t.hasAttribute('data-vp-dlclose')) dl.classList.remove('open'); jump(t.dataset.vpJump); }
+    else if(t.hasAttribute('data-vp-dollars')){ st.today=t.dataset.vpDollars==='today'; render(true); }
+    else if(t.hasAttribute('data-vp-toggle')){ var id=t.dataset.vpToggle; var s=t.closest('.vp-sec'); var shut=!s.classList.contains('shut'); s.classList.toggle('shut',shut); st.open[id]=!shut; t.setAttribute('aria-expanded',!shut); }
+    else if(t.parentElement && t.parentElement.hasAttribute('data-vp-trow')){ var id2=t.parentElement.dataset.vpTrow; st.trows[id2]=!st.trows[id2]; render(true); }
+    else if(t.parentElement && t.parentElement.hasAttribute('data-vp-arow')){ var id3=t.parentElement.dataset.vpArow; st.arows[id3]=!st.arows[id3]; t.parentElement.classList.toggle('on',st.arows[id3]); }
+    else if(t.hasAttribute('data-vp-download')){ dl.classList.add('open'); }
+    else if(t.hasAttribute('data-vp-dlclose')){ dl.classList.remove('open'); }
+    else if(t.hasAttribute('data-vp-toast')){ dl.classList.remove('open'); if(typeof window.toast==='function') window.toast(t.dataset.vpToast); }
+    else if(t.hasAttribute('data-vp-ask')){ chat(t.dataset.vpAsk); }
+    else if(t.hasAttribute('data-vp-focus')){ var inp=document.getElementById('vpAskInput'); if(inp){ inp.focus(); } }
+    e.preventDefault(); e.stopPropagation();
+  }, true);
+  var fromReport=false;
+  function chat(q){
+    close(); fromReport=true;
+    setTimeout(function(){
+      if(window.__guided && window.__guided.ask) window.__guided.ask(q);
+      else if(window.__railAI && window.__railAI.send){ window.__railAI.expand && window.__railAI.expand(); if(window.setFullscreen) window.setFullscreen(true); window.__railAI.send(q); }
+    }, 60);
+  }
+  window.__viewPlan.chat=chat;
+  /* leaving the full-screen chat returns to the report it was opened from */
+  new MutationObserver(function(){
+    if(!fromReport) return;
+    var c=document.body.classList;
+    if(c.contains('ai-fullscreen')) return;
+    if(!c.contains('ai-fullscreen') && !window.__vpSeenFs) return;
+    fromReport=false; window.__vpSeenFs=false;
+    var tries=0;
+    (function settle(){ tries++;
+      if(c.contains('ai-expanded') && window.__railAI && window.__railAI.collapse) window.__railAI.collapse();
+      if(c.contains('ai-expanded') && tries<12){ setTimeout(settle,220); return; }
+      open();
+    })();
+  }).observe(document.body,{attributes:true,attributeFilter:['class']});
+  new MutationObserver(function(){ if(fromReport && document.body.classList.contains('ai-fullscreen')) window.__vpSeenFs=true; }).observe(document.body,{attributes:true,attributeFilter:['class']});
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Enter' && e.target && e.target.id==='vpAskInput'){ var q=e.target.value.trim(); if(!q) return; e.target.value=''; chat(q); return; }
+    if(e.key!=='Escape') return; if(dl.classList.contains('open')){ dl.classList.remove('open'); return; } if(modal.classList.contains('open')) close(); });
+})();
+</script>
 </body>
 
 
@@ -15770,7 +16800,7 @@ body.fire-page .fire-side{ display:block; }
     });
   }
   wire('.side-download.sd-today', 'tvModal');
-  wire('.side-download:not(.sd-today)', 'dpModal');
+  document.querySelectorAll('.side-download:not(.sd-today)').forEach(function(a){ a.addEventListener('click', function(){ if(window.__viewPlan) window.__viewPlan.open(); }); a.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); if(window.__viewPlan) window.__viewPlan.open(); } }); });
   document.querySelectorAll('.dl-modal').forEach(function(m){
     m.addEventListener('click', function(e){
       if(e.target.closest('[data-dl-close]') || e.target.classList.contains('dl-backdrop')) closeDl(m);
@@ -22699,6 +23729,11 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
       setTimeout(function(){ if(window.INS && window.INS.open) window.INS.open(key); }, 340);
       return;
     }
+    if(head==='today' && key==='invest'){
+      view('today');
+      setTimeout(function(){ if(window.__invToday && window.__invToday.open) window.__invToday.open(); }, 300);
+      return;
+    }
     view(head);
     if(key) setTimeout(function(){ railClick(key); }, 280);
   }
@@ -23671,7 +24706,7 @@ const CH=[
  {id:'first',t:'Summary',q:'Am I on track?',chip:['good',`${pct(K.success)} on track`]},
  {id:'budget',t:'Budgeting',q:'Where does my money come from and go?',chip:['good',`${money(K.surplus0)}/yr left over`]},
  {id:'retire',t:'Retirement',q:'Will my money last?',chip:['warn','Watch 2037–2041']},
- {id:'invest',t:'Investments',q:'Am I invested for what’s ahead?',chip:['warn','7 pts above target']},
+ {id:'invest',t:'Investments',q:'How should we forecast your investments?',chip:['good','Conservative profile']},
  {id:'tax',t:'Taxes',q:'Am I paying more tax than I need to?',chip:['good',`${money(K.afterTaxR-K.afterTax)} opportunity`]},
  {id:'estate',t:'Estate planning',q:'What will I leave, and to whom?',chip:['crit','2 documents missing']},
 ];
@@ -23835,34 +24870,9 @@ function vRetire(){
 
 /* ---------- 4. Investments ---------- */
 function vInvest(){
-  const r=sliceFrom(2037);
-  return head(3,'Are you invested the right way for what’s ahead?','Your mix against your target, and how a bad market at the wrong time lands.')
-  +split(`<div class="gap-fig"><div class="k">Stocks today</div><div class="v">62%</div>
-      <div class="bar"><i style="width:62%"></i><s style="left:55%"></s></div>
-      <div class="d">Tick marks your 55% target</div></div>`,
-    `<div class="gap-fig hi"><div class="k">Above target by</div><div class="v">7 pts</div>
-      <div class="d">About ${money(.07*K.sav0)} more in stocks than your risk survey calls for with 11 years to go</div></div>`)
-  +answer(`You hold 62% stocks against a 55% target, and a large drop right as Luis retires is the risk that costs you most.`,['How do I get back to my target?'])
-  +insight(`You are <b>7 points above your stock target</b>. That mattered less while you were saving; it matters most in the four years around Luis retiring, when a drop has no time to recover.`)
-  +`<div class="grid2">`
-  +card({title:'How am I invested today?',src:'Investments: Today',
-    draw:h=>donut(h,{items:[{name:'US stocks',v:48,color:COL.c1,amt:.48*K.sav0},{name:'International stocks',v:14,color:COL.c2,amt:.14*K.sav0},{name:'Bonds',v:26,color:COL.c3,amt:.26*K.sav0},{name:'Cash',v:6,color:COL.c4,amt:.06*K.sav0},{name:'Alternatives & other',v:6,color:COL.c5,amt:.06*K.sav0}],center:{v:money(K.sav0),label:'total invested'},label:'allocation'})})
-  +card({title:'Does my mix match my target?',src:'Investments: Today · risk profile',take:'Target comes from your risk survey, adjusted for 11 years to retirement.',
-    draw:h=>hbars(h,{cats:['Stocks','Bonds','Cash & other'],series:[{name:'Today',color:COL.c1,values:[62,26,12]},{name:'Target',color:COL.c0,values:[55,38,7]}],fmt:v=>v+'%'})})
-  +`</div>`
-  +strip([{k:'Invested today',v:money(K.sav0),d:'14 accounts, 11 linked'},{k:'Pre-tax share',v:pct(K.defShare),d:'401(k)s and traditional IRA'},{k:'Taxable runs out',v:String(K.txbOut),d:'then withdrawals come from pre-tax'}])
-  +card({title:'Where does my money sit, by tax treatment?',src:'Savings (account balances)',take:`Pre-tax accounts carry the plan. Taxable savings are spent first and run out in <b>${K.txbOut}</b>; Roth grows untouched as your last resort and best asset to leave behind.`,
-    draw:h=>tsChart(h,{years:YRS,series:[S('Pre-tax (401k, IRA)',COL.c1,M.map(x=>x.def),'area'),S('Roth',COL.c2,M.map(x=>x.roth),'area'),S('Taxable brokerage',COL.c3,M.map(x=>x.txb),'area'),S('Cash',COL.c4,M.map(x=>x.cash),'area')],rowLabel:lab,tipTotal:'Total savings',height:260}),
-    table:()=>tsTable(YRS,[S('Pre-tax',0,M.map(x=>x.def)),S('Roth',0,M.map(x=>x.roth)),S('Taxable',0,M.map(x=>x.txb)),S('Cash',0,M.map(x=>x.cash))],lab)})
-  +`<div class="grid2">`
-  +card({title:'Which accounts will I draw from, and when?',src:'Withdrawals · Retirement Withdrawals',take:'Taxable first, then pre-tax, with required distributions taking over from 2047.',
-    draw:h=>tsChart(h,{years:r.years,series:[S('Taxable',COL.c3,r.sl(M.map(x=>x.wTx))),S('Pre-tax',COL.c1,r.sl(M.map(x=>x.wDef))),S('Required distributions',COL.c5,r.sl(M.map(x=>x.rmd))),S('Roth',COL.c2,r.sl(M.map(x=>x.wRoth)))],rowLabel:r.lab,tipTotal:'Total',height:240}),
-    table:()=>tsTable(r.years,[S('Taxable',0,r.sl(M.map(x=>x.wTx))),S('Pre-tax',0,r.sl(M.map(x=>x.wDef))),S('RMD',0,r.sl(M.map(x=>x.rmd))),S('Roth',0,r.sl(M.map(x=>x.wRoth)))],r.lab)})
-  +card({title:'What if the market drops the year Luis retires?',src:'Market Risk Explorer',take:`A 28% fall in 2037, with average returns after. Your savings recover but end <b>${money(K.baseEnd-K.crashEnd)}</b> lower.`,
-    draw:h=>tsChart(h,{years:YRS,series:[S('Average returns',COL.c1,M.map(x=>x.savings),'line',{width:2.5}),S('28% drop in 2037',COL.gap,CR.map(x=>x.savings),'line',{width:2.5,dash:'6 4'})],vlines:[{y:2037,label:'Drop'}],spans:[{from:2037,to:2041,label:'No time to recover',color:'rgba(251,80,4,.08)',ink:'#B3261E'}],notes:[{y:2062,v:CR[CR.length-5].savings,text:`${money(K.baseEnd-K.crashEnd)} less at 92`,dy:-26,color:COL.gap}],rowLabel:lab,height:240}),
-    table:()=>tsTable(YRS,[S('Average',0,M.map(x=>x.savings)),S('Drop in 2037',0,CR.map(x=>x.savings))],lab)})
-  +`</div>`
-  +nextRow(3);
+  /* Investments: Future, mirrored from planner/investments/future. Markup and state live in window.__invFuture. */
+  answer(`Your survey put you in the Conservative profile. Historical Rates holds one blended 5.92% for life; Allocation Path steps equity down from 60% to 30% as you approach retirement.`,['Which model should I use?']);
+  return `<div id="ifRoot">${window.__invFuture ? window.__invFuture.html() : ''}</div>`+nextRow(3);
 }
 
 /* ---------- 5. Taxes ---------- */
@@ -24304,6 +25314,24 @@ document.addEventListener('click', function(e){
 .hm-page .ai-ask:hover{text-decoration:underline;} .hm-page .ai-ask:hover .arr{transform:translateX(3px); color:var(--green-cta);}
 .hm-page .topzone .ai-ask{margin-top:10px; padding-top:10px;}
 .hm-page .qcard .ai-ask{margin-top:0; padding:14px 22px 16px;}
+
+/* home: My investments mini module (same block as the mobile build) */
+.hm-page .inv-mini{display:flex; align-items:center; gap:18px; text-decoration:none; color:inherit; cursor:pointer;}
+.hm-page .inv-mini-donut{width:96px; height:96px; flex:none;}
+.hm-page .inv-mini-txt{display:flex; flex-direction:column; gap:10px; min-width:0; flex:1;}
+.hm-page .inv-mini-h{font-size:16px; line-height:1.4; color:var(--text-secondary);}
+.hm-page .inv-mini-h b{color:var(--ink); font-weight:600;}
+.hm-page .inv-mini-bars{display:flex; flex-direction:column; gap:7px;}
+.hm-page .inv-mini-bars .r{display:grid; grid-template-columns:64px 1fr 52px; align-items:center; gap:10px; font-size:13px;}
+.hm-page .inv-mini-bars .r i{font-style:normal; color:var(--text-secondary);}
+.hm-page .inv-mini-bars .r b{font-weight:600; color:var(--ink); text-align:right; font-variant-numeric:tabular-nums;}
+.hm-page .inv-mini-bars .bar{display:block; height:8px; border-radius:999px; background:#E6F3EE; overflow:hidden;}
+.hm-page .inv-mini-bars .bar em{display:block; height:100%; border-radius:999px; background:#0E3A44;}
+.hm-page .inv-mini-bars .r:last-child .bar em{background:#1D9E75;}
+.hm-page .inv-mini-link{display:inline-flex; align-items:center; gap:4px; font-size:14px; font-weight:600; color:var(--green-cta);}
+.hm-page .inv-mini-link .chev{font-size:18px; line-height:1; transition:transform .2s var(--ease-out);}
+.hm-page .inv-mini:hover .inv-mini-link{text-decoration:underline;}
+.hm-page .inv-mini:hover .inv-mini-link .chev{transform:translateX(3px);}
 </style>
 <script>
 (function(){
@@ -24315,7 +25343,8 @@ document.addEventListener('click', function(e){
     's-videos':    'Spend now or save for later, which is the better move for me?',
     's-advisors':  'What would a CFP change about my plan first?',
     's-events':    'What do most people get wrong in their first year of retirement?',
-    's-podcast':   'How will financial advice change by the time I retire?'
+    's-podcast':   'How will financial advice change by the time I retire?',
+    's-invest':    'Is 62% in stocks too much, three years from retirement?'
   };
   var SPK='<svg class="spk" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
   Object.keys(ASK).forEach(function(id){
