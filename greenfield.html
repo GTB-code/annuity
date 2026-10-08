@@ -24979,21 +24979,12 @@ function vFirst(){
     rows:[['Net worth today',money(K.nw0)],['Projected estate at 92',money(K.estate)],['Plan accuracy','88% · 2 items to review']]})
   +insight(`One stretch decides your odds: <b>2037 to 2041</b>, after Luis stops working and before Social Security starts.`)
   +answer(`You can retire on schedule and spend about ${mo(K.spend)} a month for life; the pressure point is the four years between Luis retiring in 2037 and Maya’s Social Security starting in 2041.`,['What would raise my odds?'])
-  +card({plain:true,title:'How will my net worth change over time?',src:'Net Worth projection · Timeline of Milestones',take:`Net worth builds to about <b>${money(Math.max(...nw))}</b> around retirement, then draws down slowly. Numbered points are your milestones.`,
-    draw:h=>{const pk=Math.max(...nw),pky=YRS[nw.indexOf(pk)];
-      tsChart(h,{years:YRS,series:[S('Net worth',COL.c1,nw,'line',{width:2.5,endDot:true})],markers:mk,notes:[{y:pky,v:pk,text:`Peak ${money(pk)} in ${pky}`,dy:-34,color:COL.c1}],rowLabel:lab,height:270});
-      h.insertAdjacentHTML('beforeend',`<div class="legend" style="margin-top:6px">${mk.map(m=>`<span><b style="display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:${COL.ink};color:#fff;font-size:10px">${m.n}</b>${m.y} · ${m.label}</span>`).join('')}</div>`);},
-    table:()=>tsTable(YRS,[S('Net worth',0,nw),S('Savings',0,M.map(r=>r.savings)),S('Home equity',0,M.map(r=>r.home-r.mort))],lab)})
   +`<div class="sr">
-    <div class="items"><h3>Key strengths</h3>
-      <button class="item s" data-go="budget" type="button"><span class="ico">${ICON.check}</span><span><div class="h">You save ${pct(36000/210000)} of pay and still have ${money(K.surplus0)} a year left over</div><div class="b">That surplus is room to save more now or to fund the early retirement years.</div><span class="go">Budgeting ${ICON.arrow}</span></span></button>
+    <div class="items"><h3>Key strength</h3>
       <button class="item s" data-go="retire" type="button"><span class="ico">${ICON.check}</span><span><div class="h">Social Security will cover ${pct(K.ssShare)} of your retirement spending</div><div class="b">Guaranteed, inflation-adjusted income for life once both benefits start in 2041.</div><span class="go">Retirement ${ICON.arrow}</span></span></button>
-      <button class="item s" data-go="budget" type="button"><span class="ico">${ICON.check}</span><span><div class="h">Your mortgage is paid off in ${K.mortFree}, before either of you retires</div><div class="b">You go into retirement with no debt payments.</div><span class="go">Budgeting ${ICON.arrow}</span></span></button>
     </div>
-    <div class="items"><h3>Key risks</h3>
+    <div class="items"><h3>Key risk</h3>
       <button class="item r" data-go="retire" type="button"><span class="ico">${ICON.warn}</span><span><div class="h">The bridge years, 2037–2041, lean hardest on savings</div><div class="b">Withdrawals peak near ${money(-peakGap)} in ${peakYear}, and taxable savings are gone by ${K.txbOut}. A market drop in this window matters most.</div><span class="go">Retirement ${ICON.arrow}</span></span></button>
-      <button class="item r" data-go="tax" type="button"><span class="ico">${ICON.warn}</span><span><div class="h">${pct(K.defShare)} of your savings has never been taxed</div><div class="b">Required distributions start in 2047 and your heirs inherit the tax bill on what is left.</div><span class="go">Taxes ${ICON.arrow}</span></span></button>
-      <button class="item r hi" data-go="estate" type="button"><span class="ico">${ICON.x}</span><span><div class="h">No healthcare directive, and your IRA beneficiary is out of date</div><div class="b">Both are quick fixes, and they decide who acts for you and who inherits.</div><span class="go">Estate planning ${ICON.arrow}</span></span></button>
     </div></div>`
   +`<div class="sech">Your plan in six questions</div><div class="qgrid">${CH.slice(1).map((c,j)=>`<button class="qcard" data-go="${c.id}" type="button"><span class="t">${c.t}</span><span class="q">${c.q}</span><span class="a">${['Income covers today’s spending with room to spare.','Yes in most markets. The bridge years are the stress point.','Slightly more aggressive than your target for your timeline.','You could pay less over your lifetime by converting early.','About '+money(K.estate)+', but two documents need attention.'][j]}</span><span class="chip ${c.chip[0]}">${c.chip[1]}</span></button>`).join('')}</div>`
   +nextRow(0);
