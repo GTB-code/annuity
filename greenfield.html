@@ -21457,54 +21457,6 @@ body.tri-cols.graph-expanded.ai-expanded.prism-mini .side{
   width:64px; min-width:64px; opacity:1; overflow-x:hidden; overflow-y:auto; pointer-events:auto;
   padding:0 0 8px; margin:0; left:max(32px, 50% - 658px); }
 body.tri-cols.graph-expanded.ai-expanded .side-mini-tg{ display:none; }
-
-/* ===== TEST: compact plan page (viewport <= 1180px) ===== */
-body.rail-compact .layout.page[data-page="plan"]{
-  grid-template-columns:64px minmax(0,1fr) minmax(220px,280px);
-  gap:var(--s-6); max-width:none; padding-left:var(--s-5); padding-right:var(--s-5); }
-body.rail-compact .dock .dock-inner{ grid-template-columns:64px minmax(0,1fr) minmax(220px,280px); }
-body.rail-compact .layout.page[data-page="plan"] .side{ left:var(--s-5); width:64px; display:block; }
-body.rail-compact .layout.page[data-page="plan"] .side .side-mini-tg{ display:flex; }
-body.rail-compact .layout.page[data-page="plan"] .center{ grid-column:2; max-width:none; }
-body.rail-compact .layout.page[data-page="plan"] .rail{ display:block; grid-column:3; }
-/* the caret opens the labels as a sheet over the content, nothing underneath moves */
-body.rail-compact-open .layout.page[data-page="plan"] .side{
-  width:232px; padding:0 14px 16px; margin:-10px 0 0 -14px; background:#fff; border-radius:14px;
-  box-shadow:0 12px 32px rgba(16,24,44,.14); z-index:60; max-height:calc(100vh - 120px); overflow-y:auto; }
-body.rail-compact-open .layout.page[data-page="plan"] .side .side-mini-tg{ margin-top:10px; }
-/* Prism open in compact mode: the centre column gives up width so the graphs get it.
-   The rail comes back at every width here, since Prism lives in it. */
-body.rail-compact.graph-expanded .layout.page[data-page="plan"],
-body.rail-compact.graph-expanded .dock .dock-inner{ grid-template-columns:64px minmax(0,340px) minmax(0,1fr); }
-body.rail-compact.graph-expanded .layout.page[data-page="plan"] .rail{ display:block !important; grid-column:3; min-width:0; }
-body.rail-compact.graph-expanded .layout.page[data-page="plan"] .center{ max-width:340px; }
-body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no room for labels while Prism is open */
-/* tablets: the top nav goes to icons and the headline scales with the column */
-@media (max-width:1000px){
-  .topnav nav.modes{ display:flex; margin-left:var(--s-4); gap:2px; }
-  .topnav nav.modes a{ font-size:0; gap:0; padding:0 9px; }
-  .topnav nav.modes a .ic{ width:20px; height:20px; }
-  body.rail-compact .layout.page[data-page="plan"] .center{ min-width:0; }
-  body.rail-compact .layout.page[data-page="plan"] .snap-headline,
-  body.rail-compact .layout.page[data-page="plan"] .pf-hl{ font-size:clamp(24px, 3.4vw, 34px); }
-  body.rail-compact .layout.page[data-page="plan"] .snap-headline,
-  body.rail-compact .layout.page[data-page="plan"] .snap-headline .nw{ white-space:normal; }
-}
-/* phones only: no room for the right rail, two columns */
-@media (max-width:760px){
-  body.rail-compact:not(.graph-expanded) .layout.page[data-page="plan"],
-  body.rail-compact:not(.graph-expanded) .dock .dock-inner{ grid-template-columns:64px minmax(0,1fr); }
-  body.rail-compact:not(.graph-expanded) .layout.page[data-page="plan"] .rail{ display:none; }
-  body.rail-compact.graph-expanded .layout.page[data-page="plan"],
-  body.rail-compact.graph-expanded .dock .dock-inner{ grid-template-columns:64px minmax(0,280px) minmax(0,1fr); gap:var(--s-4); }
-  body.rail-compact.graph-expanded .layout.page[data-page="plan"] .center{ max-width:280px; }
-}
-/* phones: the icon rail stays, the top nav goes to icons */
-@media (max-width:760px){
-  body.rail-compact .layout.page[data-page="plan"]{ padding-left:var(--s-4); padding-right:var(--s-4); gap:var(--s-5); }
-  body.rail-compact .layout.page[data-page="plan"] .side{ left:var(--s-4); }
-  .topnav nav.modes{ margin-left:var(--s-3); }
-}
 </style>
 <script>
 /* Mini left rail. While Prism is open the rail drops to icons, which is where the
@@ -21532,14 +21484,7 @@ body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no
     draw:'<path d="M4.6 5.4h14.8"/><path d="M12 8v8.6"/><path d="M8.8 13.4 12 16.6l3.2-3.2"/><path d="M4.6 19.4h14.8"/>',
     taxes:'<path d="M6.4 3.8h11.2v16.4l-2.8-1.8-2.8 1.8-2.8-1.8-2.8 1.8z"/><path d="M9.8 8.4h4.4"/><path d="M9.8 12.4h4.4"/>',
     rmd:'<rect x="4.2" y="5.6" width="15.6" height="13.4" rx="2.2"/><path d="M4.2 9.6h15.6"/><path d="M12 12.4v3l2.2 1.2"/>',
-    irmaa:'<path d="M12 4.6v14.8"/><path d="M4.6 12h14.8"/><circle cx="12" cy="12" r="8.4"/>',
-    /* explore your plan */
-    'xp-first':'<circle cx="12" cy="12" r="8.4"/><path d="m14.8 9.2-1.6 4.4-4.4 1.6 1.6-4.4z"/>',
-    'xp-budget':'<path d="M12 3.6a8.4 8.4 0 1 0 8.4 8.4H12z"/><path d="M14.6 3.9a8.4 8.4 0 0 1 5.5 5.5h-5.5z"/>',
-    'xp-retire':'<path d="M4 15.4h16"/><path d="M12 15.4V5.6"/><path d="M4.6 12.2a7.4 7.4 0 0 1 14.8 0z"/><path d="M12 15.4c0 2.4-1 3.6-2.6 3.6"/>',
-    'xp-invest':'<path d="M4 17.6 9.4 12l3.6 3.2 7-7.4"/><path d="M15.4 7.8h4.6v4.6"/>',
-    'xp-tax':'<path d="M5.4 18.6 18.6 5.4"/><circle cx="8.2" cy="8.2" r="2.1"/><circle cx="15.8" cy="15.8" r="2.1"/>',
-    'xp-estate':'<path d="M4 10.8 12 4.6l8 6.2"/><path d="M6.2 9.6v9.8h11.6V9.6"/><path d="M9.6 14.2h4.8"/>'
+    irmaa:'<path d="M12 4.6v14.8"/><path d="M4.6 12h14.8"/><circle cx="12" cy="12" r="8.4"/>'
   };
   var GEN = '<circle cx="12" cy="12" r="3.2"/>';
 
@@ -21553,7 +21498,7 @@ body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no
     document.querySelectorAll('.side #sideNav li').forEach(function(li){
       if(li.dataset.dressed) return;
       li.dataset.dressed='1';
-      var key=li.dataset.key || li.dataset.ins || (li.dataset.xp ? 'xp-'+li.dataset.xp : '');
+      var key=li.dataset.key || li.dataset.ins;
       var txt='';
       [].slice.call(li.childNodes).forEach(function(n){
         if(n.nodeType===3){ txt+=n.textContent; n.remove(); }
@@ -21618,25 +21563,16 @@ body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no
     })[0];
     return !!(vis && vis.querySelector('.side #sideNav'));
   }
-  /* TEST: below 1180px the plan page drops the rail to icons on its own; the caret
-     still opens the labels, as an overlay, until the next resize across the breakpoint */
-  var COMPACT_MQ = window.matchMedia('(max-width:1180px)');
-  function compactNow(){ return COMPACT_MQ.matches && railReady() && document.body.dataset.view==='plan'; }
   function apply(){
     var c=document.body.classList;
     var prism=c.contains('graph-expanded') && railReady();
-    var compact=compactNow();
     /* the three panel view has no room for labels: the mini rail is the only option there */
     var forced = prism && c.contains('tri-cols') && c.contains('ai-expanded');
-    var mini = prism ? (forced || compact || (manual===null ? true : manual)) : (compact && manual!==false);
+    var mini = prism && (manual===null ? true : manual);   /* the three panel view folds the rail to one control, and it opens again on request */
     c.toggle('prism-mini', mini);
-    c.toggle('rail-compact', compact);
-    c.toggle('rail-compact-open', compact && !mini);
     syncToggles();
-    if(!prism && !compact) manual=null;
+    if(!prism) manual=null;
   }
-  COMPACT_MQ.addEventListener('change', function(){ manual=null; apply(); });
-  window.addEventListener('resize', apply);
 
   dress(); addToggles(); apply();
 
@@ -21649,7 +21585,7 @@ body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no
 
   /* Prism and chat both live on body classes, so watch them rather than hook every caller */
   new MutationObserver(function(){ dress(); addToggles(); apply(); })
-    .observe(document.body, {attributes:true, attributeFilter:['class','data-view']});
+    .observe(document.body, {attributes:true, attributeFilter:['class']});
   new MutationObserver(function(){ dress(); addToggles(); })
     .observe(document.querySelector('#app') || document.body, {childList:true, subtree:true});
 
@@ -25282,141 +25218,6 @@ function close(){
 
 </script>
 
-<!-- ===================== TEST: clean three-panel editing view (editor + Prism + Ask) ===================== -->
-<style id="triCleanCSS">
-/* Scope: only while a field editor, Prism and Ask anything are open together.
-   The left rail steps out entirely; the three panels share the width with
-   hairline dividers; every rule here is appended last so it wins its cascade. */
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"],
-body.tri-cols.graph-expanded.ai-expanded .dock .dock-inner{
-  grid-template-columns:0px minmax(0,1fr) minmax(0,2.25fr) !important;   /* editor : (prism + chat) */
-  max-width:none !important; justify-content:stretch; gap:0 !important;
-  padding-left:40px !important; padding-right:40px !important; }
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"] .side{ display:none !important; }
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"] .center{
-  grid-column:2; max-width:none !important; padding-right:36px; }
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"] .rail{
-  display:grid !important; grid-column:3; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) !important; column-gap:0 !important;   /* prism : chat */
-  border-left:1px solid var(--hairline); min-height:calc(100vh - 130px); align-self:stretch; }
-body.tri-cols.graph-expanded.ai-expanded .tri-right{ min-height:calc(100vh - 130px); }
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"]{ padding-top:calc(73px + 36px) !important; }
-body.tri-cols.graph-expanded.ai-expanded .tri-left{ padding:0 36px 40px 36px; top:84px; }
-body.tri-cols.graph-expanded.ai-expanded .tri-right{ padding-left:36px; padding-right:0; }
-body.tri-cols.graph-expanded.ai-expanded .side-mini-tg{ display:none !important; }
-/* the hidden ask column must not clip: Full view and text stay inside the viewport */
-body.tri-cols.graph-expanded.ai-expanded .rail-ai-host,
-body.tri-cols.graph-expanded.ai-expanded .tri-right{ min-width:0; }
-
-/* ---- one header rhythm across the three panels ---- */
-body.tri-cols .gd-head .gd-title,
-body.tri-cols .rail-ai-head{ font-size:24px; font-weight:600; letter-spacing:-.01em; }
-body.tri-cols #graphDock{ margin-top:0 !important; animation:none !important; }
-body.tri-cols #graphDock .gd-head{ top:0; padding:0 0 10px; margin-bottom:12px; }
-body.tri-cols .gd-card{ padding:20px 20px 16px; border-radius:16px; }
-body.tri-cols .gd-card .gd-title-t{ font-size:16px; color:var(--ink); }
-body.tri-cols .gd-when{ font-size:15px; }
-body.tri-cols .gd-legend .gd-li{ font-size:15px; white-space:nowrap; }
-body.tri-cols .gd-card .gd-lab{ flex-wrap:nowrap; }
-body.tri-cols .gd-card .gd-title-t{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
-body.tri-cols .gd-when{ white-space:nowrap; }
-body.tri-cols .gd-tools{ flex:none; }
-
-/* ---- the editor card: labels above fields, one clear action ---- */
-body.tri-cols .row-editor .edit-card{
-  background:#FFFDF6; border:1px solid var(--hairline); border-radius:16px; padding:22px 24px 26px; }
-body.tri-cols .row-editor .edit-card .ecTitle{ font-size:20px; align-items:flex-start; margin-bottom:4px; }
-body.tri-cols .row-editor .edit-card .ec-head{ flex-direction:column; align-items:flex-start; gap:4px; }
-body.tri-cols .row-editor .edit-card .ec-sub{ display:block; font-size:16px; font-weight:400; color:var(--text-secondary); }
-body.tri-cols .row-editor .ec-linked{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px; margin-left:6px;
-  border-radius:999px; background:var(--eggshell); color:#0E794E; font-size:13px; font-weight:600; vertical-align:2px; }
-body.tri-cols .row-editor .ec-linked svg{ width:12px; height:12px; }
-body.tri-cols .row-editor .ec-body{ padding-top:16px; }
-body.tri-cols .row-editor .field{ border:0; background:none; padding:0; margin-bottom:16px; }
-body.tri-cols .row-editor .field label{ position:static; display:block; padding:0; margin:0 0 6px; background:none;
-  font-size:14px; font-weight:500; color:var(--text-secondary); line-height:1.3; }
-body.tri-cols .row-editor .field .val{ min-height:56px; padding:0 16px; border:1px solid var(--hairline-strong);
-  border-radius:12px; background:#fff; font-size:18px; transition:border-color .15s; }
-body.tri-cols .row-editor .field:focus-within{ border-color:transparent; }
-body.tri-cols .row-editor .field:focus-within .val{ border:2px solid var(--ink); padding:0 15px; }
-body.tri-cols .row-editor .field.ec-ro .val{ background:var(--sand); border-color:var(--hairline); color:var(--text-secondary); }
-body.tri-cols .row-editor .ec-help{ font-size:15px; color:var(--text-secondary); margin:-6px 0 16px; line-height:1.45; }
-body.tri-cols .row-editor .ec-help b{ color:var(--ink); font-weight:600; }
-body.tri-cols .row-editor .edit-actions{ margin-top:8px; gap:18px; }
-body.tri-cols .row-editor .btn-save{ height:52px; padding:0 28px; background:var(--green); color:var(--ink); font-size:17px; }
-body.tri-cols .row-editor .btn-save:disabled{ background:#DDE1E6; color:#6E7687; }
-body.tri-cols .row-editor .ec-cancel{ background:none; border:0; font:inherit; font-size:17px; font-weight:600; color:var(--ink); cursor:pointer; }
-body.tri-cols .row-editor .ec-cancel:hover{ text-decoration:underline; }
-body.tri-cols .ec-toggle{ background:#fff; border:1px solid var(--hairline-strong); }
-
-/* ---- the chat column: readable, one composer, nothing fixed under the text ---- */
-body.tri-cols .aic-msg{ font-size:18px; line-height:1.5; max-width:none; }
-body.tri-cols .aic-msg.user{ font-size:17px; }
-body.tri-cols .aic-thread{ max-height:calc(100vh - 330px); }
-body.tri-cols .ins-q, body.tri-cols .aic-chip{ font-size:16px; padding:10px 16px; }
-body.tri-cols .dock .askbar{ border:1px solid var(--hairline-strong); }
-/* the heading keeps its room: the full view control shrinks to its icon under 1200px */
-@media (max-width:1200px){
-  body.tri-cols .rail-ai-fs{ width:34px; padding:0; gap:0; }
-  body.tri-cols .rail-ai-fs .fsl{ display:none; }
-}
-body.tri-cols .rail-ai-head{ padding-right:84px; white-space:nowrap; }
-@media (max-width:1200px){ body.tri-cols .rail-ai-head{ font-size:22px; padding-right:84px; } }
-
-@media (max-width:1180px){
-  body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"],
-  body.tri-cols.graph-expanded.ai-expanded .dock .dock-inner{ padding-left:24px !important; padding-right:24px !important; }
-  body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"] .center{ padding-right:24px; }
-  body.tri-cols.graph-expanded.ai-expanded .tri-left{ padding:0 24px 40px; }
-  body.tri-cols.graph-expanded.ai-expanded .tri-right{ padding-left:24px; }
-}
-</style>
-<script id="triCleanJS">
-/* The row editor copies the whole type line, chip and all, into the Account type
-   field ("Checking Connected · updates daily"). While the three panel view is open,
-   split that back into a type and a Connected chip, mark the linked balance, and
-   give the card a Cancel beside Save. */
-(function(){
-  var LINK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
-  var RX=/\s*Connected\s*·\s*updates daily\s*/i;
-  function tidy(card){
-    if(card.dataset.tidy) return; card.dataset.tidy='1';
-    var sub=card.querySelector('.ec-sub'), title=card.querySelector('.ecTitleText, #ecTitleText');
-    var fields=[].slice.call(card.querySelectorAll('.field'));
-    var linked=false;
-    fields.forEach(function(f){
-      var lab=(f.querySelector('label')||{}).textContent||'', v=f.querySelector('.vtext'); if(!v) return;
-      if(/account type/i.test(lab) && RX.test(v.textContent)){ linked=true; v.textContent=v.textContent.replace(RX,'').trim(); }
-    });
-    if(sub && RX.test(sub.textContent)){ linked=true; sub.textContent=sub.textContent.replace(RX,'').trim(); }
-    if(linked){
-      if(title && !card.querySelector('.ec-linked')){
-        var chip=document.createElement('span'); chip.className='ec-linked'; chip.innerHTML=LINK+'Connected'; title.appendChild(chip);
-      }
-      fields.forEach(function(f){
-        var lab=(f.querySelector('label')||{}).textContent||'';
-        if(/balance/i.test(lab) && !f.nextElementSibling?.classList?.contains('ec-help')){
-          f.classList.add('ec-ro');
-          var h=document.createElement('p'); h.className='ec-help';
-          h.innerHTML='Refreshes daily from the bank. Last update <b>today, 6:12 AM</b>. Typing a balance pauses the refresh.';
-          f.insertAdjacentElement('afterend', h);
-          var vt=f.querySelector('.vtext'); if(vt) vt.addEventListener('focus', function(){ f.classList.remove('ec-ro'); }, {once:true});
-        }
-      });
-    }
-    var acts=card.querySelector('.edit-actions');
-    if(acts && !acts.querySelector('.ec-cancel')){
-      var c=document.createElement('button'); c.type='button'; c.className='ec-cancel'; c.textContent='Cancel';
-      c.addEventListener('click', function(){ var t=card.querySelector('.ec-toggle'); if(t) t.click(); });
-      acts.appendChild(c);
-    }
-  }
-  function sweep(){ if(!document.body.classList.contains('tri-cols')) return;
-    document.querySelectorAll('.row-editor .edit-card').forEach(tidy); }
-  new MutationObserver(sweep).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:['class']});
-  sweep();
-})();
-</script>
-
 <script>
 /* "All notifications" on the Next best action card opens the bell menu */
 document.addEventListener('click', function(e){
@@ -25787,3 +25588,32 @@ document.addEventListener('click', function(e){
 })();
 </script>
 
+<style id="triFitCSS">
+/* ===== Prism + chat: everything fits greenfield's 1180px, the rail folds to one control ===== */
+body.tri-cols.graph-expanded.ai-expanded .layout{ max-width:1180px; justify-content:center; }
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .layout,
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .dock .dock-inner{ grid-template-columns:64px minmax(0,1fr) minmax(0,2.2fr); }
+body.tri-cols.graph-expanded.ai-expanded:not(.prism-mini) .layout,
+body.tri-cols.graph-expanded.ai-expanded:not(.prism-mini) .dock .dock-inner{ grid-template-columns:200px minmax(0,1fr) minmax(0,2.3fr); }
+body.tri-cols.graph-expanded.ai-expanded .rail{ grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); column-gap:20px; }
+body.tri-cols .tri-right{ padding-left:20px; }
+/* the rail: one round control while folded, the full rail when opened */
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .side{ left:max(32px, 50% - 558px); width:64px; min-width:64px; overflow:visible; }
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .side > :not(.side-mini-tg){ display:none !important; }
+body.tri-cols.graph-expanded.ai-expanded .side .side-mini-tg{ display:flex; width:44px; height:44px; border-radius:50%; border:1px solid var(--hairline-strong); margin:0 0 var(--s-4) 10px; color:var(--ink); }
+body.tri-cols.graph-expanded.ai-expanded .side .side-mini-tg:hover{ border-color:var(--ink); background:#fff; }
+body.tri-cols.graph-expanded.ai-expanded:not(.prism-mini) .side{ width:200px; min-width:200px; opacity:1; overflow:visible; pointer-events:auto; padding:0; margin:0; left:max(32px, 50% - 558px); }
+body.tri-cols.graph-expanded.ai-expanded:not(.prism-mini) .side .side-mini-tg{ margin-left:0; }
+/* narrower panels: Prism cards and the chat give up their fixed widths */
+body.tri-cols .tri-left > #graphDock, body.tri-cols .tri-left > #graphDock *{ max-width:100%; }
+body.tri-cols .tri-right > *{ max-width:100%; min-width:0; }
+/* in the three panel view the chat column is narrow: Full view becomes an icon, the head gets room */
+body.tri-cols.graph-expanded.ai-expanded .tri-right .rail-ai-fs .fsl{ display:none; }
+body.tri-cols.graph-expanded.ai-expanded .tri-right .rail-ai-fs{ width:34px; padding:0; gap:0; }
+body.tri-cols.graph-expanded.ai-expanded .tri-right .rail-ai-head{ padding-right:88px; }
+body.tri-cols.graph-expanded.ai-expanded #gdCards .gd-leg, body.tri-cols.graph-expanded.ai-expanded #gdCards .legend{ flex-wrap:wrap; }
+</style>
+<style id="hidePlanScore">
+/* Plan Score widget hidden for now, on My Money and My Plans */
+.ps-wrap, .ps-wrap.attop, body[data-view="today"] .ps-wrap{ display:none !important; }
+</style>
