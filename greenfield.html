@@ -15356,8 +15356,8 @@ body.fire-page .fire-side{ display:block; }
     ctx=null;
   }
   function onEsc(e){ if(e.key==='Escape') close(); }
-  function open(section, bucket, blankRow){
-    ctx={ section:section, bucket:bucket, blankRow:blankRow };
+  function open(section, bucket, blankRow, onPicked){
+    ctx={ section:section, bucket:bucket, blankRow:blankRow, onPicked:onPicked };
     scrim=document.createElement('div'); scrim.className='cx-scrim';
     sheet=document.createElement('div'); sheet.className='cx-sheet';
     document.body.appendChild(scrim); document.body.appendChild(sheet);
@@ -15390,6 +15390,7 @@ body.fire-page .fire-side{ display:block; }
     });
   }
   function stepBusy(inst){
+    if(ctx) ctx.inst=inst;
     frame('<div class="cx-h">Connect an account</div>'+
       '<div class="cx-busy"><div class="cx-spin"></div><div class="t">Talking to '+inst+'&hellip;</div></div>');
     setTimeout(function(){ if(sheet) stepFound(inst); }, 1400);
@@ -15419,6 +15420,7 @@ body.fire-page .fire-side{ display:block; }
     });
   }
   function landRows(picked){
+    if(ctx && typeof ctx.onPicked==='function'){ ctx.onPicked(ctx.inst||'Your bank', picked); return; }
     if(!ctx || !ctx.bucket) return;
     /* the abandoned ghost row steps aside for the real thing */
     if(ctx.blankRow){
@@ -15439,6 +15441,7 @@ body.fire-page .fire-side{ display:block; }
         {duration:280, delay:k*90, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
     });
   }
+  window.__connectSheet={ open:function(onPicked){ open('Assets', null, null, onPicked); }, close:close };
   /* the link appears whenever an add begins in a connectable section */
   document.addEventListener('click', function(e){
     var add=e.target.closest('.add-row'); if(!add) return;
@@ -25625,3 +25628,243 @@ body.tri-cols.graph-expanded.ai-expanded #gdCards .gd-leg, body.tri-cols.graph-e
 .topnav.navhide nav.modes{ opacity:1 !important; transform:none !important; pointer-events:auto !important; }
 .topnav.navhide .brand, .topnav.navhide .right{ pointer-events:auto !important; }
 </style>
+
+<style id="connTodayCSS">
+/* ===== My Money: Connections (the Profile Connections page, lifted into the money rail) ===== */
+#sideNav li[data-conn]{ display:none; }
+body[data-view="today"] #sideNav li[data-conn]{ display:flex; }
+
+#connToday{ display:none; }
+body.conn-open .layout.page[data-page="plan"] > .center > #connToday{ display:block; }
+body.conn-open .layout.page[data-page="plan"] > .center > :not(#connToday){ display:none; }
+body.conn-open .layout.page[data-page="plan"] > .rail > :not(#connRail){ display:none; }
+#connRail{ display:none; }
+body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block; }
+
+#connToday{ padding-bottom:var(--s-16); }
+#connToday .cn-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s-6); margin:0 0 var(--s-8); }
+#connToday .cn-eyebrow{ font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:#7A7D8C; margin-bottom:8px; }
+#connToday .cn-title{ font-size:34px; line-height:1.12; font-weight:400; color:var(--ink); margin:0 0 6px; white-space:nowrap; }
+#connToday .cn-title em{ font-style:normal; color:var(--green-cta); }
+#connToday .cn-sub{ font-size:17px; color:var(--text-secondary); line-height:1.5; max-width:52ch; margin:0; text-wrap:pretty; }
+#connToday .cn-top .cta{ flex:none; margin-top:10px; }
+
+#connToday .cn-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s-4); margin-bottom:var(--s-6); }
+#connToday .cn-stat{ background:#fff; border:1px solid var(--hairline); border-radius:var(--r-card); padding:18px 20px; }
+#connToday .cn-stat .k{ font-size:13px; font-weight:600; color:var(--text-secondary); }
+#connToday .cn-stat .v{ font-size:26px; font-weight:600; color:var(--ink); margin-top:4px; font-variant-numeric:tabular-nums; letter-spacing:-0.2px; }
+#connToday .cn-stat .v.warn{ color:#8A6A00; }
+#connToday .cn-stat .s{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+
+#connToday .cn-card{ background:#fff; border:1px solid var(--hairline); border-radius:var(--r-card); padding:var(--s-6); }
+#connToday .cn-card-h{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
+#connToday .cn-card-t{ font-size:19px; font-weight:600; color:var(--ink); }
+#connToday .cn-flags{ display:flex; flex-wrap:wrap; gap:8px; }
+
+/* the institution rows: the same shape as the Profile page */
+#connToday .pf-conn-list{ margin-top:6px; }
+#connToday .pf-conn-row{ display:flex; width:100%; text-align:left; background:none; border:0; font-family:inherit; cursor:pointer; }
+#connToday .pf-conn-row .pf-sl, #connToday .pf-conn-row .pf-ss{ display:block; }
+#connToday .pf-conn-row .pf-ask-chev{ flex:none; margin-left:14px; }
+#connToday .pf-conn-row:hover .pf-sl{ color:var(--green-cta); }
+#connToday .pf-conn-row[aria-expanded="true"] .pf-ask-chev{ transform:rotate(180deg); }
+#connToday .pf-conn-row[aria-expanded="true"] .pf-sl{ color:var(--green-cta); }
+#connToday .pf-conn-row.fix .pf-jico{ background:#FBF1D3; color:#8A6A00; }
+#connToday .pf-jchip.warn{ background:#FBF1D3; color:#8A6A00; }
+#connToday .pf-conn-acc{ margin-top:0; }
+#connToday .pf-conn-acc + .pf-conn-row{ border-top:1px solid var(--hairline); }
+#connToday .pf-conn-achead{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+#connToday .pf-conn-achead .ret-seclabel{ margin-bottom:0; }
+#connToday .pf-conn-ahint{ font-size:14px; color:var(--text-secondary); line-height:1.5; margin:6px 0 4px; max-width:56ch; }
+#connToday .pf-conn-acc .alo-rows{ margin-top:6px; }
+#connToday .pf-conn-acc .alo-row{ min-height:54px; }
+#connToday .pf-conn-acc .alo-row .nm{ flex-wrap:wrap; gap:9px; }
+#connToday .pf-conn-fixbar{ display:flex; align-items:center; gap:18px; margin:0 0 14px; padding-bottom:14px; border-bottom:1px solid var(--hairline); }
+#connToday .pf-conn-fixtxt{ font-size:14.5px; line-height:1.5; color:var(--text-secondary); }
+#connToday .pf-conn-fixbar .cta{ flex:none; margin-top:0; min-height:40px; padding:0 20px; font-size:14.5px; }
+#connToday .pf-conn-acts{ margin-top:0; padding-top:13px; border-top:1px solid var(--hairline); }
+#connToday .pf-conn-remove:hover{ color:#B3261E; }
+#connToday .pf-conn-acc:not([hidden]){ animation:pfConnRoll 300ms cubic-bezier(.22,1,.36,1) both; }
+#connToday .pf-conn-acc:not([hidden]) .alo-row{ animation:pfConnRise 380ms cubic-bezier(.22,1,.36,1) both; }
+#connToday .pf-conn-acc:not([hidden]) .alo-row:nth-child(1){ animation-delay:80ms; }
+#connToday .pf-conn-acc:not([hidden]) .alo-row:nth-child(2){ animation-delay:140ms; }
+#connToday .pf-conn-acc:not([hidden]) .alo-row:nth-child(3){ animation-delay:200ms; }
+#connToday .pf-conn-row.cn-new{ animation:pfConnRise 420ms cubic-bezier(.22,1,.36,1) both; }
+
+#connToday .cn-trust{ display:flex; align-items:center; gap:10px; margin-top:var(--s-5); font-size:13.5px; color:var(--text-secondary); }
+#connToday .cn-trust svg{ flex:none; width:15px; height:15px; color:var(--green-cta); }
+#connToday .cn-foot{ margin-top:var(--s-4); display:flex; gap:var(--s-5); align-items:center; }
+#connToday .cn-link{ font-size:15px; font-weight:600; color:var(--green-cta); cursor:pointer; text-decoration:none; }
+#connToday .cn-link:hover{ text-decoration:underline; }
+
+#connRail .rh{ margin-bottom:12px; }
+#connRail .cn-rail-q{ margin-top:var(--s-5); display:flex; flex-direction:column; gap:8px; }
+#connRail .cn-rail-q button{ text-align:left; font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:#fff; border:1px solid var(--hairline); border-radius:12px; padding:10px 12px; cursor:pointer; }
+#connRail .cn-rail-q button:hover{ border-color:var(--ink); }
+@media (max-width:1100px){ #connToday .cn-stats{ grid-template-columns:1fr; } }
+</style>
+
+<script id="connTodayJS">
+(function(){
+  'use strict';
+  var plan=document.querySelector('.layout.page[data-page="plan"]'); if(!plan) return;
+  var nav=document.getElementById('sideNav'), center=plan.querySelector(':scope > .center'), rail=plan.querySelector(':scope > .rail');
+  if(!nav || !center) return;
+
+  /* ---- rail item: above Assets, My Money only ---- */
+  var assets=nav.querySelector('ul[data-grp="in"] li[data-key="assets"]');
+  var li=document.createElement('li'); li.setAttribute('data-conn','1');
+  li.innerHTML='<span class="nav-dot done" aria-hidden="true"></span>Connections';
+  if(assets) assets.parentNode.insertBefore(li, assets); else nav.querySelector('ul[data-grp="in"]').prepend(li);
+
+  /* ---- the page: the Profile Connections list, lifted whole ---- */
+  var src=document.getElementById('pf-sec-connections');
+  var list=src ? src.querySelector('.pf-conn-list').cloneNode(true) : document.createElement('div');
+  list.querySelectorAll('[id]').forEach(function(el){ el.id='cxt-'+el.id; });
+  list.querySelectorAll('[aria-controls]').forEach(function(el){ el.setAttribute('aria-controls','cxt-'+el.getAttribute('aria-controls')); });
+  list.querySelectorAll('.pf-conn-acc').forEach(function(p){ p.hidden=true; });
+  list.querySelectorAll('.pf-conn-row').forEach(function(r){ r.setAttribute('aria-expanded','false'); });
+
+  var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg>';
+  var host=document.createElement('div'); host.id='connToday';
+  host.innerHTML=
+    '<div class="cn-top"><div><div class="cn-eyebrow">My Money &middot; Connections</div>'
+      +'<h1 class="cn-title">Every account, <em>connected</em></h1>'
+      +'<p class="cn-sub">Link an institution once through Plaid or Meld. Balances stay current and pair with your own entries in Assets and debts.</p></div>'
+      +'<button type="button" class="cta cn-add">Add connection</button></div>'
+    +'<div class="cn-stats">'
+      +'<div class="cn-stat"><div class="k">Institutions linked</div><div class="v" data-cn-inst>6</div><div class="s">Read-only, updated nightly</div></div>'
+      +'<div class="cn-stat"><div class="k">Accounts in your plan</div><div class="v" data-cn-on>8 of 11</div><div class="s">Switched on for live balances</div></div>'
+      +'<div class="cn-stat"><div class="k">Needs a fix</div><div class="v warn" data-cn-fix>1</div><div class="s" data-cn-fixs>Sunmark stopped syncing</div></div>'
+    +'</div>'
+    +'<div class="cn-card"><div class="cn-card-h"><div class="cn-card-t">Your institutions</div><div class="cn-flags"><span class="chip up" data-cn-chip-up>6 linked, read-only</span><span class="chip warn" data-cn-chip-warn>1 needs a fix</span></div></div></div>'
+    +'<div class="cn-trust">'+LOCK+'<span>256-bit encryption, read-only connections, and your data is never sold.</span></div>'
+    +'<div class="cn-foot"><a class="cn-link" data-cn-go="assets">Assets and debts &#8250;</a><a class="cn-link" data-cn-ask="Which of my accounts should I connect next?">Ask Boldin AI which account to connect next &#8250;</a></div>';
+  host.querySelector('.cn-card').appendChild(list);
+  center.appendChild(host);
+
+  if(rail){
+    var r=document.createElement('aside'); r.id='connRail'; r.setAttribute('aria-label','Helpful context');
+    r.innerHTML='<div class="rh">One to fix <span class="spark"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'
+      +'<div class="rail-ctx"><div class="ctx-eyebrow">Linked today</div><div class="ctx-figure" data-cn-railfig>6 institutions</div><p class="ctx-body">Sunmark stopped accepting your saved sign-in. Reconnect it and the taxable savings balance lands back in your plan in a few seconds.</p></div>'
+      +'<div class="cn-rail-q"><button type="button" data-cn-ask="Which of my accounts should I connect next?">Which account should I connect next?</button><button type="button" data-cn-ask="Is it safe to link my bank to Boldin?">Is linking my bank safe?</button></div>';
+    rail.appendChild(r);
+  }
+
+  /* ---- open / close ---- */
+  function setActive(on){
+    nav.querySelectorAll('li.active').forEach(function(x){ x.classList.remove('active'); });
+    if(on) li.classList.add('active');
+  }
+  function open(){
+    if(window.__invToday && window.__invToday.close) window.__invToday.close();
+    document.body.classList.remove('xp-open');
+    document.body.classList.add('conn-open');
+    setActive(true);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function close(){ if(!document.body.classList.contains('conn-open')) return; document.body.classList.remove('conn-open'); li.classList.remove('active'); }
+  window.__connToday={open:open, close:close, isOpen:function(){ return document.body.classList.contains('conn-open'); }};
+
+  var holding=false;
+  new MutationObserver(function(){
+    if(holding || !document.body.classList.contains('conn-open')) return;
+    var stray=nav.querySelector('li.active:not([data-conn])'); if(!stray) return;
+    holding=true; setActive(true); holding=false;
+  }).observe(nav,{attributes:true, subtree:true, attributeFilter:['class']});
+
+  li.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); open(); }, true);
+  document.addEventListener('click', function(e){
+    if(!document.body.classList.contains('conn-open')) return;
+    if(e.target.closest('#connToday, #connRail, li[data-conn], .cx-sheet, .cx-scrim')) return;
+    if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-goto], [data-view]:not(body), [data-ins], [data-key], #xpNav')) close();
+  }, true);
+  window.addEventListener('boldin:view', function(){ if(document.body.dataset.view!=='today') close(); });
+  new MutationObserver(function(){ if(document.body.dataset.view!=='today') close(); }).observe(document.body,{attributes:true, attributeFilter:['data-view']});
+
+  /* ---- the list: one institution open at a time ---- */
+  function panelOf(row){ return document.getElementById(row.getAttribute('aria-controls')); }
+  function shut(row){ row.setAttribute('aria-expanded','false'); var p=panelOf(row); if(p) p.hidden=true; }
+  function openRow(row){
+    host.querySelectorAll('.pf-conn-row[aria-expanded="true"]').forEach(function(o){ if(o!==row) shut(o); });
+    row.setAttribute('aria-expanded','true'); var p=panelOf(row); if(p) p.hidden=false;
+  }
+  host.querySelectorAll('.pf-conn-row .pf-ss').forEach(function(sub){ var i=sub.innerHTML.indexOf('·'); sub.dataset.tail = i>-1 ? sub.innerHTML.slice(i) : ''; });
+  function retally(panel){
+    if(!panel) return;
+    var n=panel.querySelectorAll('.alo-row').length, on=panel.querySelectorAll('.pf-tgl.on').length;
+    var note=panel.querySelector('.alo-sec-note'); if(note) note.textContent = on+' of '+n+' active in My Plan';
+    var row=panel.previousElementSibling; if(!row || !row.classList.contains('pf-conn-row') || row.classList.contains('fix')) return;
+    var sub=row.querySelector('.pf-ss'); if(sub) sub.innerHTML = on+' of '+n+' account'+(n===1?'':'s')+' in your plan '+(sub.dataset.tail||'');
+  }
+  function tally(){
+    var rows=host.querySelectorAll('.pf-conn-row'), fix=host.querySelectorAll('.pf-conn-row.fix').length;
+    var n=host.querySelectorAll('.alo-row').length, on=host.querySelectorAll('.pf-tgl.on').length;
+    var q=function(s){ return host.querySelector(s); };
+    q('[data-cn-inst]').textContent=rows.length;
+    q('[data-cn-on]').textContent=on+' of '+n;
+    q('[data-cn-fix]').textContent=fix; q('[data-cn-fix]').classList.toggle('warn', fix>0);
+    q('[data-cn-fixs]').textContent= fix ? 'Sunmark stopped syncing' : 'Everything is in sync';
+    q('[data-cn-chip-up]').textContent=rows.length+' linked, read-only';
+    var w=q('[data-cn-chip-warn]'); w.textContent=fix+' needs a fix'; w.style.display= fix ? '' : 'none';
+    var rf=document.querySelector('[data-cn-railfig]'); if(rf) rf.textContent=rows.length+' institutions';
+    var rh=document.querySelector('#connRail .rh'); if(rh && !fix){ rh.firstChild.textContent='All in sync '; var b=document.querySelector('#connRail .ctx-body'); if(b) b.textContent='Every linked balance is current. Add another institution any time and it lands in Assets and debts on its own.'; }
+  }
+  function say(t){ if(typeof window.toast==='function') window.toast(t); }
+
+  var BANK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 9.4 12 4.6l8.4 4.8"/><path d="M5.6 10.6v7.6"/><path d="M9.9 10.6v7.6"/><path d="M14.1 10.6v7.6"/><path d="M18.4 10.6v7.6"/><path d="M3.4 19.4h17.2"/></svg>';
+  var CHEV='<svg class="pf-ask-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  var seq=0;
+  function addInstitution(inst, picked){
+    var id='cxt-new-'+(++seq);
+    var total=picked.reduce(function(s,r){ return s+(parseFloat(String(r[2]).replace(/[^0-9.]/g,''))||0); },0);
+    var row=document.createElement('button'); row.type='button'; row.className='pf-srow pf-conn-row cn-new';
+    row.setAttribute('aria-expanded','true'); row.setAttribute('aria-controls',id);
+    row.innerHTML='<span class="pf-jico">'+BANK+'</span><span class="pf-stxt"><span class="pf-sl">'+inst+'</span><span class="pf-ss">'+picked.length+' of '+picked.length+' account'+(picked.length===1?'':'s')+' in your plan &middot; Updated just now</span></span><span class="pf-jchip">$'+Math.round(total).toLocaleString('en-US')+'</span>'+CHEV;
+    var panel=document.createElement('div'); panel.className='pf-jmath pf-conn-acc'; panel.id=id;
+    panel.innerHTML='<div class="pf-conn-achead"><span class="ret-seclabel">Account list</span><span class="alo-sec-note">'+picked.length+' of '+picked.length+' active in My Plan</span></div><p class="pf-conn-ahint">Switch an account on to use its live balance in your plan, or off to keep your own entry from Assets and debts.</p><div class="alo-rows">'
+      +picked.map(function(r){ return '<div class="alo-row"><div class="nm">'+r[0]+' <span class="alo-chip">'+String(r[1]).toUpperCase()+'</span></div><div class="amts"><b>'+r[2]+'</b></div><button type="button" class="pf-tgl on" role="switch" aria-checked="true" aria-label="'+r[0]+' in My Plan"><span class="knob"></span></button></div>'; }).join('')
+      +'</div><div class="pf-conn-acts"><button type="button" class="pfg-cancel pf-conn-remove">Remove this connection</button></div>';
+    host.querySelectorAll('.pf-conn-row[aria-expanded="true"]').forEach(shut);
+    var l=host.querySelector('.pf-conn-list'); l.prepend(panel); l.prepend(row);
+    row.querySelector('.pf-ss').dataset.tail='&middot; Updated just now';
+    tally(); say(inst+' linked. '+picked.length+(picked.length===1?' account':' accounts')+' now in your plan.');
+  }
+
+  host.addEventListener('click', function(e){
+    if(e.target.closest('.pf-tgl')){ var panel=e.target.closest('.pf-conn-acc'); setTimeout(function(){ retally(panel); tally(); }, 0); return; }
+    if(e.target.closest('.cn-add')){
+      if(window.__connectSheet && window.__connectSheet.open) window.__connectSheet.open(addInstitution);
+      else say('Plaid and Meld open here to link a new institution.');
+      return;
+    }
+    var rc=e.target.closest('.pf-conn-recon');
+    if(rc){
+      rc.disabled=true; rc.textContent='Reconnecting…';
+      setTimeout(function(){
+        var panel=rc.closest('.pf-conn-acc'), row=panel.previousElementSibling, bar=rc.closest('.pf-conn-fixbar');
+        if(bar) bar.remove();
+        row.classList.remove('fix');
+        var chip=row.querySelector('.pf-jchip'); if(chip){ chip.classList.remove('warn'); chip.textContent='$8,982'; }
+        panel.querySelectorAll('.pf-tgl').forEach(function(t){ t.classList.add('on'); t.setAttribute('aria-checked','true'); });
+        var sub=row.querySelector('.pf-ss'); if(sub){ sub.dataset.tail='&middot; Updated just now'; }
+        retally(panel); tally(); say('Sunmark is back. The balance refreshed through Plaid.');
+      }, 1300);
+      return;
+    }
+    var rm=e.target.closest('.pf-conn-remove');
+    if(rm){ var p=rm.closest('.pf-conn-acc'), r=p.previousElementSibling, nm=r.querySelector('.pf-sl').textContent; p.remove(); r.remove(); tally(); say(nm+' unlinked. Your own entries in Assets and debts stay.'); return; }
+    var go=e.target.closest('[data-cn-go]');
+    if(go){ close(); var k=nav.querySelector('li[data-key="'+go.dataset.cnGo+'"]'); if(k) setTimeout(function(){ k.click(); }, 0); return; }
+    var row=e.target.closest('.pf-conn-row');
+    if(row){ row.getAttribute('aria-expanded')==='true' ? shut(row) : openRow(row); }
+  });
+  document.addEventListener('click', function(e){
+    var q=e.target.closest && e.target.closest('[data-cn-ask]'); if(!q) return;
+    e.preventDefault();
+    if(window.__railAI && window.__railAI.send){ if(window.__railAI.expand) window.__railAI.expand(); window.__railAI.send(q.dataset.cnAsk); }
+    else if(window.__guided && window.__guided.ask) window.__guided.ask(q.dataset.cnAsk);
+  });
+  tally();
+})();
+</script>
