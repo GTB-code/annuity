@@ -19586,6 +19586,7 @@ body[data-view="today"] #sideNav .ins-div{ display:none; }
 #sideNav.in-shut [data-grp="in"], #sideNav.out-shut [data-grp="out"], #sideNav.xp-shut [data-grp="xp"]{ display:none; }
 #sideNav .nav-more{ display:none; }
 body[data-view="plan"] #sideNav .nav-more{ display:flex; }
+#sideNav.in-shut .nav-more[data-more="in"], #sideNav.out-shut .nav-more[data-more="out"]{ display:none !important; }
 body[data-view="plan"] #sideNav.in-clipped [data-grp="in"].nav-extra,
 body[data-view="plan"] #sideNav.out-clipped [data-grp="out"].nav-extra{ display:none; }
 .nav-more{ align-items:center; gap:6px; margin:2px 0 0; padding:7px 12px 7px 30px;
@@ -20829,29 +20830,56 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
 <style id="snapMilesCSS">
 /* milestone markers on the Summary chart. New because the chart had none; the pulse
    reuses the existing gdPulse keyframe and the green comes from the existing token. */
-.snap-mile-dot{ fill:var(--green); stroke:#FFFFFF; stroke-width:2; }
+.snap-mile-dot{ fill:var(--green); stroke:#FFFFFF; stroke-width:2; cursor:pointer; }
+.snap-mile{ cursor:pointer; }
+.snap-mile:hover .snap-mile-dot{ r:8; }
+.snap-mile-halo.key{ animation:gdPulse 1.8s ease-in-out infinite; }
+.snap-route-cta{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  margin-top:12px; padding-top:12px; border-top:1px solid var(--hairline); font-size:14.5px; color:var(--text-secondary); }
+.snap-route-cta .stops{ display:inline-flex; align-items:center; gap:8px; }
+.snap-route-cta .stops i{ width:8px; height:8px; border-radius:50%; background:var(--green); display:inline-block; box-shadow:0 0 0 3px rgba(4,180,119,.18); }
+.snap-route-cta a.btn-route{ display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 18px; border-radius:var(--r-pill);
+  background:#127154; color:#fff; font-size:14.5px; font-weight:600; text-decoration:none; cursor:pointer; transition:background var(--dur-fast); }
+.snap-route-cta a.btn-route svg{ width:14px; height:14px; transition:transform .2s var(--ease-out); }
+.snap-route-cta a.btn-route:hover{ background:#0F5D45; } .snap-route-cta a.btn-route:hover svg{ transform:translateX(3px); }
 .snap-mile-halo{ fill:rgba(4,180,119,0.18); animation:gdPulse 2.2s ease-in-out infinite; }
 @media (prefers-reduced-motion:reduce){ .snap-mile-halo{ animation:none; } }
 </style>
 <script>
 /* ===================== Summary chart: milestone dots ===================== */
 (function(){
-  var MILE=[[2028,'Retire'],[2035,'Both checks on'],[2044,'Mortgage clear'],[2057,'Peak']];
+  /* every stop on the route, one dot per year, so the chart and the route agree */
+  function miles(){
+    var rows=window.XTL||[]; var seen={}, out=[];
+    rows.forEach(function(r,i){ var m=String(r[1]||'').match(/(19|20)\d{2}/); if(!m) return; var y=+m[0]; if(seen[y]) return; seen[y]=1;
+      out.push([y, String(r[2]||'').replace(/&rsquo;/g,'\u2019').replace(/&frac12;/g,'\u00bd'), r[0], i]); });
+    if(!out.length) out=[[2028,'Retire','#04B477',3],[2035,'Both checks on','#0E794E',10],[2044,'Mortgage clear','#0D3F4A',15],[2057,'Peak','#04B477',16]];
+    return out;
+  }
+  function cta(wrap){
+    var ultra=wrap.closest('.snap-ultra'); if(!ultra || ultra.querySelector('.snap-route-cta')) return;
+    var n=(window.XTL||[]).length||miles().length;
+    var el=document.createElement('div'); el.className='snap-route-cta';
+    el.innerHTML='<span class="stops"><i></i>'+n+' stops between today and the peak</span>'
+      +'<a role="button" tabindex="0" class="btn-route" data-open-route>See the route <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>';
+    wrap.insertAdjacentElement('afterend', el);
+  }
   function paint(){
     var wrap=document.querySelector('.snap-ultra .snap-chartwrap');
     if(!wrap || !wrap._pts) return;
     var svg=wrap.querySelector('svg');
     if(!svg || svg.querySelector('#snapMiles')) return;
+    cta(wrap);
     var d=wrap._pts, g='';
-    MILE.forEach(function(m){
+    miles().forEach(function(m){
       var idx=-1;
       d.pts.forEach(function(pt,j){ if(pt.y===m[0]) idx=j; });
       if(idx<0) return;
-      var x=d.X(idx), y=d.Y(d.pts[idx].v);
-      g+='<g class="snap-mile">'
-        +'<circle class="snap-mile-halo" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="9"/>'
-        +'<circle class="snap-mile-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="4.5">'
-        +'<title>'+m[1]+' \u00b7 '+m[0]+'</title></circle></g>';
+      var x=d.X(idx), y=d.Y(d.pts[idx].v), key=m[0]===2028;
+      g+='<g class="snap-mile" data-mi="'+m[3]+'">'
+        +(key?'<circle class="snap-mile-halo key" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="13"/>':'')
+        +'<circle class="snap-mile-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(key?7:5.5)+'" style="fill:'+(m[2]||'var(--green)')+'">'
+        +'<title>'+m[0]+' \u00b7 '+m[1]+'</title></circle></g>';
     });
     if(g) svg.insertAdjacentHTML('beforeend','<g id="snapMiles">'+g+'</g>');
   }
@@ -20870,7 +20898,12 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
   window.addEventListener('boldin:view', function(){ setTimeout(function(){ watch(); queue(); }, 400); });
   document.addEventListener('click', function(e){
     if(e.target.closest && e.target.closest('.snap-pill, .rm-opt, .rm-chip')) setTimeout(queue, 350);
+    var go=e.target.closest && e.target.closest('.snap-route-cta [data-open-route], .snap-ultra .snap-mile');
+    if(go){ e.preventDefault(); e.stopPropagation(); if(window.__sum2 && window.__sum2.open) window.__sum2.open(); }
   }, true);
+  document.addEventListener('keydown', function(e){
+    if((e.key==='Enter'||e.key===' ') && e.target.closest && e.target.closest('.snap-route-cta [data-open-route]')){ e.preventDefault(); if(window.__sum2) window.__sum2.open(); }
+  });
 })();
 </script>
 <span id="insAiPing" data-view="plan" hidden aria-hidden="true"></span>
