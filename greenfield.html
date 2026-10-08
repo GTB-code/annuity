@@ -24441,6 +24441,11 @@ body.xp-open .layout.page[data-page="plan"] > .rail > #xpRail{ display:block; }
 #xpRail .tok.show{opacity:1;}
 
 
+#xpChapters .xp-ask{display:flex;align-items:center;gap:9px;margin-top:4px;padding-top:14px;border-top:1px solid var(--hairline);
+  font-size:14.5px;font-weight:600;color:var(--green-cta);text-decoration:none;cursor:pointer;line-height:1.35;}
+#xpChapters .xp-ask svg{width:16px;height:16px;flex:none;color:var(--green);}
+#xpChapters .xp-ask .arr{margin-left:auto;color:#9BA0AC;font-size:18px;transition:transform .2s var(--ease-out);}
+#xpChapters .xp-ask:hover{text-decoration:underline;} #xpChapters .xp-ask:hover .arr{transform:translateX(3px);color:var(--green-cta);}
 /* ===== flagship graphs: one picture per chapter, above the insight ===== */
 #xpChapters .flag{position:relative;margin:22px 0 18px;border:1px solid var(--hairline);border-radius:var(--r-card);background:#fff;overflow:hidden;}
 #xpChapters .flag svg{display:block;width:100%;height:auto;}
@@ -24826,11 +24831,31 @@ function card({title,src,take,draw,table,ask,wide,plain}){
   MOUNTS.push({id,draw,table});
   return `<section class="card${plain?' plain':''}" id="${id}">
     <div class="ch"><div class="tt"><h3>${title}</h3>${src?`<div class="src">Was: ${src}</div>`:''}</div>
-      <div class="tools">${table?`<button class="tbtn" type="button" data-table="${id}" aria-pressed="false">${ICON.table}Table</button>`:''}<button class="tbtn noclick" type="button">${ICON.spark}Ask</button></div></div>
+      <div class="tools">${table?`<button class="tbtn" type="button" data-table="${id}" aria-pressed="false">${ICON.table}Table</button>`:''}</div></div>
     ${take?`<p class="take">${take}</p>`:''}
     <div class="body"></div><div class="tablewrap" hidden></div>
+    <a class="xp-ask" role="button" tabindex="0" data-xp-ask="${esc(ask||askFor(title))}">${SPK}<span>${esc(ask||askFor(title))}</span><span class="arr">›</span></a>
   </section>`;
 }
+/* one small, nagging question per card: the thing a sharp friend would ask after seeing it */
+const ASKS={
+  'What would raise my odds?':'Which single change buys the most confidence per dollar?',
+  'Where does my money go this year?':'Which expense am I underestimating the most?',
+  'What are my income and expenses over time?':'When does my spending outrun my income for good?',
+  'Which years run a surplus or a gap?':'Where should the surplus years go to shrink the gap years?',
+  'What is the range of outcomes for my savings?':'What does the worst 1-in-10 market do to this picture?',
+  'How will my income pay for retirement?':'Which income source would hurt most if it vanished?',
+  'When should we claim Social Security?':'What does waiting until 70 actually cost us, month by month?',
+  'How does spending change in retirement?':'What will we spend less on than we think, and more?',
+  'What is my marginal tax bracket each year?':'How much could I convert each year without leaving 12%?',
+  'How much tax will I pay each year?':'What is my lifetime tax bill, and how much of it is optional?',
+  'How large will my required distributions be?':'How small can I make my RMDs before they start?',
+  'Could a Roth conversion leave me better off?':'Who pays less tax on this money, me or my heirs?',
+  'How much am I likely to leave?':'How much of what I leave is real, and how much is tax?',
+  'What kind of money will my heirs inherit?':'Which account should I spend first to leave more?',
+  'Are my documents and beneficiaries in place?':'What happens to the IRA if I never update the beneficiary?'
+};
+function askFor(title){ return ASKS[title] || ('What should I do about this: '+String(title).replace(/\?$/,'').toLowerCase()+'?'); }
 /* the short answer is the member's helper — it belongs in the rail, not the column */
 let RAIL='';
 function answer(text,asks=[]){
@@ -25175,6 +25200,8 @@ document.addEventListener('click',e=>{
   const g=e.target.closest('#xpChapters [data-go]');if(g){show(g.dataset.go,true);return;}
   /* anything else in the plan nav hands the column back to the app */
   if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-goto], [data-view], [data-ins], [data-key]')) close();
+  const xa=e.target.closest('#xpChapters [data-xp-ask]');
+  if(xa){ e.preventDefault(); const q=xa.dataset.xpAsk; if(window.__railAI && window.__railAI.send){ window.__railAI.expand && window.__railAI.expand(); setTimeout(()=>window.__railAI.send(q), 120); } return; }
   const t=e.target.closest('#xpChapters [data-table]');if(t){const c=$('#'+t.dataset.table);const w=c.querySelector('.tablewrap');const on=t.getAttribute('aria-pressed')!=='true';t.setAttribute('aria-pressed',on);
     if(on&&!w.innerHTML)w.innerHTML=tableHTML(c._table());w.hidden=!on;c.querySelector('.body').hidden=on;}
 });
