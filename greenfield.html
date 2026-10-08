@@ -7912,8 +7912,9 @@ document.addEventListener('click', function(e){
        (document.body.dataset.page && document.body.dataset.page !== 'plan')){
       topnav.classList.remove('navhide'); psWrap.classList.remove('attop'); psWrap.classList.remove('stuck'); return;
     }
+    // the Plan Score bar is hidden for now, so the top nav persists on scroll; the pin state is kept for the widget only
     const scrolled = _forcePin || window.scrollY > 24;
-    topnav.classList.toggle('navhide', scrolled);
+    topnav.classList.remove('navhide');
     psWrap.classList.toggle('attop', scrolled);
     // the shield paints only once the widget is truly pinned at its sticky offset
     const csTop = parseFloat(getComputedStyle(psWrap).top) || 73;
@@ -25616,4 +25617,11 @@ body.tri-cols.graph-expanded.ai-expanded #gdCards .gd-leg, body.tri-cols.graph-e
 <style id="hidePlanScore">
 /* Plan Score widget hidden for now, on My Money and My Plans */
 .ps-wrap, .ps-wrap.attop, body[data-view="today"] .ps-wrap{ display:none !important; }
+</style>
+
+<style id="persistTopNav">
+/* with the Plan Score bar hidden, the top nav stays put on every page */
+.topnav.navhide{ background:var(--white) !important; opacity:1 !important; pointer-events:auto !important; }
+.topnav.navhide nav.modes{ opacity:1 !important; transform:none !important; pointer-events:auto !important; }
+.topnav.navhide .brand, .topnav.navhide .right{ pointer-events:auto !important; }
 </style>
