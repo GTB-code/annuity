@@ -14683,8 +14683,9 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-e
     J.wire(ctx.querySelector('.sxtl'));
     takeSide();
     document.body.classList.add('sum-open');
-    lo=Y0; hi=Y1;
-    J.draw(lay.querySelector('.sum-svg'), 720, 460, true);
+    /* opens zoomed to the first five years; the chips widen it from there */
+    lo=SPANS.soon[0]; hi=SPANS.soon[1];
+    J.draw(lay.querySelector('.sum-svg'), 720, 460, true, lo, hi);
     firstPaint=true;
     paint(false);
     lay.classList.remove('sum-live');
@@ -20834,6 +20835,19 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
 .snap-mile{ cursor:pointer; }
 .snap-mile:hover .snap-mile-dot{ r:8; }
 .snap-mile-halo.key{ animation:gdPulse 1.8s ease-in-out infinite; }
+/* the retirement marker: a green line that drops in, a sunny label, and a few sparks */
+.snap-ret-line{ stroke:var(--green); stroke-width:1.6; stroke-dasharray:4 5; opacity:.7; transform-box:fill-box; transform-origin:top; animation:snapRetDrop 700ms var(--ease-out) 200ms both; }
+.snap-ret-band{ fill:url(#snapRetBand); animation:snapRetFade 900ms ease-out 300ms both; }
+.snap-ret-lab{ animation:snapRetRise 520ms var(--ease-out) 520ms both; }
+.snap-ret-lab rect{ fill:#FFFFFF; stroke:var(--green); stroke-width:1.2; }
+.snap-ret-lab text{ font-family:var(--font); font-size:11.5px; font-weight:700; fill:var(--green-cta); letter-spacing:.02em; }
+.snap-ret-spark{ fill:var(--yellow); transform-box:fill-box; transform-origin:center; animation:snapSpark 2.4s ease-in-out infinite; }
+.snap-ret-spark.s2{ animation-delay:.5s; } .snap-ret-spark.s3{ animation-delay:1.1s; }
+@keyframes snapRetDrop{ from{ opacity:0; transform:scaleY(0); } to{ opacity:.7; transform:none; } }
+@keyframes snapRetFade{ from{ opacity:0; } to{ opacity:1; } }
+@keyframes snapRetRise{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
+@keyframes snapSpark{ 0%,100%{ opacity:.25; transform:scale(.7) rotate(0deg); } 50%{ opacity:1; transform:scale(1.15) rotate(20deg); } }
+@media (prefers-reduced-motion:reduce){ .snap-ret-line,.snap-ret-band,.snap-ret-lab,.snap-ret-spark{ animation:none; opacity:1; } }
 .snap-route-cta{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
   margin-top:12px; padding-top:12px; border-top:1px solid var(--hairline); font-size:14.5px; color:var(--text-secondary); }
 .snap-route-cta .stops{ display:inline-flex; align-items:center; gap:8px; }
@@ -20871,6 +20885,20 @@ body.ai-expanded .ins-layout .ret-cards{ grid-template-columns:1fr; gap:var(--s-
     if(!svg || svg.querySelector('#snapMiles')) return;
     cta(wrap);
     var d=wrap._pts, g='';
+    /* retirement day, December 2028: the line, a soft tint for the years after, and a happy label */
+    (function(){
+      var ri=-1; d.pts.forEach(function(pt,j){ if(pt.y===2028) ri=j; }); if(ri<0) return;
+      var rx=d.X(ri), ry=d.Y(d.pts[ri].v), top=18, bot=272, right=d.X(d.pts.length-1);
+      var sp='<path class="snap-ret-spark" d="M0-5l1.3 3.7L5 0l-3.7 1.3L0 5l-1.3-3.7L-5 0l3.7-1.3z"/>';
+      g+='<defs><linearGradient id="snapRetBand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#04B477" stop-opacity=".10"/><stop offset="1" stop-color="#04B477" stop-opacity="0"/></linearGradient></defs>'
+        +'<rect class="snap-ret-band" x="'+rx.toFixed(1)+'" y="'+top+'" width="'+Math.max(0,Math.min(90,right-rx)).toFixed(1)+'" height="'+(bot-top)+'"/>'
+        +'<line class="snap-ret-line" x1="'+rx.toFixed(1)+'" x2="'+rx.toFixed(1)+'" y1="'+top+'" y2="'+bot+'"/>'
+        +'<g class="snap-ret-lab"><rect x="'+(rx+8).toFixed(1)+'" y="'+(top-10)+'" width="94" height="22" rx="11"/>'
+        +'<text x="'+(rx+55).toFixed(1)+'" y="'+(top+5)+'" text-anchor="middle">RETIRE \u00b7 2028</text>'
+        +'<g transform="translate('+(rx+110).toFixed(1)+','+(top-4)+')">'+sp+'</g>'
+        +'<g transform="translate('+(rx+118).toFixed(1)+','+(top+7)+') scale(.7)">'+sp.replace('snap-ret-spark','snap-ret-spark s2')+'</g>'
+        +'<g transform="translate('+(rx-10).toFixed(1)+','+(top-4)+') scale(.6)">'+sp.replace('snap-ret-spark','snap-ret-spark s3')+'</g></g>';
+    })();
     miles().forEach(function(m){
       var idx=-1;
       d.pts.forEach(function(pt,j){ if(pt.y===m[0]) idx=j; });
@@ -21429,54 +21457,6 @@ body.tri-cols.graph-expanded.ai-expanded.prism-mini .side{
   width:64px; min-width:64px; opacity:1; overflow-x:hidden; overflow-y:auto; pointer-events:auto;
   padding:0 0 8px; margin:0; left:max(32px, 50% - 658px); }
 body.tri-cols.graph-expanded.ai-expanded .side-mini-tg{ display:none; }
-
-/* ===== TEST: compact plan page (viewport <= 1180px) ===== */
-body.rail-compact .layout.page[data-page="plan"]{
-  grid-template-columns:64px minmax(0,1fr) minmax(220px,280px);
-  gap:var(--s-6); max-width:none; padding-left:var(--s-5); padding-right:var(--s-5); }
-body.rail-compact .dock .dock-inner{ grid-template-columns:64px minmax(0,1fr) minmax(220px,280px); }
-body.rail-compact .layout.page[data-page="plan"] .side{ left:var(--s-5); width:64px; display:block; }
-body.rail-compact .layout.page[data-page="plan"] .side .side-mini-tg{ display:flex; }
-body.rail-compact .layout.page[data-page="plan"] .center{ grid-column:2; max-width:none; }
-body.rail-compact .layout.page[data-page="plan"] .rail{ display:block; grid-column:3; }
-/* the caret opens the labels as a sheet over the content, nothing underneath moves */
-body.rail-compact-open .layout.page[data-page="plan"] .side{
-  width:232px; padding:0 14px 16px; margin:-10px 0 0 -14px; background:#fff; border-radius:14px;
-  box-shadow:0 12px 32px rgba(16,24,44,.14); z-index:60; max-height:calc(100vh - 120px); overflow-y:auto; }
-body.rail-compact-open .layout.page[data-page="plan"] .side .side-mini-tg{ margin-top:10px; }
-/* Prism open in compact mode: the centre column gives up width so the graphs get it.
-   The rail comes back at every width here, since Prism lives in it. */
-body.rail-compact.graph-expanded .layout.page[data-page="plan"],
-body.rail-compact.graph-expanded .dock .dock-inner{ grid-template-columns:64px minmax(0,340px) minmax(0,1fr); }
-body.rail-compact.graph-expanded .layout.page[data-page="plan"] .rail{ display:block !important; grid-column:3; min-width:0; }
-body.rail-compact.graph-expanded .layout.page[data-page="plan"] .center{ max-width:340px; }
-body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no room for labels while Prism is open */
-/* tablets: the top nav goes to icons and the headline scales with the column */
-@media (max-width:1000px){
-  .topnav nav.modes{ display:flex; margin-left:var(--s-4); gap:2px; }
-  .topnav nav.modes a{ font-size:0; gap:0; padding:0 9px; }
-  .topnav nav.modes a .ic{ width:20px; height:20px; }
-  body.rail-compact .layout.page[data-page="plan"] .center{ min-width:0; }
-  body.rail-compact .layout.page[data-page="plan"] .snap-headline,
-  body.rail-compact .layout.page[data-page="plan"] .pf-hl{ font-size:clamp(24px, 3.4vw, 34px); }
-  body.rail-compact .layout.page[data-page="plan"] .snap-headline,
-  body.rail-compact .layout.page[data-page="plan"] .snap-headline .nw{ white-space:normal; }
-}
-/* phones only: no room for the right rail, two columns */
-@media (max-width:760px){
-  body.rail-compact:not(.graph-expanded) .layout.page[data-page="plan"],
-  body.rail-compact:not(.graph-expanded) .dock .dock-inner{ grid-template-columns:64px minmax(0,1fr); }
-  body.rail-compact:not(.graph-expanded) .layout.page[data-page="plan"] .rail{ display:none; }
-  body.rail-compact.graph-expanded .layout.page[data-page="plan"],
-  body.rail-compact.graph-expanded .dock .dock-inner{ grid-template-columns:64px minmax(0,280px) minmax(0,1fr); gap:var(--s-4); }
-  body.rail-compact.graph-expanded .layout.page[data-page="plan"] .center{ max-width:280px; }
-}
-/* phones: the icon rail stays, the top nav goes to icons */
-@media (max-width:760px){
-  body.rail-compact .layout.page[data-page="plan"]{ padding-left:var(--s-4); padding-right:var(--s-4); gap:var(--s-5); }
-  body.rail-compact .layout.page[data-page="plan"] .side{ left:var(--s-4); }
-  .topnav nav.modes{ margin-left:var(--s-3); }
-}
 </style>
 <script>
 /* Mini left rail. While Prism is open the rail drops to icons, which is where the
@@ -21504,14 +21484,7 @@ body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no
     draw:'<path d="M4.6 5.4h14.8"/><path d="M12 8v8.6"/><path d="M8.8 13.4 12 16.6l3.2-3.2"/><path d="M4.6 19.4h14.8"/>',
     taxes:'<path d="M6.4 3.8h11.2v16.4l-2.8-1.8-2.8 1.8-2.8-1.8-2.8 1.8z"/><path d="M9.8 8.4h4.4"/><path d="M9.8 12.4h4.4"/>',
     rmd:'<rect x="4.2" y="5.6" width="15.6" height="13.4" rx="2.2"/><path d="M4.2 9.6h15.6"/><path d="M12 12.4v3l2.2 1.2"/>',
-    irmaa:'<path d="M12 4.6v14.8"/><path d="M4.6 12h14.8"/><circle cx="12" cy="12" r="8.4"/>',
-    /* explore your plan */
-    'xp-first':'<circle cx="12" cy="12" r="8.4"/><path d="m14.8 9.2-1.6 4.4-4.4 1.6 1.6-4.4z"/>',
-    'xp-budget':'<path d="M12 3.6a8.4 8.4 0 1 0 8.4 8.4H12z"/><path d="M14.6 3.9a8.4 8.4 0 0 1 5.5 5.5h-5.5z"/>',
-    'xp-retire':'<path d="M4 15.4h16"/><path d="M12 15.4V5.6"/><path d="M4.6 12.2a7.4 7.4 0 0 1 14.8 0z"/><path d="M12 15.4c0 2.4-1 3.6-2.6 3.6"/>',
-    'xp-invest':'<path d="M4 17.6 9.4 12l3.6 3.2 7-7.4"/><path d="M15.4 7.8h4.6v4.6"/>',
-    'xp-tax':'<path d="M5.4 18.6 18.6 5.4"/><circle cx="8.2" cy="8.2" r="2.1"/><circle cx="15.8" cy="15.8" r="2.1"/>',
-    'xp-estate':'<path d="M4 10.8 12 4.6l8 6.2"/><path d="M6.2 9.6v9.8h11.6V9.6"/><path d="M9.6 14.2h4.8"/>'
+    irmaa:'<path d="M12 4.6v14.8"/><path d="M4.6 12h14.8"/><circle cx="12" cy="12" r="8.4"/>'
   };
   var GEN = '<circle cx="12" cy="12" r="3.2"/>';
 
@@ -21525,7 +21498,7 @@ body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no
     document.querySelectorAll('.side #sideNav li').forEach(function(li){
       if(li.dataset.dressed) return;
       li.dataset.dressed='1';
-      var key=li.dataset.key || li.dataset.ins || (li.dataset.xp ? 'xp-'+li.dataset.xp : '');
+      var key=li.dataset.key || li.dataset.ins;
       var txt='';
       [].slice.call(li.childNodes).forEach(function(n){
         if(n.nodeType===3){ txt+=n.textContent; n.remove(); }
@@ -21590,25 +21563,16 @@ body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no
     })[0];
     return !!(vis && vis.querySelector('.side #sideNav'));
   }
-  /* TEST: below 1180px the plan page drops the rail to icons on its own; the caret
-     still opens the labels, as an overlay, until the next resize across the breakpoint */
-  var COMPACT_MQ = window.matchMedia('(max-width:1180px)');
-  function compactNow(){ return COMPACT_MQ.matches && railReady() && document.body.dataset.view==='plan'; }
   function apply(){
     var c=document.body.classList;
     var prism=c.contains('graph-expanded') && railReady();
-    var compact=compactNow();
     /* the three panel view has no room for labels: the mini rail is the only option there */
     var forced = prism && c.contains('tri-cols') && c.contains('ai-expanded');
-    var mini = prism ? (forced || compact || (manual===null ? true : manual)) : (compact && manual!==false);
+    var mini = prism && (manual===null ? true : manual);   /* the three panel view folds the rail to one control, and it opens again on request */
     c.toggle('prism-mini', mini);
-    c.toggle('rail-compact', compact);
-    c.toggle('rail-compact-open', compact && !mini);
     syncToggles();
-    if(!prism && !compact) manual=null;
+    if(!prism) manual=null;
   }
-  COMPACT_MQ.addEventListener('change', function(){ manual=null; apply(); });
-  window.addEventListener('resize', apply);
 
   dress(); addToggles(); apply();
 
@@ -21621,7 +21585,7 @@ body.rail-compact.graph-expanded .side-mini-tg{ display:none !important; } /* no
 
   /* Prism and chat both live on body classes, so watch them rather than hook every caller */
   new MutationObserver(function(){ dress(); addToggles(); apply(); })
-    .observe(document.body, {attributes:true, attributeFilter:['class','data-view']});
+    .observe(document.body, {attributes:true, attributeFilter:['class']});
   new MutationObserver(function(){ dress(); addToggles(); })
     .observe(document.querySelector('#app') || document.body, {childList:true, subtree:true});
 
@@ -24165,7 +24129,14 @@ body.xp-open .layout.page[data-page="plan"] > .rail > :not(#xpRail){ display:non
 #xpChapters .qhead h2.pf-hl{font-size:34px;font-weight:400;line-height:1.1;letter-spacing:0;
   color:var(--ink);text-wrap:wrap;margin-top:10px;}
 #xpChapters .qhead h2 em{font-style:normal;color:var(--green-cta);}
-#xpChapters .qhead .bud-sub{font-size:18px;line-height:1.5;color:var(--text-secondary);margin-top:12px;
+#xpChapters .qhead h2.pf-hl{font-size:28px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#xpChapters .qhead .bud-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:none;}
+#xpChapters .qhead + .insight{margin-top:-6px;}
+#xpChapters .flag + .insight{margin-top:0;}
+#xpChapters .insight p .tok{opacity:0;transition:opacity .22s ease;}
+#xpChapters .insight p .tok.show{opacity:1;}
+@media (prefers-reduced-motion:reduce){ #xpChapters .insight p .tok{opacity:1;} }
+#xpChapters .qhead .bud-sub{font-size:17px;line-height:1.5;color:var(--text-secondary);margin-top:10px;
   max-width:46ch;text-wrap:pretty;}
 @media (max-width:600px){#xpChapters .qhead h2.pf-hl{font-size:24px;}}
 
@@ -24458,17 +24429,47 @@ body.xp-open .layout.page[data-page="plan"] > .rail > :not(#xpRail){ display:non
 /* the helper rail */
 #xpRail{ display:none; }
 body.xp-open .layout.page[data-page="plan"] > .rail > #xpRail{ display:block; }
-#xpRail .story-head{display:flex;align-items:center;gap:6px;min-height:38px;font-size:18px;font-weight:700;
+#xpRail .story-head{display:flex;align-items:center;gap:6px;min-height:38px;font-size:18px;font-weight:700;color:var(--ink);}
 #xpRail .story-head .spk{color:var(--green);width:17px;height:17px;flex:none;display:inline-flex;}
 #xpRail .story-head .spk svg{width:17px;height:17px;display:block;}
 #xpRail p.ctx-body{font-size:16px;line-height:1.6;color:var(--text-secondary);margin:0 0 var(--s-5);max-width:34ch;}
 #xpRail .tax-links{display:flex;flex-direction:column;gap:var(--s-3);}
-#xpRail .ctx-cta{display:inline-flex;align-items:flex-start;gap:6px;font-size:15px;font-weight:600;
+#xpRail .ctx-cta{display:inline-flex;align-items:flex-start;gap:6px;font-size:15px;font-weight:600;color:var(--green-cta);text-decoration:none;cursor:pointer;}
 #xpRail .ctx-cta:hover{text-decoration:underline;}
 #xpRail .ctx-cta svg{width:14px;height:14px;flex:none;margin-top:3px;}
 #xpRail .tok{opacity:0;transition:opacity .24s ease;}
 #xpRail .tok.show{opacity:1;}
 
+
+/* ===== flagship graphs: one picture per chapter, above the insight ===== */
+#xpChapters .flag{position:relative;margin:22px 0 18px;border:1px solid var(--hairline);border-radius:var(--r-card);background:#fff;overflow:hidden;}
+#xpChapters .flag svg{display:block;width:100%;height:auto;}
+#xpChapters .flag .fl-head{position:absolute;left:22px;top:18px;max-width:78%;}
+#xpChapters .flag .fl-big{font-size:26px;font-weight:600;line-height:1.05;letter-spacing:-.01em;color:var(--ink);}
+#xpChapters .flag .fl-big em{font-style:normal;color:var(--green-cta);}
+#xpChapters .flag .fl-sub{font-size:13.5px;line-height:1.45;color:var(--text-secondary);margin-top:6px;}
+#xpChapters .flag .fl-cap{position:absolute;right:18px;top:20px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9BA0AC;}
+#xpChapters .flag .fl-tag{position:absolute;font-size:11.5px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--hairline);border-radius:999px;padding:4px 9px;white-space:nowrap;}
+#xpChapters .flag .fl-tag.gold{color:#8A6A00;border-color:#E0A800;}
+#xpChapters .flag .fl-tag.green{color:var(--green-cta);border-color:var(--green);}
+#xpChapters .flag .fl-tag.ink{color:#fff;background:var(--ink);border-color:var(--ink);}
+/* motion: lines draw, fills bloom, words rise. all keyed off the chapter's own .anim */
+#xpChapters .flag .draw{stroke-dasharray:1;stroke-dashoffset:1;}
+#xpChapters .view.anim .flag .draw{animation:flDraw 1500ms cubic-bezier(0.4,0,0.2,1) 160ms forwards;}
+#xpChapters .flag .bloom{opacity:0;}
+#xpChapters .view.anim .flag .bloom{animation:flBloom 900ms ease-out 700ms forwards;}
+#xpChapters .flag .ghost{opacity:0;}
+#xpChapters .view.anim .flag .ghost{animation:flBloom 1200ms ease-out 120ms forwards;}
+#xpChapters .flag .late{opacity:0;}
+#xpChapters .view.anim .flag .late{animation:flRise 520ms var(--ease-out) 1400ms forwards;}
+#xpChapters .flag .fl-head,#xpChapters .flag .fl-tag{opacity:0;}
+#xpChapters .view.anim .flag .fl-head{animation:flRise 600ms var(--ease-out) 300ms forwards;}
+#xpChapters .view.anim .flag .fl-tag{animation:flRise 500ms var(--ease-out) 1300ms forwards;}
+#xpChapters .flag .pulse{transform-box:fill-box;transform-origin:center;animation:gdPulse 2.4s ease-in-out 1.8s infinite;}
+@keyframes flDraw{to{stroke-dashoffset:0;}}
+@keyframes flBloom{to{opacity:1;}}
+@keyframes flRise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){#xpChapters .flag .draw{stroke-dashoffset:0;}#xpChapters .flag .bloom,#xpChapters .flag .ghost,#xpChapters .flag .late,#xpChapters .flag .fl-head,#xpChapters .flag .fl-tag{opacity:1;animation:none;}#xpChapters .flag .pulse{animation:none;}}
 /* the left-rail group, using the app's own nav idiom */
 #xpNav li{ cursor:pointer; }
 
@@ -24884,13 +24885,99 @@ const S=(name,color,values,kind='bar',extra={})=>Object.assign({name,color,value
 const sliceFrom=(y)=>{const i=YRS.indexOf(y);return {years:YRS.slice(i),idx:i,sl:a=>a.slice(i),lab:j=>lab(i+j)};};
 
 /* ---------- 1. What you need to know first ---------- */
+
+/* ---------- flagship graphs: one per chapter, the picture the chapter is about ---------- */
+const FW=620, FH=300;
+function fx(i,n){ return 24+(i/(n-1))*(FW-48); }
+function fy(v,max,top,bot){ top=top==null?122:top; bot=bot==null?FH-26:bot; return bot-(v/max)*(bot-top); }
+function fpath(arr,max,top,bot){ return arr.map((v,i)=>(i?'L':'M')+fx(i,arr.length).toFixed(1)+','+fy(v,max,top,bot).toFixed(1)).join(' '); }
+function fwrap(inner,head,sub,cap,tags){
+  return `<div class="flag"><svg viewBox="0 0 ${FW} ${FH}" aria-hidden="true">${inner}</svg>`
+    +`<div class="fl-head"><div class="fl-big">${head}</div>${sub?`<div class="fl-sub">${sub}</div>`:''}</div>`
+    +(tags||[]).map(t=>`<span class="fl-tag ${t.k||''}" style="left:${t.x}px;top:${t.y}px">${t.t}</span>`).join('')
+    +(cap?`<div class="fl-cap">${cap}</div>`:'')+`</div>`;
+}
+function flag(id){
+  const n=YRS.length, xr=fx(YRS.indexOf(2037),n);
+  if(id==='first'){
+    /* a thousand futures, one line */
+    const ends=MC.paths.map(p=>p[p.length-1]).sort((a,b)=>a-b);
+    const max=ends[Math.floor(ends.length*0.93)]*1.05;
+    let g='';
+    for(let s=0;s<MC.paths.length;s+=9){ g+=`<path class="ghost" d="${fpath(MC.paths[s].map(v=>Math.min(v,max)),max)}" fill="none" stroke="${COL.c2}" stroke-opacity=".10" stroke-width="1"/>`; }
+    const base=M.map(r=>r.savings);
+    g+=`<line x1="${xr}" x2="${xr}" y1="104" y2="${FH-26}" stroke="rgba(16,24,44,.18)" stroke-dasharray="3 4"/>`;
+    g+=`<path class="draw" pathLength="1" d="${fpath(base,max)}" fill="none" stroke="${COL.ink}" stroke-width="2.4" stroke-linecap="round"/>`;
+    const ex=fx(n-1,n), ey=fy(base[n-1],max);
+    g+=`<circle class="bloom pulse" cx="${ex}" cy="${ey}" r="11" fill="rgba(4,180,119,.18)"/><circle class="bloom" cx="${ex}" cy="${ey}" r="5" fill="${COL.c2}" stroke="#fff" stroke-width="2"/>`;
+    g+=`<text class="late" x="${fx(0,n)}" y="${FH-9}" font-size="11" fill="#9BA0AC">2026</text><text class="late" x="${ex}" y="${FH-9}" font-size="11" fill="#9BA0AC" text-anchor="end">2066</text>`;
+    return fwrap(g,`<em>${Math.round(K.success*100)} of 100</em> futures end well`,`A thousand simulated markets. The dark line is yours on average.`,'The thousand futures',[{t:'Luis retires · 2037',x:xr+8,y:96}]);
+  }
+  if(id==='budget'){
+    /* the crossover: income and spending trade places in 2037 */
+    const inc=M.map(r=>r.work+r.ss+r.rmd), out=M.map(r=>r.expenses.living+r.expenses.housing+r.expenses.health+r.fed+r.irmaa);
+    const max=Math.max(...inc,...out)*1.15;
+    let g='';
+    const area=(a,b,c)=>{ let d=''; a.forEach((v,i)=>{ d+=(i?'L':'M')+fx(i,n).toFixed(1)+','+fy(v,max).toFixed(1)+' '; }); for(let i=n-1;i>=0;i--){ d+='L'+fx(i,n).toFixed(1)+','+fy(b[i],max).toFixed(1)+' '; } return `<path class="bloom" d="${d}Z" fill="${c}"/>`; };
+    g+=area(inc.map((v,i)=>Math.max(v,out[i])),out,'rgba(4,180,119,.16)')+area(out.map((v,i)=>Math.max(v,inc[i])),inc,'rgba(224,168,0,.18)');
+    g+=`<line x1="${xr}" x2="${xr}" y1="104" y2="${FH-26}" stroke="rgba(16,24,44,.18)" stroke-dasharray="3 4"/>`;
+    g+=`<path class="draw" pathLength="1" d="${fpath(out,max)}" fill="none" stroke="${COL.c3}" stroke-width="2.2"/>`;
+    g+=`<path class="draw" pathLength="1" d="${fpath(inc,max)}" fill="none" stroke="${COL.ink}" stroke-width="2.4"/>`;
+    g+=`<text class="late" x="${fx(0,n)}" y="${FH-9}" font-size="11" fill="#9BA0AC">2026</text><text class="late" x="${fx(n-1,n)}" y="${FH-9}" font-size="11" fill="#9BA0AC" text-anchor="end">2066</text>`;
+    return fwrap(g,`<em>${mo(K.surplus0)} a month</em> to spare, until 2037`,`Dark line is what comes in. Gold is what goes out. Green is the gap that builds your plan.`,'The crossover',[{t:'The paychecks stop',x:xr+8,y:96,k:'gold'}]);
+  }
+  if(id==='retire'){
+    /* the bridge: four years with no paycheck and no Social Security */
+    const sav=M.map(r=>r.savings), max=Math.max(...sav)*1.1;
+    const xa=fx(YRS.indexOf(2037),n), xb=fx(YRS.indexOf(2041),n);
+    let g=`<defs><linearGradient id="flBridge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E0A800" stop-opacity=".30"/><stop offset="1" stop-color="#E0A800" stop-opacity=".04"/></linearGradient></defs>`;
+    g+=`<rect class="bloom" x="${xa}" y="104" width="${xb-xa}" height="${FH-130}" fill="url(#flBridge)"/>`;
+    g+=`<path class="bloom" d="${fpath(sav,max)} L${fx(n-1,n)},${FH-26} L${fx(0,n)},${FH-26} Z" fill="rgba(4,180,119,.10)"/>`;
+    g+=`<path class="draw" pathLength="1" d="${fpath(sav,max)}" fill="none" stroke="${COL.c2}" stroke-width="2.6" stroke-linecap="round"/>`;
+    [[2039,'Luis’s check',-14,'end'],[2041,'Maya’s check',24,'start']].forEach(([y,l,dy,an])=>{ const i=YRS.indexOf(y), x=fx(i,n), yy=fy(sav[i],max); g+=`<circle class="bloom" cx="${x}" cy="${yy}" r="5" fill="#fff" stroke="${COL.ink}" stroke-width="2"/><text class="late" x="${x+(an==='end'?-8:8)}" y="${yy+dy}" font-size="11" font-weight="600" fill="${COL.t2}" text-anchor="${an}">${l}</text>`; });
+    g+=`<text class="late" x="${fx(0,n)}" y="${FH-9}" font-size="11" fill="#9BA0AC">2026</text><text class="late" x="${fx(n-1,n)}" y="${FH-9}" font-size="11" fill="#9BA0AC" text-anchor="end">2066</text>`;
+    return fwrap(g,`<em>Four years</em> carry the whole plan`,`2037 to 2041: no paycheck, no Social Security. Get across this and the rest compounds.`,'The bridge',[{t:'The bridge · 2037 to 2041',x:xb+10,y:96,k:'gold'}]);
+  }
+  if(id==='tax'){
+    /* the valley: twenty years in the lowest bracket you will ever see */
+    const marg=M.map(r=>r.marg), max=0.40, top=122, bot=FH-26;
+    const low=YRS.filter((y,i)=>marg[i]<=0.12 && y>=2037);
+    const a=YRS.indexOf(low[0]), b=YRS.indexOf(low[low.length-1]);
+    let g='';
+    let d=''; marg.forEach((v,i)=>{ const x=fx(i,n), y=fy(v,max,top,bot); d+=(i?`L${x.toFixed(1)},${fy(marg[i-1],max,top,bot).toFixed(1)} L${x.toFixed(1)},${y.toFixed(1)}`:`M${x.toFixed(1)},${y.toFixed(1)}`)+' '; });
+    g+=`<rect class="bloom" x="${fx(a,n)}" y="${fy(0.12,max,top,bot)}" width="${fx(b,n)-fx(a,n)}" height="${bot-fy(0.12,max,top,bot)}" fill="rgba(224,168,0,.22)"/>`;
+    [0.12,0.24].forEach(r=>{ const y=fy(r,max,top,bot); g+=`<line x1="24" x2="${FW-24}" y1="${y}" y2="${y}" stroke="rgba(16,24,44,.07)"/><text class="late" x="${FW-26}" y="${y-4}" font-size="10.5" fill="#9BA0AC" text-anchor="end">${Math.round(r*100)}%</text>`; });
+    g+=`<path class="draw" pathLength="1" d="${d}" fill="none" stroke="${COL.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+    g+=`<text class="late" x="${fx(0,n)}" y="${FH-9}" font-size="11" fill="#9BA0AC">2026</text><text class="late" x="${fx(n-1,n)}" y="${FH-9}" font-size="11" fill="#9BA0AC" text-anchor="end">2066</text>`;
+    return fwrap(g,`<em>${low.length} years</em> in the 12% bracket`,`Your marginal rate, year by year. The gold valley is the cheapest tax you will ever pay.`,'The valley',[{t:`${low[0]} to ${low[low.length-1]}`,x:fx(a,n)+6,y:fy(0.12,max,top,bot)-30,k:'gold'}]);
+  }
+  if(id==='estate'){
+    /* what remains: where a thousand futures land at 92 */
+    const ends=MC.paths.map(p=>p[p.length-1]+END.home).sort((a,b)=>a-b);
+    const lo=ends[Math.floor(ends.length*0.005)], hi=ends[Math.floor(ends.length*0.975)];
+    const bins=28, cnt=new Array(bins).fill(0);
+    ends.forEach(v=>{ if(v<lo||v>hi) return; const k=Math.min(bins-1,Math.floor((v-lo)/(hi-lo)*bins)); cnt[k]++; });
+    const sm=cnt.map((c,i)=>(cnt[i-1]||0)*.25+c*.5+(cnt[i+1]||0)*.25), mx=Math.max(...sm);
+    const med=ends[Math.floor(ends.length/2)], mi=Math.min(bins-1,Math.floor((med-lo)/(hi-lo)*bins));
+    const X=i=>24+(i/(bins-1))*(FW-48), Y=v=>FH-26-(v/mx)*(FH-150);
+    let d=`M${X(0)},${FH-26} `; sm.forEach((v,i)=>{ d+=`L${X(i).toFixed(1)},${Y(v).toFixed(1)} `; }); d+=`L${X(bins-1)},${FH-26} Z`;
+    let line=''; sm.forEach((v,i)=>{ line+=(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)+' '; });
+    let g=`<path class="bloom" d="${d}" fill="rgba(4,180,119,.14)"/><path class="draw" pathLength="1" d="${line}" fill="none" stroke="${COL.c2}" stroke-width="2.4" stroke-linecap="round"/>`;
+    g+=`<line class="bloom" x1="${X(mi)}" x2="${X(mi)}" y1="${Y(sm[mi])}" y2="${FH-26}" stroke="${COL.ink}" stroke-width="1.6" stroke-dasharray="3 4"/>`;
+    g+=`<circle class="bloom pulse" cx="${X(mi)}" cy="${Y(sm[mi])}" r="11" fill="rgba(4,180,119,.18)"/><circle class="bloom" cx="${X(mi)}" cy="${Y(sm[mi])}" r="5" fill="${COL.c2}" stroke="#fff" stroke-width="2"/>`;
+    g+=`<text class="late" x="24" y="${FH-9}" font-size="11" fill="#9BA0AC">${money(lo)}</text><text class="late" x="${FW-24}" y="${FH-9}" font-size="11" fill="#9BA0AC" text-anchor="end">${money(hi)}</text>`;
+    return fwrap(g,`<em>${money(med)}</em> is the most likely gift`,`Where a thousand futures land at 92. The curve is how often; the dot is the middle.`,'What remains',[{t:'Most likely',x:X(mi)+10,y:Y(sm[mi])-14,k:'ink'},{t:`In ${Math.round((1-K.success)*100)} of 100, only the house remains`,x:X(0)+14,y:Y(sm[0])-4,k:'gold'}]);
+  }
+  return '';
+}
+
 function vFirst(){
   const nw=M.map(r=>r.nw);
   const mk=[{y:2035,n:1,label:'Mortgage paid off'},{y:2037,n:2,label:'Luis retires (65)'},{y:2039,n:3,label:'Maya retires (65) · Luis starts Social Security'},{y:2041,n:4,label:'Maya starts Social Security'},{y:2047,n:5,label:'Required distributions begin (Luis 75)'},{y:2062,n:6,label:'Luis’s planning age (90)'}].map(m=>({...m,v:nw[YRS.indexOf(m.y)]}));
-  return head(0,`You’re on track to retire on schedule and spend <em>${mo(K.spend)} a month</em>.`,`Where you stand, what is working, and what could knock it off course.`)
+  return head(0,`Retire on schedule, spend <em>${mo(K.spend)} a month</em>.`,`Where you stand, and what could knock it off course.`)+flag('first')
   +hero({p:K.success,lead:`Your money lasts to Maya’s age 92 in <b>${pct(K.success)}</b> of a thousand simulated markets.`,
     rows:[['Net worth today',money(K.nw0)],['Projected estate at 92',money(K.estate)],['Plan accuracy','88% · 2 items to review']]})
-  +insight(`Everything on this page is steady except one stretch: the <b>four years from 2037 to 2041</b>, when Luis has stopped working and neither Social Security check has started. That window decides most of your odds.`)
+  +insight(`One stretch decides your odds: <b>2037 to 2041</b>, after Luis stops working and before Social Security starts.`)
   +answer(`You can retire on schedule and spend about ${mo(K.spend)} a month for life; the pressure point is the four years between Luis retiring in 2037 and Maya’s Social Security starting in 2041.`,['What would raise my odds?'])
   +card({plain:true,title:'How will my net worth change over time?',src:'Net Worth projection · Timeline of Milestones',take:`Net worth builds to about <b>${money(Math.max(...nw))}</b> around retirement, then draws down slowly. Numbered points are your milestones.`,
     draw:h=>{const pk=Math.max(...nw),pky=YRS[nw.indexOf(pk)];
@@ -24918,12 +25005,12 @@ function vBudget(){
   const inc=M.map(r=>r.work+r.ss+r.rmd);
   const exp={living:M.map(r=>r.expenses.living),housing:M.map(r=>r.expenses.housing),health:M.map(r=>r.expenses.health),tax:M.map(r=>r.fed+r.irmaa),save:M.map(r=>r.contrib)};
   const sur=M.map(r=>r.surplus);
-  return head(1,'Where does your money come from, and where does it go?','Where the money goes today, and what changes when the paychecks stop.')
+  return head(1,'Where your money comes from, and goes.','Today, and what changes when the paychecks stop.')+flag('budget')
   +answer(`Your paychecks cover everything today with about ${mo(K.surplus0)} a month to spare, and that flips in 2037 when Luis stops working.`,['Is my retirement budget realistic?'])
   +card({plain:true,title:'Where does my money go this year?',src:'Lifetime Cash Flow (Sankey)',take:`Of every dollar you earn, <b>${pct(r0.expenses.living/210000)}</b> goes to everyday living and <b>${pct(36000/210000)}</b> to savings.`,
     draw:h=>sankey(h,{left:[{name:'Maya’s pay',v:115000,color:COL.c1},{name:'Luis’s pay',v:95000,color:COL.c2}],right:[{name:'Everyday living',v:r0.expenses.living,color:COL.c1},{name:'Taxes',v:Math.round(r0.fed),color:COL.c4},{name:'Saving',v:36000,color:COL.c2},{name:'Mortgage',v:26000,color:COL.c5},{name:'Left over',v:Math.round(r0.surplus),color:COL.c3},{name:'Healthcare',v:r0.expenses.health,color:COL.c0}],mid:''})})
   +strip([{k:'Income this year',v:money(r0.work),d:'two paychecks'},{k:'Spending',v:money(r0.expenses.living+r0.expenses.housing+r0.expenses.health),d:`${mo(r0.expenses.living+r0.expenses.housing+r0.expenses.health)}/mo incl. mortgage`},{k:'Saving rate',v:pct(36000/210000),d:'into 401(k)s and Roth IRAs'},{k:'Left over',v:money(K.surplus0),d:'after everything'}])
-  +insight(`Today your paychecks cover everything with <b>${mo(K.surplus0)} a month</b> spare. The shape of this page changes completely in 2037 — the same spending, none of the income.`)
+  +insight(`Paychecks cover everything today with <b>${mo(K.surplus0)} a month</b> spare. In 2037 the income stops and the spending stays.`)
   +card({title:'What are my income and expenses over time?',src:'Income & Expenses',take:'Bars are where money goes each year. The line is income before withdrawals from savings; when bars rise above it, savings fill the difference.',
     draw:h=>tsChart(h,{years:YRS,series:[S('Everyday living',COL.c1,exp.living),S('Mortgage',COL.c5,exp.housing),S('Healthcare',COL.c0,exp.health),S('Taxes',COL.c4,exp.tax),S('Saving',COL.c2,exp.save),S('Income (pay, Social Security, RMDs)',COL.ink,inc,'line',{width:2})],rowLabel:lab,tipTotal:'Total outflows',height:270}),
     table:()=>tsTable(YRS,[S('Income',0,inc),S('Living',0,exp.living),S('Mortgage',0,exp.housing),S('Healthcare',0,exp.health),S('Taxes',0,exp.tax),S('Saving',0,exp.save)],lab)})
@@ -24943,14 +25030,14 @@ function vRetire(){
   const ss=M.map(r=>r.ss),work=M.map(r=>r.work),rmd=M.map(r=>r.rmd),wd=M.map(r=>r.wTx+r.wDef+r.wRoth),need=M.map(r=>r.expenses.living+r.expenses.housing+r.expenses.health+r.fed+r.irmaa+r.contrib);
   const lev=[['Spend 10% less in retirement',`${mo(K.spend*.9)}/mo instead of ${mo(K.spend)}`,LV.spend],['Retire one year later','Luis at 66, Maya at 66',LV.ret1],['Both claim Social Security at 70','instead of 67',LV.ss70],['Spend 5% less and claim at 70','a smaller change on both levers',LV.all]];
   const scale=v=>Math.max(0,(v-.5)/.5*100);
-  return head(2,'Will your money last as long as you do?','How the plan holds up in good markets and bad, and what moves your odds.')
+  return head(2,'Will your money last as long as you do?','Good markets, bad markets, and what moves your odds.')+flag('retire')
   +panelInk((()=>{const lo=90000,hi=140000,x=v=>((v-lo)/(hi-lo)*100).toFixed(1)+'%';
     return `<div class="pk"><div><div class="big">${pct(K.success)}</div><div class="lb">of 1,000 simulated markets last to 92</div></div>`
      +`<div><div class="big">${mo(K.spend)}</div><div class="lb">a month, today’s dollars</div></div>`
      +`<div><div class="big">${money(K.atRetire)}</div><div class="lb">saved by the end of 2039</div></div></div>`
      +`<div><div class="meter"><div class="zone" style="left:0;width:${x(K.safeLo)};background:rgba(205,239,224,.55)"></div><div class="zone" style="left:${x(K.safeLo)};width:calc(${x(K.safeHi)} - ${x(K.safeLo)});background:#9FDCC2"></div><div class="zone" style="left:${x(K.safeHi)};right:0;background:rgba(251,189,4,.45)"></div><div class="pin" style="left:${x(K.spend)}"><span>Your plan ${mo(K.spend)}</span></div><div class="tick" style="left:${x(K.safeLo)}">${mo(K.safeLo)}</div><div class="tick" style="left:${x(K.safeHi)}">${mo(K.safeHi)}</div></div>`
      +`<div class="legend"><span><i style="background:rgba(205,239,224,.55)"></i>Very safe (90%+)</span><span><i style="background:#9FDCC2"></i>Safe range</span><span><i style="background:rgba(251,189,4,.45)"></i>Cut back if markets fall</span></div></div>`;})())
-  +insight(`The plan fails in the same place every time it fails: early. <b>Timing beats sacrifice</b> — waiting to claim Social Security does more for your odds than cutting ${mo(K.spend-103500)} a month of spending.`)
+  +insight(`When the plan fails, it fails early. <b>Timing beats sacrifice</b>: waiting on Social Security does more than cutting spending.`)
   +answer(`Your savings last to Maya’s age 92 in ${pct(K.success)} of markets, and claiming Social Security at 70 lifts that to ${pct(LV.ss70)}.`,['Should we both wait until 70?'])
   +card({title:'What is the range of outcomes for my savings?',src:'Monte Carlo Analysis · Retirement Chance of Success',take:`The dark band is the middle half of outcomes. Even the 25th-percentile path ends with <b>${money(P.p25[P.p25.length-1])}</b>; in the weakest 10% of markets, savings end near <b>${money(P.p10[P.p10.length-1])}</b>.`,
     draw:h=>tsChart(h,{years:YRS,fan:{bands:[{name:'10th–90th percentile',color:COL.fan1,lo:P.p10,hi:P.p90},{name:'25th–75th percentile',color:COL.fan2,lo:P.p25,hi:P.p75}],tip:[{name:'90th percentile',color:COL.fan1,values:P.p90},{name:'75th percentile',color:COL.fan2,values:P.p75},{name:'25th percentile',color:COL.fan2,values:P.p25},{name:'10th percentile',color:COL.fan1,values:P.p10}]},series:[S('Median',COL.c1,P.p50,'line',{width:2.5}),S('Average returns',COL.ink,M.map(r=>r.savings),'line',{dash:'5 4',width:1.8})],vlines:[{y:2037,label:'Luis retires'}],spans:[{from:2037,to:2041,label:'Bridge years'}],rowLabel:lab,height:280}),
@@ -24975,9 +25062,9 @@ function vInvest(){
 /* ---------- 5. Taxes ---------- */
 function vTax(){
   const r=sliceFrom(2036);
-  return head(4,'Are you paying more tax than you need to?','The brackets you sit in year by year, and what converting early would change.')
+  return head(4,'Are you paying more tax than you need to?','Your brackets year by year, and what converting early changes.')+flag('tax')
   +bracketRibbon()
-  +insight(`Between ${lowA} and ${lowB} your taxable income all but disappears before required distributions begin. <b>That window is the cheapest tax you will ever pay</b> on money that has never been taxed.`)
+  +insight(`From ${lowA} to ${lowB} your taxable income nearly vanishes. <b>That window is the cheapest tax you will ever pay.</b>`)
   +strip([{k:'Lifetime federal tax',v:money(K.taxLife),d:'income tax and IRMAA'},{k:'Largest RMD',v:money(K.rmdMax),d:'a year, from 2047'},{k:'Tax your heirs would owe',v:money(END.def*HEIR),d:'on inherited pre-tax money at 24%'}])
   +answer(`Your retirement income sits in the 10–12% bracket until RMDs push you into 22%, so converting in those quiet years leaves your heirs about ${money(K.afterTaxR-K.afterTax)} more.`,['Walk me through a Roth conversion'])
   +card({title:'What is my marginal tax bracket each year?',src:'Taxes (tax bracket projection)',take:'The drop after retirement is the opportunity. Converting fills the 12% bracket early and keeps you out of 22% later.',
@@ -25002,11 +25089,11 @@ function vTax(){
 /* ---------- 6. Estate ---------- */
 function vEstate(){
   const endHome=END.home;const ends=MC.paths.map(p=>p[p.length-1]+endHome).sort((a,b)=>a-b);const q=x=>ends[Math.floor(x*ends.length)];
-  return head(5,'What will you leave, and to whom?','What your estate is worth, who it goes to, and which documents are missing.')
+  return head(5,'What will you leave, and to whom?','What it is worth, who gets it, and which documents are missing.')+flag('estate')
   +card({plain:true,title:'Are my documents and beneficiaries in place?',src:'New · from Document Vault',take:'Three of five are done. The two that are not decide who acts for you and who inherits.',
     draw:h=>{const d=[['crit','x','Healthcare directives','Not on file','Add'],['crit','x','Maya’s rollover IRA beneficiary','Names her late father','Update'],['good','check','Wills for both of you','Signed 2019 · in your Vault','Review'],['good','check','Durable financial powers of attorney','Signed 2019 · in your Vault','View'],['good','check','401(k) beneficiaries','Each other, then children · confirmed 2025','View']];
       h.innerHTML=`<div class="docs">${d.map(x=>`<div class="doc"><span class="chip ${x[0]}" style="width:30px;height:30px;padding:0;justify-content:center;border-radius:50%">${ICON[x[1]]}</span><div><div class="h">${x[2]}</div><div class="b">${x[3]}</div></div><button class="tbtn noclick" type="button">${x[4]}</button></div>`).join('')}</div>`;}})
-  +insight(`The money side of your estate is in good shape. The <b>paperwork is not</b> — two documents decide who acts for you and who inherits, and both are an afternoon’s work.`)
+  +insight(`The money is in good shape. <b>The paperwork is not</b>: two documents are missing, and both are an afternoon’s work.`)
   +strip([{k:'Likely estate at 92',v:money(K.estate),d:'median markets, incl. home'},{k:'Legacy goal',v:'$1M',d:`met in ${pct(K.legacyP)} of simulations`},{k:'Heirs’ tax on pre-tax money',v:money(END.def*HEIR),d:'at an assumed 24% rate'}])
   +answer(`You are likely to leave more than your $1M goal, but a missing healthcare directive and an out-of-date IRA beneficiary need fixing first.`,['What happens to our home?'])
   +`<div class="grid2">`
@@ -25027,8 +25114,33 @@ $('#xpNav').innerHTML=CH.map(c=>`<li data-xp="${c.id}"><span class="nav-dot done
 const built={},RAILS={};
 /* ---------- motion: replay the chapter's entrance and let the charts draw ---------- */
 const REDUCE=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let insightTimers=[];
+function streamInsight(v){
+  insightTimers.forEach(clearTimeout); insightTimers=[];
+  const p=v.querySelector('.insight p'); if(!p) return;
+  if(!p.dataset.src) p.dataset.src=p.innerHTML;
+  p.innerHTML=p.dataset.src;
+  let n=0;
+  (function walk(node){
+    [].slice.call(node.childNodes).forEach(c=>{
+      if(c.nodeType===3){
+        const parts=c.data.match(/\s*\S+\s*/g); if(!parts) return;
+        const frag=document.createDocumentFragment();
+        parts.forEach(t=>{const sp=document.createElement('span');sp.className='tok';sp.textContent=t;frag.appendChild(sp);
+          if(REDUCE) sp.classList.add('show'); else insightTimers.push(setTimeout(()=>sp.classList.add('show'), 260+(n++)*28));});
+        c.parentNode.replaceChild(frag,c);
+      } else if(c.nodeType===1) walk(c);
+    });
+  })(p);
+}
 function play(v){
-  if(REDUCE||!v) return;
+  if(!v) return;
+  /* the insight reads first: it sits under the subhead and types itself in */
+  const ins=v.querySelector('.insight'), qh=v.querySelector('.qhead');
+  const fl=v.querySelector('.flag'), after=fl||qh;
+  if(ins && after && after.nextElementSibling!==ins) after.insertAdjacentElement('afterend', ins);
+  streamInsight(v);
+  if(REDUCE) return;
   v.classList.remove('anim'); void v.offsetWidth; v.classList.add('anim');
   countUp(v);
 }
@@ -25087,141 +25199,6 @@ function close(){
   else boot();
 })();
 
-</script>
-
-<!-- ===================== TEST: clean three-panel editing view (editor + Prism + Ask) ===================== -->
-<style id="triCleanCSS">
-/* Scope: only while a field editor, Prism and Ask anything are open together.
-   The left rail steps out entirely; the three panels share the width with
-   hairline dividers; every rule here is appended last so it wins its cascade. */
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"],
-body.tri-cols.graph-expanded.ai-expanded .dock .dock-inner{
-  grid-template-columns:0px minmax(0,1fr) minmax(0,2.25fr) !important;   /* editor : (prism + chat) */
-  max-width:none !important; justify-content:stretch; gap:0 !important;
-  padding-left:40px !important; padding-right:40px !important; }
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"] .side{ display:none !important; }
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"] .center{
-  grid-column:2; max-width:none !important; padding-right:36px; }
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"] .rail{
-  display:grid !important; grid-column:3; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) !important; column-gap:0 !important;   /* prism : chat */
-  border-left:1px solid var(--hairline); min-height:calc(100vh - 130px); align-self:stretch; }
-body.tri-cols.graph-expanded.ai-expanded .tri-right{ min-height:calc(100vh - 130px); }
-body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"]{ padding-top:calc(73px + 36px) !important; }
-body.tri-cols.graph-expanded.ai-expanded .tri-left{ padding:0 36px 40px 36px; top:84px; }
-body.tri-cols.graph-expanded.ai-expanded .tri-right{ padding-left:36px; padding-right:0; }
-body.tri-cols.graph-expanded.ai-expanded .side-mini-tg{ display:none !important; }
-/* the hidden ask column must not clip: Full view and text stay inside the viewport */
-body.tri-cols.graph-expanded.ai-expanded .rail-ai-host,
-body.tri-cols.graph-expanded.ai-expanded .tri-right{ min-width:0; }
-
-/* ---- one header rhythm across the three panels ---- */
-body.tri-cols .gd-head .gd-title,
-body.tri-cols .rail-ai-head{ font-size:24px; font-weight:600; letter-spacing:-.01em; }
-body.tri-cols #graphDock{ margin-top:0 !important; animation:none !important; }
-body.tri-cols #graphDock .gd-head{ top:0; padding:0 0 10px; margin-bottom:12px; }
-body.tri-cols .gd-card{ padding:20px 20px 16px; border-radius:16px; }
-body.tri-cols .gd-card .gd-title-t{ font-size:16px; color:var(--ink); }
-body.tri-cols .gd-when{ font-size:15px; }
-body.tri-cols .gd-legend .gd-li{ font-size:15px; white-space:nowrap; }
-body.tri-cols .gd-card .gd-lab{ flex-wrap:nowrap; }
-body.tri-cols .gd-card .gd-title-t{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
-body.tri-cols .gd-when{ white-space:nowrap; }
-body.tri-cols .gd-tools{ flex:none; }
-
-/* ---- the editor card: labels above fields, one clear action ---- */
-body.tri-cols .row-editor .edit-card{
-  background:#FFFDF6; border:1px solid var(--hairline); border-radius:16px; padding:22px 24px 26px; }
-body.tri-cols .row-editor .edit-card .ecTitle{ font-size:20px; align-items:flex-start; margin-bottom:4px; }
-body.tri-cols .row-editor .edit-card .ec-head{ flex-direction:column; align-items:flex-start; gap:4px; }
-body.tri-cols .row-editor .edit-card .ec-sub{ display:block; font-size:16px; font-weight:400; color:var(--text-secondary); }
-body.tri-cols .row-editor .ec-linked{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px; margin-left:6px;
-  border-radius:999px; background:var(--eggshell); color:#0E794E; font-size:13px; font-weight:600; vertical-align:2px; }
-body.tri-cols .row-editor .ec-linked svg{ width:12px; height:12px; }
-body.tri-cols .row-editor .ec-body{ padding-top:16px; }
-body.tri-cols .row-editor .field{ border:0; background:none; padding:0; margin-bottom:16px; }
-body.tri-cols .row-editor .field label{ position:static; display:block; padding:0; margin:0 0 6px; background:none;
-  font-size:14px; font-weight:500; color:var(--text-secondary); line-height:1.3; }
-body.tri-cols .row-editor .field .val{ min-height:56px; padding:0 16px; border:1px solid var(--hairline-strong);
-  border-radius:12px; background:#fff; font-size:18px; transition:border-color .15s; }
-body.tri-cols .row-editor .field:focus-within{ border-color:transparent; }
-body.tri-cols .row-editor .field:focus-within .val{ border:2px solid var(--ink); padding:0 15px; }
-body.tri-cols .row-editor .field.ec-ro .val{ background:var(--sand); border-color:var(--hairline); color:var(--text-secondary); }
-body.tri-cols .row-editor .ec-help{ font-size:15px; color:var(--text-secondary); margin:-6px 0 16px; line-height:1.45; }
-body.tri-cols .row-editor .ec-help b{ color:var(--ink); font-weight:600; }
-body.tri-cols .row-editor .edit-actions{ margin-top:8px; gap:18px; }
-body.tri-cols .row-editor .btn-save{ height:52px; padding:0 28px; background:var(--green); color:var(--ink); font-size:17px; }
-body.tri-cols .row-editor .btn-save:disabled{ background:#DDE1E6; color:#6E7687; }
-body.tri-cols .row-editor .ec-cancel{ background:none; border:0; font:inherit; font-size:17px; font-weight:600; color:var(--ink); cursor:pointer; }
-body.tri-cols .row-editor .ec-cancel:hover{ text-decoration:underline; }
-body.tri-cols .ec-toggle{ background:#fff; border:1px solid var(--hairline-strong); }
-
-/* ---- the chat column: readable, one composer, nothing fixed under the text ---- */
-body.tri-cols .aic-msg{ font-size:18px; line-height:1.5; max-width:none; }
-body.tri-cols .aic-msg.user{ font-size:17px; }
-body.tri-cols .aic-thread{ max-height:calc(100vh - 330px); }
-body.tri-cols .ins-q, body.tri-cols .aic-chip{ font-size:16px; padding:10px 16px; }
-body.tri-cols .dock .askbar{ border:1px solid var(--hairline-strong); }
-/* the heading keeps its room: the full view control shrinks to its icon under 1200px */
-@media (max-width:1200px){
-  body.tri-cols .rail-ai-fs{ width:34px; padding:0; gap:0; }
-  body.tri-cols .rail-ai-fs .fsl{ display:none; }
-}
-body.tri-cols .rail-ai-head{ padding-right:84px; white-space:nowrap; }
-@media (max-width:1200px){ body.tri-cols .rail-ai-head{ font-size:22px; padding-right:84px; } }
-
-@media (max-width:1180px){
-  body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"],
-  body.tri-cols.graph-expanded.ai-expanded .dock .dock-inner{ padding-left:24px !important; padding-right:24px !important; }
-  body.tri-cols.graph-expanded.ai-expanded .layout.page[data-page="plan"] .center{ padding-right:24px; }
-  body.tri-cols.graph-expanded.ai-expanded .tri-left{ padding:0 24px 40px; }
-  body.tri-cols.graph-expanded.ai-expanded .tri-right{ padding-left:24px; }
-}
-</style>
-<script id="triCleanJS">
-/* The row editor copies the whole type line, chip and all, into the Account type
-   field ("Checking Connected · updates daily"). While the three panel view is open,
-   split that back into a type and a Connected chip, mark the linked balance, and
-   give the card a Cancel beside Save. */
-(function(){
-  var LINK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
-  var RX=/\s*Connected\s*·\s*updates daily\s*/i;
-  function tidy(card){
-    if(card.dataset.tidy) return; card.dataset.tidy='1';
-    var sub=card.querySelector('.ec-sub'), title=card.querySelector('.ecTitleText, #ecTitleText');
-    var fields=[].slice.call(card.querySelectorAll('.field'));
-    var linked=false;
-    fields.forEach(function(f){
-      var lab=(f.querySelector('label')||{}).textContent||'', v=f.querySelector('.vtext'); if(!v) return;
-      if(/account type/i.test(lab) && RX.test(v.textContent)){ linked=true; v.textContent=v.textContent.replace(RX,'').trim(); }
-    });
-    if(sub && RX.test(sub.textContent)){ linked=true; sub.textContent=sub.textContent.replace(RX,'').trim(); }
-    if(linked){
-      if(title && !card.querySelector('.ec-linked')){
-        var chip=document.createElement('span'); chip.className='ec-linked'; chip.innerHTML=LINK+'Connected'; title.appendChild(chip);
-      }
-      fields.forEach(function(f){
-        var lab=(f.querySelector('label')||{}).textContent||'';
-        if(/balance/i.test(lab) && !f.nextElementSibling?.classList?.contains('ec-help')){
-          f.classList.add('ec-ro');
-          var h=document.createElement('p'); h.className='ec-help';
-          h.innerHTML='Refreshes daily from the bank. Last update <b>today, 6:12 AM</b>. Typing a balance pauses the refresh.';
-          f.insertAdjacentElement('afterend', h);
-          var vt=f.querySelector('.vtext'); if(vt) vt.addEventListener('focus', function(){ f.classList.remove('ec-ro'); }, {once:true});
-        }
-      });
-    }
-    var acts=card.querySelector('.edit-actions');
-    if(acts && !acts.querySelector('.ec-cancel')){
-      var c=document.createElement('button'); c.type='button'; c.className='ec-cancel'; c.textContent='Cancel';
-      c.addEventListener('click', function(){ var t=card.querySelector('.ec-toggle'); if(t) t.click(); });
-      acts.appendChild(c);
-    }
-  }
-  function sweep(){ if(!document.body.classList.contains('tri-cols')) return;
-    document.querySelectorAll('.row-editor .edit-card').forEach(tidy); }
-  new MutationObserver(sweep).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:['class']});
-  sweep();
-})();
 </script>
 
 <script>
@@ -25594,3 +25571,28 @@ document.addEventListener('click', function(e){
 })();
 </script>
 
+<style id="triFitCSS">
+/* ===== Prism + chat: everything fits greenfield's 1180px, the rail folds to one control ===== */
+body.tri-cols.graph-expanded.ai-expanded .layout{ max-width:1180px; justify-content:center; }
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .layout,
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .dock .dock-inner{ grid-template-columns:64px minmax(0,1fr) minmax(0,2.2fr); }
+body.tri-cols.graph-expanded.ai-expanded:not(.prism-mini) .layout,
+body.tri-cols.graph-expanded.ai-expanded:not(.prism-mini) .dock .dock-inner{ grid-template-columns:200px minmax(0,1fr) minmax(0,2.3fr); }
+body.tri-cols.graph-expanded.ai-expanded .rail{ grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); column-gap:20px; }
+body.tri-cols .tri-right{ padding-left:20px; }
+/* the rail: one round control while folded, the full rail when opened */
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .side{ left:max(32px, 50% - 558px); width:64px; min-width:64px; overflow:visible; }
+body.tri-cols.graph-expanded.ai-expanded.prism-mini .side > :not(.side-mini-tg){ display:none !important; }
+body.tri-cols.graph-expanded.ai-expanded .side .side-mini-tg{ display:flex; width:44px; height:44px; border-radius:50%; border:1px solid var(--hairline-strong); margin:0 0 var(--s-4) 10px; color:var(--ink); }
+body.tri-cols.graph-expanded.ai-expanded .side .side-mini-tg:hover{ border-color:var(--ink); background:#fff; }
+body.tri-cols.graph-expanded.ai-expanded:not(.prism-mini) .side{ width:200px; min-width:200px; opacity:1; overflow:visible; pointer-events:auto; padding:0; margin:0; left:max(32px, 50% - 558px); }
+body.tri-cols.graph-expanded.ai-expanded:not(.prism-mini) .side .side-mini-tg{ margin-left:0; }
+/* narrower panels: Prism cards and the chat give up their fixed widths */
+body.tri-cols .tri-left > #graphDock, body.tri-cols .tri-left > #graphDock *{ max-width:100%; }
+body.tri-cols .tri-right > *{ max-width:100%; min-width:0; }
+/* in the three panel view the chat column is narrow: Full view becomes an icon, the head gets room */
+body.tri-cols.graph-expanded.ai-expanded .tri-right .rail-ai-fs .fsl{ display:none; }
+body.tri-cols.graph-expanded.ai-expanded .tri-right .rail-ai-fs{ width:34px; padding:0; gap:0; }
+body.tri-cols.graph-expanded.ai-expanded .tri-right .rail-ai-head{ padding-right:88px; }
+body.tri-cols.graph-expanded.ai-expanded #gdCards .gd-leg, body.tri-cols.graph-expanded.ai-expanded #gdCards .legend{ flex-wrap:wrap; }
+</style>
