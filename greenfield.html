@@ -26680,3 +26680,55 @@ body.adv-travis .adv-page .rail > :not(#advTravisRail){ display:none !important;
   window.__advTravis={open:function(plan){ if(plan) S.plan=plan; show(); }, go:go, close:hide};
 })();
 </script>
+
+<style id="hideAdvChat">
+/* My Advisory: Advisor chat parked for now */
+#advSideNav li[data-nav="chat"]{ display:none !important; }
+</style>
+
+<style id="hideAdvBand">
+/* My Advisory workspace: the client band and the document toolbar are out for now */
+.adv-page .adv-band, .adv-page .docbar{ display:none !important; }
+</style>
+
+<style id="hideAdvNotes">
+/* My Advisory workspace: the margin notes are out for now; the document takes the full column */
+.adv-page .margin, .adv-page #docRail{ display:none !important; }
+.adv-page .doclayout{ grid-template-columns:minmax(0,1fr) !important; }
+.adv-page .hl{ background:none !important; border-bottom:0 !important; cursor:text !important; }
+#advSideNav li[data-nav="doc"] .badge, #advSideNav li[data-nav="doc"] .cnt, #advSideNav li[data-nav="doc"] .n{ display:none !important; }
+</style>
+
+<style id="hideWsOverview">
+/* My Advisory workspace: no Overview entry once the engagement is live */
+.adv-page:has(#vWorkspace.on) #advSideNav li[data-nav="overview"]{ display:none !important; }
+</style>
+
+<style id="docQuoteCSS">
+/* Plan document: a single line from your advisor in the rail */
+#docQuote{ display:none; }
+.adv-page:has(#vWorkspace.on .wpane[data-pane="doc"].on) #docQuote{ display:block; }
+#docQuote .dq-av{ width:48px; height:48px; border-radius:999px; object-fit:cover; display:block; margin-bottom:14px; border:1px solid var(--hairline); }
+#docQuote blockquote{ margin:0; font-size:22px; line-height:1.35; font-weight:400; color:var(--ink); letter-spacing:-0.2px; }
+#docQuote blockquote em{ font-style:normal; color:var(--green-cta); }
+#docQuote .dq-who{ margin-top:12px; font-size:14px; color:var(--text-secondary); }
+#docQuote .dq-who b{ color:var(--ink); font-weight:600; }
+</style>
+<script id="docQuoteJS">
+(function(){
+  var rail=document.querySelector('.adv-page .adv-rail'); if(!rail) return;
+  var q=document.createElement('div'); q.className='side-ctx'; q.id='docQuote';
+  q.innerHTML='<img class="dq-av" alt="" data-dq-av><blockquote>“You did the hard part already. <em>You wrote it down.</em> Now we make it hold up.”</blockquote><div class="dq-who"><b data-dq-name>Your advisor</b> · <span data-dq-role>Boldin Advisors</span></div>';
+  rail.appendChild(q);
+  function sync(){
+    var img=document.getElementById('docAdvAv'), nm=document.getElementById('wsAdvName'), rl=document.getElementById('wsAdvRole');
+    var av=q.querySelector('[data-dq-av]'); var src=img && img.getAttribute('src');
+    if(src){ if(av.getAttribute('src')!==src) av.setAttribute('src',src); av.style.display='block'; } else av.style.display='none';
+    if(nm && nm.textContent.trim()){ var t=nm.textContent.trim(); var e1=q.querySelector('[data-dq-name]'); if(e1.textContent!==t) e1.textContent=t; }
+    if(rl && rl.textContent.trim()){ var t2=rl.textContent.trim().split('·')[0].trim()+' · Boldin Advisors'; var e2=q.querySelector('[data-dq-role]'); if(e2.textContent!==t2) e2.textContent=t2; }
+  }
+  var pending=false;
+  new MutationObserver(function(ms){ if(ms.every(function(m){ return q.contains(m.target); })) return; if(pending) return; pending=true; setTimeout(function(){ pending=false; sync(); }, 50); }).observe(document.querySelector('.adv-page'),{attributes:true, subtree:true, attributeFilter:['class','src']});
+  sync();
+})();
+</script>
