@@ -8979,6 +8979,17 @@ document.addEventListener('click', function(e){
   }
   let _sectionsAt=0;
   function showSectionsView(){
+    // My Plans is one page: the snapshot on top, the input sections right under it.
+    // a jump to a section stays in the plan view and just scrolls; other lenses fold back to the snapshot first
+    if(document.body.dataset.view==='plan'){
+      document.body.classList.remove('compare-view');
+      document.body.classList.add('plan-view');
+      if(!document.body.classList.contains('lens-snapshot')){
+        const pill=document.querySelector('#snapshotView .snap-pill[data-lens="snapshot"]'); if(pill) pill.click();
+      }
+      _sectionsAt=performance.now();
+      return;
+    }
     document.body.classList.remove('plan-view');
     document.body.classList.remove('compare-view');
     _sectionsAt=performance.now();
@@ -9071,22 +9082,28 @@ document.addEventListener('click', function(e){
   // infinite scroll: the bottom of the plan hands off to Today, where the inputs live
   (function(){
     const ph=document.getElementById('planHandoff'); if(!ph) return;
-    let armed=true;
-    new IntersectionObserver(ents=>{
-      ents.forEach(en=>{
-        if(!en.isIntersecting || !armed) return;
-        if(document.body.dataset.view!=='plan') return;
-        if(document.body.classList.contains('compare-view')) return;   // compare owns its scroll
-        armed=false;
-        ph.classList.add('go');
-        setTimeout(()=>{
-          // stay in Plan: reveal the sections view and jump to Assets, same as the Plan rail does
-          const acc=accordions.assets;
-          if(acc){ showSectionsView(); goToSection(acc); }
-          ph.classList.remove('go');
-        }, reduce?0:950);
-      });
-    }, {threshold:0.85}).observe(ph);
+    let armed=true, lastY=0;
+    // fires only once the reader has scrolled down to the very bottom of the page themselves;
+    // a short page that already shows the handoff on arrival must not hand off on its own
+    function atBottom(){ const d=document.documentElement; return window.scrollY + window.innerHeight >= d.scrollHeight - 4; }
+    function fire(){
+      if(!armed) return;
+      if(document.body.classList.contains('plan-view')) return;   // one page now: nothing to hand off to
+      if(document.body.dataset.view!=='plan') return;
+      if(document.body.classList.contains('compare-view')) return;   // compare owns its scroll
+      if(ph.offsetParent===null || !atBottom()) return;
+      armed=false;
+      ph.classList.add('go');
+      setTimeout(()=>{
+        // stay in Plan: reveal the sections view and jump to Assets, same as the Plan rail does
+        const acc=accordions.assets;
+        if(acc){ showSectionsView(); goToSection(acc); }
+        ph.classList.remove('go');
+      }, reduce?0:950);
+    }
+    window.addEventListener('scroll', ()=>{ const y=window.scrollY; const down=y>lastY; lastY=y; if(down && y>0) fire(); }, {passive:true});
+    window.addEventListener('wheel', e=>{ if(e.deltaY>0 && window.scrollY>0) fire(); }, {passive:true});
+    window.addEventListener('keydown', e=>{ if((e.key==='ArrowDown'||e.key==='PageDown'||e.key==='End'||e.key===' ') && window.scrollY>0) setTimeout(fire,50); });
     window.addEventListener('boldin:view', e=>{ if(e.detail==='plan'){ armed=true; ph.classList.remove('go'); } });
     window.addEventListener('boldin:planlens', ()=>{ armed=true; ph.classList.remove('go'); });
   })();
@@ -9228,13 +9245,16 @@ document.addEventListener('click', function(e){
       return Math.max(bottom, 90) + 28;                     // the reading line just below the pinned widget
     }
     function syncNav(){
-      if(document.body.classList.contains('plan-view')) return;   // the section nav only applies to the working sections
+      if(document.body.classList.contains('plan-view') && !(document.body.dataset.view==='plan' && document.body.classList.contains('lens-snapshot'))) return;   // the section nav only applies to the working sections
+      if(document.body.classList.contains('xp-open') || document.body.classList.contains('inv-open') || document.body.classList.contains('conn-open')) return;
       // only spy on nav items that are actually visible (e.g. Money Flows is hidden on the Today tab)
       const liveKeys = navKeys.filter(k=>{ const li=sideNavEl.querySelector('li[data-key="'+k+'"]'); return li && li.offsetParent !== null; });
       if(!liveKeys.length) return;
       const ref=refLine();
       const items = liveKeys.map(k=>({ k, top: accordions[k].el.getBoundingClientRect().top })).sort((a,b)=> a.top - b.top);
       let key=items[0].k;                                   // default to the topmost section
+      if(document.body.classList.contains('plan-view') && items[0].top > ref){   // still reading the snapshot above the sections: nothing lit
+        sideNavEl.querySelectorAll('li[data-key].active').forEach(x=>x.classList.remove('active')); return; }
       for(const it of items){ if(it.top <= ref) key=it.k; else break; }
       // the trailing section can't scroll up to the reading line; when the page bottoms out, highlight it
       const doc=document.documentElement;
@@ -25671,9 +25691,11 @@ body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block
 #connToday .pf-conn-row[aria-expanded="true"] .pf-sl{ color:var(--green-cta); }
 #connToday .pf-conn-row.fix .pf-jico{ background:#FBF1D3; color:#8A6A00; }
 #connToday .pf-jchip.warn{ background:#FBF1D3; color:#8A6A00; }
-#connToday .pf-conn-acc{ margin-top:0; }
+#connToday .pf-conn-acc{ margin:0 0 10px 58px; border:0; border-radius:0; padding:2px 0 8px; }
+#connToday .pf-conn-ahint{ margin:4px 0 2px; }
 #connToday .pf-conn-acc + .pf-conn-row{ border-top:1px solid var(--hairline); }
-#connToday .pf-conn-achead{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+#connToday .pf-conn-achead, #connToday .pf-conn-ahint{ display:none !important; }
+#connToday .pf-conn-acc .alo-rows{ margin-top:0; }
 #connToday .pf-conn-achead .ret-seclabel{ margin-bottom:0; }
 #connToday .pf-conn-ahint{ font-size:14px; color:var(--text-secondary); line-height:1.5; margin:6px 0 4px; max-width:56ch; }
 #connToday .pf-conn-acc .alo-rows{ margin-top:6px; }
@@ -25697,7 +25719,12 @@ body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block
 #connToday .cn-link{ font-size:15px; font-weight:600; color:var(--green-cta); cursor:pointer; text-decoration:none; }
 #connToday .cn-link:hover{ text-decoration:underline; }
 
-#connRail .rh{ margin-bottom:12px; }
+#connRail .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); margin-bottom:var(--s-4); white-space:nowrap; }
+#connRail .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
+#connRail p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
+#connRail .tax-links a{ cursor:pointer; font-weight:500; }
+#connToday .pf-conn-row .pf-jico{ position:relative; overflow:hidden; }
+#connToday .cn-logo{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; padding:8px; background:#fff; border:1px solid var(--hairline); border-radius:12px; }
 #connRail .cn-rail-q{ margin-top:var(--s-5); display:flex; flex-direction:column; gap:8px; }
 #connRail .cn-rail-q button{ text-align:left; font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:#fff; border:1px solid var(--hairline); border-radius:12px; padding:10px 12px; cursor:pointer; }
 #connRail .cn-rail-q button:hover{ border-color:var(--ink); }
@@ -25724,19 +25751,25 @@ body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block
   list.querySelectorAll('[aria-controls]').forEach(function(el){ el.setAttribute('aria-controls','cxt-'+el.getAttribute('aria-controls')); });
   list.querySelectorAll('.pf-conn-acc').forEach(function(p){ p.hidden=true; });
   list.querySelectorAll('.pf-conn-row').forEach(function(r){ r.setAttribute('aria-expanded','false'); });
+  var LOGOS={'Fidelity Investments':'fidelity.com','Vanguard':'vanguard.com','Huntington Bank':'huntington.com','Optum Bank':'optumbank.com','Sunmark Credit Union':'sunmark.org','Sunmark':'sunmark.org','Sunmark Savings':'sunmark.org','Chase':'chase.com','Fidelity':'fidelity.com','Bank of America':'bankofamerica.com','Charles Schwab':'schwab.com','Wells Fargo':'wellsfargo.com'};
+  function brand(row){
+    if(row.classList.contains('fix') || row.querySelector('.cn-logo')) return;   /* the broken one keeps its warning mark until it is fixed */
+    var nm=row.querySelector('.pf-sl'); var ico=row.querySelector('.pf-jico'); if(!nm || !ico) return;
+    var dom=LOGOS[nm.textContent.trim()]; if(!dom) return;
+    var img=document.createElement('img'); img.className='cn-logo'; img.alt=''; img.loading='lazy'; img.src='https://logo.clearbit.com/'+dom;
+    img.onerror=function(){ img.remove(); };
+    ico.appendChild(img);
+  }
+  list.querySelectorAll('.pf-conn-row').forEach(brand);
+  list.querySelectorAll('.pf-conn-ahint').forEach(function(h){ h.textContent='On uses the live balance in your plan. Off keeps your own entry.'; });
 
   var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg>';
   var host=document.createElement('div'); host.id='connToday';
   host.innerHTML=
-    '<div class="cn-top"><div><div class="cn-eyebrow">My Money &middot; Connections</div>'
+    '<div class="cn-top"><div>'
       +'<h1 class="cn-title">Every account, <em>connected</em></h1>'
-      +'<p class="cn-sub">Link an institution once through Plaid or Meld. Balances stay current and pair with your own entries in Assets and debts.</p></div>'
+      +'<p class="cn-sub">Link once. Balances stay current in your plan.</p></div>'
       +'<button type="button" class="cta cn-add">Add connection</button></div>'
-    +'<div class="cn-stats">'
-      +'<div class="cn-stat"><div class="k">Institutions linked</div><div class="v" data-cn-inst>6</div><div class="s">Read-only, updated nightly</div></div>'
-      +'<div class="cn-stat"><div class="k">Accounts in your plan</div><div class="v" data-cn-on>8 of 11</div><div class="s">Switched on for live balances</div></div>'
-      +'<div class="cn-stat"><div class="k">Needs a fix</div><div class="v warn" data-cn-fix>1</div><div class="s" data-cn-fixs>Sunmark stopped syncing</div></div>'
-    +'</div>'
     +'<div class="cn-card"><div class="cn-card-h"><div class="cn-card-t">Your institutions</div><div class="cn-flags"><span class="chip up" data-cn-chip-up>6 linked, read-only</span><span class="chip warn" data-cn-chip-warn>1 needs a fix</span></div></div></div>'
     +'<div class="cn-trust">'+LOCK+'<span>256-bit encryption, read-only connections, and your data is never sold.</span></div>'
     +'<div class="cn-foot"><a class="cn-link" data-cn-go="assets">Assets and debts &#8250;</a><a class="cn-link" data-cn-ask="Which of my accounts should I connect next?">Ask Boldin AI which account to connect next &#8250;</a></div>';
@@ -25745,9 +25778,9 @@ body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block
 
   if(rail){
     var r=document.createElement('aside'); r.id='connRail'; r.setAttribute('aria-label','Helpful context');
-    r.innerHTML='<div class="rh">One to fix <span class="spark"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'
-      +'<div class="rail-ctx"><div class="ctx-eyebrow">Linked today</div><div class="ctx-figure" data-cn-railfig>6 institutions</div><p class="ctx-body">Sunmark stopped accepting your saved sign-in. Reconnect it and the taxable savings balance lands back in your plan in a few seconds.</p></div>'
-      +'<div class="cn-rail-q"><button type="button" data-cn-ask="Which of my accounts should I connect next?">Which account should I connect next?</button><button type="button" data-cn-ask="Is it safe to link my bank to Boldin?">Is linking my bank safe?</button></div>';
+    r.innerHTML='<div class="story-head">Your Connections <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'
+      +'<p data-cn-railp>Six institutions keep your balances current. Sunmark needs a fresh sign-in before its savings balance can land back in your plan.</p>'
+      +'<div class="tax-links"><a data-cn-ask="Which of my accounts should I connect next?">Which account should I connect next? &#8250;</a></div>';
     rail.appendChild(r);
   }
 
@@ -25801,14 +25834,11 @@ body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block
     var rows=host.querySelectorAll('.pf-conn-row'), fix=host.querySelectorAll('.pf-conn-row.fix').length;
     var n=host.querySelectorAll('.alo-row').length, on=host.querySelectorAll('.pf-tgl.on').length;
     var q=function(s){ return host.querySelector(s); };
-    q('[data-cn-inst]').textContent=rows.length;
-    q('[data-cn-on]').textContent=on+' of '+n;
-    q('[data-cn-fix]').textContent=fix; q('[data-cn-fix]').classList.toggle('warn', fix>0);
-    q('[data-cn-fixs]').textContent= fix ? 'Sunmark stopped syncing' : 'Everything is in sync';
     q('[data-cn-chip-up]').textContent=rows.length+' linked, read-only';
     var w=q('[data-cn-chip-warn]'); w.textContent=fix+' needs a fix'; w.style.display= fix ? '' : 'none';
-    var rf=document.querySelector('[data-cn-railfig]'); if(rf) rf.textContent=rows.length+' institutions';
-    var rh=document.querySelector('#connRail .rh'); if(rh && !fix){ rh.firstChild.textContent='All in sync '; var b=document.querySelector('#connRail .ctx-body'); if(b) b.textContent='Every linked balance is current. Add another institution any time and it lands in Assets and debts on its own.'; }
+    var WORDS=['No','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
+    var rp=document.querySelector('[data-cn-railp]');
+    if(rp) rp.textContent=(WORDS[rows.length]||rows.length)+' institution'+(rows.length===1?'':'s')+' keep your balances current. '+(fix ? 'Sunmark needs a fresh sign-in before its savings balance can land back in your plan.' : 'Every linked balance is up to date, and '+on+' of '+n+' accounts feed your plan.');
   }
   function say(t){ if(typeof window.toast==='function') window.toast(t); }
 
@@ -25822,10 +25852,11 @@ body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block
     row.setAttribute('aria-expanded','true'); row.setAttribute('aria-controls',id);
     row.innerHTML='<span class="pf-jico">'+BANK+'</span><span class="pf-stxt"><span class="pf-sl">'+inst+'</span><span class="pf-ss">'+picked.length+' of '+picked.length+' account'+(picked.length===1?'':'s')+' in your plan &middot; Updated just now</span></span><span class="pf-jchip">$'+Math.round(total).toLocaleString('en-US')+'</span>'+CHEV;
     var panel=document.createElement('div'); panel.className='pf-jmath pf-conn-acc'; panel.id=id;
-    panel.innerHTML='<div class="pf-conn-achead"><span class="ret-seclabel">Account list</span><span class="alo-sec-note">'+picked.length+' of '+picked.length+' active in My Plan</span></div><p class="pf-conn-ahint">Switch an account on to use its live balance in your plan, or off to keep your own entry from Assets and debts.</p><div class="alo-rows">'
+    panel.innerHTML='<div class="pf-conn-achead"><span class="ret-seclabel">Account list</span><span class="alo-sec-note">'+picked.length+' of '+picked.length+' active in My Plan</span></div><p class="pf-conn-ahint">On uses the live balance in your plan. Off keeps your own entry.</p><div class="alo-rows">'
       +picked.map(function(r){ return '<div class="alo-row"><div class="nm">'+r[0]+' <span class="alo-chip">'+String(r[1]).toUpperCase()+'</span></div><div class="amts"><b>'+r[2]+'</b></div><button type="button" class="pf-tgl on" role="switch" aria-checked="true" aria-label="'+r[0]+' in My Plan"><span class="knob"></span></button></div>'; }).join('')
       +'</div><div class="pf-conn-acts"><button type="button" class="pfg-cancel pf-conn-remove">Remove this connection</button></div>';
     host.querySelectorAll('.pf-conn-row[aria-expanded="true"]').forEach(shut);
+    brand(row);
     var l=host.querySelector('.pf-conn-list'); l.prepend(panel); l.prepend(row);
     row.querySelector('.pf-ss').dataset.tail='&middot; Updated just now';
     tally(); say(inst+' linked. '+picked.length+(picked.length===1?' account':' accounts')+' now in your plan.');
@@ -25844,7 +25875,7 @@ body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block
       setTimeout(function(){
         var panel=rc.closest('.pf-conn-acc'), row=panel.previousElementSibling, bar=rc.closest('.pf-conn-fixbar');
         if(bar) bar.remove();
-        row.classList.remove('fix');
+        row.classList.remove('fix'); brand(row);
         var chip=row.querySelector('.pf-jchip'); if(chip){ chip.classList.remove('warn'); chip.textContent='$8,982'; }
         panel.querySelectorAll('.pf-tgl').forEach(function(t){ t.classList.add('on'); t.setAttribute('aria-checked','true'); });
         var sub=row.querySelector('.pf-ss'); if(sub){ sub.dataset.tail='&middot; Updated just now'; }
@@ -25868,3 +25899,38 @@ body.conn-open .layout.page[data-page="plan"] > .rail > #connRail{ display:block
   tally();
 })();
 </script>
+
+<style id="hideSnapExtras">
+/* My Plans snapshot: Boost your confidence, Finish your plan, and When you want a human removed */
+#snapshotView .lens-body[data-lens="snapshot"] .lens-extra,
+#snapshotView .lens-body[data-lens="snapshot"] .snap-human{ display:none !important; }
+</style>
+
+<style id="planOnePage">
+/* ===== My Plans is one page: snapshot first, then the input sections ===== */
+body.plan-view.lens-snapshot[data-view="plan"] [data-page="plan"] .center > .acc:not(#planOnePage){ display:block; }
+body.plan-view.lens-snapshot[data-view="plan"] #planHandoff{ display:none !important; }
+/* an Explore chapter, Investments or Connections page owns the column: the sections step out */
+body.xp-open [data-page="plan"] .center > .acc:not(#planOnePage), body.inv-open [data-page="plan"] .center > .acc:not(#planOnePage), body.conn-open [data-page="plan"] .center > .acc:not(#planOnePage){ display:none !important; }
+body.plan-view.lens-snapshot[data-view="plan"] #snapshotView{ margin-bottom:var(--s-12); }
+body.plan-view.lens-snapshot[data-view="plan"] [data-page="plan"] .center > .acc:first-of-type{ padding-top:var(--s-8); border-top:1px solid var(--hairline); }
+</style>
+<script id="planOnePageJS">
+(function(){
+  /* the snapshot moves above the first input section so the page reads top to bottom */
+  var center=document.querySelector('.layout.page[data-page="plan"] > .center'); if(!center) return;
+  var snap=document.getElementById('snapshotView'), first=center.querySelector(':scope > .acc');
+  if(snap && first && snap.compareDocumentPosition(first) & Node.DOCUMENT_POSITION_PRECEDING) center.insertBefore(snap, first);
+})();
+</script>
+
+<style id="planEditTint">
+/* My Plans only: the edit boxes carry an ultra-light green tint, a cue that these fields shape the future plan */
+body[data-view="plan"] .edit-card{
+  background:linear-gradient(180deg, rgba(4,180,119,0.025) 0%, rgba(4,180,119,0.07) 100%);
+  border-color:rgba(4,180,119,0.14);
+}
+body[data-view="plan"] .edit-card .field{ background:#fff; border-color:rgba(16,24,44,0.10); }
+body[data-view="plan"] .edit-card .field label{ background:#F7FCF9; }
+body[data-view="plan"] .edit-card .field:focus-within{ border-color:var(--green); }
+</style>
