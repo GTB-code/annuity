@@ -26175,7 +26175,7 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
       var st=pairState(i);
       arrows += '<span class="'+(st==='new'?'off':st==='check'?'warn':'')+'">&#8646;</span>';
       /* Schwab: names and types rarely line up, so each row can be pointed at the entry it really is */
-      var pick = (INST==='Charles Schwab' && (st==='check' || st==='new')) ? '<div class="cm-pick"><label>Mine? <select data-cm-same="'+i+'"><option value="">Choose account</option>'+MANUAL.map(function(m){ return '<option value="'+m.id+'">'+m.nm+' ('+money(m.amt)+')</option>'; }).join('')+'</select></label></div>' : (st==='same' ? '<div class="cm-pick done">Same account, confirmed by you <button type="button" data-cm-unsame="'+i+'">Undo</button></div>' : '');
+      var pick = (INST==='Charles Schwab' && (st==='check' || st==='new')) ? '<div class="cm-pick"><label>Same as <select data-cm-same="'+i+'"><option value="">Choose account</option>'+MANUAL.map(function(m){ return '<option value="'+m.id+'">'+m.nm+' ('+money(m.amt)+')</option>'; }).join('')+'</select></label></div>' : (st==='same' ? '<div class="cm-pick done">Same account, confirmed by you <button type="button" data-cm-unsame="'+i+'">Undo</button></div>' : '');
       var lg=(window.__instLogo && window.__instLogo(INST)); var lgh= lg ? '<img class="lg" src="'+lg+'" alt="">' : '<span class="lg-ph">'+BANK+'</span>';
       var tag = '<button type="button" class="mt '+(st==='match'||st==='same'?'':st==='check'?'warn':'new')+'" data-cm-new="'+i+'" title="'+(st==='new'?'Pair with the entry across from it':'Add as a new account instead')+'">'+(st==='match'?'Match':st==='same'?'Same account':st==='check'?'Check type':'Add as new')+'</button>';
       right += '<div class="cm-row '+(st!=='new'?'match':'')+(pick?' has-pick':'')+'" data-i="'+i+'">'+lgh+'<div><div class="nm">'+a.nm+'</div><div class="ty">'+a.ty+tag+'</div>'+pick+'</div><div class="amt">'+money(a.amt)+'</div><button type="button" class="cm-chk '+(v.dataset['chk'+i]==='0'?'':'on')+'" role="checkbox" aria-checked="true" aria-label="Link '+a.nm+'">'+CK+'</button></div>';
@@ -26370,5 +26370,313 @@ body[data-view="plan"] .edit-card .plan-range{ display:grid; }
     f.querySelector('.vtext').textContent=opts[i][0]; f.querySelector('.sub').textContent=opts[i][1];
     f.classList.remove('focusring'); void f.offsetWidth; f.classList.add('focusring');
   });
+})();
+</script>
+
+<style id="advTravisCSS">
+/* ===== My Advisory: the Travis onboarding flow, as a second mode beside the current one ===== */
+.adv-page .adv-demo-row{ display:flex; align-items:center; gap:10px; margin-top:120px; padding-top:var(--s-5); border-top:1px dashed var(--hairline); font-size:12.5px; font-weight:600; color:var(--text-secondary); opacity:.75; }
+.adv-page .adv-demo{ display:inline-flex; border:1px solid var(--hairline-strong); border-radius:999px; padding:3px; background:#fff; }
+.adv-page .adv-demo button{ border:0; background:none; font:inherit; font-size:12.5px; font-weight:600; color:var(--text-secondary); padding:5px 12px; border-radius:999px; cursor:pointer; }
+.adv-page .adv-demo button.on{ background:var(--ink); color:#fff; }
+
+#vTravis{ display:none; }
+#vTravis.on{ display:block; }
+#vTravis .tw-prog{ display:flex; align-items:center; gap:14px; font-size:13px; color:var(--text-secondary); margin-bottom:var(--s-6); }
+#vTravis .tw-prog .bar{ flex:1; height:4px; border-radius:999px; background:#EEF0F3; overflow:hidden; }
+#vTravis .tw-prog .bar i{ display:block; height:100%; width:6%; background:var(--green); border-radius:999px; transition:width .4s var(--ease-out); }
+#vTravis .tw-step{ display:none; flex-direction:column; gap:var(--s-5); }
+#vTravis .tw-step.on{ display:flex; }
+#vTravis .tw-eyebrow{ font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--green-cta); margin-bottom:8px; }
+#vTravis h2.tw-h{ font-size:32px; line-height:1.12; font-weight:400; color:var(--ink); margin:0 0 6px; letter-spacing:-0.2px; }
+#vTravis h2.tw-h em{ font-style:normal; color:var(--green-cta); }
+#vTravis .tw-sub{ font-size:16px; color:var(--text-secondary); line-height:1.5; margin:0; max-width:56ch; }
+#vTravis .tw-card{ background:#fff; border:1px solid var(--hairline); border-radius:var(--r-card); padding:var(--s-6); display:flex; flex-direction:column; gap:14px; }
+#vTravis .tw-card h3{ font-size:17px; font-weight:600; color:var(--ink); margin:0; }
+#vTravis .tw-g2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+#vTravis .tw-g3{ display:grid; grid-template-columns:2fr 1fr 1fr; gap:14px; }
+#vTravis .tw-fld{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+#vTravis .tw-fld label{ font-size:13px; font-weight:600; color:var(--ink); }
+#vTravis .tw-fld input{ font:inherit; font-size:15px; color:var(--ink); border:1px solid #E3E4E6; border-radius:10px; padding:11px 13px; background:#fff; outline:none; min-width:0; }
+#vTravis .tw-fld input:focus{ border-color:var(--green); }
+#vTravis .tw-fld input.bad{ border-color:#B3261E; }
+#vTravis .tw-fld .pre{ font-size:12px; color:var(--text-secondary); }
+#vTravis .tw-seg{ display:inline-flex; border:1px solid var(--hairline-strong); border-radius:12px; padding:3px; align-self:flex-start; }
+#vTravis .tw-seg button{ border:0; background:none; font:inherit; font-size:14px; font-weight:600; color:var(--text-secondary); padding:8px 14px; border-radius:9px; cursor:pointer; }
+#vTravis .tw-seg button.on{ background:#E7F7F0; color:var(--green-cta); }
+#vTravis .tw-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+#vTravis .tw-chips button{ font:inherit; font-size:14px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:8px 14px; cursor:pointer; }
+#vTravis .tw-chips button.on{ background:var(--eggshell); border-color:var(--green-cta); color:var(--green-cta); }
+#vTravis .tw-chips button:disabled{ opacity:.45; cursor:default; }
+#vTravis .tw-nav{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:var(--s-4); border-top:1px solid var(--hairline); }
+#vTravis .tw-nav .cta{ min-height:46px; padding:0 26px; }
+#vTravis .tw-nav .cta:disabled{ opacity:.45; cursor:default; }
+#vTravis .tw-link{ border:0; background:none; font:inherit; font-size:15px; font-weight:600; color:var(--text-secondary); cursor:pointer; padding:0; }
+#vTravis .tw-link:hover{ color:var(--ink); }
+#vTravis .tw-check{ display:flex; gap:10px; align-items:flex-start; font-size:14.5px; color:var(--ink); line-height:1.45; cursor:pointer; }
+#vTravis .tw-check input{ margin-top:3px; accent-color:var(--green-cta); width:16px; height:16px; }
+/* e-sign */
+#vTravis .tw-esign-bar{ display:flex; align-items:center; gap:14px; font-size:13px; color:var(--text-secondary); }
+#vTravis .tw-esign-bar b{ color:var(--ink); }
+#vTravis .tw-esign-bar .p{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+#vTravis .tw-esign-bar .p .b{ width:90px; height:4px; border-radius:999px; background:#EEF0F3; overflow:hidden; }
+#vTravis .tw-esign-bar .p .b i{ display:block; height:100%; width:0; background:var(--green); }
+#vTravis .tw-doc{ background:var(--sand); border:1px solid var(--hairline); border-radius:12px; padding:8px; display:flex; flex-direction:column; gap:8px; }
+#vTravis .tw-page{ background:#fff; border:1px solid var(--hairline); border-radius:8px; padding:26px 30px; font-size:13.5px; line-height:1.55; color:var(--ink); }
+#vTravis .tw-page h4{ font-size:18px; font-weight:600; margin:0 0 4px; }
+#vTravis .tw-page h5{ font-size:13px; font-weight:700; margin:14px 0 4px; }
+#vTravis .tw-page p{ margin:0 0 6px; color:#3A3D4A; }
+#vTravis .tw-kv{ display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:13px; margin:10px 0; }
+#vTravis .tw-kv b{ color:var(--text-secondary); font-weight:600; }
+#vTravis .tw-fee{ display:flex; justify-content:space-between; font-weight:700; border:1px solid var(--hairline); border-radius:8px; padding:8px 12px; margin:6px 0; }
+#vTravis .tw-sigbox{ position:relative; display:inline-flex; flex-direction:column; min-width:150px; margin:18px 0 6px 34px; padding:8px 10px 4px; border-bottom:1.5px solid var(--ink); cursor:pointer; }
+#vTravis .tw-sigbox .tab{ position:absolute; left:-34px; top:6px; background:#FBBD04; color:var(--ink); font-size:10.5px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:4px 7px; border-radius:4px 0 0 4px; }
+#vTravis .tw-sigbox .tab::after{ content:''; position:absolute; right:-7px; top:0; border-top:11px solid transparent; border-bottom:11px solid transparent; border-left:7px solid #FBBD04; }
+#vTravis .tw-sigbox .tab.done{ background:var(--green-cta); color:#fff; }
+#vTravis .tw-sigbox .tab.done::after{ border-left-color:var(--green-cta); }
+#vTravis .tw-sigbox .sig{ min-height:26px; font-family:'Caveat','Brush Script MT','Segoe Script',cursive; font-size:24px; color:#1B3A8A; }
+#vTravis .tw-sigbox .sig.init{ font-size:19px; }
+#vTravis .tw-sigbox .lbl{ font-size:10.5px; color:var(--text-secondary); }
+#vTravis .tw-sigline{ display:flex; align-items:center; gap:12px; font-size:13.5px; color:var(--text-secondary); }
+#vTravis .tw-sigline .prev{ font-family:'Caveat','Brush Script MT','Segoe Script',cursive; font-size:26px; color:#1B3A8A; }
+/* payment */
+#vTravis .tw-cardrow{ display:flex; align-items:center; gap:14px; }
+#vTravis .tw-cardrow .brand{ width:52px; height:34px; border-radius:6px; background:#1A1F71; color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; letter-spacing:.06em; }
+#vTravis .tw-cardrow .n{ font-size:15px; font-weight:600; color:var(--ink); }
+#vTravis .tw-cardrow .m{ font-size:13px; color:var(--text-secondary); }
+#vTravis .tw-cardrow .pill{ margin-left:auto; font-size:12px; font-weight:700; color:var(--green-cta); background:#E7F7F0; border-radius:999px; padding:3px 9px; }
+#vTravis .tw-ln{ display:flex; justify-content:space-between; font-size:14.5px; padding:8px 0; border-bottom:1px solid var(--hairline); }
+#vTravis .tw-ln.total{ border:0; font-weight:700; font-size:16px; }
+#vTravis .tw-fine{ font-size:12.5px; color:var(--text-secondary); margin:6px 0 0; }
+#vTravis .tw-stripe{ font-size:12.5px; color:var(--text-secondary); }
+/* review */
+#vTravis .tw-scan{ display:flex; gap:var(--s-6); align-items:center; }
+#vTravis .tw-ring{ position:relative; width:120px; height:120px; flex:none; }
+#vTravis .tw-ring svg{ transform:rotate(-90deg); }
+#vTravis .tw-ring .trk{ fill:none; stroke:#EEF0F3; }
+#vTravis .tw-ring .arc{ fill:none; stroke:var(--green); stroke-linecap:round; transition:stroke-dashoffset .3s ease; }
+#vTravis .tw-ring .num{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:28px; font-weight:600; color:var(--ink); line-height:1; }
+#vTravis .tw-ring .num small{ font-size:11px; font-weight:600; color:var(--text-secondary); margin-top:4px; }
+#vTravis .tw-log{ display:flex; flex-direction:column; gap:6px; font-size:13.5px; color:var(--text-secondary); min-width:260px; }
+#vTravis .tw-log div{ display:flex; gap:8px; align-items:center; animation:twRise .3s ease both; }
+#vTravis .tw-log .ok{ color:var(--green-cta); font-weight:700; }
+#vTravis .tw-log .gap{ color:#8A6A00; font-weight:700; }
+@keyframes twRise{ from{ opacity:0; transform:translateY(5px); } to{ opacity:1; transform:none; } }
+#vTravis .tw-item{ border:1px solid var(--hairline); border-radius:14px; background:#fff; overflow:hidden; }
+#vTravis .tw-item .hd{ display:grid; grid-template-columns:auto 1fr auto auto; gap:12px; align-items:center; padding:14px 18px; cursor:pointer; }
+#vTravis .tw-item .st{ width:26px; height:26px; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; background:#FBF1D3; color:#8A6A00; }
+#vTravis .tw-item.done .st{ background:#E7F7F0; color:var(--green-cta); }
+#vTravis .tw-item .t{ font-size:15.5px; font-weight:600; color:var(--ink); }
+#vTravis .tw-item .d{ font-size:13.5px; color:var(--text-secondary); }
+#vTravis .tw-item .pts{ font-size:13px; font-weight:700; color:var(--green-cta); }
+#vTravis .tw-item .chev{ width:18px; height:18px; color:var(--text-secondary); transition:transform .2s; }
+#vTravis .tw-item.open .chev{ transform:rotate(180deg); }
+#vTravis .tw-item .body{ display:none; padding:0 18px 16px; flex-direction:column; gap:12px; font-size:14px; color:var(--ink); }
+#vTravis .tw-item.open .body{ display:flex; }
+#vTravis .tw-drop{ display:block; border:1.5px dashed var(--hairline-strong); border-radius:12px; padding:16px; text-align:center; font-size:14px; color:var(--text-secondary); cursor:pointer; }
+#vTravis .tw-drop b{ color:var(--green-cta); }
+#vTravis .tw-file{ display:flex; align-items:center; gap:10px; font-size:13.5px; }
+#vTravis .tw-file .ic{ font-size:10px; font-weight:800; background:#EEF0F3; border-radius:6px; padding:4px 6px; }
+#vTravis .tw-file .ex{ margin-left:auto; font-size:12.5px; font-weight:600; color:var(--green-cta); }
+#vTravis .tw-found{ background:var(--eggshell); border-radius:12px; padding:12px 14px; display:flex; flex-direction:column; gap:6px; font-size:13.5px; }
+#vTravis .tw-radios{ display:flex; flex-wrap:wrap; gap:8px; }
+#vTravis .tw-radios button{ font:inherit; font-size:13.5px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:7px 12px; cursor:pointer; }
+#vTravis .tw-radios button.on{ background:var(--eggshell); border-color:var(--green-cta); color:var(--green-cta); }
+#vTravis .cta.sm{ min-height:36px; padding:0 16px; font-size:14px; }
+#vTravis .tw-done{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; padding:var(--s-8) 0; }
+#vTravis .tw-done .ck{ width:56px; height:56px; border-radius:999px; background:var(--green-cta); display:flex; align-items:center; justify-content:center; }
+#vTravis .tw-done ul{ list-style:none; padding:0; margin:6px 0 0; display:flex; flex-direction:column; gap:8px; font-size:14.5px; color:var(--text-secondary); text-align:left; }
+#vTravis .tw-done li::before{ content:'\2713'; color:var(--green-cta); font-weight:800; margin-right:8px; }
+#advTravisRail{ display:none; }
+body.adv-travis #advTravisRail{ display:block; }
+body.adv-travis .adv-page .adv-rail{ display:block !important; }
+body.adv-travis .adv-page .rail > :not(#advTravisRail){ display:none !important; }
+</style>
+<script id="advTravisJS">
+(function(){
+  var page=document.querySelector('.layout.page[data-page="advisory"]'); if(!page) return;
+  var center=page.querySelector(':scope > .center'), rail=page.querySelector(':scope > .rail'), over=document.getElementById('vOverview');
+  if(!center || !over) return;
+  var mode='current';
+  var PLANS={ checkup:{name:'Plan Checkup', kind:'one-time', fee:3200, feeTxt:'$3,200', billed:'One-time fee', svc:'The Advisor will conduct a 90-minute video review of the plan, deliver a written checkup as comments on the plan document, build one scenario inside the plan, and answer questions by chat for 60 days (five conversations).', line:'Plan Checkup · one-time advisory fee', renew:'No renewal. Chat access ends 60 days after your review.'},
+               partner:{name:'Plan Partner', kind:'ongoing', fee:3800, feeTxt:'$3,800', billed:'Annual fee, billed yearly', svc:'The Advisor will conduct an initial plan review, an annual check-in and plan update, a mid-year touchpoint, an investment rebalancing review, and a fall Roth conversion and tax-bracket review, and will answer questions by chat (five new conversations per month). Advice is delivered inside the Boldin application.', line:'Plan Partner · annual advisory fee', renew:'Renews October 3, 2027 at the then-current rate unless you cancel. You’ll get a reminder 30 days before. Cancel any time; the unused part of the year is refunded.'} };
+  var S={step:1, plan:'partner', hh:'couple', goals:[], sig:{i1:false,i2:false,sg:false}, items:{}, card:{brand:'VISA',last4:'4242',exp:'08/29',name:'Marshall Hartwell'}};
+  var GOALS=['Can I really retire in 2028?','Roth conversion plan','Social Security timing','Rebalance my portfolio','Healthcare before Medicare','Withdrawal / paycheck plan','Estate basics','Just a sanity check'];
+  var CHECKS=[['ok','14 linked accounts, synced today'],['ok','Income, Social Security, and pension entered'],['ok','3 scenarios · baseline set'],['ok','Expenses modeled through age 95'],['ok','Rate and inflation assumptions set'],['gap','Estate documents missing'],['gap','Rollover IRA beneficiary not confirmed'],['ok','Home and mortgage entered'],['gap','Long-term care not modeled'],['gap','Lily’s pension survivor option unknown'],['ok','Withdrawal order set'],['ok','Healthcare before Medicare estimated']];
+  var ITEMS=[
+    {id:'estate',t:'Estate documents',d:'No will or power of attorney on file. Advisors check these first.',pts:6,kind:'upload',accept:'Will, trust, POA (PDF or photo)',found:[{k:'Last will & testament',v:'Signed Mar 2019 · executor: Lily Hartwell'},{k:'Durable power of attorney',v:'Signed Mar 2019'},{k:'Healthcare directive',v:'Not found, flagged for advisor'}]},
+    {id:'bene',t:'Rollover IRA beneficiary',d:'Vanguard didn’t share this. Confirm who’s listed.',pts:4,kind:'upload-or-pick',accept:'Vanguard beneficiary page or statement',opts:['Lily (spouse) 100%','Lily 50% / children 50%','Not sure, ask advisor'],found:[{k:'Primary beneficiary',v:'Lily Hartwell · 100%'},{k:'Contingent',v:'None listed, flagged for advisor'}]},
+    {id:'ltc',t:'Long-term care',d:'Your plan assumes none. Pick how to model it; your advisor will refine.',pts:4,kind:'pick',opts:['Self-fund from assets','Have a policy, I’ll upload it','Not sure, model the average','Skip for now'],upload:'Policy declarations page'},
+    {id:'surv',t:'Lily’s pension survivor option',d:'The plan has 100%, but that wasn’t confirmed. It changes your income if Lily passes first.',pts:4,kind:'pick',opts:['100% survivor','75%','50%','Lump sum was taken','Upload the election letter']}
+  ];
+  var NAMES={1:'About you',2:'Agreement',3:'Payment',4:'Plan review'};
+  function say(t){ if(typeof window.toast==='function') window.toast(t); }
+  function money(n){ return '$'+n.toLocaleString('en-US'); }
+
+  /* ---- the view ---- */
+  var v=document.createElement('section'); v.className='adv-view'; v.id='vTravis';
+  v.innerHTML=
+    '<div class="tw-prog"><span data-tw-lbl>Step 1 of 4</span><span class="bar"><i data-tw-bar></i></span><span data-tw-name>About you</span></div>'
+    +'<div class="tw-step on" data-s="1">'
+      +'<div><div class="tw-eyebrow">About you</div><h2 class="tw-h">A few details <em>before we start</em></h2><p class="tw-sub">Anything we already had from your Boldin plan is filled in. Fix anything that’s wrong.</p></div>'
+      +'<div class="tw-card"><h3>Legal name &amp; address</h3>'
+        +'<div class="tw-g2"><div class="tw-fld"><label>First name</label><input data-f="fn" value="Marshall"><span class="pre">From your Boldin profile</span></div><div class="tw-fld"><label>Last name</label><input data-f="ln" value="Hartwell"><span class="pre">From your Boldin profile</span></div></div>'
+        +'<div class="tw-fld"><label>Street address</label><input data-f="a1" placeholder="Required"></div>'
+        +'<div class="tw-g3"><div class="tw-fld"><label>City</label><input data-f="ci" value="Arlington"></div><div class="tw-fld"><label>State</label><input data-f="st" value="VA"></div><div class="tw-fld"><label>ZIP</label><input data-f="zp" value="22201"></div></div>'
+        +'<div class="tw-g2"><div class="tw-fld"><label>Mobile</label><input data-f="ph" placeholder="(   )    -" inputmode="tel"></div><div class="tw-fld"><label>Date of birth</label><input data-f="dob" value="03 / 14 / 1966"><span class="pre">From your plan (age 60)</span></div></div>'
+      +'</div>'
+      +'<div class="tw-card"><h3>Household</h3>'
+        +'<div class="tw-fld"><label>Planning for</label><div class="tw-seg" data-tw-hh><button type="button" class="on" data-hh="couple">Me and Lily</button><button type="button" data-hh="single">Just me</button></div></div>'
+        +'<div class="tw-g2" data-tw-spouse><div class="tw-fld"><label>Spouse’s name</label><input data-f="sn" value="Lily Hartwell"><span class="pre">From your plan</span></div><div class="tw-fld"><label>Spouse’s date of birth</label><input data-f="sdob" value="07 / 02 / 1968"></div></div>'
+      +'</div>'
+      +'<div class="tw-card"><h3>What matters most right now?</h3><p class="tw-sub" style="font-size:14px">Pick up to three. These lead your first conversation.</p><div class="tw-chips" data-tw-goals></div></div>'
+      +'<div class="tw-nav"><button type="button" class="tw-link" data-tw-back="overview">← Back to overview</button><button type="button" class="cta" data-tw-to="2">Continue</button></div>'
+    +'</div>'
+    +'<div class="tw-step" data-s="2">'
+      +'<div><div class="tw-eyebrow">Advisory agreement</div><h2 class="tw-h">Review and <em>sign</em></h2><p class="tw-sub">Fee shown before you sign. Boldin Advisors is a separate registered investment adviser; advice here is fiduciary advice.</p></div>'
+      +'<div class="tw-card"><div class="tw-esign-bar"><b>e-Sign</b><span>Client Advisory Agreement · Boldin Advisors, LLC</span><span class="p"><span data-tw-sigtxt>0 of 3</span><span class="b"><i data-tw-sigbar></i></span></span></div>'
+        +'<div class="tw-doc"><div class="tw-page"><h4>Client Advisory Agreement</h4><p>Boldin Advisors, LLC · Form ADV Part 2A delivered October 2, 2026</p>'
+          +'<div class="tw-kv"><b>Client</b><span data-tw-client></span><b>Address</b><span data-tw-addr></span><b>Engagement</b><span data-tw-eng></span><b>Plan reviewed</b><span>My Financial Plan (Boldin PlannerPlus) and its scenarios</span></div>'
+          +'<h5>1. Services</h5><p data-tw-svc></p>'
+          +'<h5>2. Fee</h5><div class="tw-fee"><span data-tw-billed></span><span data-tw-feetxt></span></div><p>The fee is fixed and disclosed above. Boldin Advisors does not receive commissions and does not take custody of Client assets. <span data-tw-renewnote></span></p>'
+          +'<h5>3. Fiduciary standard</h5><p>Boldin Advisors acts as a fiduciary with respect to advice under this Agreement. Guidance produced by the Boldin software outside this engagement is educational only.</p>'
+          +'<div class="tw-sigbox" data-sig="i1"><span class="tab">Initial</span><span class="sig init"></span><span class="lbl">Client initials</span></div></div>'
+          +'<div class="tw-page"><h5>4. Access to plan data</h5><p>Client grants the Advisor access to the plan named above, including linked balances, scenarios, and Vault documents the Client explicitly shares. Access can be revoked at any time and ends 30 days after the engagement concludes.</p>'
+          +'<h5>5. Records</h5><p>A signed copy, Form ADV Part 2A/2B, and the Privacy Notice are filed to the Client’s Boldin Vault under <b>Advisory</b>.</p>'
+          +'<div class="tw-sigbox" data-sig="i2"><span class="tab">Initial</span><span class="sig init"></span><span class="lbl">Client initials</span></div>'
+          +'<div style="display:flex;gap:40px;flex-wrap:wrap"><div class="tw-sigbox" data-sig="sg" style="min-width:280px"><span class="tab">Sign</span><span class="sig"></span><span class="lbl" data-tw-siglbl>Client signature</span></div><div class="tw-sigbox" style="min-width:150px;cursor:default;margin-left:0"><span style="font-size:13px;min-height:26px;display:block" data-tw-sigdate></span><span class="lbl">Date</span></div></div>'
+        +'</div></div>'
+        +'<div class="tw-sigline"><span>Your adopted signature:</span><span class="prev" data-tw-sigprev></span><span style="margin-left:auto">Click the yellow tabs to apply it</span></div>'
+      +'</div>'
+      +'<div class="tw-card"><label class="tw-check"><input type="checkbox" data-ak="1"> I’ve received Form ADV Part 2A/2B and the Privacy Notice.</label><label class="tw-check"><input type="checkbox" data-ak="2"> I understand Boldin Advisors is a separate company from Boldin, and that advice here is fiduciary advice.</label></div>'
+      +'<div class="tw-nav"><button type="button" class="tw-link" data-tw-to="1">← Back</button><button type="button" class="cta" data-tw-sign disabled>Finish signing</button></div>'
+    +'</div>'
+    +'<div class="tw-step" data-s="3">'
+      +'<div><div class="tw-eyebrow">Payment</div><h2 class="tw-h">Authorize <em data-tw-paytitle>the first year</em></h2><p class="tw-sub">We already have a card from your PlannerPlus subscription. Confirm the charge, or switch cards.</p></div>'
+      +'<div class="tw-card"><div class="tw-cardrow" data-tw-card></div><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><button type="button" class="tw-link" data-tw-changecard>Use a different card</button><span class="tw-stripe">Processed by <b>Stripe</b> · Boldin Advisors, LLC</span></div>'
+        +'<div data-tw-newcard hidden style="display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--hairline);padding-top:14px"><h3>New card</h3><div class="tw-fld"><label>Card number</label><input data-f="ncNum" placeholder="1234 5678 9012 3456" inputmode="numeric" autocomplete="off"></div><div class="tw-g3"><div class="tw-fld"><label>Expiry</label><input data-f="ncExp" placeholder="MM / YY"></div><div class="tw-fld"><label>CVC</label><input data-f="ncCvc" placeholder="•••"></div><div class="tw-fld"><label>ZIP</label><input data-f="ncZip" value="22201"></div></div><label class="tw-check"><input type="checkbox" data-f="ncSub"> Also use this card for my PlannerPlus subscription</label><div><button type="button" class="cta sm" data-tw-savecard>Save card</button></div></div>'
+      +'</div>'
+      +'<div class="tw-card"><div class="tw-ln"><span data-tw-line></span><span data-tw-amt></span></div><div class="tw-ln"><span>PlannerPlus subscription</span><span>Unchanged · billed separately</span></div><div class="tw-ln total"><span>Charged today</span><span data-tw-amt2></span></div><p class="tw-fine" data-tw-renew></p></div>'
+      +'<label class="tw-check"><input type="checkbox" data-tw-auth><span data-tw-authtxt></span></label>'
+      +'<div class="tw-nav"><button type="button" class="tw-link" data-tw-to="2">← Back</button><button type="button" class="cta" data-tw-pay disabled>Authorize</button></div>'
+    +'</div>'
+    +'<div class="tw-step" data-s="4">'
+      +'<div class="tw-card tw-scan" data-tw-scanwrap><div class="tw-ring"><svg viewBox="0 0 120 120" width="120" height="120"><circle class="trk" cx="60" cy="60" r="52" stroke-width="9"/><circle class="arc" data-tw-scanarc cx="60" cy="60" r="52" stroke-width="9" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg><div class="num" data-tw-scannum>0<small>reviewing</small></div></div><div style="flex:1"><h2 class="tw-h" style="font-size:24px">Reviewing your plan</h2><p class="tw-sub">Checking 14 accounts, 3 scenarios, and 11 planning areas against what an advisor needs.</p><div class="tw-log" data-tw-log style="margin-top:12px"></div></div></div>'
+      +'<div data-tw-revwrap hidden style="display:none;flex-direction:column;gap:var(--s-5)">'
+        +'<div class="tw-scan" style="align-items:center"><div class="tw-ring" style="width:96px;height:96px"><svg viewBox="0 0 96 96" width="96" height="96"><circle class="trk" cx="48" cy="48" r="41" stroke-width="8"/><circle class="arc" data-tw-revarc cx="48" cy="48" r="41" stroke-width="8" stroke-dasharray="257.6" stroke-dashoffset="257.6"/></svg><div class="num" data-tw-revnum style="font-size:22px">82<small>complete</small></div></div><div><div class="tw-eyebrow">Plan review</div><h2 class="tw-h" style="font-size:26px" data-tw-revtitle></h2><p class="tw-sub" data-tw-revsub></p></div></div>'
+        +'<div data-tw-items style="display:flex;flex-direction:column;gap:10px"></div>'
+        +'<div class="tw-nav"><span class="tw-sub" style="font-size:13px">You can finish the rest later, in your plan.</span><button type="button" class="cta" data-tw-finish>Finish</button></div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="tw-step" data-s="5"><div class="tw-done"><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2 class="tw-h" data-tw-doneh>You’re set up.</h2><p class="tw-sub" data-tw-donesub></p><ul><li data-tw-donevault></li><li data-tw-donegoals></li><li>Next: your advisor reads the plan and leaves first notes within 3 business days</li></ul><div style="display:flex;gap:16px;align-items:center;margin-top:8px"><button type="button" class="cta" data-tw-workspace>Open my advisory workspace</button><button type="button" class="tw-link" data-tw-back="overview">Back to overview</button></div></div></div>';
+  center.appendChild(v);
+
+  if(rail){
+    var r=document.createElement('aside'); r.id='advTravisRail';
+    r.innerHTML='<div class="rh">What happens next <span class="spark"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div><div class="rail-ctx"><div class="ctx-eyebrow" data-tw-railey>Step 1 of 4</div><div class="ctx-figure" data-tw-railfig>About you</div><p class="ctx-body" data-tw-railbody>Confirm who the agreement is with. Most of it is already filled from your plan.</p></div>';
+    rail.appendChild(r);
+  }
+  var RAIL={1:['About you','Confirm who the agreement is with. Most of it is already filled from your plan.'],2:['Review and sign','Three tabs to click. The signed copy, Form ADV, and the Privacy Notice land in your Vault under Advisory.'],3:['Payment','One charge today on the card you already use for PlannerPlus. Receipt goes to your Vault.'],4:['Plan review','We check what an advisor needs before the first read. Anything you skip goes on the advisor’s list.'],5:['Done','Your advisor reads the plan and leaves first notes within 3 business days.']};
+
+  function q(s){ return v.querySelector(s); } function qa(s){ return [].slice.call(v.querySelectorAll(s)); }
+  function val(k){ var i=q('[data-f="'+k+'"]'); return i ? i.value.trim() : ''; }
+  function fullName(){ return (val('fn')+' '+val('ln')).trim(); }
+  function go(n){
+    S.step=n; qa('.tw-step').forEach(function(s){ s.classList.toggle('on', +s.dataset.s===n); });
+    var k=Math.min(n,4); q('[data-tw-lbl]').textContent = n>4 ? 'Done' : 'Step '+k+' of 4'; q('[data-tw-name]').textContent = n>4 ? '' : NAMES[k]; q('[data-tw-bar]').style.width = (n>4 ? 100 : (k-1)/4*100+6)+'%';
+    var ey=document.querySelector('[data-tw-railey]'); if(ey){ ey.textContent = n>4 ? 'All set' : 'Step '+k+' of 4'; document.querySelector('[data-tw-railfig]').textContent=RAIL[n][0]; document.querySelector('[data-tw-railbody]').textContent=RAIL[n][1]; }
+    if(n===2) prepAgreement(); if(n===3) prepPay(); if(n===4) runScan();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function show(){ document.querySelectorAll('.adv-page .adv-view').forEach(function(x){ x.classList.toggle('on', x===v); }); document.body.classList.add('adv-travis'); go(1); }
+  function hide(){ document.body.classList.remove('adv-travis'); v.classList.remove('on'); over.classList.add('on'); window.scrollTo({top:0, behavior:'smooth'}); }
+
+  /* step 1 */
+  function renderGoals(){ q('[data-tw-goals]').innerHTML=GOALS.map(function(g){ var on=S.goals.indexOf(g)>-1; return '<button type="button" class="'+(on?'on':'')+'" data-g="'+g+'" '+(!on&&S.goals.length>=3?'disabled':'')+'>'+g+'</button>'; }).join(''); }
+  renderGoals();
+  v.addEventListener('click', function(e){
+    var g=e.target.closest('[data-g]'); if(g){ var i=S.goals.indexOf(g.dataset.g); i>-1 ? S.goals.splice(i,1) : S.goals.push(g.dataset.g); renderGoals(); return; }
+    var hh=e.target.closest('[data-hh]'); if(hh){ S.hh=hh.dataset.hh; qa('[data-hh]').forEach(function(b){ b.classList.toggle('on', b===hh); }); q('[data-tw-spouse]').hidden = S.hh==='single'; return; }
+    var to=e.target.closest('[data-tw-to]'); if(to){ var n=+to.dataset.twTo; if(n===2){ var bad=false; ['ln','a1'].forEach(function(k){ var i=q('[data-f="'+k+'"]'); var e2=!i.value.trim(); i.classList.toggle('bad',e2); if(e2) bad=true; }); if(bad){ say('Last name and street address are required for the agreement'); return; } } go(n); return; }
+    var bk=e.target.closest('[data-tw-back]'); if(bk){ hide(); return; }
+    var sb=e.target.closest('.tw-sigbox[data-sig]'); if(sb){ applySig(sb); return; }
+    if(e.target.closest('[data-tw-sign]')){ say('Signed · filed to Vault → Advisory'); go(3); return; }
+    if(e.target.closest('[data-tw-changecard]')){ var f=q('[data-tw-newcard]'); f.hidden=!f.hidden; f.style.display=f.hidden?'none':'flex'; q('[data-tw-changecard]').textContent=f.hidden?'Use a different card':'Keep the card on file'; return; }
+    if(e.target.closest('[data-tw-savecard]')){ var num=val('ncNum').replace(/\D/g,''); if(num.length<12){ q('[data-f="ncNum"]').classList.add('bad'); say('Enter a full card number'); return; } S.card={brand:num.charAt(0)==='4'?'VISA':num.charAt(0)==='5'?'MC':num.charAt(0)==='3'?'AMEX':'CARD', last4:num.slice(-4), exp:val('ncExp')||'—', name:fullName()}; renderCard(); var f2=q('[data-tw-newcard]'); f2.hidden=true; f2.style.display='none'; q('[data-tw-changecard]').textContent='Use a different card'; q('[data-tw-auth]').checked=false; payUpd(); say('Card ending in '+S.card.last4+' saved'+(q('[data-f="ncSub"]').checked?' · also used for PlannerPlus':'')); return; }
+    if(e.target.closest('[data-tw-pay]')){ var b=q('[data-tw-pay]'); b.disabled=true; b.textContent='Charging…'; setTimeout(function(){ b.textContent='Authorize '+PLANS[S.plan].feeTxt; say(PLANS[S.plan].feeTxt+' charged to card ending '+S.card.last4+' · receipt in Vault'); go(4); }, 1000); return; }
+    if(e.target.closest('[data-tw-finish]')){ finish(); return; }
+    if(e.target.closest('[data-tw-workspace]')){ document.body.classList.remove('adv-travis'); var sk=document.getElementById('protoSkip'); if(sk) sk.click(); else hide(); return; }
+    /* review items */
+    var tg=e.target.closest('[data-toggle]'); if(tg && !e.target.closest('button,label,input')){ var st=S.items[tg.dataset.toggle]=S.items[tg.dataset.toggle]||{}; st.open=!st.open; renderItems(); return; }
+    var pk=e.target.closest('[data-pick]'); if(pk){ var st2=S.items[pk.dataset.pick]=S.items[pk.dataset.pick]||{}; st2.pick=pk.dataset.v; st2.open=true; renderItems(); return; }
+    var sv=e.target.closest('[data-save]'); if(sv){ var it=itemBy(sv.dataset.save); var st3=S.items[it.id]; st3.done=true; st3.open=false; st3.summary='Set to “'+st3.pick+'”. Your advisor can refine this in your plan.'; say(it.t+' saved · +'+it.pts+'%'); renderItems(); return; }
+    var ac=e.target.closest('[data-accept]'); if(ac){ var it2=itemBy(ac.dataset.accept); var st4=S.items[it2.id]; st4.done=true; st4.open=false; st4.summary=it2.found.map(function(f){ return f.k+': '+f.v; }).join(' · ')+'. Documents filed to Vault → Advisory.'; say(it2.t+' added · +'+it2.pts+'%'); renderItems(); return; }
+    var wr=e.target.closest('[data-wrong]'); if(wr){ var st5=S.items[wr.dataset.wrong]; st5.found=false; st5.files=null; say('Flagged for your advisor to confirm'); renderItems(); return; }
+    var dp=e.target.closest('[data-drop]'); if(dp){ e.preventDefault(); handleFiles(dp.dataset.drop); return; }
+  });
+  v.addEventListener('change', function(e){ if(e.target.closest('[data-ak]')) sigUpd(); if(e.target.closest('[data-tw-auth]')) payUpd(); });
+
+  /* step 2 */
+  function prepAgreement(){
+    var P=PLANS[S.plan], nm=fullName();
+    q('[data-tw-client]').textContent=nm; q('[data-tw-addr]').textContent=val('a1')+', '+val('ci')+', '+val('st')+' '+val('zp');
+    q('[data-tw-eng]').textContent=P.name+' ('+P.kind+')'; q('[data-tw-svc]').textContent=P.svc; q('[data-tw-billed]').textContent=P.billed; q('[data-tw-feetxt]').textContent=P.feeTxt+(P.kind==='ongoing'?' per year':'');
+    q('[data-tw-renewnote]').textContent = P.kind==='ongoing' ? 'Renews annually unless cancelled; unused portion refunded pro rata.' : 'The engagement ends after the review and the 60-day chat window.';
+    q('[data-tw-sigprev]').textContent=nm; q('[data-tw-siglbl]').textContent='Client signature · '+nm;
+  }
+  function applySig(box){ var f=box.dataset.sig; if(S.sig[f]) return; S.sig[f]=true; var el=box.querySelector('.sig'); el.textContent = f==='sg' ? fullName() : (val('fn').charAt(0)+val('ln').charAt(0)).toUpperCase(); box.querySelector('.tab').classList.add('done'); if(f==='sg') q('[data-tw-sigdate]').textContent='October 2, 2026'; sigUpd(); var nx=q('.tw-sigbox .tab:not(.done)'); if(nx) nx.scrollIntoView({behavior:'smooth', block:'center'}); }
+  function sigUpd(){ var n=Object.keys(S.sig).filter(function(k){ return S.sig[k]; }).length; q('[data-tw-sigtxt]').textContent=n+' of 3'; q('[data-tw-sigbar]').style.width=(n/3*100)+'%'; q('[data-tw-sign]').disabled=!(n===3 && q('[data-ak="1"]').checked && q('[data-ak="2"]').checked); }
+
+  /* step 3 */
+  function prepPay(){ var P=PLANS[S.plan]; q('[data-tw-paytitle]').textContent = P.kind==='ongoing' ? 'the first year' : 'your checkup'; q('[data-tw-line]').textContent=P.line; q('[data-tw-amt]').textContent=money(P.fee)+'.00'; q('[data-tw-amt2]').textContent=money(P.fee)+'.00'; q('[data-tw-renew]').textContent=P.renew; q('[data-tw-authtxt]').innerHTML='I authorize Boldin Advisors, LLC to charge <b>'+money(P.fee)+'.00</b> to the card above today'+(P.kind==='ongoing' ? ', and to charge the annual fee to this card on each renewal date until I cancel.' : '.'); q('[data-tw-pay]').textContent='Authorize '+P.feeTxt; S.card.name=S.card.name||fullName(); renderCard(); q('[data-tw-auth]').checked=false; payUpd(); }
+  function renderCard(){ q('[data-tw-card]').innerHTML='<span class="brand">'+S.card.brand+'</span><span><div class="n">'+(S.card.brand==='VISA'?'Visa':S.card.brand)+' ending in '+S.card.last4+'</div><div class="m">'+S.card.name+' · expires '+S.card.exp+' · the card on your PlannerPlus subscription</div></span><span class="pill">On file</span>'; }
+  function payUpd(){ q('[data-tw-pay]').disabled=!q('[data-tw-auth]').checked; }
+
+  /* step 4 */
+  function itemBy(id){ return ITEMS.filter(function(x){ return x.id===id; })[0]; }
+  function runScan(){
+    var log=q('[data-tw-log]'); log.innerHTML=''; q('[data-tw-scanwrap]').hidden=false; q('[data-tw-scanwrap]').style.display='flex'; var rw=q('[data-tw-revwrap]'); rw.hidden=true; rw.style.display='none';
+    var i=0; (function tick(){ if(i<CHECKS.length){ var k=CHECKS[i][0], t=CHECKS[i][1]; var d=document.createElement('div'); d.innerHTML='<span class="'+k+'">'+(k==='ok'?'✓':'!')+'</span><span>'+t+'</span>'; log.appendChild(d); if(log.children.length>5) log.removeChild(log.firstChild); var pct=Math.round((i+1)/CHECKS.length*82); q('[data-tw-scanarc]').style.strokeDashoffset=326.7*(1-pct/100); q('[data-tw-scannum]').innerHTML=pct+'<small>reviewing</small>'; i++; setTimeout(tick,330); } else { setTimeout(function(){ q('[data-tw-scanwrap]').hidden=true; q('[data-tw-scanwrap]').style.display='none'; rw.hidden=false; rw.style.display='flex'; renderItems(); },500); } })();
+  }
+  function pc(){ return 82+ITEMS.reduce(function(a,it){ return a+((S.items[it.id]&&S.items[it.id].done)?it.pts:0); },0); }
+  function renderItems(){
+    var p=pc(); q('[data-tw-revarc]').style.strokeDashoffset=257.6*(1-p/100); q('[data-tw-revnum]').innerHTML=p+'<small>complete</small>';
+    var left=ITEMS.filter(function(it){ return !(S.items[it.id]&&S.items[it.id].done); }).length;
+    q('[data-tw-revtitle]').textContent = left===0 ? 'Your plan is 100% ready for an advisor' : 'Your plan is '+p+'% ready for an advisor';
+    q('[data-tw-revsub]').textContent = left===0 ? 'Everything an advisor needs is in place. Anything flagged goes to your advisor’s notes.' : left+' area'+(left>1?'s':'')+' still need'+(left>1?'':'s')+' something. Each takes a minute or two, or upload a document and we’ll fill it from that.';
+    q('[data-tw-finish]').textContent = left===0 ? 'Finish' : 'Finish ('+left+' left for later)';
+    q('[data-tw-items]').innerHTML=ITEMS.map(function(it){ var st=S.items[it.id]||{}; var body='';
+      if(st.done){ body='<p>'+st.summary+'</p>'; }
+      else {
+        if(it.kind==='upload'||it.kind==='upload-or-pick'||it.upload) body+='<a class="tw-drop" data-drop="'+it.id+'"><b>Upload</b> or drop files here<br><span style="font-size:12.5px">'+(it.accept||it.upload)+'</span></a>';
+        if(st.files) body+=st.files.map(function(f){ return '<div class="tw-file"><span class="ic">'+f.ext+'</span><span>'+f.name+' <span style="color:var(--text-secondary)">'+f.size+'</span></span><span class="ex">'+(st.busy?'Reading…':'Read')+'</span></div>'; }).join('');
+        if(st.found) body+='<div class="tw-found"><b>Found in your documents</b>'+it.found.map(function(f){ return '<div>'+f.k+': <b>'+f.v+'</b></div>'; }).join('')+'<div style="display:flex;gap:12px;align-items:center;margin-top:6px"><button type="button" class="cta sm" data-accept="'+it.id+'">Add to plan</button><button type="button" class="tw-link" style="font-size:13px" data-wrong="'+it.id+'">That’s not right</button></div></div>';
+        if(it.opts && !st.found) body+='<p style="margin:0;font-size:13.5px;color:var(--text-secondary)">'+(it.kind==='upload-or-pick'?'Or just tell us:':'Choose one:')+'</p><div class="tw-radios">'+it.opts.map(function(o){ return '<button type="button" data-pick="'+it.id+'" data-v="'+o+'" class="'+(st.pick===o?'on':'')+'">'+o+'</button>'; }).join('')+'</div>';
+        if(st.pick && !/upload/i.test(st.pick)) body+='<div><button type="button" class="cta sm" data-save="'+it.id+'">Save to plan</button></div>';
+        if(st.pick && /upload/i.test(st.pick) && it.kind.indexOf('upload')!==0) body+='<a class="tw-drop" data-drop="'+it.id+'"><b>Upload</b> or drop the document here</a>';
+      }
+      return '<div class="tw-item '+(st.done?'done':'')+' '+(st.open?'open':'')+'"><div class="hd" data-toggle="'+it.id+'"><span class="st">'+(st.done?'✓':'!')+'</span><span><div class="t">'+it.t+'</div><div class="d">'+(st.done?'Added to your plan':it.d)+'</div></span><span class="pts">'+(st.done?'+'+it.pts+' added':'+'+it.pts+'%')+'</span><svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div><div class="body">'+body+'</div></div>'; }).join('');
+  }
+  function handleFiles(id){
+    var it=itemBy(id); var st=S.items[id]=S.items[id]||{}; st.open=true;
+    var nm = it.kind==='upload' ? 'Hartwell_Estate_Docs_2019.pdf' : it.id==='bene' ? 'Vanguard_Beneficiaries.pdf' : 'Document.pdf';
+    st.files=[{name:nm, ext:'PDF', size:'1.4 MB'}]; st.busy=true; renderItems();
+    setTimeout(function(){ st.busy=false; if(it.found){ st.found=true; } else { st.done=true; st.summary=nm+' filed to Vault → Advisory. Your advisor will read it before you meet.'; say(it.t+' · document filed'); } renderItems(); }, 1400);
+  }
+  function finish(){ var p=pc(); var left=ITEMS.filter(function(it){ return !(S.items[it.id]&&S.items[it.id].done); }); q('[data-tw-doneh]').textContent='You’re set up, '+val('fn')+'.'; q('[data-tw-donesub]').textContent = left.length ? 'Plan '+p+'% ready. '+left.map(function(x){ return x.t; }).join(', ')+' '+(left.length>1?'are':'is')+' on your advisor’s list to finish with you.' : 'Plan 100% ready. Your advisor has everything they need.'; q('[data-tw-donevault]').textContent='Signed agreement, ADV, and your '+PLANS[S.plan].feeTxt+' receipt are in your Vault → Advisory'; q('[data-tw-donegoals]').textContent = S.goals.length ? 'Your priorities ('+S.goals.join(', ')+') lead the first conversation' : 'Your advisor will ask about priorities at the first meeting'; go(5); }
+
+  /* ---- mode switch, at the bottom of the overview ---- */
+  var row=document.createElement('div'); row.className='adv-demo-row';
+  row.innerHTML='<span>Demo</span><div class="adv-demo" role="group" aria-label="Advisory flow"><button type="button" class="on" data-adv-demo="current">Current</button><button type="button" data-adv-demo="travis">Travis flow</button></div>';
+  over.appendChild(row);
+  row.addEventListener('click', function(e){ var b=e.target.closest('[data-adv-demo]'); if(!b) return; mode=b.dataset.advDemo; row.querySelectorAll('[data-adv-demo]').forEach(function(x){ x.classList.toggle('on', x===b); }); if(mode==='travis'){ S.plan='partner'; show(); } else { hide(); } });
+  /* Choose on either card starts the chosen flow */
+  document.addEventListener('click', function(e){
+    var ch=e.target.closest('#vOverview [data-choose]'); if(!ch || mode!=='travis') return;
+    e.preventDefault(); e.stopImmediatePropagation(); S.plan=ch.dataset.choose; show();
+  }, true);
+  /* leaving the Advisory tab closes the flow */
+  window.addEventListener('boldin:view', function(ev){ if(ev.detail!=='advisory' && document.body.classList.contains('adv-travis')) document.body.classList.remove('adv-travis'); });
+  window.__advTravis={open:function(plan){ if(plan) S.plan=plan; show(); }, go:go, close:hide};
 })();
 </script>
