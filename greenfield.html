@@ -26160,7 +26160,7 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
   function money(n){ return (n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString('en-US'); }
 
   /* slots: one per connected row; a slot holds a manual entry or nothing. extra manual entries sit below. */
-  var slots=[], extra=[];
+  var slots=[], extra=[], accOpen=false;
   function reset(){ slots=MANUAL.slice(); extra=[]; }
   var v=document.createElement('div'); v.className='cn-matchv';
 
@@ -26172,7 +26172,8 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
   function rowNum(i){ return i<LIVE.length ? (i+1) : '–'; }
   function render(){
     var left='', arrows='', right='';
-    slots.forEach(function(m,i){ var r=manualRow(m, i, false); if(asNew[i]) r=r.replace('class="cm-row"','class="cm-row skip"'); left += r; });
+    var leftRest='';
+    slots.forEach(function(m,i){ var r=manualRow(m, i, false); if(asNew[i]) r=r.replace('class="cm-row"','class="cm-row skip"'); if(i<LIVE.length) left += r; else leftRest += r; });
     LIVE.forEach(function(a,i){
       var st=pairState(i);
       arrows += '<span class="'+(st==='new'?'off':st==='check'?'warn':'')+'">&#8646;</span>';
@@ -26185,13 +26186,16 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
     var ex='';
     v.innerHTML=
       '<div class="cm-grid">'
-      +'<div class="cm-col"><div class="cm-h"><div class="t">Current Accounts</div><div class="s"><span>Self-stated inputs</span></div></div><div class="cm-list manual" data-slots>'+left+'</div></div>'
-      +'<div class="cm-col"><div class="cm-h">&nbsp;</div><div class="cm-arrows">'+arrows+'</div></div>'
-      +'<div class="cm-col"><div class="cm-h"><div class="t">Connected Account List</div><div class="s"><span data-cm-count>0/'+LIVE.length+' accounts are active in My Plan</span><button type="button" data-cm-all>select</button></div></div><div class="cm-list live">'+right+'</div>'
+      +'<div class="cm-col"><div class="cm-h"><div class="t">Connected Accounts</div><div class="s"><span data-cm-count>0/'+LIVE.length+' accounts are active in My Plan</span><button type="button" data-cm-all>select</button></div></div><div class="cm-list live">'+right+'</div>'
       +'<button type="button" class="cm-addinst" data-cm-addinst>+ Connect More</button>'
       +'<div class="cm-foot"><span class="cnt" data-cm-plan></span><button type="button" class="cta" data-cm-link>Link Accounts</button></div></div>'
+      +'<div class="cm-col"><div class="cm-h">&nbsp;</div><div class="cm-arrows">'+arrows+'</div></div>'
+      +'<div class="cm-col"><div class="cm-h"><div class="t">Current Accounts</div><div class="s"><span>Self-stated inputs</span></div></div><div class="cm-list manual" data-slots>'+left+'</div>'
+      +(leftRest ? '<details class="cm-acc"'+(accOpen?' open':'')+'><summary><span>'+(slots.length-LIVE.length)+' more entr'+(slots.length-LIVE.length===1?'y':'ies')+', kept as entered</span><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="cm-list manual">'+leftRest+'</div></details>' : '')
+      +'</div>'
       +'</div>';
-    v.querySelectorAll('.cm-list.manual').forEach(function(l){ var rows=l.querySelectorAll('.cm-row'); if(rows.length) rows[rows.length-1].classList.add('last'); if(rows.length>LIVE.length){ rows[LIVE.length-1].classList.add('pair-end'); rows[LIVE.length].classList.add('pair-start'); } });
+    v.querySelectorAll('.cm-list.manual').forEach(function(l){ var rows=l.querySelectorAll('.cm-row'); if(rows.length) rows[rows.length-1].classList.add('last'); });
+    var det=v.querySelector('.cm-acc'); if(det) det.addEventListener('toggle', function(){ accOpen=det.open; });
     plan(); sync();
   }
   /* rows on the right can grow (the Schwab picker); the arrows and the rows across from them follow */
@@ -26343,9 +26347,13 @@ body[data-view="today"] .edit-card::before{
 #connToday .cm-list.manual .cm-row.skip .cm-num{ color:#B5B8C2; }
 #connToday .cm-hint{ font-size:13.5px; color:var(--text-secondary); margin:10px 0 0; line-height:1.45; }
 #connToday .cm-extra{ margin-top:18px; }
-#connToday .cm-list.manual .cm-row.pair-end{ border-radius:0 0 12px 12px; }
-#connToday .cm-list.manual .cm-row.pair-start{ margin-top:28px; border-radius:12px 12px 0 0; }
-#connToday .cm-list.manual .cm-row.pair-start.last{ border-radius:12px; }
+#connToday .cm-acc{ margin-top:16px; border:1px solid var(--hairline); border-radius:12px; background:#FAFAFB; }
+#connToday .cm-acc summary{ list-style:none; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 18px; font-size:14px; font-weight:600; color:var(--text-secondary); cursor:pointer; }
+#connToday .cm-acc summary::-webkit-details-marker{ display:none; }
+#connToday .cm-acc summary svg{ width:18px; height:18px; transition:transform .2s; }
+#connToday .cm-acc[open] summary svg{ transform:rotate(180deg); }
+#connToday .cm-acc .cm-list.manual{ padding:0 10px 10px; }
+#connToday .cm-acc .cm-list.manual .cm-row{ background:#fff; }
 #connToday .cm-list.manual .cm-row:not(.pair-end):nth-child(n+6) .cm-num, #connToday .cm-list.manual .cm-row.dim .cm-num{ color:#B5B8C2; }
 #connToday .cm-extra .t{ font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#7A7D8C; margin-bottom:8px; }
 </style>
