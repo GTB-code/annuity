@@ -26188,10 +26188,10 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
       +'<div class="cm-col"><div class="cm-h"><div class="t">Current Accounts</div><div class="s"><span>Self-stated inputs</span></div></div><div class="cm-list manual" data-slots>'+left+'</div></div>'
       +'<div class="cm-col"><div class="cm-h">&nbsp;</div><div class="cm-arrows">'+arrows+'</div></div>'
       +'<div class="cm-col"><div class="cm-h"><div class="t">Connected Account List</div><div class="s"><span data-cm-count>0/'+LIVE.length+' accounts are active in My Plan</span><button type="button" data-cm-all>select</button></div></div><div class="cm-list live">'+right+'</div>'
-      +'<button type="button" class="cm-addinst" data-cm-addinst>+ Add another institution</button>'
+      +'<button type="button" class="cm-addinst" data-cm-addinst>+ Connect More</button>'
       +'<div class="cm-foot"><span class="cnt" data-cm-plan></span><button type="button" class="cta" data-cm-link>Link Accounts</button></div></div>'
       +'</div>';
-    v.querySelectorAll('.cm-list.manual').forEach(function(l){ var rows=l.querySelectorAll('.cm-row'); if(rows.length) rows[rows.length-1].classList.add('last'); if(rows.length>LIVE.length) rows[LIVE.length-1].classList.add('pair-end'); });
+    v.querySelectorAll('.cm-list.manual').forEach(function(l){ var rows=l.querySelectorAll('.cm-row'); if(rows.length) rows[rows.length-1].classList.add('last'); if(rows.length>LIVE.length){ rows[LIVE.length-1].classList.add('pair-end'); rows[LIVE.length].classList.add('pair-start'); } });
     plan(); sync();
   }
   /* rows on the right can grow (the Schwab picker); the arrows and the rows across from them follow */
@@ -26343,7 +26343,9 @@ body[data-view="today"] .edit-card::before{
 #connToday .cm-list.manual .cm-row.skip .cm-num{ color:#B5B8C2; }
 #connToday .cm-hint{ font-size:13.5px; color:var(--text-secondary); margin:10px 0 0; line-height:1.45; }
 #connToday .cm-extra{ margin-top:18px; }
-#connToday .cm-list.manual .cm-row.pair-end{ box-shadow:0 1px 0 var(--green-cta); position:relative; z-index:1; }
+#connToday .cm-list.manual .cm-row.pair-end{ border-radius:0 0 12px 12px; }
+#connToday .cm-list.manual .cm-row.pair-start{ margin-top:28px; border-radius:12px 12px 0 0; }
+#connToday .cm-list.manual .cm-row.pair-start.last{ border-radius:12px; }
 #connToday .cm-list.manual .cm-row:not(.pair-end):nth-child(n+6) .cm-num, #connToday .cm-list.manual .cm-row.dim .cm-num{ color:#B5B8C2; }
 #connToday .cm-extra .t{ font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#7A7D8C; margin-bottom:8px; }
 </style>
