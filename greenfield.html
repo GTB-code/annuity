@@ -26109,7 +26109,9 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
 #connToday .cm-chk svg{ width:15px; height:15px; opacity:0; transition:opacity .15s ease; }
 #connToday .cm-chk.on{ background:var(--green-cta); }
 #connToday .cm-chk.on svg{ opacity:1; }
-#connToday .cm-foot{ display:flex; justify-content:flex-end; align-items:center; gap:18px; margin-top:var(--s-5); }
+#connToday .cm-foot{ display:flex; justify-content:flex-end; align-items:center; gap:18px; margin-top:var(--s-4); }
+#connToday .cm-addinst{ width:100%; margin-top:12px; min-height:44px; border:1.5px dashed var(--hairline-strong); border-radius:12px; background:#fff; font:inherit; font-size:14.5px; font-weight:600; color:var(--green-cta); cursor:pointer; }
+#connToday .cm-addinst:hover{ border-color:var(--green-cta); background:var(--eggshell); }
 #connToday .cm-foot .cnt{ font-size:16px; font-weight:600; color:var(--ink); white-space:nowrap; }
 #connToday .cm-foot .cta{ white-space:nowrap; }
 #connToday .cm-foot .cnt b{ color:var(--green-cta); font-weight:700; }
@@ -26150,7 +26152,7 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
     return picked.map(function(r,i){ var ty=String(r[1]); var k=KIND[ty.toLowerCase()]||ty.toLowerCase(); var amt=parseFloat(String(r[2]).replace(/[^0-9.]/g,''))||0; if(/[−-]/.test(String(r[2]))) amt=-amt;
       var first=inst.split(' ').pop().toLowerCase(); var nm=(String(r[0]).toLowerCase().indexOf(first)>-1 || /^chase/i.test(r[0]) || inst==='Charles Schwab') ? r[0] : inst+' '+r[0]; var d=LIVE0.filter(function(x){ return x.nm===nm; })[0];
       var noMatch = (inst==='Vanguard');   /* nothing the member typed in belongs to Vanguard */
-      return {nm:nm, ty:ty, kind:k, amt:amt, asNew:!!(d&&d.asNew) || /freedom|intelligent portfolios/i.test(nm) || noMatch}; });
+      return {nm:nm, inst:inst, ty:ty, kind:k, amt:amt, asNew:!!(d&&d.asNew) || /freedom|intelligent portfolios/i.test(nm) || noMatch}; });
   }
   var CK='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   var GRIP='<svg viewBox="0 0 12 16" fill="currentColor"><circle cx="3" cy="3" r="1.6"/><circle cx="9" cy="3" r="1.6"/><circle cx="3" cy="8" r="1.6"/><circle cx="9" cy="8" r="1.6"/><circle cx="3" cy="13" r="1.6"/><circle cx="9" cy="13" r="1.6"/></svg>';
@@ -26175,8 +26177,8 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
       var st=pairState(i);
       arrows += '<span class="'+(st==='new'?'off':st==='check'?'warn':'')+'">&#8646;</span>';
       /* Schwab: names and types rarely line up, so each row can be pointed at the entry it really is */
-      var pick = (INST==='Charles Schwab' && (st==='check' || st==='new')) ? '<div class="cm-pick"><label>Same as <select data-cm-same="'+i+'"><option value="">Choose account</option>'+MANUAL.map(function(m){ return '<option value="'+m.id+'">'+m.nm+' ('+money(m.amt)+')</option>'; }).join('')+'</select></label></div>' : (st==='same' ? '<div class="cm-pick done">Same account, confirmed by you <button type="button" data-cm-unsame="'+i+'">Undo</button></div>' : '');
-      var lg=(window.__instLogo && window.__instLogo(INST)); var lgh= lg ? '<img class="lg" src="'+lg+'" alt="">' : '<span class="lg-ph">'+BANK+'</span>';
+      var pick = ((a.inst||INST)==='Charles Schwab' && (st==='check' || st==='new')) ? '<div class="cm-pick"><label>Same as <select data-cm-same="'+i+'"><option value="">Choose account</option>'+MANUAL.map(function(m){ return '<option value="'+m.id+'">'+m.nm+' ('+money(m.amt)+')</option>'; }).join('')+'</select></label></div>' : (st==='same' ? '<div class="cm-pick done">Same account, confirmed by you <button type="button" data-cm-unsame="'+i+'">Undo</button></div>' : '');
+      var lg=(window.__instLogo && window.__instLogo(a.inst||INST)); var lgh= lg ? '<img class="lg" src="'+lg+'" alt="">' : '<span class="lg-ph">'+BANK+'</span>';
       var tag = '<button type="button" class="mt '+(st==='match'||st==='same'?'':st==='check'?'warn':'new')+'" data-cm-new="'+i+'" title="'+(st==='new'?'Pair with the entry across from it':'Add as a new account instead')+'">'+(st==='match'?'Match':st==='same'?'Same account':st==='check'?'Check type':'Add as new')+'</button>';
       right += '<div class="cm-row '+(st!=='new'?'match':'')+(pick?' has-pick':'')+'" data-i="'+i+'">'+lgh+'<div><div class="nm">'+a.nm+'</div><div class="ty">'+a.ty+tag+'</div>'+pick+'</div><div class="amt">'+money(a.amt)+'</div><button type="button" class="cm-chk '+(v.dataset['chk'+i]==='0'?'':'on')+'" role="checkbox" aria-checked="true" aria-label="Link '+a.nm+'">'+CK+'</button></div>';
     });
@@ -26186,6 +26188,7 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
       +'<div class="cm-col"><div class="cm-h"><div class="t">Current Accounts</div><div class="s"><span>Self-stated inputs</span></div></div><div class="cm-list manual" data-slots>'+left+'</div></div>'
       +'<div class="cm-col"><div class="cm-h">&nbsp;</div><div class="cm-arrows">'+arrows+'</div></div>'
       +'<div class="cm-col"><div class="cm-h"><div class="t">Connected Account List</div><div class="s"><span data-cm-count>0/'+LIVE.length+' accounts are active in My Plan</span><button type="button" data-cm-all>select</button></div></div><div class="cm-list live">'+right+'</div>'
+      +'<button type="button" class="cm-addinst" data-cm-addinst>+ Add another institution</button>'
       +'<div class="cm-foot"><span class="cnt" data-cm-plan></span><button type="button" class="cta" data-cm-link>Link Accounts</button></div></div>'
       +'</div>';
     v.querySelectorAll('.cm-list.manual').forEach(function(l){ var rows=l.querySelectorAll('.cm-row'); if(rows.length) rows[rows.length-1].classList.add('last'); if(rows.length>LIVE.length) rows[LIVE.length-1].classList.add('pair-end'); });
@@ -26239,15 +26242,24 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
     var c=e.target.closest('.cm-chk'); if(c){ c.classList.toggle('on'); var row=c.closest('.cm-row'); v.dataset['chk'+row.dataset.i]= c.classList.contains('on')?'1':'0'; c.setAttribute('aria-checked', c.classList.contains('on')?'true':'false'); plan(); return; }
     if(e.target.closest('[data-cm-all]')){ var on = selected().length!==LIVE.length; v.querySelectorAll('.cm-chk').forEach(function(k,i){ k.classList.toggle('on',on); v.dataset['chk'+i]=on?'1':'0'; k.setAttribute('aria-checked',on?'true':'false'); }); plan(); return; }
     if(e.target.closest('[data-cm-link]')) link();
+    if(e.target.closest('[data-cm-addinst]')){ if(window.__connectSheet) window.__connectSheet.open(function(inst,picked){ addMore(inst,picked); }); return; }
   });
+  function addMore(inst,picked){
+    var more=fromPicked(inst,picked); if(!more.length) return;
+    LIVE=LIVE.concat(more); asNew=asNew.concat(more.map(function(a){ return !!a.asNew; }));
+    var insts={}; LIVE.forEach(function(a){ insts[a.inst||INST]=1; }); var n=Object.keys(insts).length;
+    var t=host.querySelector('.cn-title'); if(t) t.innerHTML = n>1 ? 'Match your <em>connected</em> accounts' : 'Match your <em>'+INST+'</em> accounts';
+    var sb=host.querySelector('.cn-sub'); if(sb && n>1) sb.textContent='Line up what you typed in with what your institutions sent. Matched rows switch to live balances.';
+    render(); if(typeof window.toast==='function') window.toast(inst+' added · '+more.length+(more.length===1?' account':' accounts')+' to review');
+  }
   function link(){
     var sel=selected(); if(!sel.length) return;
     var btn=v.querySelector('[data-cm-link]'); btn.disabled=true; btn.textContent='Linking…';
     sel.forEach(function(r,k){ var i=+r.dataset.i; var m=slots[i]; if(!m) return; var row=v.querySelector('.cm-row[data-m="'+m.id+'"]'); if(row) setTimeout(function(){ row.classList.add('done'); }, 120+k*140); });
     var cnt=v.querySelector('[data-cm-count]'); setTimeout(function(){ if(cnt) cnt.textContent=sel.length+'/'+LIVE.length+' accounts are active in My Plan'; }, 300);
     setTimeout(function(){
-      var picked=sel.map(function(r){ var a=LIVE[+r.dataset.i]; return [a.nm, a.ty, money(a.amt)]; });
-      if(window.__connAdd) window.__connAdd(INST, picked, {quiet:true});
+      var groups={}; sel.forEach(function(r){ var a=LIVE[+r.dataset.i]; var k=a.inst||INST; (groups[k]=groups[k]||[]).push([a.nm, a.ty, money(a.amt)]); });
+      Object.keys(groups).reverse().forEach(function(k){ if(window.__connAdd) window.__connAdd(k, groups[k], {quiet:true}); });
       host.classList.remove('cn-match-mode'); document.body.classList.remove('cn-match');
       var rep=sel.filter(function(r){ return r.classList.contains('match'); }).length, add=sel.length-rep;
       if(typeof window.toast==='function') window.toast((rep?rep+' entr'+(rep===1?'y':'ies')+' replaced with live balances':'')+(rep&&add?'. ':'')+(add?add+' account'+(add===1?'':'s')+' added to your plan':'')+'.');
