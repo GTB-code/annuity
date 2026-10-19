@@ -26858,6 +26858,8 @@ body.cn-match .layout.page[data-page="profile"] > .center{ grid-column:2 / 4; }
 .acc .cx-all{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; border:1px solid var(--green-cta); border-radius:999px; background:#fff; color:var(--green-cta); font:600 13px var(--font); line-height:1; cursor:pointer; transition:background .15s ease, color .15s ease; }
 .acc .cx-all svg{ width:13px; height:13px; }
 .acc .cx-all:hover{ background:var(--green-cta); color:#fff; }
+/* only while the section is open */
+.acc-head.acc-collapsed .cx-all{ display:none; }
 </style>
 <script id="assetsConnectJS">
 (function(){
