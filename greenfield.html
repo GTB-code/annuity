@@ -27008,10 +27008,6 @@ body.cn-match .layout.page[data-page="profile"] > .center{ grid-column:2 / 4; }
         <svg viewBox="0 0 84 84" aria-hidden="true"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36" id="nfRingFg"/></svg>
         <div><div class="big"><span id="nfPct">0</span><small>%</small></div><div class="l" id="nfPctL">of your plan is filled in</div></div>
       </div>
-      <div class="nf-left">
-        <div class="k">What moves it</div>
-        <ul id="nfLeft"></ul>
-      </div>
       <p class="nf-note">Finishing an item in your plan clears it here and raises your score.</p>
     </div>
   </aside>
@@ -27113,7 +27109,7 @@ body.cn-match .layout.page[data-page="profile"] > .center{ grid-column:2 / 4; }
     fg.style.strokeDasharray=C; fg.style.strokeDashoffset=C*(1-p/100);
     var el=document.getElementById('nfPct'), from=+el.textContent||0, t0=performance.now();
     (function step(now){ var k=Math.min(1,(now-t0)/700); k=1-Math.pow(1-k,3); el.textContent=Math.round(from+(p-from)*k); if(k<1) requestAnimationFrame(step); })(t0);
-    var left=document.getElementById('nfLeft'); left.innerHTML=ITEMS.filter(function(i){ return i.kind==='action' && i.cat==='plan'; }).map(function(i){
+    var left=document.getElementById('nfLeft'); if(left) left.innerHTML=ITEMS.filter(function(i){ return i.kind==='action' && i.cat==='plan'; }).map(function(i){
       return '<li class="'+(i.done?'done':'')+'" data-nf-jump="'+i.id+'"><span class="dot"></span><span class="nm">'+(i.short||i.t)+'</span><span class="pts">+'+i.pts+'</span></li>';
     }).join('');
     var openN=ITEMS.filter(function(i){ return i.kind==='action' && !i.done && !i.snoozed; }).length;
