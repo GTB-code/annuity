@@ -24056,19 +24056,19 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
   };
   var ALERTS=[
     { ic:'conv',  tone:'',     t:'Your December conversion window is open',
-      s:'About $17,800 fits under the 12% band this year. Last December you left $9,400 of it unused.',
+      s:'About $17,800 fits under the 12% band this year.',
       w:'2 hours ago', go:'plan' },
     { ic:'drift', tone:'warn', t:'The brokerage has drifted to 71% equities',
-      s:'Your target is 60/40. Two years without a rebalance, three years before you retire.',
+      s:'Your target is 60/40.',
       w:'Yesterday', go:'optimize' },
     { ic:'doc',   tone:'',     t:'Three plan inputs are still empty',
-      s:'Estate documents, long-term care, and the home equity plan. Each one moves your score.',
+      s:'Estate documents, long-term care, and the home equity plan.',
       w:'2 days ago', go:'plan' },
     { ic:'cal',   tone:'teal', t:'Medicare\u2019s look-back starts with your 2028 return', read:true,
-      s:'What you convert in 2028 sets your 2030 premiums. Worth a look before year end.',
+      s:'What you convert in 2028 sets your 2030 premiums.',
       w:'Last week', go:'plan' },
     { ic:'cash',  tone:'',     t:'Your surplus rose to $3,450 a month', read:true,
-      s:'Three months running. Coach suggests routing the increase to the Roth before December.',
+      s:'Three months running.',
       w:'Last week', go:'today' },
     { ic:'shield',tone:'teal', t:'Your plan survived this quarter\u2019s stress test', read:true,
       s:'A 2022-style drop the year before retirement still leaves you funded to 99.',
@@ -24082,7 +24082,7 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
     list.innerHTML=ALERTS.map(function(a,i){
       return '<button type="button" class="al-row'+(a.read?' read':'')+'" data-al="'+i+'" data-al-go="'+a.go+'">'+
         '<span class="al-ic '+(a.tone||'')+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+ICON[a.ic]+'</svg></span>'+
-        '<span class="al-bd"><span class="al-t">'+a.t+'</span><span class="al-s">'+a.s+'</span><span class="al-w">'+a.w+'</span></span>'+
+        '<span class="al-bd"><span class="al-t">'+a.t+'</span><span class="al-w">'+a.w+'</span></span>'+
         '<span class="al-new"></span></button>';
     }).join('');
     /* the spans need to stack, and a button will not do that on its own */
@@ -26994,7 +26994,6 @@ body.cn-match .layout.page[data-page="profile"] > .center{ grid-column:2 / 4; }
   <main class="center">
     <section class="nf-head">
       <h2 class="pf-hl">Everything your plan is <span class="pf-em">waiting on</span>.</h2>
-      <p class="sub">Each open item moves your score. Do it here, or mark it done when you have.</p>
     </section>
     <div class="nf-tools" hidden><span class="t" id="nfToolsT">All notifications</span><button type="button" data-nf-readall>Mark all read</button></div>
     <div class="nf-group" data-nf-group="action"><div class="nf-group-h">Needs your action <span class="n" data-nf-gn="action"></span></div><div data-nf-list="action"></div></div>
@@ -27013,7 +27012,7 @@ body.cn-match .layout.page[data-page="profile"] > .center{ grid-column:2 / 4; }
         <div class="k">What moves it</div>
         <ul id="nfLeft"></ul>
       </div>
-      <p class="nf-note">Marking an item done here updates your score the same as finishing it in the plan.</p>
+      <p class="nf-note">Finishing an item in your plan clears it here and raises your score.</p>
     </div>
   </aside>
 </div>
@@ -27083,12 +27082,11 @@ body.cn-match .layout.page[data-page="profile"] > .center{ grid-column:2 / 4; }
     var cls='nf-card '+(i.done?'done':'')+(!i.read&&!i.done?' unread':'')+(i.kind==='info'?' info':'');
     return '<div class="'+cls+'" data-nf-id="'+i.id+'">'
       +'<span class="nf-ic '+(i.done?'done':(i.tone||''))+'">'+(i.done?IC.check:IC[i.ic])+'</span>'
-      +'<div class="nf-bd"><div class="nf-top"><div class="nf-t">'+i.t+'</div><div class="nf-meta"><span class="nf-tag '+i.cat+'">'+TAG[i.cat]+'</span>'+(i.kind==='action'&&!i.done?'<span class="nf-pts">+'+i.pts+' pts</span>':'')+'</div></div>'
+      +'<div class="nf-bd"><div class="nf-top"><div class="nf-t">'+i.t+'</div><div class="nf-meta">'+(i.kind==='action'&&!i.done?'<span class="nf-pts">+'+i.pts+' pts</span>':'')+'</div></div>'
       +'<div class="nf-s">'+i.s+'</div>'
       +'<div class="nf-w">'+(i.done?'<b>Done.</b> +'+i.pts+' pts added to your score.':i.w)+'</div>'
       +'<div class="nf-act"><button type="button" class="go" data-hm-go="'+i.go+'" data-nf-open="'+i.id+'">'+i.cta+'</button>'
-      +(i.kind==='action'?'<button type="button" class="lite" data-nf-done="'+i.id+'">Mark done</button>':'')
-      +'<button type="button" class="lite" data-nf-snooze="'+i.id+'">Snooze a week</button></div></div></div>';
+      +'</div></div></div>';
   }
   function render(){
     var counts={all:0, action:0, plan:0, money:0, invest:0, adv:0, done:0}, g={action:0, info:0, done:0};
