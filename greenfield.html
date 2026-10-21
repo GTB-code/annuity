@@ -26273,7 +26273,7 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
     host.classList.add('cn-match-mode'); document.body.classList.add('cn-match');
     var none = LIVE.length && LIVE.every(function(a){ return a.asNew; });
     var t=host.querySelector('.cn-title'); if(t) t.innerHTML = none ? 'New accounts from <em>'+INST+'</em>' : 'Match your <em>'+INST+'</em> accounts';
-    var s=host.querySelector('.cn-sub'); if(s) s.textContent = none ? 'Nothing you typed in looks like these, so they come in as new. Change any one if it should replace an entry.' : 'For each account, keep the suggested match, pick another entry, or add it as new.';
+    var s=host.querySelector('.cn-sub'); if(s) s.textContent = none ? 'Nothing you typed in looks like these, so they come in as new. Change any one if it should replace an entry.' : 'Keep each match, pick another entry, or add it as new.';
     host.querySelectorAll('[data-cn-demo]').forEach(function(b){ b.classList.toggle('on', b.dataset.cnDemo==='match'); });
     window.scrollTo({top:0, behavior:'smooth'});
   }
@@ -26797,6 +26797,9 @@ body.adv-travis .adv-page .rail > :not(#advTravisRail){ display:none !important;
 #pf-sec-connections.pf-conn-new #connToday .cn-top{ margin-top:0; }
 /* match step takes the page over, same as it did on My Money */
 body.cn-match .layout.page[data-page="profile"] > .center > :not(#pf-sec-connections){ display:none !important; }
+/* while matching, the only section on the page is Connections, so the nav says so */
+body.cn-match .pf-nav-item.on:not([data-target="pf-sec-connections"]){ background:none; color:var(--text-secondary); font-weight:500; }
+body.cn-match .pf-nav-item[data-target="pf-sec-connections"]{ background:#F2F3F5; color:var(--ink); font-weight:600; }
 body.cn-match .layout.page[data-page="profile"] > .rail > :not(#cmRail){ display:none !important; }
 body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block; }
 #cmRail{ display:none; }
@@ -26855,10 +26858,10 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .layout.page[data-page="notifications"] .side h1{ margin-bottom:var(--s-4); }
 .nf-nav{ display:flex; flex-direction:column; gap:2px; }
 .nf-nav button{ display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; border:0; background:none; text-align:left;
-  font:500 16px var(--font); color:var(--text-secondary); padding:8px 12px; border-radius:10px; cursor:pointer; }
+  font:400 16px/24px var(--font); color:var(--text-secondary); padding:7px 12px; border-radius:10px; cursor:pointer; }
 .nf-nav button:hover{ background:#F6F7F8; }
 .nf-nav button.on{ background:#F2F3F5; color:var(--ink); font-weight:600; }
-.nf-nav button .n{ font-size:12.5px; font-weight:600; color:var(--text-tertiary); background:#F1F2F4; border-radius:999px; padding:2px 8px; min-width:22px; text-align:center; }
+.nf-nav button .n{ display:none; }
 .nf-nav button.on .n{ background:#E3F1EA; color:var(--green-cta); }
 .nf-side-foot{ margin-top:var(--s-6); padding-top:var(--s-4); border-top:1px solid var(--hairline); }
 .nf-side-foot a{ font-size:14px; color:var(--green-cta); cursor:pointer; text-decoration:none; }
@@ -26875,14 +26878,15 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-group{ margin-top:0; }
 .nf-group-h{ display:flex; align-items:baseline; gap:8px; font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-tertiary); margin:22px 0 10px; }
 .nf-tools[hidden]{ display:none; }
-.nf-head + .nf-tools + .nf-group:not([hidden]) .nf-group-h{ margin-top:var(--s-6); }
+.nf-head + .nf-tools + .nf-group:not([hidden]) .nf-group-h{ margin-top:14px; }
 .nf-group-h .n{ font-weight:600; letter-spacing:0; text-transform:none; font-size:13px; }
 .nf-group[hidden]{ display:none; }
 .nf-empty{ border:1px dashed var(--hairline); border-radius:14px; padding:22px; text-align:center; font-size:15px; color:var(--text-secondary); }
 
-.nf-card{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:14px; padding:18px 20px; border:1px solid var(--hairline); border-radius:16px; background:#fff; margin-bottom:10px;
+.nf-card{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:14px; padding:20px 0; border:0; border-bottom:1px solid var(--hairline); border-radius:0; background:#fff; margin-bottom:0;
   transition:opacity .35s ease, transform .4s cubic-bezier(.22,1,.36,1), border-color .3s ease, background .3s ease; }
-.nf-card.unread{ border-color:var(--hairline); background:#fff; }
+.nf-card.unread{ background:#fff; }
+.nf-group [data-nf-list] > .nf-card:last-child{ border-bottom:0; }
 .nf-card.leaving{ opacity:0; transform:translateX(18px); }
 .nf-card.arriving{ animation:nfIn .45s cubic-bezier(.22,1,.36,1); }
 @keyframes nfIn{ from{ opacity:0; transform:translateY(-8px);} to{ opacity:1; transform:none;} }
@@ -26914,16 +26918,18 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-card.done .nf-w b{ color:var(--green-cta); font-weight:600; }
 
 /* right rail: how complete the plan is, and what is still open */
-.nf-rail{ border:1px solid var(--hairline); border-radius:16px; padding:20px; background:#fff; }
+.nf-rail{ border:0; border-radius:0; padding:0; background:none; }
 .nf-rail .k{ font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary); }
-.nf-ring{ display:flex; align-items:center; gap:16px; margin-top:12px; }
-.nf-ring svg{ width:84px; height:84px; flex:none; transform:rotate(-90deg); }
+.nf-ring{ display:flex; flex-direction:column; align-items:flex-start; gap:12px; margin-top:12px; }
+.nf-ringw{ position:relative; width:112px; height:112px; }
+.nf-ringw .big{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.nf-ring svg{ width:112px; height:112px; flex:none; transform:rotate(-90deg); display:block; }
 .nf-ring circle{ fill:none; stroke-width:8; }
 .nf-ring .bg{ stroke:#EEF1EF; }
 .nf-ring .fg{ stroke:var(--green-cta); stroke-linecap:round; transition:stroke-dashoffset .9s cubic-bezier(.22,1,.36,1); }
-.nf-ring .big{ font-size:34px; font-weight:600; line-height:1; color:var(--ink); letter-spacing:-.5px; }
-.nf-ring .big small{ font-size:16px; font-weight:500; color:var(--text-secondary); margin-left:2px; }
-.nf-ring .l{ font-size:14px; color:var(--text-secondary); margin-top:4px; line-height:1.4; }
+.nf-ring .big{ font-size:30px; font-weight:600; line-height:1; color:var(--ink); letter-spacing:-.5px; }
+.nf-ring .big small{ font-size:14px; font-weight:500; color:var(--text-secondary); margin-left:1px; }
+.nf-ring .l{ font-size:15px; color:var(--text-secondary); margin-top:0; line-height:1.45; }
 .nf-left{ margin-top:18px; padding-top:16px; border-top:1px solid var(--hairline); }
 .nf-left ul{ list-style:none; margin:10px 0 0; padding:0; }
 .nf-left li{ display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--ink); padding:7px 0; cursor:pointer; }
@@ -26964,8 +26970,8 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
     <div class="nf-rail">
       <div class="k">Plan completeness</div>
       <div class="nf-ring">
-        <svg viewBox="0 0 84 84" aria-hidden="true"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36" id="nfRingFg"/></svg>
-        <div><div class="big"><span id="nfPct">0</span><small>%</small></div><div class="l" id="nfPctL">of your plan is filled in</div></div>
+        <div class="nf-ringw"><svg viewBox="0 0 84 84" aria-hidden="true"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36" id="nfRingFg"/></svg><div class="big"><span id="nfPct">0</span><small>%</small></div></div>
+        <div class="l" id="nfPctL">of your plan is filled in</div>
       </div>
       <p class="nf-note">Finishing an item in your plan clears it here and raises your score.</p>
     </div>
@@ -27118,7 +27124,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 #connToday .cm-grid.one .cm-list.live .cm-row > .who{ grid-column:2; grid-row:1; text-align:left; }
 #connToday .cm-grid.one .cm-list.live .cm-row > .amt{ grid-column:3; grid-row:1; align-self:start; line-height:1.3; }
 #connToday .cm-grid.one .cm-list.live .cm-row .cm-sel{ grid-column:2 / 4; grid-row:2; }
-#connToday .cm-grid.one .cm-list.live .cm-row .cm-chk{ grid-column:4; grid-row:1 / 3; align-self:center; }
+#connToday .cm-grid.one .cm-list.live .cm-row .cm-chk{ grid-column:4; grid-row:1; align-self:start; margin-top:0; }
 #connToday .cm-grid.one .cm-row .who{ min-width:0; }
 #connToday .cm-grid.one .cm-row .amt{ min-width:84px; text-align:right; }
 #connToday .cm-grid.one .cm-row.off{ opacity:.5; }
@@ -27154,8 +27160,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
   var d=document.createElement('div'); d.id='cmRail';
   d.innerHTML='<div class="story-head">Always current <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'
     +'<p>Every account you link updates on its own, so your score reflects what you have today, not what you typed in months ago. Link them all and you never retype a balance again.</p>'
-    +'<div class="tax-links"><a role="button" tabindex="0" data-cm-rail-more>Connect more <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>';
-  d.addEventListener('click', function(e){ if(e.target.closest('[data-cm-rail-more]')){ var b=document.querySelector('#connToday [data-cm-addinst]'); if(b) b.click(); } });
+    +'';
   rail.appendChild(d);
 })();
 </script>
