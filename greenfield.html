@@ -26853,7 +26853,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 })();
 </script>
 
-<!-- NOTIFICATIONS PAGE BEGIN: the bell's full page. Every open item is something the plan is waiting on. -->
+<!-- NOTIFICATIONS PAGE BEGIN: the bell's full page. Coach suggestions, each one opens to say what is wrong and how to fix it. -->
 <style id="notifPageCSS">
 .layout.page[data-page="notifications"] .side h1{ margin-bottom:var(--s-4); }
 .nf-nav{ display:flex; flex-direction:column; gap:2px; }
@@ -26862,30 +26862,23 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-nav button:hover{ background:#F6F7F8; }
 .nf-nav button.on{ background:#F2F3F5; color:var(--ink); font-weight:600; }
 .nf-nav button .n{ display:none; }
-.nf-nav button.on .n{ background:#E3F1EA; color:var(--green-cta); }
+.nf-nav .sep{ height:1px; background:var(--hairline); margin:8px 12px; }
 .nf-side-foot{ margin-top:var(--s-6); padding-top:var(--s-4); border-top:1px solid var(--hairline); }
 .nf-side-foot a{ font-size:14px; color:var(--green-cta); cursor:pointer; text-decoration:none; }
 .nf-side-foot a:hover{ text-decoration:underline; }
 
 .nf-head{ margin-top:-8px; }
 .nf-head .pf-hl{ margin-bottom:6px; }
-.nf-head .sub{ font-size:17px; color:var(--text-secondary); line-height:1.5; margin:0; max-width:52ch; }
-.nf-tools{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:var(--s-6); padding-bottom:10px; border-bottom:1px solid var(--hairline); }
-.nf-tools .t{ font-size:15px; font-weight:600; color:var(--ink); }
-.nf-tools button{ border:0; background:none; font:500 14px var(--font); color:var(--green-cta); cursor:pointer; padding:4px 2px; }
-.nf-tools button:hover{ text-decoration:underline; }
-
 .nf-group{ margin-top:0; }
-.nf-group-h{ display:flex; align-items:baseline; gap:8px; font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-tertiary); margin:22px 0 10px; }
-.nf-tools[hidden]{ display:none; }
-.nf-head + .nf-tools + .nf-group:not([hidden]) .nf-group-h{ margin-top:14px; }
+.nf-group-h{ display:flex; align-items:baseline; gap:8px; font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-tertiary); margin:22px 0 4px; }
+.nf-head + .nf-group:not([hidden]) .nf-group-h{ margin-top:14px; }
 .nf-group-h .n{ font-weight:600; letter-spacing:0; text-transform:none; font-size:13px; }
 .nf-group[hidden]{ display:none; }
 .nf-empty{ border:1px dashed var(--hairline); border-radius:14px; padding:22px; text-align:center; font-size:15px; color:var(--text-secondary); }
 
-.nf-card{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:14px; padding:40px 0; border:0; border-bottom:1px solid var(--hairline); border-radius:0; background:#fff; margin-bottom:0;
-  transition:opacity .35s ease, transform .4s cubic-bezier(.22,1,.36,1), border-color .3s ease, background .3s ease; }
-.nf-card.unread{ background:#fff; }
+.nf-card{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:14px; padding:26px 0; border:0; border-bottom:1px solid var(--hairline); background:#fff; cursor:pointer;
+  transition:opacity .35s ease, transform .4s cubic-bezier(.22,1,.36,1); }
+.nf-card.open{ padding:30px 0 34px; cursor:default; }
 .nf-group [data-nf-list] > .nf-card:last-child{ border-bottom:0; }
 .nf-card.leaving{ opacity:0; transform:translateX(18px); }
 .nf-card.arriving{ animation:nfIn .45s cubic-bezier(.22,1,.36,1); }
@@ -26898,26 +26891,48 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-bd{ min-width:0; }
 .nf-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
 .nf-t{ font-size:17px; font-weight:600; color:var(--ink); line-height:1.35; }
-.nf-card.done .nf-t{ color:var(--text-secondary); text-decoration:line-through; text-decoration-color:#B9C3BD; }
-.nf-meta{ display:flex; align-items:center; gap:8px; flex:none; }
-.nf-tag{ font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:999px; background:#F1F2F4; color:var(--text-secondary); white-space:nowrap; }
-.nf-tag.plan{ background:#E8F3EC; color:#0E794E; }
-.nf-tag.money{ background:#FBF1D3; color:#7A5A00; }
-.nf-tag.invest{ background:#E3EEF0; color:var(--teal); }
-.nf-tag.adv{ background:#EFE9F8; color:#5B3E99; }
+.nf-card:not(.open):hover .nf-t{ text-decoration:underline; text-decoration-color:#B9C3BD; text-underline-offset:3px; }
+.nf-card.done .nf-t, .nf-card.ignored .nf-t{ color:var(--text-secondary); }
+.nf-card.done .nf-t{ text-decoration:line-through; text-decoration-color:#B9C3BD; }
+.nf-meta{ display:flex; align-items:center; gap:10px; flex:none; margin-top:2px; }
+.nf-new{ font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green-cta); }
 .nf-pts{ font-size:13px; font-weight:700; color:var(--green-cta); white-space:nowrap; }
+.nf-chev{ width:18px; height:18px; color:var(--text-tertiary); transition:transform .25s ease; flex:none; }
+.nf-card.open .nf-chev{ transform:rotate(180deg); }
 .nf-s{ font-size:15px; color:var(--text-secondary); line-height:1.5; margin-top:4px; }
 .nf-w{ font-size:13px; color:var(--text-tertiary); white-space:nowrap; }
-.nf-act{ display:flex; align-items:center; gap:14px; margin-top:12px; flex-wrap:wrap; }
-.nf-act .go{ display:inline-flex; align-items:center; gap:5px; min-height:32px; padding:0 13px; border-radius:999px; border:0; background:var(--green-cta); color:#fff; font:600 13px var(--font); cursor:pointer; }
+/* the opened item */
+.nf-more{ display:none; }
+.nf-card.open .nf-more{ display:block; animation:nfIn .3s ease; }
+.nf-crumb{ font-size:13px; color:var(--green-cta); margin-top:10px; }
+.nf-crumb span{ color:var(--text-tertiary); margin:0 6px; }
+.nf-more p{ font-size:15px; line-height:1.55; color:var(--text-secondary); margin:12px 0 0; max-width:60ch; }
+.nf-more p b{ color:var(--ink); font-weight:600; }
+.nf-more ul{ margin:8px 0 0; padding-left:20px; font-size:15px; line-height:1.55; color:var(--text-secondary); }
+.nf-fix{ font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary); margin-top:18px; }
+.nf-fix + p{ margin-top:6px; }
+.nf-more a[data-hm-go]{ color:var(--green-cta); font-weight:600; cursor:pointer; text-decoration:none; }
+.nf-more a[data-hm-go]:hover{ text-decoration:underline; }
+.nf-act{ display:flex; align-items:center; gap:14px; margin-top:14px; flex-wrap:nowrap; min-width:0; }
+.nf-act .go{ flex:none; display:inline-flex; align-items:center; gap:5px; min-height:32px; padding:0 13px; border-radius:999px; border:0; background:var(--green-cta); color:#fff; font:600 13px var(--font); cursor:pointer; }
 .nf-act .go:hover{ background:#0F5D45; }
 .nf-act .go::after{ content:'\2192'; }
-.nf-act .lite{ border:0; background:none; font:500 14px var(--font); color:var(--text-secondary); cursor:pointer; padding:4px 2px; }
+.nf-act .ai{ display:inline-flex; align-items:center; gap:6px; min-height:32px; padding:0 2px; min-width:0; flex:0 1 auto; border:0; background:none; color:var(--green-cta); font:500 14px var(--font); cursor:pointer; max-width:100%; }
+.nf-act .ai .spk{ width:14px; height:14px; flex:none; color:var(--green); }
+.nf-act .ai .lbl{ white-space:nowrap; flex:none; }
+.nf-act .ai .lbl{ font-weight:600; }
+.nf-act .ai:hover .lbl{ text-decoration:underline; }
+.nf-card:not(.open) .nf-act .lite{ display:none; }
+.nf-act .ai q{ quotes:none; font-weight:600; color:var(--green-cta); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.nf-act .ai:hover q{ text-decoration:underline; }
+.nf-act .ai:focus-visible{ outline:2px solid var(--green-cta); outline-offset:2px; }
+.nf-act .lite{ margin-left:auto; flex:none; border:0; background:none; font:500 13.5px var(--font); color:var(--text-tertiary); cursor:pointer; padding:4px 2px; }
 .nf-act .lite:hover{ color:var(--ink); text-decoration:underline; }
-.nf-card.done .nf-act, .nf-card.info .nf-act .lite[data-nf-done]{ display:none; }
-.nf-card.done .nf-w b{ color:var(--green-cta); font-weight:600; }
+.nf-card.done .nf-act .go, .nf-card.done .nf-act .lite{ display:none; }
+.nf-card.ignored .nf-act .go{ display:none; }
+.nf-card .nf-w b{ color:var(--green-cta); font-weight:600; }
 
-/* right rail: how complete the plan is, and what is still open */
+/* right rail: how complete the plan is */
 .nf-rail{ border:0; border-radius:0; padding:0; background:none; }
 .nf-rail .k{ font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary); }
 .nf-ring{ display:flex; flex-direction:column; align-items:flex-start; gap:12px; margin-top:12px; }
@@ -26930,15 +26945,6 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-ring .big{ font-size:30px; font-weight:600; line-height:1; color:var(--ink); letter-spacing:-.5px; }
 .nf-ring .big small{ font-size:14px; font-weight:500; color:var(--text-secondary); margin-left:1px; }
 .nf-ring .l{ font-size:15px; color:var(--text-secondary); margin-top:0; line-height:1.45; }
-.nf-left{ margin-top:18px; padding-top:16px; border-top:1px solid var(--hairline); }
-.nf-left ul{ list-style:none; margin:10px 0 0; padding:0; }
-.nf-left li{ display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--ink); padding:7px 0; cursor:pointer; }
-.nf-left li:hover .nm{ text-decoration:underline; }
-.nf-left li .dot{ width:9px; height:9px; border-radius:50%; background:#DDE2DF; flex:none; }
-.nf-left li.done .dot{ background:var(--green-cta); }
-.nf-left li.done .nm{ color:var(--text-tertiary); text-decoration:line-through; }
-.nf-left li .pts{ margin-left:auto; font-size:12.5px; font-weight:700; color:var(--green-cta); }
-.nf-left li.done .pts{ color:var(--text-tertiary); }
 .nf-rail .nf-note{ font-size:13.5px; color:var(--text-secondary); line-height:1.5; margin-top:14px; }
 </style>
 
@@ -26946,13 +26952,17 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
   <aside class="side">
     <h1>Notifications</h1>
     <div class="nf-nav" id="nfNav">
-      <button type="button" class="on" data-nf-filter="all">All <span class="n" data-nf-n="all">0</span></button>
-      <button type="button" data-nf-filter="action">Needs action <span class="n" data-nf-n="action">0</span></button>
-      <button type="button" data-nf-filter="plan">Plan inputs <span class="n" data-nf-n="plan">0</span></button>
-      <button type="button" data-nf-filter="money">Money <span class="n" data-nf-n="money">0</span></button>
-      <button type="button" data-nf-filter="invest">Investments <span class="n" data-nf-n="invest">0</span></button>
-      <button type="button" data-nf-filter="adv">Advisory <span class="n" data-nf-n="adv">0</span></button>
-      <button type="button" data-nf-filter="done">Done <span class="n" data-nf-n="done">0</span></button>
+      <button type="button" class="on" data-nf-filter="all">All</button>
+      <button type="button" data-nf-filter="priority">Priority</button>
+      <div class="sep"></div>
+      <button type="button" data-nf-filter="accuracy">Plan accuracy</button>
+      <button type="button" data-nf-filter="strategy">Strategy ideas</button>
+      <button type="button" data-nf-filter="action">Actions</button>
+      <button type="button" data-nf-filter="dates">Key dates</button>
+      <button type="button" data-nf-filter="scenario">Scenarios</button>
+      <div class="sep"></div>
+      <button type="button" data-nf-filter="done">Completed</button>
+      <button type="button" data-nf-filter="ignored">Ignored</button>
     </div>
     <div class="nf-side-foot"><a data-nf-prefs>Notification settings</a></div>
   </aside>
@@ -26960,10 +26970,10 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
     <section class="nf-head">
       <h2 class="pf-hl">Everything your plan is <span class="pf-em">waiting on</span>.</h2>
     </section>
-    <div class="nf-tools" hidden><span class="t" id="nfToolsT">All notifications</span><button type="button" data-nf-readall>Mark all read</button></div>
-    <div class="nf-group" data-nf-group="action"><div class="nf-group-h">Needs your action <span class="n" data-nf-gn="action"></span></div><div data-nf-list="action"></div></div>
-    <div class="nf-group" data-nf-group="info"><div class="nf-group-h">Good to know <span class="n" data-nf-gn="info"></span></div><div data-nf-list="info"></div></div>
-    <div class="nf-group" data-nf-group="done"><div class="nf-group-h">Done <span class="n" data-nf-gn="done"></span></div><div data-nf-list="done"></div></div>
+    <div class="nf-group" data-nf-group="priority"><div class="nf-group-h">Priority to-do <span class="n" data-nf-gn="priority"></span></div><div data-nf-list="priority"></div></div>
+    <div class="nf-group" data-nf-group="todo"><div class="nf-group-h">To-do <span class="n" data-nf-gn="todo"></span></div><div data-nf-list="todo"></div></div>
+    <div class="nf-group" data-nf-group="done"><div class="nf-group-h">Completed <span class="n" data-nf-gn="done"></span></div><div data-nf-list="done"></div></div>
+    <div class="nf-group" data-nf-group="ignored"><div class="nf-group-h">Ignored <span class="n" data-nf-gn="ignored"></span></div><div data-nf-list="ignored"></div></div>
     <div class="nf-empty" id="nfEmpty" hidden>Nothing here. Your plan is caught up.</div>
   </main>
   <aside class="rail">
@@ -26971,7 +26981,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
       <div class="k">Plan completeness</div>
       <div class="nf-ring">
         <div class="nf-ringw"><svg viewBox="0 0 84 84" aria-hidden="true"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36" id="nfRingFg"/></svg><div class="big"><span id="nfPct">0</span><small>%</small></div></div>
-        <div class="l" id="nfPctL">of your plan is filled in</div>
+        <div class="l" id="nfPctL"></div>
       </div>
       <p class="nf-note">Each one you finish raises your score and drops off this list.</p>
     </div>
@@ -26994,89 +27004,146 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
     home:SV+'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
     heart:SV+'<path d="M19 14c1.5-1.5 3-3.2 3-5.5A4.5 4.5 0 0 0 12 6a4.5 4.5 0 0 0-10 2.5C2 11 4 13 12 21c3-3 5.3-5.3 7-7z"/></svg>',
     people:SV+'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    ss:SV+'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+    clock:SV+'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
     adv:SV+'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-    check:SV+'<path d="M20 6 9 17l-5-5"/></svg>'
+    refresh:SV+'<path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>',
+    med:SV+'<path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg>',
+    pig:SV+'<path d="M19 9a7 7 0 0 0-13.6-2H4a1 1 0 0 0 0 2h1.1A7 7 0 0 0 5 10v2l-2 1v3l2 1 1 3h3l1-2h4l1 2h3l1-3 2-1v-4z"/><circle cx="15" cy="11" r="1"/></svg>',
+    work:SV+'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>',
+    stairs:SV+'<path d="M3 20h4v-4h4v-4h4V8h4"/></svg>',
+    flag:SV+'<path d="M4 22V4"/><path d="M4 4h12l-2 4 2 4H4"/></svg>',
+    check:SV+'<path d="M20 6 9 17l-5-5"/></svg>',
+    x:SV+'<path d="M18 6 6 18M6 6l12 12"/></svg>'
   };
-  var TAG={plan:'Plan input', money:'Money', invest:'Investments', adv:'Advisory'};
-  /* kind: action (moves the plan) or info (worth knowing). pts: what finishing it adds to the score. */
+  var SPK='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
+  var CHEV='<svg class="nf-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  /* cat: accuracy | strategy | action | dates | scenario.  pri: sits in Priority to-do.  pts: what resolving it adds to the score. */
   var ITEMS=[
-    { id:'roth',   kind:'action', cat:'plan',   ic:'conv',  tone:'',     pts:4, short:'Roth conversion', t:'Convert $17,800 to Roth before December ends',
-      s:'That amount fits under the 12% band this year. Last December you left $9,400 of it unused.', w:'2 hours ago', cta:'Plan the conversion', go:'plan' },
-    { id:'drift',  kind:'action', cat:'invest', ic:'drift', tone:'warn', pts:3, t:'Rebalance the brokerage back to 60/40',
-      s:'It has drifted to 71% stocks. Two years without a rebalance, three years before you retire.', w:'Yesterday', cta:'See the fix', go:'optimize' },
-    { id:'estate', kind:'action', cat:'plan',   ic:'doc',   tone:'',     pts:5, short:'Estate documents', t:'Add your estate documents',
-      s:'Will, trust, and powers of attorney are blank. The plan treats everything as passing by default.', w:'2 days ago', cta:'Add estate details', go:'plan:estate' },
-    { id:'ltc',    kind:'action', cat:'plan',   ic:'heart', tone:'',     pts:4, short:'Long-term care', t:'Set a long-term care assumption',
-      s:'No care cost is modeled after 80. A planning figure is better than none.', w:'2 days ago', cta:'Add long-term care', go:'plan:expenses' },
-    { id:'home',   kind:'action', cat:'plan',   ic:'home',  tone:'',     pts:3, short:'Home equity plan', t:'Decide what happens to the house',
-      s:'Keep it, downsize, or sell. The home equity plan is empty and it is your largest asset.', w:'2 days ago', cta:'Set the home plan', go:'plan:home' },
-    { id:'conn',   kind:'action', cat:'money',  ic:'link',  tone:'',     pts:3, t:'Connect your accounts',
-      s:'Six balances are still typed in by hand. Linked accounts stay current on their own.', w:'3 days ago', cta:'Connect accounts', go:'connections' },
-    { id:'bene',   kind:'action', cat:'money',  ic:'people',tone:'warn', pts:2, t:'Name a beneficiary on the Fidelity 401(k)',
-      s:'It is the only retirement account without one. Takes about two minutes at Fidelity.', w:'4 days ago', cta:'Open the account', go:'today:assets' },
-    { id:'ss',     kind:'action', cat:'plan',   ic:'ss',    tone:'',     pts:3, short:'Social Security, Lily', t:'Pick a Social Security start age for Lily',
-      s:'The plan assumes 67. Waiting to 70 raises her benefit about 24%.', w:'5 days ago', cta:'Set start age', go:'plan:income' },
-    { id:'review', kind:'action', cat:'adv',    ic:'adv',   tone:'teal', pts:2, t:'Marshall sent back your plan review',
-      s:'Four notes on the draft, two of them about the Roth timing. Reply when you have a minute.', w:'Last week', cta:'Open the review', go:'advisory' },
-    { id:'medi',   kind:'info',   cat:'plan',   ic:'cal',   tone:'teal', read:true, t:'Medicare’s look-back starts with your 2028 return',
-      s:'What you convert in 2028 sets your 2030 premiums. Worth a look before year end.', w:'Last week', cta:'See the timeline', go:'plan' },
-    { id:'surp',   kind:'info',   cat:'money',  ic:'cash',  tone:'',     read:true, t:'Your surplus rose to $3,450 a month',
-      s:'Three months running. Coach suggests routing the increase to the Roth before December.', w:'Last week', cta:'See cash flow', go:'today' },
-    { id:'stress', kind:'info',   cat:'plan',   ic:'shield',tone:'teal', read:true, t:'Your plan survived this quarter’s stress test',
-      s:'A 2022-style drop the year before retirement still leaves you funded to 99.', w:'2 weeks ago', cta:'See the test', go:'plan' }
+    { id:'lily-bal', cat:'accuracy', pri:true, pts:3, ic:'refresh', tone:'warn', d:'Oct 19, 2026', t:'Update Lily’s retirement savings balances', s:'Her Roth IRA balance has not changed since Feb 14.',
+      crumb:['Assets and debts','Retirement'], more:['It looks like Lily’s retirement balances have not been updated since <b>Feb 14, 2026</b>:','<ul><li>Lily Roth IRA, current value $9,545</li></ul>'],
+      fix:'Connect the account so it updates on its own, or refresh the balance in <a data-hm-go="today:assets">Assets and debts</a>.', cta:'Update balances', go:'today:assets', ask:"Why does this matter?" },
+    { id:'roth', cat:'strategy', pri:true, pts:4, ic:'conv', tone:'', d:'Oct 21, 2026', t:'Convert $17,800 to Roth before December ends', s:'That amount fits under the 12% band this year.',
+      crumb:['Optimize','Roth conversions'], more:['About <b>$17,800</b> of room is left under the 12% bracket this year. Last December you left $9,400 of it unused.','Converting now locks in today’s rate on money that would otherwise be taxed at withdrawal, likely at a higher bracket once Social Security starts.'],
+      fix:'Model the conversion in <a data-hm-go="plan">My Plans</a>. The window closes when the tax year does.', cta:'Plan the conversion', go:'plan', ask:"Why $17,800?" },
+    { id:'other-sav', cat:'accuracy', pts:2, ic:'refresh', tone:'', d:'Oct 18, 2026', t:'Update your Other Savings balances', s:'Two accounts have not been refreshed since Feb 14.',
+      crumb:['Assets and debts','Other assets'], more:['It looks like you have not updated the following Other Savings balances since <b>Feb 14, 2026</b>:','<ul><li>Robinhood, current value $1,000</li><li>New account, current value $1,000</li></ul>'],
+      fix:'If the balances or rates of return have changed, head to <a data-hm-go="today:assets">Assets and debts</a> to update them.', cta:'Update balances', go:'today:assets', ask:"Can these be linked?" },
+    { id:'medical', cat:'accuracy', pts:3, ic:'med', tone:'', d:'Oct 17, 2026', t:'Have you included all your medical expenses?', s:'Premiums, out-of-pocket costs and dental are not all in the plan.',
+      crumb:['Expenses','Healthcare'], more:['Your plan has a Medicare premium but no out-of-pocket, dental or vision costs. For most households these add <b>$3,000 to $6,000</b> a year.'],
+      fix:'Add them under <a data-hm-go="plan:expenses">Expenses</a>. A rough figure is better than none.', cta:'Review expenses', go:'plan:expenses', ask:"What do most people spend?" },
+    { id:'passive', cat:'accuracy', pts:2, ic:'cash', tone:'', d:'Oct 15, 2026', t:'Verify your passive income stream lasts your lifetime', s:'The rental income is set to end at 80.',
+      crumb:['Income','Passive income'], more:['Your rental income is entered through age <b>80</b>. If you plan to keep the property, the plan is undercounting your later years.'],
+      fix:'Check the end date under <a data-hm-go="plan:income">Income</a>.', cta:'Check end date', go:'plan:income', ask:"Should it run for life?" },
+    { id:'tiers', cat:'strategy', pts:2, ic:'stairs', tone:'', d:'Oct 14, 2026', t:'Add expense tiers for how spending changes over time', s:'One flat number misses the go-go, slow-go, no-go pattern.',
+      crumb:['Expenses','Tiers'], more:['Most people spend more in the first ten years of retirement and less after 80. A single monthly figure overstates late spending and understates early travel.'],
+      fix:'Set two or three tiers under <a data-hm-go="plan:expenses">Expenses</a>.', cta:'Add tiers', go:'plan:expenses', ask:"How do tiers work?" },
+    { id:'debt-paid', cat:'accuracy', isNew:true, pts:2, ic:'check', tone:'', d:'Oct 13, 2026', t:'Did you pay off the debt you scheduled to pay off?', s:'The car loan was due to clear last month.',
+      crumb:['Assets and debts','Debts'], more:['Your plan had the <b>car loan</b> paid off in September. Confirm it, and the freed-up $410 a month can go toward the Roth or savings.'],
+      fix:'Mark it paid under <a data-hm-go="today:debts">Debts</a>, or connect the loan so it updates on its own.', cta:'Confirm payoff', go:'today:debts', ask:"Where should the $410 go?" },
+    { id:'aligned', cat:'action', isNew:true, pts:1, ic:'people', tone:'teal', d:'Oct 12, 2026', t:'Are you and Lily aligned on your plan?', s:'Two people, one plan. Worth a shared look.',
+      crumb:['Household','Plan review'], more:['Couples who review the plan together report fewer surprises later. Fifteen minutes on the retirement age and the house decision is usually enough.'],
+      fix:'Share the plan summary from <a data-hm-go="plan">My Plans</a>, or book a session with Marshall.', cta:'Share the plan', go:'plan', ask:"What should we discuss?" },
+    { id:'investor', cat:'action', pts:1, ic:'drift', tone:'', d:'Oct 11, 2026', t:'Active or passive investor: which are you?', s:'Your return assumptions depend on the answer.',
+      crumb:['Investments','Style'], more:['Your plan assumes a <b>6.2%</b> blended return. Index funds and active management carry different fees and spreads, and the gap compounds over 25 years.'],
+      fix:'Pick your style under <a data-hm-go="optimize">Optimize</a> and the assumptions adjust.', cta:'Set your style', go:'optimize', ask:"Which fits me?" },
+    { id:'contrib', cat:'strategy', isNew:true, pts:3, ic:'pig', tone:'', d:'Oct 10, 2026', t:'Increase savings contributions for a more secure plan', s:'You have $3,450 a month of surplus. Some of it could work harder.',
+      crumb:['Income','Savings'], more:['Three months running your surplus has sat in checking. Routing <b>$1,500</b> of it to the 401(k) lifts your score about 4 points and cuts this year’s tax bill.'],
+      fix:'Raise the contribution under <a data-hm-go="plan:income">Income</a>.', cta:'Raise contribution', go:'plan:income', ask:"How much is enough?" },
+    { id:'work-longer', cat:'strategy', isNew:true, pts:2, ic:'work', tone:'', d:'Oct 9, 2026', t:'Keep working past 74 to improve your plan', s:'Even part-time income after 74 changes the picture.',
+      crumb:['Income','Work'], more:['Right now your plan has you stopping work before <b>74</b>. The plan may not be secure if you stop at that age.','One way to a more secure plan is more work. Delay retirement, take a sabbatical and return, or pick up a low-stress part-time job you enjoy.'],
+      fix:'If you decide to keep working past 74, update your <a data-hm-go="plan:income">Income</a>.', cta:'Update income', go:'plan:income', ask:"How much difference does it make?" },
+    { id:'ss-verify', cat:'accuracy', pts:3, ic:'clock', tone:'', d:'Oct 8, 2026', t:'Verify your Social Security benefit amount', s:'The plan uses an estimate, not your statement.',
+      crumb:['Income','Social Security'], more:['Your plan estimates <b>$2,860</b> a month at 67. Your actual statement from ssa.gov may differ, and a $200 gap compounds over 25 years.'],
+      fix:'Enter the figure from your statement under <a data-hm-go="plan:income">Income</a>.', cta:'Enter benefit', go:'plan:income', ask:"67 or 70?" },
+    { id:'help', cat:'action', pts:1, ic:'adv', tone:'teal', d:'Oct 7, 2026', t:'How much help do you want managing your plan?', s:'Self-serve, a checkup, or a partner. Your call.',
+      crumb:['My Advisory'], more:['Some members want to run the plan themselves. Others want a CFP to check it once a year, or to manage it with them. Each path is set up in My Advisory.'],
+      fix:'Choose your level under <a data-hm-go="advisory">My Advisory</a>.', cta:'See options', go:'advisory', ask:"What does a checkup include?" },
+    { id:'estate', cat:'accuracy', pts:5, ic:'doc', tone:'', d:'Oct 6, 2026', t:'Some of your estate planning documents are missing', s:'A living will is not checked off.',
+      crumb:['Estate planning','Estate documents'], more:['It looks like you have not checked off at least one document we recommend for complete estate planning. These documents make sure your wishes are followed if you get ill or pass away.','We recommend the following:','<ul><li>Living will</li></ul>'],
+      fix:'If you already have it, check it off under <a data-hm-go="plan:estate">Estate planning</a>. If not, the Vault has a template to start from.', cta:'Add estate details', go:'plan:estate', ask:"What do I need?" },
+    { id:'backup', cat:'scenario', pts:2, ic:'shield', tone:'teal', d:'Oct 5, 2026', t:'Consider a backup plan if you can’t work after 75', s:'See what happens if the work income stops early.',
+      crumb:['Scenarios','Income stop'], more:['Your plan leans on work income to 74. A scenario with work ending at <b>68</b> shows whether the plan still holds, and what spending would need to change.'],
+      fix:'Run the scenario under <a data-hm-go="plan">My Plans</a>.', cta:'Run scenario', go:'plan', ask:"Does the plan still hold?" },
+    { id:'disburse', cat:'accuracy', pts:2, ic:'cash', tone:'warn', d:'Oct 4, 2026', t:'Transfer account for disbursements is missing', s:'Withdrawals need somewhere to land.',
+      crumb:['Assets and debts','Disbursements'], more:['Your plan takes withdrawals from the brokerage in retirement but has no account set to receive them. The model assumes cash, which skews the tax estimate.'],
+      fix:'Pick a receiving account under <a data-hm-go="today:assets">Assets and debts</a>.', cta:'Set account', go:'today:assets', ask:"Which account should it be?" },
+    { id:'consolidate', cat:'strategy', pts:1, ic:'cash', tone:'', d:'Oct 3, 2026', t:'Should you consolidate your debt?', s:'Two balances, two rates. One may be enough.',
+      crumb:['Assets and debts','Debts'], more:['The credit card at <b>24.9%</b> and the car loan at 6.1% could be folded into one lower-rate loan. The saving is modest but the simplicity is real.'],
+      fix:'Compare the options under <a data-hm-go="today:debts">Debts</a>.', cta:'Compare', go:'today:debts', ask:"Is it worth it?" },
+    { id:'estate-larger', cat:'dates', isNew:true, pts:2, ic:'flag', tone:'teal', d:'Oct 2, 2026', t:'Your estate may become larger than you expect', s:'The plan projects $2.4M at 90. Worth planning for.',
+      crumb:['Estate planning','Projection'], more:['At current savings rates your estate reaches about <b>$2.4M</b> by age 90. That is past the point where gifting, a trust, or Roth conversions start to matter for your heirs.'],
+      fix:'Review the projection under <a data-hm-go="plan:estate">Estate planning</a>.', cta:'See projection', go:'plan:estate', ask:"What should I do about it?" },
+    { id:'inadequate', cat:'scenario', pts:3, ic:'shield', tone:'warn', d:'Oct 1, 2026', t:'You might have inadequate funds for your disbursement', s:'One year in the plan dips below the withdrawal.',
+      crumb:['Scenarios','Cash flow'], more:['In <b>2041</b> the planned withdrawal is $18,000 more than the brokerage balance that year. A small change to spending or the Social Security start age closes it.'],
+      fix:'Open the year under <a data-hm-go="plan">My Plans</a> and adjust.', cta:'Open 2041', go:'plan', ask:"How bad could it get?" },
+    { id:'drift', cat:'action', pts:3, ic:'drift', tone:'warn', d:'Sep 30, 2026', t:'Rebalance the brokerage back to 60/40', s:'It has drifted to 71% stocks.',
+      crumb:['Investments','Allocation'], more:['Two years without a rebalance, three years before you retire. At <b>71%</b> stocks a 2022-style drop would cost about $64,000 more than at 60/40.'],
+      fix:'See the fix under <a data-hm-go="optimize">Optimize</a>.', cta:'See the fix', go:'optimize', ask:"Why does 71% matter?" },
+    { id:'ltc', cat:'scenario', pts:4, ic:'heart', tone:'', d:'Sep 28, 2026', t:'Set a long-term care assumption', s:'No care cost is modeled after 80.',
+      crumb:['Expenses','Long-term care'], more:['About <b>70%</b> of people over 65 need some care. A planning figure, even a rough one, is better than none.'],
+      fix:'Add it under <a data-hm-go="plan:expenses">Expenses</a>.', cta:'Add long-term care', go:'plan:expenses', ask:"How much to plan for?" },
+    { id:'home', cat:'strategy', pts:3, ic:'home', tone:'', d:'Sep 26, 2026', t:'Decide what happens to the house', s:'Keep it, downsize, or sell. The plan is empty here.',
+      crumb:['Home and real estate','Plan'], more:['The house is your largest asset and the plan has no decision on it. Downsizing at <b>72</b> frees about $310,000; keeping it means modeling upkeep.'],
+      fix:'Set the home plan under <a data-hm-go="plan:home">Home and real estate</a>.', cta:'Set the home plan', go:'plan:home', ask:"Keep or downsize?" },
+    { id:'conn', cat:'action', pts:3, ic:'link', tone:'', d:'Sep 25, 2026', t:'Connect your accounts', s:'Six balances are still typed in by hand.',
+      crumb:['Profile','Connections'], more:['Linked accounts stay current on their own, which clears most of the Plan accuracy items on this list for good.'],
+      fix:'Link them from <a data-hm-go="connections">Connections</a>.', cta:'Connect accounts', go:'connections', ask:"Which one first?" },
+    { id:'bene', cat:'accuracy', pts:2, ic:'people', tone:'warn', d:'Sep 24, 2026', t:'Name a beneficiary on the Fidelity 401(k)', s:'The only retirement account without one.',
+      crumb:['Assets and debts','Retirement'], more:['Without a named beneficiary the account goes through probate, which can take a year and costs the estate fees.'],
+      fix:'Takes about two minutes at Fidelity. Then note it under <a data-hm-go="today:assets">Assets and debts</a>.', cta:'Open the account', go:'today:assets', ask:"Why does it matter?" },
+    { id:'review', cat:'action', pts:2, ic:'adv', tone:'teal', d:'Sep 22, 2026', t:'Marshall sent back your plan review', s:'Four notes on the draft, two about the Roth timing.',
+      crumb:['My Advisory','Plan review'], more:['Marshall left four comments. Two are about pushing the Roth conversion to November, one on the home plan, one on beneficiaries.'],
+      fix:'Reply in <a data-hm-go="advisory">My Advisory</a>.', cta:'Open the review', go:'advisory', ask:"What did he flag?" },
+    { id:'medi', cat:'dates', pts:0, ic:'cal', tone:'teal', d:'Sep 20, 2026', t:'Medicare’s look-back starts with your 2028 return', s:'What you convert in 2028 sets your 2030 premiums.',
+      crumb:['Key dates','Medicare'], more:['IRMAA premiums use income from two years earlier. A large conversion in <b>2028</b> raises your 2030 Part B and D premiums.'],
+      fix:'Keep 2028 conversions under the first IRMAA threshold. The plan flags it under <a data-hm-go="plan">My Plans</a>.', cta:'See the timeline', go:'plan', ask:"How does it work?" }
   ];
-  var BASE=72;             /* what is already filled in */
-  var filter='all';
+  var BASE=72, filter='all', openId=null;
   var lists={}; page.querySelectorAll('[data-nf-list]').forEach(function(l){ lists[l.dataset.nfList]=l; });
 
-  function pts(){ return ITEMS.filter(function(i){ return i.kind==='action' && i.done; }).reduce(function(a,i){ return a+i.pts; }, 0); }
-  function pct(){ return Math.min(100, BASE+pts()); }
+  function pct(){ return Math.min(100, BASE+ITEMS.filter(function(i){ return i.done; }).reduce(function(a,i){ return a+i.pts; }, 0)); }
+  function groupOf(i){ return i.done ? 'done' : i.ignored ? 'ignored' : i.pri ? 'priority' : 'todo'; }
   function visible(i){
-    if(filter==='all') return true;
+    if(filter==='all') return !i.done && !i.ignored;
     if(filter==='done') return !!i.done;
-    if(filter==='action') return i.kind==='action' && !i.done;
-    return i.cat===filter;
+    if(filter==='ignored') return !!i.ignored;
+    if(filter==='priority') return !!i.pri && !i.done && !i.ignored;
+    return i.cat===filter && !i.done && !i.ignored;
   }
   function card(i){
-    var group = i.done ? 'done' : i.kind;
-    var cls='nf-card '+(i.done?'done':'')+(!i.read&&!i.done?' unread':'')+(i.kind==='info'?' info':'');
+    var open = openId===i.id;
+    var cls='nf-card'+(open?' open':'')+(i.done?' done':'')+(i.ignored?' ignored':'');
     return '<div class="'+cls+'" data-nf-id="'+i.id+'">'
-      +'<span class="nf-ic '+(i.done?'done':(i.tone||''))+'">'+(i.done?IC.check:IC[i.ic])+'</span>'
-      +'<div class="nf-bd"><div class="nf-top"><div class="nf-t">'+i.t+'</div><div class="nf-meta">'+(i.kind==='action'&&!i.done?'<span class="nf-pts">+'+i.pts+' pts</span>':'')+'</div></div>'
-      +'<div class="nf-s">'+i.s+(i.done?' <span class="nf-w"><b>Done.</b> +'+i.pts+' pts added to your score.</span>':' <span class="nf-w">'+i.w+'</span>')+'</div>'
+      +'<span class="nf-ic '+(i.done?'done':(i.tone||''))+'">'+(i.done?IC.check:i.ignored?IC.x:IC[i.ic])+'</span>'
+      +'<div class="nf-bd"><div class="nf-top"><div class="nf-t">'+i.t+'</div><div class="nf-meta">'+(i.isNew&&!i.read?'<span class="nf-new">New</span>':'')+(i.pts&&!i.done&&!i.ignored?'<span class="nf-pts">+'+i.pts+' pts</span>':'')+CHEV+'</div></div>'
+      +'<div class="nf-s">'+i.s+(i.done?' <span class="nf-w"><b>Done.</b> +'+i.pts+' pts added to your score.</span>':i.ignored?' <span class="nf-w">Ignored</span>':' <span class="nf-w">'+i.d+'</span>')+'</div>'
+      +'<div class="nf-more">'
+        +'<div class="nf-crumb">'+i.crumb.join('<span>›</span>')+'</div>'
+        +i.more.map(function(p){ return /^<ul/.test(p) ? p : '<p>'+p+'</p>'; }).join('')
+        +'<div class="nf-fix">How to fix</div><p>'+i.fix+'</p>'
+      +'</div>'
       +'<div class="nf-act"><button type="button" class="go" data-hm-go="'+i.go+'" data-nf-open="'+i.id+'">'+i.cta+'</button>'
-      +'</div></div></div>';
+      +'<button type="button" class="ai" data-cn-ask="'+('Help me fix this: '+i.t).replace(/"/g,'&quot;')+'"><span class="spk">'+SPK+'</span><span class="lbl">Fix with AI</span></button>'
+      +(i.ignored?'<button type="button" class="lite" data-nf-restore="'+i.id+'">Put it back</button>':'<button type="button" class="lite" data-nf-dismiss="'+i.id+'">Dismiss</button>')
+      +'</div>'
+      +'</div></div>';
   }
   function render(){
-    var counts={all:0, action:0, plan:0, money:0, invest:0, adv:0, done:0}, g={action:0, info:0, done:0};
-    lists.action.innerHTML=''; lists.info.innerHTML=''; lists.done.innerHTML='';
-    ITEMS.forEach(function(i){
-      if(i.snoozed) return;
-      counts.all++; if(i.done) counts.done++; else { if(i.kind==='action') counts.action++; counts[i.cat]++; }
-      if(!visible(i)) return;
-      var grp = i.done ? 'done' : i.kind; g[grp]++;
-      lists[grp].insertAdjacentHTML('beforeend', card(i));
-    });
-    Object.keys(g).forEach(function(k){ var el=page.querySelector('[data-nf-group="'+k+'"]'); el.hidden = g[k]===0; var n=el.querySelector('[data-nf-gn]'); n.textContent = g[k] ? g[k] : ''; });
-    document.getElementById('nfEmpty').hidden = (g.action+g.info+g.done)>0;
-    Object.keys(counts).forEach(function(k){ var n=page.querySelector('[data-nf-n="'+k+'"]'); if(n) n.textContent=counts[k]; });
-    var labels={all:'All notifications', action:'Needs your action', plan:'Plan inputs', money:'Money', invest:'Investments', adv:'Advisory', done:'Done'};
-    document.getElementById('nfToolsT').textContent=labels[filter];
+    var g={priority:0, todo:0, done:0, ignored:0};
+    Object.keys(lists).forEach(function(k){ lists[k].innerHTML=''; });
+    ITEMS.forEach(function(i){ if(!visible(i)) return; var grp=groupOf(i); g[grp]++; lists[grp].insertAdjacentHTML('beforeend', card(i)); });
+    Object.keys(g).forEach(function(k){ var el=page.querySelector('[data-nf-group="'+k+'"]'); el.hidden = g[k]===0; var n=el.querySelector('[data-nf-gn]'); n.textContent = g[k] ? '('+g[k]+')' : ''; });
+    document.getElementById('nfEmpty').hidden = (g.priority+g.todo+g.done+g.ignored)>0;
     ring();
-    /* the bell's count follows what is still unread here */
-    if(window.__alerts){ var open=ITEMS.filter(function(i){ return !i.read && !i.done && !i.snoozed; }).length;
-      var c=document.getElementById('alertCount'); if(c){ c.textContent=open; c.hidden=open===0; } }
+    var open=ITEMS.filter(function(i){ return !i.read && !i.done && !i.ignored && (i.isNew || i.pri); }).length;
+    var c=document.getElementById('alertCount'); if(c){ c.textContent=open; c.hidden=open===0; }
   }
   function ring(){
     var p=pct(), fg=document.getElementById('nfRingFg'), C=2*Math.PI*36;
     fg.style.strokeDasharray=C; fg.style.strokeDashoffset=C*(1-p/100);
     var el=document.getElementById('nfPct'), from=+el.textContent||0, t0=performance.now();
     (function step(now){ var k=Math.min(1,(now-t0)/700); k=1-Math.pow(1-k,3); el.textContent=Math.round(from+(p-from)*k); if(k<1) requestAnimationFrame(step); })(t0);
-    var left=document.getElementById('nfLeft'); if(left) left.innerHTML=ITEMS.filter(function(i){ return i.kind==='action' && i.cat==='plan'; }).map(function(i){
-      return '<li class="'+(i.done?'done':'')+'" data-nf-jump="'+i.id+'"><span class="dot"></span><span class="nm">'+(i.short||i.t)+'</span><span class="pts">+'+i.pts+'</span></li>';
-    }).join('');
-    var openN=ITEMS.filter(function(i){ return i.kind==='action' && !i.done && !i.snoozed; }).length;
+    var openN=ITEMS.filter(function(i){ return !i.done && !i.ignored; }).length;
     document.getElementById('nfPctL').textContent = openN ? openN+' item'+(openN===1?'':'s')+' to go.' : 'Nothing left to do.';
   }
   function byId(id){ for(var k=0;k<ITEMS.length;k++) if(ITEMS[k].id===id) return ITEMS[k]; }
@@ -27084,30 +27151,33 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
     var el=page.querySelector('.nf-card[data-nf-id="'+id+'"]'); if(!el){ then(); return; }
     el.classList.add('leaving'); setTimeout(function(){ then(); var n=page.querySelector('.nf-card[data-nf-id="'+id+'"]'); if(n) n.classList.add('arriving'); }, 320);
   }
+  function setFilter(f){ filter=f; page.querySelectorAll('[data-nf-filter]').forEach(function(x){ x.classList.toggle('on', x.dataset.nfFilter===f); }); render(); }
 
   page.addEventListener('click', function(e){
     var b;
-    if((b=e.target.closest('[data-nf-filter]'))){ filter=b.dataset.nfFilter; page.querySelectorAll('[data-nf-filter]').forEach(function(x){ x.classList.toggle('on', x===b); }); render(); return; }
-    if((b=e.target.closest('[data-nf-done]'))){ var it=byId(b.dataset.nfDone); it.read=true; leave(it.id, function(){ it.done=true; render(); }); if(typeof window.toast==='function') window.toast('Done. +'+it.pts+' pts added to your plan score.'); return; }
-    if((b=e.target.closest('[data-nf-snooze]'))){ var s=byId(b.dataset.nfSnooze); leave(s.id, function(){ s.snoozed=true; render(); }); if(typeof window.toast==='function') window.toast('Snoozed. It comes back next week.'); return; }
-    if((b=e.target.closest('[data-nf-open]'))){ byId(b.dataset.nfOpen).read=true; /* the data-hm-go handler takes it from here */ return; }
-    if((b=e.target.closest('[data-nf-readall]'))){ ITEMS.forEach(function(i){ i.read=true; }); render(); return; }
-    if((b=e.target.closest('[data-nf-jump]'))){ filter='plan'; page.querySelectorAll('[data-nf-filter]').forEach(function(x){ x.classList.toggle('on', x.dataset.nfFilter==='plan'); }); render();
-      var c=page.querySelector('.nf-card[data-nf-id="'+b.dataset.nfJump+'"]'); if(c){ c.scrollIntoView({behavior:'smooth', block:'center'}); } return; }
+    if((b=e.target.closest('[data-nf-filter]'))){ setFilter(b.dataset.nfFilter); return; }
+    if((b=e.target.closest('[data-nf-dismiss]'))){ var it=byId(b.dataset.nfDismiss); it.read=true; openId=null; leave(it.id, function(){ it.ignored=true; render(); }); if(typeof window.toast==='function') window.toast('Dismissed. It is under Ignored if you change your mind.'); return; }
+    if((b=e.target.closest('[data-nf-restore]'))){ var r=byId(b.dataset.nfRestore); openId=null; leave(r.id, function(){ r.ignored=false; render(); }); return; }
+    if((b=e.target.closest('[data-nf-open]'))){ byId(b.dataset.nfOpen).read=true; return; }   /* data-hm-go takes it from here */
+    if(e.target.closest('.nf-act') || e.target.closest('.nf-more a')) return;
     if((b=e.target.closest('[data-nf-prefs]'))){ if(window.__goView) window.__goView('profile'); setTimeout(function(){ var s=document.getElementById('pf-sec-notifications'); if(s) s.scrollIntoView({behavior:'smooth', block:'start'}); }, 120); return; }
+    var card=e.target.closest('.nf-card'); if(card){
+      var id=card.dataset.nfId, item=byId(id); item.read=true;
+      openId = openId===id ? null : id; render();
+      var c=page.querySelector('.nf-card[data-nf-id="'+id+'"]'); if(c && openId===id){ var r=c.getBoundingClientRect(); if(r.top<90) c.scrollIntoView({behavior:'smooth', block:'start'}); }
+    }
   });
 
-  /* the view: showView knows nothing about this page, so it is swapped in on the view event */
   function show(on){
     if(on){ document.querySelectorAll('.layout.page.on').forEach(function(p){ p.classList.remove('on'); }); page.classList.add('on'); document.body.dataset.page='notifications'; document.title='Boldin · Notifications'; render(); }
     else page.classList.remove('on');
   }
   window.addEventListener('boldin:view', function(e){ show(e.detail==='notifications'); });
-  /* the bell's own rows and footer route here too */
   document.addEventListener('click', function(e){
     var go=e.target.closest && e.target.closest('#alertMenu [data-al-go="notifications"]');
     if(go){ e.stopPropagation(); if(window.__alerts) window.__alerts.close(); if(window.__goView) window.__goView('notifications'); }
   }, true);
+  window.__notif={ open:function(id){ openId=id||null; if(window.__goView) window.__goView('notifications'); }, items:ITEMS };
   render();
 })();
 </script>
@@ -27163,3 +27233,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
   rail.appendChild(d);
 })();
 </script>
+<style id="hideHomeQuestions">
+/* Home: the Your questions section is retired */
+.hm-page #s-questions{ display:none !important; }
+</style>
