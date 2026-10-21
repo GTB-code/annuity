@@ -23811,6 +23811,11 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
     tries = tries==null ? 24 : tries;
     var li=document.querySelector('.layout.page.on #sideNav li[data-key="'+val+'"]');
     if(li && li.offsetParent!==null){ li.click(); return; }
+    /* the rail item may be folded away (My Plans is one page): scroll straight to the section instead */
+    if(li){ var label=(li.dataset.label||li.textContent||'').trim().toLowerCase();
+      var sec=[].filter.call(document.querySelectorAll('.layout.page.on .acc'), function(a){ var h=a.querySelector('h2'); return h && a.offsetParent && h.textContent.trim().toLowerCase().indexOf(label.split(' ')[0])===0; })[0];
+      if(sec){ setTimeout(function(){ var bd=sec.querySelector('.acc-body'), hd=sec.querySelector('.acc-head'); if(bd && hd && bd.getBoundingClientRect().height<4) hd.click(); }, 450);
+        var y=sec.getBoundingClientRect().top+window.scrollY-96; window.scrollTo({top:y, behavior:'smooth'}); return; } }
     if(tries>0) setTimeout(function(){ railClick(val, tries-1); }, 60);
   }
   function go(dest){
@@ -23842,6 +23847,7 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
     view(head);
     if(key) setTimeout(function(){ railClick(key); }, 280);
   }
+  window.__hmGo=go;
   document.addEventListener('click', function(e){
     var el=e.target.closest && e.target.closest('[data-hm-go]');
     if(!el) return;
@@ -24063,7 +24069,7 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
       w:'Yesterday', go:'optimize' },
     { ic:'doc',   tone:'',     t:'Three plan inputs are still empty',
       s:'Estate documents, long-term care, and the home equity plan.',
-      w:'2 days ago', go:'plan' },
+      w:'2 days ago', go:'plan:estate' },
     { ic:'cal',   tone:'teal', t:'Medicare\u2019s look-back starts with your 2028 return', read:true,
       s:'What you convert in 2028 sets your 2030 premiums.',
       w:'Last week', go:'plan' },
@@ -24072,7 +24078,7 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
       w:'Last week', go:'today' },
     { ic:'shield',tone:'teal', t:'Your plan survived this quarter\u2019s stress test', read:true,
       s:'A 2022-style drop the year before retirement still leaves you funded to 99.',
-      w:'2 weeks ago', go:'plan' }
+      w:'2 weeks ago', go:'stress' }
   ];
   var btn=document.getElementById('alertBtn'), menu=document.getElementById('alertMenu');
   var list=document.getElementById('alList'), count=document.getElementById('alertCount');
@@ -24102,9 +24108,9 @@ body:has(.layout.adv-page.on #vWorkspace.on .wpane[data-pane="chat"].on) .dock{ 
   document.addEventListener('click', function(e){
     if(!menu.classList.contains('open')) return;
     var row=e.target.closest && e.target.closest('.al-row');
-    if(row){ ALERTS[+row.dataset.al].read=true; render();
-      if(window.__goView) window.__goView(row.dataset.alGo);
-      close(); return; }
+    if(row){ ALERTS[+row.dataset.al].read=true; render(); close();
+      if(window.__hmGo) window.__hmGo(row.dataset.alGo); else if(window.__goView) window.__goView(row.dataset.alGo.split(':')[0]);
+      return; }
     var go=e.target.closest && e.target.closest('[data-al-go]');
     if(go && go.closest('#alertMenu')){ if(window.__goView) window.__goView(go.dataset.alGo); close(); return; }
     if(e.target.closest && e.target.closest('#alClear')){
@@ -27237,3 +27243,36 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 /* Home: the Your questions section is retired */
 .hm-page #s-questions{ display:none !important; }
 </style>
+
+<style id="homeCardLinksCSS">
+/* Home: the top two cards speak for themselves, no heading above them */
+.hm-page #s-money > .cell-head, .hm-page #s-plans > .cell-head{ display:none; }
+/* Home: the section link lives inside its card, not as a pill beside the heading */
+.hm-page .cell-head .headlink.in-card{ display:none; }
+.hm-page .card-link-row{ display:flex; justify-content:flex-end; margin-top:var(--s-4); }
+.hm-page .card-link-row .headlink{ border:0; padding:0; background:none; font-size:14px; font-weight:600; color:var(--green-cta); }
+.hm-page .card-link-row .headlink:hover{ text-decoration:underline; }
+.hm-page .card-link-row + .ai-ask{ margin-top:12px; }
+.hm-page .card-eyebrow-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.hm-page .card-eyebrow-row .card-link-row{ margin-top:0; }
+.hm-page .card-eyebrow-row .eyebrow{ margin-bottom:0; }
+</style>
+<script id="homeCardLinksJS">
+(function(){
+  'use strict';
+  document.querySelectorAll('.hm-page .hm-cell').forEach(function(sec){
+    var link=sec.querySelector(':scope > .cell-head .headlink'); var card=sec.querySelector(':scope > .cell-card, :scope > .card');
+    if(!link || !card) return;
+    var row=document.createElement('div'); row.className='card-link-row';
+    var a=link.cloneNode(true); row.appendChild(a); link.classList.add('in-card');
+    var ask=card.querySelector(':scope > .ai-ask');
+    /* the two top cards: the link sits top right, on the eyebrow line, named for the page it opens */
+    var eb=card.querySelector(':scope > .eyebrow');
+    if(eb && (sec.id==='s-money' || sec.id==='s-plans')){
+      var lbl=a.querySelector('span'); a.textContent=(sec.id==='s-money'?'My Money ':'My Plans '); if(lbl) a.appendChild(lbl);
+      row.classList.add('top'); var wrap=document.createElement('div'); wrap.className='card-eyebrow-row'; eb.parentNode.insertBefore(wrap, eb); wrap.appendChild(eb); wrap.appendChild(row); return;
+    }
+    if(ask) card.insertBefore(row, ask); else card.appendChild(row);
+  });
+})();
+</script>
