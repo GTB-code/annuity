@@ -26883,7 +26883,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-group[hidden]{ display:none; }
 .nf-empty{ border:1px dashed var(--hairline); border-radius:14px; padding:22px; text-align:center; font-size:15px; color:var(--text-secondary); }
 
-.nf-card{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:14px; padding:20px 0; border:0; border-bottom:1px solid var(--hairline); border-radius:0; background:#fff; margin-bottom:0;
+.nf-card{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:14px; padding:40px 0; border:0; border-bottom:1px solid var(--hairline); border-radius:0; background:#fff; margin-bottom:0;
   transition:opacity .35s ease, transform .4s cubic-bezier(.22,1,.36,1), border-color .3s ease, background .3s ease; }
 .nf-card.unread{ background:#fff; }
 .nf-group [data-nf-list] > .nf-card:last-child{ border-bottom:0; }
@@ -26907,9 +26907,9 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-tag.adv{ background:#EFE9F8; color:#5B3E99; }
 .nf-pts{ font-size:13px; font-weight:700; color:var(--green-cta); white-space:nowrap; }
 .nf-s{ font-size:15px; color:var(--text-secondary); line-height:1.5; margin-top:4px; }
-.nf-w{ font-size:13px; color:var(--text-tertiary); margin-top:6px; }
-.nf-act{ display:flex; align-items:center; gap:14px; margin-top:14px; flex-wrap:wrap; }
-.nf-act .go{ display:inline-flex; align-items:center; gap:6px; min-height:38px; padding:0 16px; border-radius:999px; border:0; background:var(--green-cta); color:#fff; font:600 14px var(--font); cursor:pointer; }
+.nf-w{ font-size:13px; color:var(--text-tertiary); white-space:nowrap; }
+.nf-act{ display:flex; align-items:center; gap:14px; margin-top:12px; flex-wrap:wrap; }
+.nf-act .go{ display:inline-flex; align-items:center; gap:5px; min-height:32px; padding:0 13px; border-radius:999px; border:0; background:var(--green-cta); color:#fff; font:600 13px var(--font); cursor:pointer; }
 .nf-act .go:hover{ background:#0F5D45; }
 .nf-act .go::after{ content:'\2192'; }
 .nf-act .lite{ border:0; background:none; font:500 14px var(--font); color:var(--text-secondary); cursor:pointer; padding:4px 2px; }
@@ -26973,7 +26973,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
         <div class="nf-ringw"><svg viewBox="0 0 84 84" aria-hidden="true"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36" id="nfRingFg"/></svg><div class="big"><span id="nfPct">0</span><small>%</small></div></div>
         <div class="l" id="nfPctL">of your plan is filled in</div>
       </div>
-      <p class="nf-note">Finishing an item in your plan clears it here and raises your score.</p>
+      <p class="nf-note">Each one you finish raises your score and drops off this list.</p>
     </div>
   </aside>
 </div>
@@ -27044,8 +27044,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
     return '<div class="'+cls+'" data-nf-id="'+i.id+'">'
       +'<span class="nf-ic '+(i.done?'done':(i.tone||''))+'">'+(i.done?IC.check:IC[i.ic])+'</span>'
       +'<div class="nf-bd"><div class="nf-top"><div class="nf-t">'+i.t+'</div><div class="nf-meta">'+(i.kind==='action'&&!i.done?'<span class="nf-pts">+'+i.pts+' pts</span>':'')+'</div></div>'
-      +'<div class="nf-s">'+i.s+'</div>'
-      +'<div class="nf-w">'+(i.done?'<b>Done.</b> +'+i.pts+' pts added to your score.':i.w)+'</div>'
+      +'<div class="nf-s">'+i.s+(i.done?' <span class="nf-w"><b>Done.</b> +'+i.pts+' pts added to your score.</span>':' <span class="nf-w">'+i.w+'</span>')+'</div>'
       +'<div class="nf-act"><button type="button" class="go" data-hm-go="'+i.go+'" data-nf-open="'+i.id+'">'+i.cta+'</button>'
       +'</div></div></div>';
   }
@@ -27078,7 +27077,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
       return '<li class="'+(i.done?'done':'')+'" data-nf-jump="'+i.id+'"><span class="dot"></span><span class="nm">'+(i.short||i.t)+'</span><span class="pts">+'+i.pts+'</span></li>';
     }).join('');
     var openN=ITEMS.filter(function(i){ return i.kind==='action' && !i.done && !i.snoozed; }).length;
-    document.getElementById('nfPctL').textContent = openN ? 'of your plan is filled in. '+openN+' item'+(openN===1?'':'s')+' left.' : 'of your plan is filled in. Nothing left open.';
+    document.getElementById('nfPctL').textContent = openN ? openN+' item'+(openN===1?'':'s')+' to go.' : 'Nothing left to do.';
   }
   function byId(id){ for(var k=0;k<ITEMS.length;k++) if(ITEMS[k].id===id) return ITEMS[k]; }
   function leave(id, then){
