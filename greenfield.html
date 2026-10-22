@@ -26214,7 +26214,7 @@ body.conn-open.cn-match .layout.page[data-page="plan"] > .rail{ display:none !im
     v.innerHTML=
       '<div class="cm-grid one">'
       +'<div class="cm-col"><div class="cm-h"><div class="t">Connected Accounts</div><div class="s"><span data-cm-count>0/'+LIVE.length+' accounts are active in My Plan</span></div></div><div class="cm-list live">'+rows+'</div>'
-      +'<button type="button" class="cm-addinst" data-cm-addinst>+ Connect More</button>'
+      +'<button type="button" class="cm-addinst" data-cm-addinst>+ Connect More Financial Institutions</button>'
       +'<div class="cm-foot"><span class="cnt" data-cm-plan></span><button type="button" class="cta" data-cm-link>Link Accounts</button></div></div>'
       +'</div>';
     plan();
@@ -26882,9 +26882,9 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-group[hidden]{ display:none; }
 .nf-empty{ border:1px dashed var(--hairline); border-radius:14px; padding:22px; text-align:center; font-size:15px; color:var(--text-secondary); }
 
-.nf-card{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:14px; padding:26px 0; border:0; border-bottom:1px solid var(--hairline); background:#fff; cursor:pointer;
+.nf-card{ display:grid; grid-template-columns:40px minmax(0,1fr); gap:14px; padding:40px 0; border:0; border-bottom:1px solid var(--hairline); background:#fff; cursor:pointer;
   transition:opacity .35s ease, transform .4s cubic-bezier(.22,1,.36,1); }
-.nf-card.open{ padding:30px 0 34px; cursor:default; }
+.nf-card.open{ padding:40px 0 44px; cursor:default; }
 .nf-group [data-nf-list] > .nf-card:last-child{ border-bottom:0; }
 .nf-card.leaving{ opacity:0; transform:translateX(18px); }
 .nf-card.arriving{ animation:nfIn .45s cubic-bezier(.22,1,.36,1); }
@@ -26910,20 +26910,25 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 /* the opened item */
 .nf-more{ display:none; }
 .nf-card.open .nf-more{ display:block; animation:nfIn .3s ease; }
-.nf-crumb{ font-size:13px; color:var(--green-cta); margin-top:10px; }
-.nf-crumb span{ color:var(--text-tertiary); margin:0 6px; }
-.nf-more p{ font-size:15px; line-height:1.55; color:var(--text-secondary); margin:12px 0 0; max-width:60ch; }
-.nf-more p b{ color:var(--ink); font-weight:600; }
-.nf-more ul{ margin:8px 0 0; padding-left:20px; font-size:15px; line-height:1.55; color:var(--text-secondary); }
-.nf-fix{ font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary); margin-top:18px; }
-.nf-fix + p{ margin-top:6px; }
+.nf-card.open .nf-s{ display:none; }
+.nf-more{ margin-top:14px; background:#F6F8F7; border-radius:14px; padding:18px 20px 16px; }
+.nf-cols{ display:grid; grid-template-columns:1.15fr 1fr; gap:0 28px; }
+.nf-sec + .nf-sec{ border-left:1px solid #E3E8E5; padding-left:24px; }
+.nf-sec .k{ font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:6px; }
+.nf-more p{ font-size:14.5px; line-height:1.55; color:var(--ink); margin:0; }
+.nf-more p + p{ margin-top:8px; }
+.nf-more p b{ font-weight:600; }
+.nf-more ul{ margin:6px 0 0; padding-left:18px; font-size:14.5px; line-height:1.55; color:var(--ink); }
+.nf-crumb{ font-size:12.5px; color:var(--text-tertiary); margin-top:14px; padding-top:12px; border-top:1px solid #E3E8E5; }
+.nf-crumb span{ margin:0 6px; }
+@media (max-width:900px){ .nf-cols{ grid-template-columns:1fr; gap:14px; } .nf-sec + .nf-sec{ border-left:0; padding-left:0; border-top:1px solid #E3E8E5; padding-top:14px; } }
 .nf-more a[data-hm-go]{ color:var(--green-cta); font-weight:600; cursor:pointer; text-decoration:none; }
 .nf-more a[data-hm-go]:hover{ text-decoration:underline; }
 .nf-act{ display:flex; align-items:center; gap:14px; margin-top:14px; flex-wrap:nowrap; min-width:0; }
 .nf-act .go{ flex:none; display:inline-flex; align-items:center; gap:5px; min-height:32px; padding:0 13px; border-radius:999px; border:0; background:var(--green-cta); color:#fff; font:600 13px var(--font); cursor:pointer; }
 .nf-act .go:hover{ background:#0F5D45; }
 .nf-act .go::after{ content:'\2192'; }
-.nf-act .ai{ display:inline-flex; align-items:center; gap:6px; min-height:32px; padding:0 2px; min-width:0; flex:0 1 auto; border:0; background:none; color:var(--green-cta); font:500 14px var(--font); cursor:pointer; max-width:100%; }
+.nf-act .ai{ display:inline-flex; align-items:center; gap:6px; min-height:32px; padding:0 2px; min-width:0; flex:0 1 auto; margin-left:10px; border:0; background:none; color:var(--green-cta); font:500 14px var(--font); cursor:pointer; max-width:100%; }
 .nf-act .ai .spk{ width:14px; height:14px; flex:none; color:var(--green); }
 .nf-act .ai .lbl{ white-space:nowrap; flex:none; }
 .nf-act .ai .lbl{ font-weight:600; }
@@ -27124,9 +27129,11 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
       +'<div class="nf-bd"><div class="nf-top"><div class="nf-t">'+i.t+'</div><div class="nf-meta">'+(i.isNew&&!i.read?'<span class="nf-new">New</span>':'')+(i.pts&&!i.done&&!i.ignored?'<span class="nf-pts">+'+i.pts+' pts</span>':'')+CHEV+'</div></div>'
       +'<div class="nf-s">'+i.s+(i.done?' <span class="nf-w"><b>Done.</b> +'+i.pts+' pts added to your score.</span>':i.ignored?' <span class="nf-w">Ignored</span>':' <span class="nf-w">'+i.d+'</span>')+'</div>'
       +'<div class="nf-more">'
-        +'<div class="nf-crumb">'+i.crumb.join('<span>›</span>')+'</div>'
-        +i.more.map(function(p){ return /^<ul/.test(p) ? p : '<p>'+p+'</p>'; }).join('')
-        +'<div class="nf-fix">How to fix</div><p>'+i.fix+'</p>'
+        +'<div class="nf-cols">'
+          +'<div class="nf-sec"><div class="k">What we found</div>'+i.more.map(function(p){ return /^<ul/.test(p) ? p : '<p>'+p+'</p>'; }).join('')+'</div>'
+          +'<div class="nf-sec"><div class="k">How to fix</div><p>'+i.fix+'</p></div>'
+        +'</div>'
+        +'<div class="nf-crumb">In your plan<span>›</span>'+i.crumb.join('<span>›</span>')+'</div>'
       +'</div>'
       +'<div class="nf-act"><button type="button" class="go" data-hm-go="'+i.go+'" data-nf-open="'+i.id+'">'+i.cta+'</button>'
       +'<button type="button" class="ai" data-cn-ask="'+('Help me fix this: '+i.t).replace(/"/g,'&quot;')+'"><span class="spk">'+SPK+'</span><span class="lbl">Fix with AI</span></button>'
