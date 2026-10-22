@@ -27260,6 +27260,9 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .hm-page .card-link-row .headlink{ border:0; padding:0; background:none; font-size:14px; font-weight:600; color:var(--green-cta); }
 .hm-page .card-link-row .headlink:hover{ text-decoration:underline; }
 .hm-page .card-link-row + .ai-ask{ margin-top:12px; }
+.hm-page .cell-head.moved{ display:none; }
+.hm-page .card-head{ margin-bottom:var(--s-4); }
+.hm-page .card-head h3{ font-size:21px; font-weight:600; letter-spacing:-0.3px; margin-top:4px; line-height:1.2; }
 .hm-page .card-eyebrow-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .hm-page .card-eyebrow-row .card-link-row{ margin-top:0; }
 .hm-page .card-eyebrow-row .eyebrow{ margin-bottom:0; }
@@ -27280,6 +27283,14 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
       row.classList.add('top'); var wrap=document.createElement('div'); wrap.className='card-eyebrow-row'; eb.parentNode.insertBefore(wrap, eb); wrap.appendChild(eb); wrap.appendChild(row); return;
     }
     if(ask) card.insertBefore(row, ask); else card.appendChild(row);
+  });
+  /* every other section: the eyebrow and headline move inside the card, at the top */
+  document.querySelectorAll('.hm-page .hm-cell').forEach(function(sec){
+    if(sec.id==='s-money' || sec.id==='s-plans') return;
+    var head=sec.querySelector(':scope > .cell-head'), card=sec.querySelector(':scope > .cell-card, :scope > .card'); if(!head || !card) return;
+    var txt=head.querySelector(':scope > div'); if(!txt) return;
+    var h=document.createElement('div'); h.className='card-head'; h.appendChild(txt);
+    card.insertBefore(h, card.firstChild); head.classList.add('moved');
   });
 })();
 </script>
