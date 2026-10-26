@@ -26904,6 +26904,11 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-new{ font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green-cta); }
 .nf-pts{ font-size:13px; font-weight:700; color:var(--green-cta); white-space:nowrap; }
 .nf-chev{ width:18px; height:18px; color:var(--text-tertiary); transition:transform .25s ease; flex:none; }
+.nf-done-btn{ width:26px; height:26px; border-radius:50%; border:1.5px solid var(--hairline-strong); background:#fff; color:transparent; display:grid; place-items:center; cursor:pointer; padding:0; transition:background .15s ease, border-color .15s ease, color .15s ease, transform .15s var(--ease-settle); }
+.nf-done-btn svg{ width:14px; height:14px; }
+.nf-done-btn:hover{ border-color:#0E794E; color:#0E794E; background:#F3FAF6; transform:scale(1.08); }
+.nf-done-btn:focus-visible{ outline:2px solid #0E794E; outline-offset:2px; }
+.nf-act .lite + .lite{ margin-left:14px; }
 .nf-card.open .nf-chev{ transform:rotate(180deg); }
 .nf-s{ font-size:15px; color:var(--text-secondary); line-height:1.5; margin-top:4px; }
 .nf-w{ font-size:13px; color:var(--text-tertiary); white-space:nowrap; }
@@ -26934,13 +26939,26 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .nf-act .ai .lbl{ white-space:nowrap; flex:none; }
 .nf-act .ai .lbl{ font-weight:600; }
 .nf-act .ai:hover .lbl{ text-decoration:underline; }
-.nf-card:not(.open) .nf-act .lite{ display:none; }
+.nf-card:not(.open) .nf-act .lite:not(.always){ display:none; }
+.nf-act .lite.always{ display:inline-flex; align-items:center; gap:6px; color:var(--text-secondary); }
+.nf-act .lite.always svg{ width:14px; height:14px; color:#0E794E; }
+.nf-act .lite.always:hover{ color:#0E794E; }
+/* marking done: the link flips to Done, the row ticks, then folds away */
+.nf-act .lite.always .tick{ display:inline-grid; place-items:center; width:18px; height:18px; border-radius:50%; background:#0E794E; color:#fff; animation:nfTick .45s var(--ease-settle); }
+.nf-act .lite.always .tick svg{ width:11px; height:11px; color:#fff; }
+.nf-act .lite.always.is-done{ color:#0E794E; font-weight:600; pointer-events:none; }
+.nf-card.finishing{ transition:opacity .4s ease .05s, transform .45s var(--ease-out) .05s, height .45s var(--ease-out), padding .45s var(--ease-out), border-color .4s ease; overflow:hidden; }
+.nf-card.finishing .nf-t{ color:var(--text-secondary); text-decoration:line-through; text-decoration-color:#B9C3BD; transition:color .3s ease; }
+.nf-card.finishing .nf-ic{ background:#E3F1EA; color:#0E794E; transition:background .3s ease, color .3s ease; }
+.nf-card.finishing .nf-act .go, .nf-card.finishing .nf-act .ai, .nf-card.finishing .nf-act .lite:not(.always){ opacity:.35; transition:opacity .3s ease; }
+.nf-card.gone{ opacity:0; transform:translateX(24px); height:0 !important; padding-top:0 !important; padding-bottom:0 !important; border-color:transparent; }
+@keyframes nfTick{ 0%{ transform:scale(.3);} 70%{ transform:scale(1.15);} 100%{ transform:scale(1);} }
 .nf-act .ai q{ quotes:none; font-weight:600; color:var(--green-cta); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .nf-act .ai:hover q{ text-decoration:underline; }
 .nf-act .ai:focus-visible{ outline:2px solid var(--green-cta); outline-offset:2px; }
 .nf-act .lite{ margin-left:auto; flex:none; border:0; background:none; font:500 13.5px var(--font); color:var(--text-tertiary); cursor:pointer; padding:4px 2px; }
 .nf-act .lite:hover{ color:var(--ink); text-decoration:underline; }
-.nf-card.done .nf-act .go, .nf-card.done .nf-act .lite{ display:none; }
+.nf-card.done .nf-act .go{ display:none; }
 .nf-card.ignored .nf-act .go{ display:none; }
 .nf-card .nf-w b{ color:var(--green-cta); font-weight:600; }
 
@@ -27127,7 +27145,8 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
     var cls='nf-card'+(open?' open':'')+(i.done?' done':'')+(i.ignored?' ignored':'');
     return '<div class="'+cls+'" data-nf-id="'+i.id+'">'
       +'<span class="nf-ic '+(i.done?'done':(i.tone||''))+'">'+(i.done?IC.check:i.ignored?IC.x:IC[i.ic])+'</span>'
-      +'<div class="nf-bd"><div class="nf-top"><div class="nf-t">'+i.t+'</div><div class="nf-meta">'+(i.isNew&&!i.read?'<span class="nf-new">New</span>':'')+(i.pts&&!i.done&&!i.ignored?'<span class="nf-pts">+'+i.pts+' pts</span>':'')+CHEV+'</div></div>'
+      +'<div class="nf-bd"><div class="nf-top"><div class="nf-t">'+i.t+'</div><div class="nf-meta">'+(i.isNew&&!i.read?'<span class="nf-new">New</span>':'')+(i.pts&&!i.done&&!i.ignored?'<span class="nf-pts">+'+i.pts+' pts</span>':'')
+        +CHEV+'</div></div>'
       +'<div class="nf-s">'+i.s+(i.done?' <span class="nf-w"><b>Done.</b> +'+i.pts+' pts added to your score.</span>':i.ignored?' <span class="nf-w">Ignored</span>':' <span class="nf-w">'+i.d+'</span>')+'</div>'
       +'<div class="nf-more">'
         +'<div class="nf-cols">'
@@ -27138,7 +27157,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
       +'</div>'
       +'<div class="nf-act"><button type="button" class="go" data-hm-go="'+i.go+'" data-nf-open="'+i.id+'">'+i.cta+'</button>'
       +'<button type="button" class="ai" data-cn-ask="'+('Help me fix this: '+i.t).replace(/"/g,'&quot;')+'"><span class="spk">'+SPK+'</span><span class="lbl">Fix with AI</span></button>'
-      +(i.ignored?'<button type="button" class="lite" data-nf-restore="'+i.id+'">Put it back</button>':'<button type="button" class="lite" data-nf-dismiss="'+i.id+'">Dismiss</button>')
+      +(i.ignored?'<button type="button" class="lite" data-nf-restore="'+i.id+'">Put it back</button>':i.done?'<button type="button" class="lite" data-nf-undone="'+i.id+'">Not done yet</button>':'<button type="button" class="lite always" data-nf-done="'+i.id+'">'+IC.check+'Mark as done</button><button type="button" class="lite" data-nf-dismiss="'+i.id+'">Dismiss</button>')
       +'</div>'
       +'</div></div>';
   }
@@ -27171,6 +27190,17 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
     var b;
     if((b=e.target.closest('[data-nf-filter]'))){ setFilter(b.dataset.nfFilter); return; }
     if((b=e.target.closest('[data-nf-dismiss]'))){ var it=byId(b.dataset.nfDismiss); it.read=true; openId=null; leave(it.id, function(){ it.ignored=true; render(); }); if(typeof window.toast==='function') window.toast('Dismissed. It is under Ignored if you change your mind.'); return; }
+    if((b=e.target.closest('[data-nf-done]'))){ var dn=byId(b.dataset.nfDone); dn.read=true; openId=null;
+      var card=b.closest('.nf-card'); if(card && !card.classList.contains('finishing')){
+        card.classList.add('finishing');
+        /* 1. the link becomes Done, the row ticks green */
+        b.innerHTML='<span class="tick">'+IC.check+'</span>Done'; b.classList.add('is-done');
+        /* 2. then the row folds away, and the list settles */
+        setTimeout(function(){ card.style.height=card.getBoundingClientRect().height+'px'; card.offsetHeight; card.classList.add('gone'); }, 700);
+        setTimeout(function(){ dn.done=true; render(); if(typeof window.toast==='function') window.toast('Done. +'+dn.pts+' pts toward a complete plan.'); }, 1150);
+      } else { dn.done=true; render(); }
+      return; }
+    if((b=e.target.closest('[data-nf-undone]'))){ var ud=byId(b.dataset.nfUndone); openId=null; leave(ud.id, function(){ ud.done=false; render(); }); return; }
     if((b=e.target.closest('[data-nf-restore]'))){ var r=byId(b.dataset.nfRestore); openId=null; leave(r.id, function(){ r.ignored=false; render(); }); return; }
     if((b=e.target.closest('[data-nf-open]'))){ byId(b.dataset.nfOpen).read=true; return; }   /* data-hm-go takes it from here */
     if(e.target.closest('.nf-act') || e.target.closest('.nf-more a')) return;
