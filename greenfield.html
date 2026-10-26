@@ -27253,6 +27253,10 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 </style>
 
 <style id="homeCardLinksCSS">
+/* Home: no rule between the treemap and its legend */
+.hm-page #s-money .tlegend{ border-top:0; padding-bottom:2.25px; }
+/* Home: the two headline chips read as plain text, no pill */
+.hm-page #s-money .money-total .chip, .hm-page #s-plans .money-total .chip{ background:none; padding:0; border:0; font-weight:600; }
 /* Home: the top two cards speak for themselves, no heading above them */
 .hm-page #s-money > .cell-head, .hm-page #s-plans > .cell-head{ display:none; }
 /* Home: the section link lives inside its card, not as a pill beside the heading */
@@ -27267,6 +27271,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 .hm-page .card-eyebrow-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .hm-page .card-eyebrow-row .card-link-row{ margin-top:0; }
 .hm-page .card-eyebrow-row .eyebrow{ margin-bottom:0; }
+.hm-page .money-total .card-link-row{ margin-top:0; margin-left:auto; align-self:baseline; }
 </style>
 <script id="homeCardLinksJS">
 (function(){
@@ -27281,7 +27286,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
     var eb=card.querySelector(':scope > .eyebrow');
     if(eb && (sec.id==='s-money' || sec.id==='s-plans')){
       var lbl=a.querySelector('span'); a.textContent=(sec.id==='s-money'?'My Money ':'My Plans '); if(lbl) a.appendChild(lbl);
-      row.classList.add('top'); var wrap=document.createElement('div'); wrap.className='card-eyebrow-row'; eb.parentNode.insertBefore(wrap, eb); wrap.appendChild(eb); wrap.appendChild(row); return;
+      row.classList.add('top'); var tot=card.querySelector(':scope > .money-total'); if(tot){ tot.appendChild(row); } else { var wrap=document.createElement('div'); wrap.className='card-eyebrow-row'; eb.parentNode.insertBefore(wrap, eb); wrap.appendChild(eb); wrap.appendChild(row); } return;
     }
     if(ask) card.insertBefore(row, ask); else card.appendChild(row);
   });
@@ -27295,3 +27300,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
   });
 })();
 </script>
+<style id="hideHomeBelow">
+/* Home: only the two top cards for now; the rest is parked */
+.hm-page .hm-cell:not(#s-money):not(#s-plans){ display:none !important; }
+</style>
