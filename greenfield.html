@@ -27304,3 +27304,876 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
 /* Home: only the two top cards for now; the rest is parked */
 .hm-page .hm-cell:not(#s-money):not(#s-plans){ display:none !important; }
 </style>
+
+<!-- HOME 2 BEGIN: the signed-in home, rebuilt. One story, one move, what changed, what is coming, and the life it is all for. -->
+<style id="home2CSS">
+body.home2 .hm-page .content > .welcome, body.home2 .hm-page .content > .topzone, body.home2 .hm-page .content > .grid2, body.home2 .hm-page .content > .fullzone, body.home2 .hm-page .content > .notes,
+body.home3 .hm-page .content > .welcome, body.home3 .hm-page .content > .topzone, body.home3 .hm-page .content > .grid2, body.home3 .hm-page .content > .fullzone, body.home3 .hm-page .content > .notes,
+body.home4 .hm-page .content > .welcome, body.home4 .hm-page .content > .topzone, body.home4 .hm-page .content > .grid2, body.home4 .hm-page .content > .fullzone, body.home4 .hm-page .content > .notes,
+body.home5 .hm-page .content > .welcome, body.home5 .hm-page .content > .topzone, body.home5 .hm-page .content > .grid2, body.home5 .hm-page .content > .fullzone, body.home5 .hm-page .content > .notes,
+body.home6 .hm-page .content > .welcome, body.home6 .hm-page .content > .topzone, body.home6 .hm-page .content > .grid2, body.home6 .hm-page .content > .fullzone, body.home6 .hm-page .content > .notes{ display:none !important; }
+body.home2 .hm-page .content > #home2{ display:block; }
+#home2{ display:none; }
+
+/* hero: the story and the move */
+#home2 .h2-hero{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:var(--s-8); align-items:stretch; margin-top:-6px; }
+#home2 .h2-date{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-hl{ font-size:44px; line-height:1.08; letter-spacing:-.4px; font-weight:400; color:var(--ink); margin:10px 0 12px; max-width:16ch; }
+#home2 .h2-hl em{ font-style:normal; color:#0E794E; }
+#home2 .h2-sub{ font-size:17px; line-height:1.5; color:var(--text-secondary); margin:0; max-width:48ch; }
+#home2 .h2-stats{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-4); margin-top:var(--s-6); }
+#home2 .h2-stat{ padding:16px 0 0; border-top:1px solid var(--hairline); cursor:pointer; }
+#home2 .h2-stat:hover .v{ color:#0E794E; }
+#home2 .h2-stat .k{ font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-stat .v{ font-size:26px; font-weight:600; letter-spacing:-.3px; color:var(--ink); line-height:1.15; margin-top:6px; font-variant-numeric:tabular-nums; transition:color .15s ease; }
+#home2 .h2-stat .d{ font-size:13.5px; color:var(--text-secondary); margin-top:3px; }
+#home2 .h2-stat .d.up{ color:#0E794E; font-weight:600; }
+
+#home2 .h2-move{ background:var(--eggshell); border-radius:20px; padding:26px 28px 24px; display:flex; flex-direction:column; min-height:100%; position:relative; overflow:hidden; }
+#home2 .h2-move::after{ content:''; position:absolute; right:-70px; top:-70px; width:220px; height:220px; border-radius:50%; background:rgba(4,180,119,.10); pointer-events:none; }
+#home2 .h2-move .k{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#0E794E; }
+#home2 .h2-move .k .dot{ width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(4,180,119,.18); }
+#home2 .h2-move .t{ font-size:26px; font-weight:600; line-height:1.2; letter-spacing:-.3px; color:var(--ink); margin:14px 0 8px; }
+#home2 .h2-move .s{ font-size:15px; line-height:1.5; color:var(--text-secondary); margin:0; }
+#home2 .h2-move .meta{ display:flex; gap:18px; margin-top:16px; font-size:13.5px; color:var(--text-secondary); }
+#home2 .h2-move .meta b{ color:var(--ink); font-weight:600; }
+#home2 .h2-move .meta .pts{ color:#0E794E; font-weight:700; }
+#home2 .h2-move .act{ display:flex; align-items:center; gap:18px; margin-top:auto; padding-top:22px; }
+#home2 .h2-move .cta{ min-height:44px; padding:0 22px; }
+#home2 .h2-move .ai{ display:inline-flex; align-items:center; gap:6px; border:0; background:none; font:600 14px var(--font); color:#0E794E; cursor:pointer; padding:0; }
+#home2 .h2-move .ai svg{ width:14px; height:14px; color:var(--green); }
+#home2 .h2-move .ai:hover{ text-decoration:underline; }
+#home2 .h2-move .more{ margin-top:14px; font-size:13.5px; color:var(--text-secondary); }
+#home2 .h2-move .more a{ color:#0E794E; font-weight:600; cursor:pointer; text-decoration:none; }
+#home2 .h2-move .more a:hover{ text-decoration:underline; }
+
+/* the week: three columns */
+#home2 .h2-week{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-6); margin-top:var(--s-10); }
+#home2 .h2-card{ border:1px solid var(--hairline); border-radius:var(--r-card); background:#fff; padding:22px 22px 18px; display:flex; flex-direction:column; }
+#home2 .h2-card .eb{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-card h3{ font-size:19px; font-weight:600; letter-spacing:-.2px; line-height:1.25; margin:6px 0 14px; color:var(--ink); }
+#home2 .h2-card .foot{ margin-top:auto; padding-top:14px; border-top:1px solid var(--hairline); font-size:14px; }
+#home2 .h2-card .foot a{ color:#0E794E; font-weight:600; cursor:pointer; text-decoration:none; }
+#home2 .h2-card .foot a:hover{ text-decoration:underline; }
+/* moves */
+#home2 .h2-moves{ list-style:none; margin:0; padding:0; }
+#home2 .h2-moves li{ display:grid; grid-template-columns:24px minmax(0,1fr) auto; gap:12px; align-items:start; padding:11px 0; border-top:1px solid var(--hairline); }
+#home2 .h2-moves li:first-child{ border-top:0; padding-top:0; }
+#home2 .h2-moves .chk{ width:22px; height:22px; border-radius:6px; border:1.5px solid var(--hairline-strong); background:#fff; display:grid; place-items:center; cursor:pointer; margin-top:1px; transition:background .2s ease, border-color .2s ease; }
+#home2 .h2-moves .chk svg{ width:13px; height:13px; opacity:0; transform:scale(.6); transition:opacity .2s ease, transform .25s var(--ease-settle); }
+#home2 .h2-moves li.done .chk{ background:#0E794E; border-color:#0E794E; }
+#home2 .h2-moves li.done .chk svg{ opacity:1; transform:scale(1); }
+#home2 .h2-moves .t{ font-size:15px; font-weight:600; color:var(--ink); line-height:1.35; cursor:pointer; }
+#home2 .h2-moves .t:hover{ text-decoration:underline; text-decoration-color:#B9C3BD; text-underline-offset:3px; }
+#home2 .h2-moves li.done .t{ color:var(--text-secondary); text-decoration:line-through; text-decoration-color:#B9C3BD; }
+#home2 .h2-moves .m{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+#home2 .h2-moves .p{ font-size:13px; font-weight:700; color:#0E794E; white-space:nowrap; margin-top:2px; }
+#home2 .h2-moves li.done .p{ color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-prog{ margin-top:16px; }
+#home2 .h2-prog .l{ display:flex; justify-content:space-between; font-size:13px; color:var(--text-secondary); }
+#home2 .h2-prog .l b{ color:var(--ink); font-weight:600; }
+#home2 .h2-prog .bar{ height:8px; border-radius:999px; background:#EEF1EF; margin-top:7px; position:relative; overflow:hidden; }
+#home2 .h2-prog .bar i{ position:absolute; left:0; top:0; bottom:0; border-radius:999px; background:#0E794E; transition:width .7s var(--ease-out); }
+#home2 .h2-prog .bar i.ghost{ background:rgba(4,180,119,.28); }
+/* changed */
+#home2 .h2-feed{ list-style:none; margin:0; padding:0; }
+#home2 .h2-feed li{ display:grid; grid-template-columns:44px minmax(0,1fr); gap:10px; padding:10px 0; border-top:1px solid var(--hairline); cursor:pointer; }
+#home2 .h2-feed li:first-child{ border-top:0; padding-top:0; }
+#home2 .h2-feed li:hover .t{ text-decoration:underline; text-decoration-color:#B9C3BD; text-underline-offset:3px; }
+#home2 .h2-feed .d{ font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); margin-top:3px; }
+#home2 .h2-feed .t{ font-size:15px; color:var(--ink); line-height:1.4; }
+#home2 .h2-feed .t b{ font-weight:600; }
+#home2 .h2-feed .t .up{ color:#0E794E; font-weight:600; }
+#home2 .h2-feed .s{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+/* coming up */
+#home2 .h2-dates{ list-style:none; margin:0; padding:0; }
+#home2 .h2-dates li{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:baseline; padding:10px 0; border-top:1px solid var(--hairline); cursor:pointer; }
+#home2 .h2-dates li:first-child{ border-top:0; padding-top:0; }
+#home2 .h2-dates li:hover .t{ text-decoration:underline; text-decoration-color:#B9C3BD; text-underline-offset:3px; }
+#home2 .h2-dates .w{ font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-dates .t{ font-size:15px; color:var(--ink); line-height:1.4; margin-top:1px; }
+#home2 .h2-dates .n{ font-size:15px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap; }
+#home2 .h2-dates .n small{ font-size:12px; font-weight:500; color:var(--text-secondary); margin-left:3px; }
+#home2 .h2-dates li.soon .n{ color:#B88A00; }
+#home2 .h2-dates li.soon .w{ color:#B88A00; }
+
+/* the life: journey band */
+#home2 .h2-life{ margin-top:var(--s-10); border-radius:20px; background:linear-gradient(135deg, #0D3F4A 0%, #0E794E 100%); color:#fff; padding:34px 36px 30px; display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:var(--s-8); align-items:center; position:relative; overflow:hidden; }
+#home2 .h2-life::before{ content:''; position:absolute; left:-120px; bottom:-160px; width:360px; height:360px; border-radius:50%; background:rgba(255,255,255,.06); }
+#home2 .h2-life .eb{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.72); }
+#home2 .h2-life .t{ font-size:30px; line-height:1.15; letter-spacing:-.3px; font-weight:400; margin:10px 0 10px; }
+#home2 .h2-life .t em{ font-style:normal; color:var(--mint); }
+#home2 .h2-life .s{ font-size:15px; line-height:1.5; color:rgba(255,255,255,.82); margin:0; max-width:40ch; }
+#home2 .h2-life .lnk{ display:inline-flex; align-items:center; gap:6px; margin-top:16px; color:#fff; font-weight:600; font-size:14px; cursor:pointer; text-decoration:none; }
+#home2 .h2-life .lnk:hover{ text-decoration:underline; }
+#home2 .h2-journey{ position:relative; }
+#home2 .h2-journey svg{ width:100%; height:auto; display:block; overflow:visible; }
+#home2 .h2-journey text{ font-family:var(--font); }
+#home2 .h2-journey .ms{ cursor:pointer; }
+#home2 .h2-journey .ms:hover circle.m{ r:7; }
+
+/* ask: questions and the advisor */
+#home2 .h2-ask{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:var(--s-8); margin-top:var(--s-10); }
+#home2 .h2-qs{ display:flex; flex-direction:column; }
+#home2 .h2-qs .eb{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-qs h3{ font-size:19px; font-weight:600; letter-spacing:-.2px; margin:6px 0 14px; color:var(--ink); }
+#home2 .h2-qs .row{ display:flex; flex-wrap:wrap; gap:10px; }
+#home2 .h2-q{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--hairline); background:#fff; border-radius:999px; padding:10px 16px 10px 12px; font:500 14.5px var(--font); color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease, transform .15s ease; }
+#home2 .h2-q svg{ width:14px; height:14px; color:var(--green); flex:none; }
+#home2 .h2-q:hover{ border-color:#0E794E; background:#F3FAF6; transform:translateY(-1px); }
+#home2 .h2-adv{ border:1px solid var(--hairline); border-radius:var(--r-card); padding:22px 24px; display:grid; grid-template-columns:48px minmax(0,1fr); gap:16px; align-items:start; }
+#home2 .h2-adv .av{ width:48px; height:48px; border-radius:50%; background:var(--eggshell); color:var(--teal); display:grid; place-items:center; font-size:15px; font-weight:700; }
+#home2 .h2-adv .who{ font-size:13px; color:var(--text-secondary); }
+#home2 .h2-adv .who b{ color:var(--ink); font-weight:600; }
+#home2 .h2-adv .q{ font-size:16px; line-height:1.5; color:var(--ink); margin:8px 0 12px; }
+#home2 .h2-adv .act{ display:flex; gap:16px; font-size:14px; }
+#home2 .h2-adv .act a{ color:#0E794E; font-weight:600; cursor:pointer; text-decoration:none; }
+#home2 .h2-adv .act a:hover{ text-decoration:underline; }
+
+/* demo switch, parked well below the page */
+#home2 .h2-demo{ display:flex; align-items:center; gap:12px; margin-top:var(--s-16); padding-top:var(--s-6); border-top:1px dashed var(--hairline); font-size:12px; color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-demo .sw{ display:inline-flex; border:1px solid var(--hairline); border-radius:999px; padding:3px; }
+#home2 .h2-demo .sw button{ border:0; background:none; font:600 12px var(--font); color:var(--text-secondary); padding:5px 12px; border-radius:999px; cursor:pointer; }
+#home2 .h2-demo .sw button.on{ background:var(--ink); color:#fff; }
+.hm-page .content > .h2-demo-classic{ display:none; }
+body:not(.home2):not(.home3):not(.home4):not(.home5):not(.home6) .hm-page .content > .h2-demo-classic{ display:flex; align-items:center; gap:12px; margin-top:var(--s-16); padding-top:var(--s-6); border-top:1px dashed var(--hairline); font-size:12px; color:var(--text-tertiary, #8A8D9A); }
+.h2-demo-classic .sw{ display:inline-flex; border:1px solid var(--hairline); border-radius:999px; padding:3px; }
+.h2-demo-classic .sw button{ border:0; background:none; font:600 12px var(--font); color:var(--text-secondary); padding:5px 12px; border-radius:999px; cursor:pointer; }
+.h2-demo-classic .sw button.on{ background:var(--ink); color:#fff; }
+
+@media (max-width:1100px){ #home2 .h2-hero, #home2 .h2-ask, #home2 .h2-life{ grid-template-columns:1fr; } #home2 .h2-week{ grid-template-columns:1fr; } #home2 .h2-hl{ font-size:36px; } }
+@media (prefers-reduced-motion:reduce){ #home2 *{ transition:none !important; animation:none !important; } }
+</style>
+
+<script id="home2JS">
+(function(){
+  'use strict';
+  var content=document.querySelector('.layout.page[data-page="home"] > .content'); if(!content || document.getElementById('home2')) return;
+  var SPK='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
+  var CK='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  var now=new Date();
+  var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var hour=now.getHours(), greet = hour<12 ? 'Good morning' : hour<17 ? 'Good afternoon' : 'Good evening';
+  var yearEnd=new Date(now.getFullYear(),11,31), toYearEnd=Math.max(0, Math.round((yearEnd-now)/86400000));
+
+  /* the three moves this week. pts: what each adds to plan completeness */
+  var MOVES=[
+    { id:'roth', t:'Convert $17,800 to Roth', m:'10 min · closes Dec 31', pts:4, go:'plan', ask:'Why $17,800, and what happens if I convert more?' },
+    { id:'bene', t:'Name a beneficiary on the Fidelity 401(k)', m:'2 min · at Fidelity', pts:2, go:'today:assets' },
+    { id:'lily', t:'Connect Lily’s Roth IRA', m:'3 min · balance is 8 months old', pts:3, go:'connections' }
+  ];
+  var BASE=72;
+  var FEED=[
+    { d:'Fri', t:'<b>Chase</b> refreshed four balances overnight.', s:'Checking up $204. Nothing you need to do.', go:'connections' },
+    { d:'Thu', t:'Markets rose 1.2%. Net worth <span class="up">+$7,100</span>.', s:'Brokerage and the 401(k) did the lifting.', go:'today:assets' },
+    { d:'Wed', t:'<b>Marshall</b> left four notes on your plan review.', s:'Two of them are about the Roth timing.', go:'advisory' },
+    { d:'Mon', t:'Car loan auto-pay cleared. <b>$410</b> freed up a month.', s:'Four payments left. Then it is gone for good.', go:'today:debts' }
+  ];
+  var DATES=[
+    { w:'Dec 31', t:'Roth conversion window closes', n:toYearEnd, u:'days', soon:true, go:'plan' },
+    { w:'Mar 2027', t:'Car loan paid off', n:5, u:'months', go:'today:debts' },
+    { w:'Jun 2032', t:'Lily can claim Social Security at 67', n:6, u:'years', go:'plan:income' },
+    { w:'2045', t:'Retirement. The lakehouse year.', n:903, u:'days', go:'plan' }
+  ];
+  var QS=['Can we retire a year earlier?','What is the one thing hurting my plan most?','What if the market drops 20% next year?','Is the lakehouse still realistic?'];
+
+  function pct(){ return Math.min(100, BASE + MOVES.filter(function(m){ return m.done; }).reduce(function(a,m){ return a+m.pts; },0)); }
+  function ifAll(){ return Math.min(100, BASE + MOVES.reduce(function(a,m){ return a+m.pts; },0)); }
+
+  var el=document.createElement('div'); el.id='home2';
+  el.innerHTML=
+    '<section class="h2-hero">'
+      +'<div>'
+        +'<div class="h2-date">'+DAYS[now.getDay()]+', '+MON[now.getMonth()]+' '+now.getDate()+'</div>'
+        +'<h1 class="h2-hl">'+greet+', Marshall. Your plan holds to <em>age 99</em>.</h1>'
+        +'<p class="h2-sub">87% confidence, up 2 points since September. The market did some of that. Most of it was you.</p>'
+        +'<div class="h2-stats">'
+          +'<div class="h2-stat" data-hm-go="today:assets"><div class="k">Net worth today</div><div class="v">$620,000</div><div class="d up">&#9650; $18.4k this quarter</div></div>'
+          +'<div class="h2-stat" data-hm-go="plan"><div class="k">Retiring</div><div class="v">2045</div><div class="d">903 days. On track.</div></div>'
+          +'<div class="h2-stat" data-hm-go="today:income"><div class="k">Surplus this month</div><div class="v">$3,450</div><div class="d">Three months running</div></div>'
+        +'</div>'
+      +'</div>'
+      +'<aside class="h2-move" aria-label="Today’s move">'
+        +'<div class="k"><span class="dot"></span>Today’s move</div>'
+        +'<div class="t">Convert $17,800 to Roth before the year ends.</div>'
+        +'<p class="s">It fits under the 12% bracket. Last December you left $9,400 of this room unused, and it does not roll over.</p>'
+        +'<div class="meta"><span><b>10 min</b></span><span class="pts">+4 pts</span><span>Closes in <b>'+toYearEnd+' days</b></span></div>'
+        +'<div class="act"><button type="button" class="cta" data-hm-go="plan">Do it now &#8594;</button><button type="button" class="ai" data-cn-ask="Walk me through converting $17,800 to Roth this year.">'+SPK+'Fix with AI</button></div>'
+        +'<div class="more">Two more moves this week. <a data-hm-go="notifications">See them all</a></div>'
+      +'</aside>'
+    +'</section>'
+    +'<section class="h2-week">'
+      +'<div class="h2-card"><div class="eb">This week</div><h3>Three moves, fifteen minutes.</h3><ul class="h2-moves" id="h2Moves"></ul>'
+        +'<div class="h2-prog"><div class="l"><span>Plan completeness</span><span><b id="h2Pct">'+pct()+'%</b> &rarr; '+ifAll()+'% if you do all three</span></div><div class="bar"><i class="ghost" style="width:'+ifAll()+'%"></i><i id="h2Bar" style="width:'+pct()+'%"></i></div></div>'
+        +'<div class="foot"><a data-hm-go="notifications">Everything your plan is waiting on &#8594;</a></div></div>'
+      +'<div class="h2-card"><div class="eb">What changed</div><h3>Since Monday.</h3><ul class="h2-feed">'
+        +FEED.map(function(f){ return '<li data-hm-go="'+f.go+'"><div class="d">'+f.d+'</div><div><div class="t">'+f.t+'</div><div class="s">'+f.s+'</div></div></li>'; }).join('')
+        +'</ul><div class="foot"><a data-hm-go="today">Open My Money &#8594;</a></div></div>'
+      +'<div class="h2-card"><div class="eb">Coming up</div><h3>Dates that move the plan.</h3><ul class="h2-dates">'
+        +DATES.map(function(d){ return '<li'+(d.soon?' class="soon"':'')+' data-hm-go="'+d.go+'"><div><div class="w">'+d.w+'</div><div class="t">'+d.t+'</div></div><div class="n">'+d.n+'<small>'+d.u+'</small></div></li>'; }).join('')
+        +'</ul><div class="foot"><a data-hm-go="plan">See the whole timeline &#8594;</a></div></div>'
+    +'</section>'
+    +'<section class="h2-life">'
+      +'<div><div class="eb">The life it is all for</div><div class="t">Retire in 2045. Keep the house, buy the <em>lakehouse</em>, see the grandkids every month.</div>'
+        +'<p class="s">That is the plan in one sentence. Every number on this page serves it. At 87% it holds through a 2022-style drop the year before you retire.</p>'
+        +'<a class="lnk" data-hm-go="plan">Your vision and what it costs &#8594;</a></div>'
+      +'<div class="h2-journey" id="h2Journey"></div>'
+    +'</section>'
+    +'<section class="h2-ask">'
+      +'<div class="h2-qs"><div class="eb">Ask Boldin AI</div><h3>The questions people in your spot ask.</h3><div class="row">'
+        +QS.map(function(q){ return '<button type="button" class="h2-q" data-cn-ask="'+q.replace(/"/g,'&quot;')+'">'+SPK+q+'</button>'; }).join('')
+      +'</div></div>'
+      +'<div class="h2-adv"><div class="av">MH</div><div><div class="who"><b>Marshall Hartwell</b>, CFP&reg; &middot; your advisor &middot; Wednesday</div>'
+        +'<div class="q">“You did the hard part already. You wrote it down. The Roth move is the one I would not let slip past December.”</div>'
+        +'<div class="act"><a data-hm-go="advisory">Read his four notes</a><a data-hm-go="advisory">Reply</a></div></div></div>'
+    +'</section>'
+    +'<div class="h2-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" class="on" data-h2="new">Story</button><button type="button" data-h2="focus">Focus</button><button type="button" data-h2="brief">Briefing</button></div></div>';
+  content.insertBefore(el, content.firstChild);
+  /* the classic view gets the same switch, so you can come back */
+  var cls=document.createElement('div'); cls.className='h2-demo-classic'; cls.innerHTML='<span>Home</span><div class="sw"><button type="button" class="on" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Focus</button><button type="button" data-h2="brief">Briefing</button></div>'; content.appendChild(cls);
+
+  /* moves list */
+  function renderMoves(){
+    var ul=document.getElementById('h2Moves');
+    ul.innerHTML=MOVES.map(function(m){ return '<li'+(m.done?' class="done"':'')+' data-id="'+m.id+'"><button type="button" class="chk" aria-label="Mark done" aria-pressed="'+(m.done?'true':'false')+'">'+CK+'</button><div><div class="t" data-hm-go="'+m.go+'">'+m.t+'</div><div class="m">'+m.m+'</div></div><div class="p">+'+m.pts+'</div></li>'; }).join('');
+    var p=pct(); document.getElementById('h2Pct').textContent=p+'%'; document.getElementById('h2Bar').style.width=p+'%';
+    var left=MOVES.filter(function(m){ return !m.done; }).length;
+    var more=el.querySelector('.h2-move .more'); if(more) more.innerHTML = left>1 ? (left-1)+' more move'+(left-1===1?'':'s')+' this week. <a data-hm-go="notifications">See them all</a>' : left===1 ? 'That is the last one this week. <a data-hm-go="notifications">See everything</a>' : 'All three done. <a data-hm-go="notifications">See what is next</a>';
+  }
+  renderMoves();
+  el.addEventListener('click', function(e){
+    var c=e.target.closest('.h2-moves .chk'); if(c){ var id=c.closest('li').dataset.id; var m=MOVES.filter(function(x){ return x.id===id; })[0]; m.done=!m.done; renderMoves(); if(m.done && typeof window.toast==='function') window.toast('Nice. +'+m.pts+' pts toward a complete plan.'); return; }
+    var sw=e.target.closest('[data-h2]'); if(sw){ window.__homeMode(sw.dataset.h2); return; }
+  });
+  window.__homeMode=function(mode){
+    document.body.classList.toggle('home2', mode==='new'); document.body.classList.toggle('home3', mode==='focus'); document.body.classList.toggle('home4', mode==='brief'); document.body.classList.toggle('home5', mode==='planner'); document.body.classList.toggle('home6', mode==='explore');
+    document.querySelectorAll('[data-h2]').forEach(function(b){ b.classList.toggle('on', b.dataset.h2===mode); });
+    window.scrollTo({top:0, behavior:'auto'});
+    window.dispatchEvent(new CustomEvent('boldin:home', {detail:mode}));
+  };
+  content.addEventListener('click', function(e){ var sw=e.target.closest('.h2-demo-classic [data-h2]'); if(sw) window.__homeMode(sw.dataset.h2); });
+
+  /* the journey: one line from now to 99, with the moments that matter on it */
+  (function journey(){
+    var W=560, H=150, x0=18, x1=W-18, y=84, y0=2026, y1=2071;
+    function X(yr){ return x0+(x1-x0)*(yr-y0)/(y1-y0); }
+    var MS=[ {y:2026,l:'Now',sub:'Age 56',go:'today'}, {y:2031,l:'Mortgage paid',sub:'2031',go:'today:debts',up:true}, {y:2033,l:'Lily’s benefit',sub:'2032',go:'plan:income',start:true}, {y:2045,l:'Retire',sub:'2045 · the lakehouse',go:'plan',big:true}, {y:2058,l:'Medicare behind you',sub:'2058',go:'plan',up:true}, {y:2069,l:'Age 99',sub:'Funded to here',go:'plan'} ];
+    var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Your journey from now to age 99">';
+    s+='<line x1="'+x0+'" y1="'+y+'" x2="'+X(2045)+'" y2="'+y+'" stroke="rgba(255,255,255,.95)" stroke-width="3" stroke-linecap="round"/>';
+    s+='<line x1="'+X(2045)+'" y1="'+y+'" x2="'+x1+'" y2="'+y+'" stroke="rgba(255,255,255,.35)" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 7"/>';
+    MS.forEach(function(m){ if(m.hide) return; var x=X(m.y); var ty = m.up ? y-16 : y+26; var r=m.big?7:5;
+      s+='<g class="ms" data-hm-go="'+m.go+'">';
+      s+='<circle class="m" cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+(m.big?'#A4E8CE':'#fff')+'"'+(m.big?' stroke="rgba(164,232,206,.35)" stroke-width="8"':'')+'/>';
+      var an=(m.y===y0||m.start)?'start':m.y>=2069?'end':'middle';
+      s+='<text x="'+x+'" y="'+ty+'" text-anchor="'+an+'" font-size="12.5" font-weight="600" fill="#fff">'+m.l+'</text>';
+      s+='<text x="'+x+'" y="'+(ty+15)+'" text-anchor="'+an+'" font-size="11" fill="rgba(255,255,255,.7)">'+m.sub+'</text>';
+      s+='</g>'; });
+    s+='</svg>';
+    document.getElementById('h2Journey').innerHTML=s;
+  })();
+
+  document.body.classList.add('home2');
+})();
+</script>
+<!-- HOME 2 END -->
+
+<!-- HOME 3 + 4 BEGIN: two more homes, each the opposite of a dashboard. Focus: one number, one move. Briefing: the home talks to you. -->
+<style id="home34CSS">
+body:not(.home3) #home3{ display:none !important; }
+body:not(.home4) #home4{ display:none !important; }
+body.home3 .hm-page .content > #home3{ display:block; }
+body.home4 .hm-page .content > #home4{ display:block; }
+body.home3 .hm-page .content > #home2, body.home4 .hm-page .content > #home2, body.home5 .hm-page .content > #home2, body.home6 .hm-page .content > #home2{ display:none !important; }
+
+/* ===== Focus: the whole page is one breath ===== */
+#home3{ position:relative; min-height:calc(100vh - 260px); display:flex; flex-direction:column; align-items:stretch; justify-content:center; text-align:center; padding:30px 0 40px; }
+#home3 > *{ margin-left:auto; margin-right:auto; }
+#home3 .f-halo{ position:absolute; left:50%; top:46%; width:640px; height:640px; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle, rgba(4,180,119,.14) 0%, rgba(4,180,119,.05) 45%, rgba(4,180,119,0) 70%); pointer-events:none; animation:f-breathe 7s ease-in-out infinite; }
+@keyframes f-breathe{ 0%,100%{ transform:translate(-50%,-50%) scale(1); opacity:.9;} 50%{ transform:translate(-50%,-50%) scale(1.08); opacity:1;} }
+#home3 .f-date{ position:relative; font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home3 .f-num{ position:relative; font-size:168px; line-height:1; letter-spacing:-6px; font-weight:400; color:var(--ink); margin:18px 0 0; font-variant-numeric:tabular-nums; }
+#home3 .f-num small{ font-size:56px; letter-spacing:-1px; color:#0E794E; margin-left:4px; vertical-align:top; line-height:1; position:relative; top:22px; }
+#home3 .f-lbl{ position:relative; font-size:22px; color:var(--ink); margin-top:6px; letter-spacing:-.2px; }
+#home3 .f-lbl em{ font-style:normal; color:#0E794E; }
+#home3 .f-sub{ position:relative; font-size:15.5px; color:var(--text-secondary); margin-top:10px; }
+#home3 .f-move{ position:relative; margin-top:52px; max-width:560px; width:100%; }
+#home3 .f-move .k{ font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#0E794E; }
+#home3 .f-move .t{ font-size:28px; line-height:1.25; letter-spacing:-.3px; color:var(--ink); margin:10px 0 0; }
+#home3 .f-move .m{ font-size:14.5px; color:var(--text-secondary); margin-top:10px; }
+#home3 .f-move .m b{ color:var(--ink); font-weight:600; }
+#home3 .f-act{ display:flex; align-items:center; justify-content:center; gap:22px; margin-top:26px; }
+#home3 .f-act .cta{ min-height:52px; padding:0 30px; font-size:16px; }
+#home3 .f-act .skip{ border:0; background:none; font:500 15px var(--font); color:var(--text-secondary); cursor:pointer; }
+#home3 .f-act .skip:hover{ color:var(--ink); text-decoration:underline; }
+#home3 .f-else{ position:relative; margin-top:64px; display:flex; justify-content:center; gap:28px; font-size:14px; }
+#home3 .f-else a{ color:var(--text-secondary); cursor:pointer; text-decoration:none; }
+#home3 .f-else a:hover{ color:#0E794E; text-decoration:underline; }
+#home3 .f-else a b{ color:var(--ink); font-weight:600; }
+#home3 .f-done{ position:relative; margin-top:52px; max-width:560px; width:100%; }
+/* depth on demand: one quiet control opens the rest, and closes it again */
+#home3 .f-moreb{ position:relative; margin-top:40px; display:inline-flex; align-items:center; gap:6px; border:0; background:none; font:500 14px var(--font); color:var(--text-tertiary, #8A8D9A); cursor:pointer; }
+#home3 .f-moreb svg{ width:16px; height:16px; transition:transform .25s ease; }
+#home3 .f-moreb[aria-expanded="true"] svg{ transform:rotate(180deg); }
+#home3 .f-moreb:hover{ color:var(--ink); }
+#home3 .f-more{ position:relative; width:100%; max-width:1100px; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-5); margin-top:56px; text-align:left; }
+#home3 .f-more[hidden]{ display:none; }
+#home3 .f-mcard{ border:1px solid var(--hairline); border-radius:var(--r-card); background:#fff; padding:18px 20px 16px; }
+#home3 .f-mcard .eb{ font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); margin-bottom:10px; }
+#home3 .f-mcard ul{ list-style:none; margin:0; padding:0; }
+#home3 .f-mcard li{ font-size:14px; line-height:1.45; color:var(--ink); padding:8px 0; border-top:1px solid var(--hairline); cursor:pointer; }
+#home3 .f-mcard li:has(.n){ display:flex; gap:10px; align-items:baseline; }
+#home3 .f-mcard li:first-child{ border-top:0; padding-top:0; }
+#home3 .f-mcard li:hover{ text-decoration:underline; text-decoration-color:#B9C3BD; text-underline-offset:3px; }
+#home3 .f-mcard li b{ font-weight:600; }
+#home3 .f-mcard li .up{ color:#0E794E; font-weight:600; }
+#home3 .f-mcard li .n{ flex:none; min-width:72px; font-weight:600; color:#0E794E; font-variant-numeric:tabular-nums; }
+#home3 .f-mcard.life{ background:linear-gradient(135deg, #0D3F4A 0%, #0E794E 100%); color:#fff; border-color:transparent; }
+#home3 .f-mcard.life .eb{ color:rgba(255,255,255,.72); }
+#home3 .f-mcard.life .t{ font-size:18px; line-height:1.3; letter-spacing:-.2px; }
+#home3 .f-mcard.life .s{ font-size:13.5px; line-height:1.5; color:rgba(255,255,255,.82); margin-top:8px; }
+#home3 .f-mcard.life a{ display:inline-block; margin-top:12px; color:#fff; font-weight:600; font-size:13.5px; cursor:pointer; text-decoration:none; }
+#home3 .f-mcard.life a:hover{ text-decoration:underline; }
+@media (max-width:900px){ #home3 .f-more{ grid-template-columns:1fr; } }
+#home3 .f-done .t{ font-size:28px; line-height:1.25; letter-spacing:-.3px; color:var(--ink); }
+#home3 .f-done .m{ font-size:15px; color:var(--text-secondary); margin-top:10px; }
+#home3 .f-demo{ position:relative; margin-top:110px; margin-left:0; display:flex; align-items:center; gap:12px; font-size:12px; color:var(--text-tertiary, #8A8D9A); }
+#home3 .sw, #home4 .sw{ display:inline-flex; border:1px solid var(--hairline); border-radius:999px; padding:3px; }
+#home3 .sw button, #home4 .sw button{ border:0; background:none; font:600 12px var(--font); color:var(--text-secondary); padding:5px 12px; border-radius:999px; cursor:pointer; }
+#home3 .sw button.on, #home4 .sw button.on{ background:var(--ink); color:#fff; }
+@media (max-width:760px){ #home3 .f-num{ font-size:110px; letter-spacing:-4px; } #home3 .f-num small{ font-size:40px; top:12px; } }
+
+/* ===== Briefing: the home talks to you ===== */
+#home4{ max-width:720px; margin:0 auto; padding:4px 0 40px; }
+#home4 .b-head{ display:flex; align-items:center; gap:12px; margin-bottom:30px; }
+#home4 .b-av{ width:40px; height:40px; border-radius:50%; background:var(--eggshell); display:grid; place-items:center; color:var(--green); }
+#home4 .b-av svg{ width:20px; height:20px; }
+#home4 .b-head .n{ font-size:15px; font-weight:600; color:var(--ink); }
+#home4 .b-head .d{ font-size:13px; color:var(--text-tertiary, #8A8D9A); }
+#home4 .b-msg{ opacity:0; transform:translateY(8px); transition:opacity .45s ease, transform .55s var(--ease-out); margin-bottom:18px; }
+#home4 .b-msg.in{ opacity:1; transform:none; }
+#home4 .b-p{ font-size:16.5px; line-height:1.7; color:var(--ink); margin:0 0 22px; max-width:58ch; }
+#home4 .b-p b{ font-weight:600; }
+#home4 .b-p .up{ color:#0E794E; font-weight:600; }
+#home4 .b-p a{ color:#0E794E; font-weight:600; cursor:pointer; text-decoration:none; }
+#home4 .b-p a:hover{ text-decoration:underline; }
+#home4 .b-card{ border:1px solid var(--hairline); border-radius:16px; padding:20px 22px; margin:0 0 30px; background:#fff; }
+#home4 .b-card.move{ background:var(--eggshell); border-color:transparent; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:18px; align-items:center; }
+#home4 .b-card .k{ font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#0E794E; }
+#home4 .b-card .t{ font-size:18px; font-weight:600; color:var(--ink); margin-top:4px; line-height:1.3; }
+#home4 .b-card .s{ font-size:14px; color:var(--text-secondary); margin-top:4px; }
+#home4 .b-card .cta{ min-height:40px; padding:0 18px; font-size:14px; white-space:nowrap; }
+#home4 .b-spark{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:20px; align-items:center; }
+#home4 .b-spark .big{ font-size:30px; font-weight:600; letter-spacing:-.4px; color:var(--ink); line-height:1; }
+#home4 .b-spark .big small{ display:block; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); margin-bottom:6px; }
+#home4 .b-spark .d{ font-size:13.5px; color:#0E794E; font-weight:600; margin-top:6px; }
+#home4 .b-spark svg{ width:100%; height:56px; display:block; }
+#home4 .b-dates{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }
+#home4 .b-dates > div{ padding:12px 14px; border:1px solid var(--hairline); border-radius:12px; cursor:pointer; }
+#home4 .b-dates > div:hover{ border-color:#0E794E; }
+#home4 .b-dates .w{ font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home4 .b-dates .n{ font-size:22px; font-weight:600; color:var(--ink); margin-top:4px; font-variant-numeric:tabular-nums; }
+#home4 .b-dates .n small{ font-size:12px; font-weight:500; color:var(--text-secondary); margin-left:3px; }
+#home4 .b-dates .t{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+#home4 .b-dates > div.soon .n{ color:#B88A00; }
+#home4 .b-reply{ margin-top:6px; }
+#home4 .b-reply{ margin-top:14px; }
+#home4 .b-reply .k{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); margin-bottom:12px; }
+#home4 .b-reply .row{ display:flex; flex-wrap:wrap; gap:10px; }
+#home4 .b-chip{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--hairline); background:#fff; border-radius:999px; padding:10px 16px; font:500 14.5px var(--font); color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+#home4 .b-chip:hover{ border-color:#0E794E; background:#F3FAF6; }
+#home4 .b-chip svg{ width:14px; height:14px; color:var(--green); }
+#home4 .b-foot{ display:flex; gap:22px; margin-top:40px; padding-top:18px; border-top:1px solid var(--hairline); font-size:13.5px; }
+#home4 .b-foot a{ color:var(--text-secondary); cursor:pointer; text-decoration:none; }
+#home4 .b-foot a:hover{ color:#0E794E; text-decoration:underline; }
+#home4 .b-demo{ display:flex; align-items:center; gap:12px; margin-top:var(--s-12); font-size:12px; color:var(--text-tertiary, #8A8D9A); }
+</style>
+
+<script id="home34JS">
+(function(){
+  'use strict';
+  var content=document.querySelector('.layout.page[data-page="home"] > .content'); if(!content || document.getElementById('home3')) return;
+  var SPK='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
+  var now=new Date(), DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var hour=now.getHours(), greet = hour<12 ? 'Morning' : hour<17 ? 'Afternoon' : 'Evening';
+  var toYearEnd=Math.max(0, Math.round((new Date(now.getFullYear(),11,31)-now)/86400000));
+  function sw(mode){ return '<div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button"'+(mode==='focus'?' class="on"':'')+' data-h2="focus">Focus</button><button type="button"'+(mode==='brief'?' class="on"':'')+' data-h2="brief">Briefing</button></div>'; }
+
+  /* ---- Focus ---- */
+  var f=document.createElement('div'); f.id='home3';
+  f.innerHTML='<div class="f-halo"></div>'
+    +'<div class="f-date">'+DAYS[now.getDay()]+', '+MON[now.getMonth()]+' '+now.getDate()+'</div>'
+    +'<div class="f-num"><span id="f3Num">0</span><small>%</small></div>'
+    +'<div class="f-lbl">chance your plan holds to <em>age 99</em></div>'
+    +'<div class="f-sub">Up 2 since September. Marshall, that was you.</div>'
+    +'<div class="f-move" id="f3Move"><div class="k">One move today</div><div class="t">Convert $17,800 to Roth before the year ends.</div><div class="m"><b>10 minutes.</b> Adds 4 points. The window closes in <b>'+toYearEnd+' days</b> and does not roll over.</div>'
+      +'<div class="f-act"><button type="button" class="cta" data-hm-go="plan">Start &#8594;</button><button type="button" class="skip" data-f3-skip>Not today</button></div></div>'
+    +'<div class="f-done" id="f3Done" hidden><div class="t">That is it for today.</div><div class="m">Nothing else needs you. Come back tomorrow and there will be one more.</div></div>'
+    +'<div class="f-else"><a data-hm-go="today"><b>$620,000</b> net worth</a><a data-hm-go="plan"><b>903 days</b> to 2045</a><a data-hm-go="notifications"><b>9 things</b> the plan is waiting on</a><a data-cn-ask="What is the one thing hurting my plan most?">Ask anything</a></div>'
+    +'<div class="f-more" id="f3More">'
+      +'<div class="f-mcard"><div class="eb">Since Monday</div><ul>'
+        +'<li data-hm-go="connections"><b>Chase</b> refreshed four balances. Nothing to do.</li>'
+        +'<li data-hm-go="today:assets">Markets rose 1.2%. Net worth <span class="up">+$7,100</span>.</li>'
+        +'<li data-hm-go="advisory"><b>Marshall</b> left four notes on your review.</li>'
+        +'<li data-hm-go="today:debts">Car loan auto-pay cleared. <b>$410</b> a month freed up.</li>'
+      +'</ul></div>'
+      +'<div class="f-mcard"><div class="eb">Coming up</div><ul>'
+        +'<li data-hm-go="plan"><span class="n">'+toYearEnd+' days</span>Roth window closes, Dec 31</li>'
+        +'<li data-hm-go="today:debts"><span class="n">5 months</span>Car loan paid off</li>'
+        +'<li data-hm-go="plan:income"><span class="n">6 years</span>Lily’s Social Security</li>'
+        +'<li data-hm-go="plan"><span class="n">903 days</span>Retirement, 2045</li>'
+      +'</ul></div>'
+      +'<div class="f-mcard life"><div class="eb">The life it is all for</div><div class="t">Retire in 2045. Keep the house, buy the lakehouse, see the grandkids every month.</div><div class="s">At 87% it holds through a 2022-style drop the year before you retire.</div><a data-hm-go="plan">Your vision &#8594;</a></div>'
+    +'</div>'
+    +'<div class="f-demo"><span>Home</span>'+sw('focus')+'</div>';
+  content.insertBefore(f, content.firstChild);
+  f.addEventListener('click', function(e){
+    var b=e.target.closest('[data-h2]'); if(b){ window.__homeMode(b.dataset.h2); return; }
+    var mb=e.target.closest('[data-f3-more]'); if(mb){ var m=document.getElementById('f3More'); var open=m.hidden; m.hidden=!open; mb.setAttribute('aria-expanded', open?'true':'false'); mb.firstChild.textContent = open ? 'That is enough for today ' : 'What else is going on '; if(open) setTimeout(function(){ m.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 60); return; }
+    if(e.target.closest('[data-f3-skip]')){ document.getElementById('f3Move').hidden=true; document.getElementById('f3Done').hidden=false; if(typeof window.toast==='function') window.toast('Parked. It is on the Notifications page when you want it.'); }
+  });
+  function countUp(){ var el=document.getElementById('f3Num'), t0=performance.now(); (function step(t){ var k=Math.min(1,(t-t0)/1100); k=1-Math.pow(1-k,3); el.textContent=Math.round(87*k); if(k<1) requestAnimationFrame(step); })(t0); }
+
+  /* ---- Briefing ---- */
+  var b=document.createElement('div'); b.id='home4';
+  var spark=(function(){ var pts=[552,558,561,570,566,574,580,578,585,592,598,601,612,620]; var W=320,H=56; var mn=Math.min.apply(null,pts), mx=Math.max.apply(null,pts); var d=pts.map(function(v,i){ return (i?'L':'M')+(i*(W/(pts.length-1))).toFixed(1)+' '+(H-6-(v-mn)/(mx-mn)*(H-12)).toFixed(1); }).join(' '); return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none"><path d="'+d+' L'+W+' '+H+' L0 '+H+' Z" fill="rgba(4,180,119,.10)"/><path d="'+d+'" fill="none" stroke="#0E794E" stroke-width="2" stroke-linejoin="round"/><circle cx="'+W+'" cy="'+(H-6-(620-mn)/(mx-mn)*(H-12)).toFixed(1)+'" r="3.5" fill="#0E794E"/></svg>'; })();
+  b.innerHTML='<div class="b-head"><div class="b-av">'+SPK+'</div><div><div class="n">Boldin AI</div><div class="d">Your '+DAYS[now.getDay()]+' briefing &middot; '+MON[now.getMonth()]+' '+now.getDate()+'</div></div></div>'
+    +'<div class="b-msg"><p class="b-p">'+greet+', Marshall. Short version: <b>the plan is fine, and one thing is time-sensitive.</b></p></div>'
+    +'<div class="b-msg"><p class="b-p">Net worth is <b>$620,000</b>, <span class="up">up $18,400</span> this quarter. Chase refreshed overnight, markets added about $7,100 on Thursday, and the car loan took its second-to-last bite. Confidence holds at <b>87%</b> to age 99.</p>'
+      +'<div class="b-card"><div class="b-spark"><div class="big"><small>Net worth</small>$620,000<div class="d">&#9650; $18.4k this quarter</div></div>'+spark+'</div></div></div>'
+    +'<div class="b-msg"><p class="b-p">The time-sensitive part: you still have <b>$17,800</b> of room under the 12% bracket this year. Last December you left $9,400 of it on the table. It closes in <b>'+toYearEnd+' days</b> and does not carry over.</p>'
+      +'<div class="b-card move"><div><div class="k">Today’s move</div><div class="t">Convert $17,800 to Roth</div><div class="s">10 minutes. Adds 4 points to a complete plan.</div></div><button type="button" class="cta" data-hm-go="plan">Do it now &#8594;</button></div></div>'
+    +'<div class="b-msg"><p class="b-p">Two smaller things when you have a minute: the Fidelity 401(k) still has <a data-hm-go="today:assets">no beneficiary</a>, and Lily’s Roth IRA balance is eight months old. <a data-hm-go="connections">Connecting it</a> fixes that for good.</p></div>'
+    +'<div class="b-msg"><p class="b-p">Coming up:</p>'
+      +'<div class="b-card" style="padding:14px"><div class="b-dates">'
+        +'<div class="soon" data-hm-go="plan"><div class="w">Dec 31</div><div class="n">'+toYearEnd+'<small>days</small></div><div class="t">Roth window closes</div></div>'
+        +'<div data-hm-go="today:debts"><div class="w">Mar 2027</div><div class="n">5<small>months</small></div><div class="t">Car loan paid off</div></div>'
+        +'<div data-hm-go="plan"><div class="w">2045</div><div class="n">903<small>days</small></div><div class="t">Retirement</div></div>'
+      +'</div></div></div>'
+    +'<div class="b-msg"><p class="b-p">Marshall left four notes on your review on Wednesday, two about the Roth timing. He agrees: do not let it slip past December. <a data-hm-go="advisory">Read them</a>.</p></div>'
+    +'<div class="b-msg b-reply"><div class="k">Reply</div><div class="row">'
+      +['Do the Roth with me now.','Why 87% and not higher?','What if we retire in 2043?','Skip today. Anything urgent?'].map(function(q){ return '<button type="button" class="b-chip" data-cn-ask="'+q+'">'+SPK+q+'</button>'; }).join('')
+    +'</div></div>'
+    +'<div class="b-demo"><span>Home</span>'+sw('brief')+'</div>';
+  content.insertBefore(b, content.firstChild);
+  b.addEventListener('click', function(e){ var x=e.target.closest('[data-h2]'); if(x) window.__homeMode(x.dataset.h2); });
+  function reveal(){ var msgs=b.querySelectorAll('.b-msg'); msgs.forEach(function(m){ m.classList.remove('in'); }); msgs.forEach(function(m,i){ setTimeout(function(){ m.classList.add('in'); }, 180+i*420); }); }
+
+  window.addEventListener('boldin:home', function(e){ if(e.detail==='focus') countUp(); if(e.detail==='brief') reveal(); });
+  window.addEventListener('boldin:view', function(e){ if(e.detail!=='home') return; if(document.body.classList.contains('home3')) countUp(); if(document.body.classList.contains('home4')) reveal(); });
+})();
+</script>
+<!-- HOME 3 + 4 END -->
+
+<!-- HOME 5 BEGIN: the Planner. For the member who wants the numbers, the tables, and the controls on one screen. -->
+<style id="home5CSS">
+body:not(.home5) #home5{ display:none !important; }
+#home5{ display:block; }
+#home5 .p-top{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:var(--s-5); }
+#home5 .p-top h1{ font-size:28px; font-weight:600; letter-spacing:-.3px; color:var(--ink); margin:0; }
+#home5 .p-top .sub{ font-size:14px; color:var(--text-secondary); margin-top:4px; }
+#home5 .p-top .tools{ display:flex; gap:10px; }
+#home5 .p-top .tools button{ display:inline-flex; align-items:center; gap:6px; border:1px solid var(--hairline); background:#fff; border-radius:999px; padding:8px 14px; font:600 13px var(--font); color:var(--ink); cursor:pointer; }
+#home5 .p-top .tools button:hover{ border-color:var(--ink); }
+#home5 .p-top .tools button.pri{ background:#0E794E; border-color:#0E794E; color:#fff; }
+/* kpi strip */
+#home5 .p-kpis{ display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); border:1px solid var(--hairline); border-radius:var(--r-card); overflow:hidden; background:#fff; }
+#home5 .p-kpi{ padding:16px 18px 14px; border-left:1px solid var(--hairline); cursor:pointer; }
+#home5 .p-kpi:first-child{ border-left:0; }
+#home5 .p-kpi:hover{ background:#FAFBFA; }
+#home5 .p-kpi .k{ font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home5 .p-kpi .v{ font-size:26px; font-weight:600; letter-spacing:-.4px; color:var(--ink); margin-top:6px; line-height:1.1; font-variant-numeric:tabular-nums; }
+#home5 .p-kpi .v small{ font-size:14px; font-weight:500; color:var(--text-secondary); margin-left:2px; }
+#home5 .p-kpi .d{ font-size:12.5px; color:var(--text-secondary); margin-top:5px; }
+#home5 .p-kpi .d.up{ color:#0E794E; font-weight:600; }
+#home5 .p-kpi .d.warn{ color:#B88A00; font-weight:600; }
+/* panels */
+#home5 .p-row{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:var(--s-5); margin-top:var(--s-5); }
+#home5 .p-row.even{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+#home5 .p-panel{ border:1px solid var(--hairline); border-radius:var(--r-card); background:#fff; padding:18px 20px 16px; display:flex; flex-direction:column; min-width:0; }
+#home5 .p-h{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px; }
+#home5 .p-h .t{ font-size:15px; font-weight:600; color:var(--ink); }
+#home5 .p-h .t small{ font-weight:500; color:var(--text-secondary); margin-left:6px; font-size:13px; }
+#home5 .p-h a{ font-size:13px; font-weight:600; color:#0E794E; cursor:pointer; text-decoration:none; white-space:nowrap; }
+#home5 .p-h a:hover{ text-decoration:underline; }
+/* chart */
+#home5 .p-chart svg{ width:100%; height:auto; display:block; overflow:visible; }
+#home5 .p-chart text{ font-family:var(--font); }
+#home5 .p-legend{ display:flex; gap:18px; font-size:12.5px; color:var(--text-secondary); margin-top:10px; }
+#home5 .p-legend i{ display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+/* tables */
+#home5 table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+#home5 th{ text-align:left; font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); padding:0 0 8px; border-bottom:1px solid var(--hairline); }
+#home5 td{ padding:9px 0; border-bottom:1px solid var(--hairline); color:var(--ink); vertical-align:middle; }
+#home5 tr:last-child td{ border-bottom:0; }
+#home5 td.n, #home5 th.n{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#home5 td .s{ display:block; font-size:12px; color:var(--text-secondary); margin-top:1px; }
+#home5 td .up{ color:#0E794E; font-weight:600; }
+#home5 td .dn{ color:#B6442C; font-weight:600; }
+#home5 td .lg{ width:22px; height:22px; border-radius:6px; border:1px solid var(--hairline); padding:3px; object-fit:contain; vertical-align:middle; margin-right:8px; background:#fff; }
+#home5 tr.sum td{ font-weight:600; border-top:1px solid var(--hairline-strong); }
+#home5 tr.row{ cursor:pointer; }
+#home5 tr.row:hover td{ background:#FAFBFA; }
+#home5 .p-note{ font-size:12.5px; color:var(--text-secondary); margin-top:10px; line-height:1.5; }
+/* inputs completeness */
+#home5 .p-inputs{ list-style:none; margin:0; padding:0; }
+#home5 .p-inputs li{ display:grid; grid-template-columns:132px minmax(0,1fr) 44px; gap:12px; align-items:center; padding:7px 0; cursor:pointer; }
+#home5 .p-inputs li:hover .nm{ text-decoration:underline; }
+#home5 .p-inputs .nm{ font-size:13.5px; color:var(--ink); }
+#home5 .p-inputs .bar{ height:7px; border-radius:999px; background:#EEF1EF; overflow:hidden; }
+#home5 .p-inputs .bar i{ display:block; height:100%; border-radius:999px; background:#0E794E; }
+#home5 .p-inputs li.low .bar i{ background:#E0A800; }
+#home5 .p-inputs .pc{ font-size:12.5px; font-weight:600; color:var(--text-secondary); text-align:right; font-variant-numeric:tabular-nums; }
+/* suggestions and tools */
+#home5 .p-sugg{ list-style:none; margin:0; padding:0; }
+#home5 .p-sugg li{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:9px 0; border-bottom:1px solid var(--hairline); cursor:pointer; }
+#home5 .p-sugg li:last-child{ border-bottom:0; }
+#home5 .p-sugg li:hover .t{ text-decoration:underline; }
+#home5 .p-sugg .t{ font-size:13.5px; color:var(--ink); }
+#home5 .p-sugg .m{ font-size:12px; color:var(--text-secondary); margin-top:1px; }
+#home5 .p-sugg .p{ font-size:12.5px; font-weight:700; color:#0E794E; white-space:nowrap; }
+#home5 .p-tools{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; }
+#home5 .p-tool{ border:1px solid var(--hairline); border-radius:12px; padding:12px 14px; cursor:pointer; }
+#home5 .p-tool:hover{ border-color:#0E794E; }
+#home5 .p-tool .t{ font-size:13.5px; font-weight:600; color:var(--ink); }
+#home5 .p-tool .s{ font-size:12px; color:var(--text-secondary); margin-top:3px; line-height:1.4; }
+#home5 .p-demo{ display:flex; align-items:center; gap:12px; margin-top:var(--s-12); padding-top:var(--s-6); border-top:1px dashed var(--hairline); font-size:12px; color:var(--text-tertiary, #8A8D9A); }
+#home5 .sw{ display:inline-flex; border:1px solid var(--hairline); border-radius:999px; padding:3px; }
+#home5 .sw button{ border:0; background:none; font:600 12px var(--font); color:var(--text-secondary); padding:5px 12px; border-radius:999px; cursor:pointer; }
+#home5 .sw button.on{ background:var(--ink); color:#fff; }
+@media (max-width:1100px){ #home5 .p-kpis{ grid-template-columns:repeat(2, minmax(0,1fr)); } #home5 .p-kpi{ border-top:1px solid var(--hairline); } #home5 .p-row, #home5 .p-row.even{ grid-template-columns:1fr; } }
+</style>
+
+<script id="home5JS">
+(function(){
+  'use strict';
+  var content=document.querySelector('.layout.page[data-page="home"] > .content'); if(!content || document.getElementById('home5')) return;
+  var now=new Date(), MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function lg(n){ var u=window.__instLogo && window.__instLogo(n); return u ? '<img class="lg" src="'+u+'" alt="">' : ''; }
+  var ACC=[
+    ['Chase','Everyday Checking','Cash',8254,204,'Today','today:assets'],
+    ['Ally','Savings','Cash',12000,0,'Typed in','today:assets'],
+    ['Fidelity Investments','401(k)','Tax-deferred',214000,5120,'Today','today:assets'],
+    ['Vanguard','Rollover IRA','Tax-deferred',72000,1640,'Today','today:assets'],
+    ['Charles Schwab','Joint brokerage','Taxable',71000,2300,'Today','today:assets'],
+    ['Fidelity Investments','Lily Roth IRA','Tax-free',9545,0,'Feb 14','connections'],
+    ['Optum Bank','HSA','Tax-free',1183,40,'3 days ago','today:assets'],
+    ['Vanguard','Roth IRA','Tax-free',66000,1520,'Today','today:assets'],
+    ['Sunmark Credit Union','High-yield savings','Cash',29938,60,'12 days ago','connections'],
+    ['Zillow estimate','Primary home','Real estate',481000,3100,'Monthly','plan:home'],
+    ['Chase','Sapphire Preferred','Debt',-1022,118,'Today','today:debts'],
+    ['Chase','Auto Loan','Debt',-10898,410,'Today','today:debts'],
+    ['Lakeshore Credit Union','Mortgage','Debt',-333000,1210,'Yesterday','today:debts']
+  ];
+  function money(n){ return (n<0?'−':'')+'$'+Math.abs(Math.round(n)).toLocaleString('en-US'); }
+  function delta(n){ return n===0 ? '<span class="s">no change</span>' : '<span class="'+(n>0?'up':'dn')+'">'+(n>0?'+':'−')+'$'+Math.abs(n).toLocaleString('en-US')+'</span>'; }
+  var sum=ACC.reduce(function(a,r){ return a+r[3]; },0);
+
+  /* projected net worth: a plain area chart, retirement marked */
+  var chart=(function(){
+    var W=640,H=230,L=46,R=10,T=14,B=28; var y0=2026,y1=2071;
+    var vals=[]; for(var yr=y0; yr<=y1; yr++){ var t=(yr-y0)/(2045-y0); var v = yr<=2045 ? 0.62+ (3.47-0.62)*Math.pow(t,1.35) : 3.47+(4.37-3.47)*Math.pow(Math.min(1,(yr-2045)/(2069-2045)),.9); vals.push([yr,v]); }
+    var mx=4.6; function X(yr){ return L+(W-L-R)*(yr-y0)/(y1-y0); } function Y(v){ return T+(H-T-B)*(1-v/mx); }
+    var d=vals.map(function(p,i){ return (i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1); }).join(' ');
+    var s='<svg viewBox="0 0 '+W+' '+H+'">';
+    [1,2,3,4].forEach(function(g){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="rgba(16,24,44,.08)"/><text x="'+(L-8)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="#8A8D9A">$'+g+'M</text>'; });
+    s+='<path d="'+d+' L'+X(y1)+' '+Y(0)+' L'+X(y0)+' '+Y(0)+' Z" fill="rgba(4,180,119,.12)"/>';
+    s+='<path d="'+d+'" fill="none" stroke="#0E794E" stroke-width="2.2" stroke-linejoin="round"/>';
+    s+='<line x1="'+X(2045)+'" x2="'+X(2045)+'" y1="'+T+'" y2="'+Y(0)+'" stroke="#10182C" stroke-dasharray="3 4" stroke-width="1"/>';
+    s+='<text x="'+X(2045)+'" y="'+(T-2)+'" text-anchor="middle" font-size="11" font-weight="600" fill="#10182C">Retire 2045</text>';
+    s+='<circle cx="'+X(2045)+'" cy="'+Y(3.47)+'" r="4" fill="#0E794E"/><text x="'+(X(2045)+8)+'" y="'+(Y(3.47)-8)+'" font-size="12" font-weight="600" fill="#10182C">$3.47M</text>';
+    s+='<circle cx="'+X(2069)+'" cy="'+Y(4.37)+'" r="4" fill="#0E794E"/><text x="'+(X(2069)-8)+'" y="'+(Y(4.37)-10)+'" text-anchor="end" font-size="12" font-weight="600" fill="#10182C">$4.37M at 99</text>';
+    [2026,2035,2045,2055,2065].forEach(function(yr){ s+='<text x="'+X(yr)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="#8A8D9A">'+yr+'</text>'; });
+    return s+'</svg>';
+  })();
+
+  var el=document.createElement('div'); el.id='home5';
+  el.innerHTML=
+    '<div class="p-top"><div><h1>Marshall and Lily’s plan</h1><div class="sub">As of '+MON[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear()+' &middot; 13 accounts, 8 linked &middot; last full run 6:02 this morning</div></div>'
+      +'<div class="tools"><button type="button" class="pri" data-hm-go="plan">View full plan &#8594;</button></div></div>'
+    +'<div class="p-kpis">'
+      +'<div class="p-kpi" data-hm-go="plan"><div class="k">Chance of success</div><div class="v">87<small>%</small></div><div class="d up">&#9650; 2 pts since Sep</div></div>'
+      +'<div class="p-kpi" data-hm-go="today:assets"><div class="k">Net worth</div><div class="v">$620,000</div><div class="d up">&#9650; $18.4k this quarter</div></div>'
+      +'<div class="p-kpi" data-hm-go="plan"><div class="k">At retirement (2045)</div><div class="v">$3.47M</div><div class="d">$4.37M at 99</div></div>'
+      +'<div class="p-kpi" data-hm-go="plan"><div class="k">Safe spending</div><div class="v">$7,200<small>/mo</small></div><div class="d">vs $6,450 spent now</div></div>'
+      +'<div class="p-kpi" data-hm-go="today:income"><div class="k">Savings rate</div><div class="v">28<small>%</small></div><div class="d warn">Target 30%</div></div>'
+    +'</div>'
+    +'<div class="p-row">'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Projected net worth<small>Baseline</small></div><a data-hm-go="plan">Projection details &#8594;</a></div><div class="p-chart">'+chart+'</div>'
+        +'<div class="p-legend"><span><i style="background:#0E794E"></i>Savings and investments</span><span><i style="background:rgba(16,24,44,.25)"></i>Retirement</span><span>Holds in 87 of 100 market histories</span></div>'
+        +'<table style="margin-top:14px"><thead><tr><th>Milestone</th><th class="n">Year</th><th class="n">Net worth</th><th class="n">Monthly income</th></tr></thead><tbody>'
+        +'<tr class="row" data-hm-go="today"><td>Today</td><td class="n">2026</td><td class="n">$620,000</td><td class="n">$11,300</td></tr>'
+        +'<tr class="row" data-hm-go="today:debts"><td>Mortgage paid off</td><td class="n">2031</td><td class="n">$1.12M</td><td class="n">$11,300</td></tr>'
+        +'<tr class="row" data-hm-go="plan"><td>Retirement</td><td class="n">2045</td><td class="n">$3.47M</td><td class="n">$7,600</td></tr>'
+        +'<tr class="row" data-hm-go="plan"><td>Thin year</td><td class="n">2041</td><td class="n">$2.9M</td><td class="n">$6,980</td></tr>'
+        +'<tr class="row" data-hm-go="plan"><td>Age 99</td><td class="n">2069</td><td class="n">$4.37M</td><td class="n">$7,600</td></tr>'
+        +'</tbody></table></div>'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Retirement cash flow<small>Monthly average</small></div><a data-hm-go="plan:income">Lifetime view &#8594;</a></div>'
+        +'<table><thead><tr><th>Income</th><th class="n">Per month</th></tr></thead><tbody>'
+        +'<tr class="row" data-hm-go="plan:income"><td>Social Security<span class="s">Marshall at 70, Lily at 67</span></td><td class="n">$4,310</td></tr>'
+        +'<tr class="row" data-hm-go="plan:income"><td>Pension<span class="s">Survivor benefit 50%</span></td><td class="n">$1,150</td></tr>'
+        +'<tr class="row" data-hm-go="plan"><td>Portfolio withdrawals<span class="s">3.6% of balance</span></td><td class="n">$2,140</td></tr>'
+        +'<tr class="sum"><td>Total income</td><td class="n">$7,600</td></tr>'
+        +'</tbody><thead><tr><th style="padding-top:14px">Expenses</th><th class="n" style="padding-top:14px">Per month</th></tr></thead><tbody>'
+        +'<tr class="row" data-hm-go="plan:expenses"><td>Essentials</td><td class="n">$4,480</td></tr>'
+        +'<tr class="row" data-hm-go="plan:expenses"><td>Flexible<span class="s">Travel, grandkids, golf</span></td><td class="n">$1,130</td></tr>'
+        +'<tr class="row" data-hm-go="plan:expenses"><td>Healthcare<span class="s">Medicare, out of pocket</span></td><td class="n">$640</td></tr>'
+        +'<tr class="row" data-hm-go="plan"><td>Taxes<span class="s">Federal and state</span></td><td class="n">$930</td></tr>'
+        +'<tr class="sum"><td>Total expenses</td><td class="n">$7,180</td></tr>'
+        +'</tbody></table><div class="p-note">Income covers expenses with <b>$420</b> a month to spare on average. The thin year is 2041.</div></div>'
+    +'</div>'
+    +'<div class="p-row">'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Accounts<small>'+ACC.length+'</small></div><a data-hm-go="connections">Connections &#8594;</a></div>'
+        +'<table><thead><tr><th>Account</th><th>Type</th><th class="n">Balance</th><th class="n">30 days</th><th class="n">Updated</th></tr></thead><tbody>'
+        +ACC.map(function(r){ return '<tr class="row" data-hm-go="'+r[6]+'"><td>'+lg(r[0])+r[1]+'<span class="s">'+r[0]+'</span></td><td>'+r[2]+'</td><td class="n">'+money(r[3])+'</td><td class="n">'+delta(r[4])+'</td><td class="n"><span class="s">'+r[5]+'</span></td></tr>'; }).join('')
+        +'<tr class="sum"><td colspan="2">Net worth</td><td class="n">'+money(sum)+'</td><td class="n"><span class="up">+$'+ACC.reduce(function(a,r){ return a+r[4]; },0).toLocaleString('en-US')+'</span></td><td></td></tr>'
+        +'</tbody></table></div>'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Plan inputs<small>72% complete</small></div><a data-hm-go="notifications">What is missing &#8594;</a></div>'
+        +'<ul class="p-inputs">'
+        +[['Assets',100,'today:assets'],['Debts',100,'today:debts'],['Income',85,'plan:income'],['Home and real estate',60,'plan:home'],['Expenses',55,'plan:expenses'],['Rate assumptions',100,'plan'],['Money flows',70,'plan'],['Estate planning',20,'plan:estate']].map(function(r){ return '<li'+(r[1]<60?' class="low"':'')+' data-hm-go="'+r[2]+'"><span class="nm">'+r[0]+'</span><span class="bar"><i style="width:'+r[1]+'%"></i></span><span class="pc">'+r[1]+'%</span></li>'; }).join('')
+        +'</ul><div class="p-note">Estate planning and expenses move the score most. Each is under ten minutes.</div></div>'
+    +'</div>'
+    +'<div class="p-row even">'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Coach suggestions<small>9 open</small></div><a data-hm-go="notifications">See all &#8594;</a></div><ul class="p-sugg">'
+        +[['Update Lily’s retirement savings balances','Plan accuracy · 8 months old',3],['Convert $17,800 to Roth before December ends','Strategy · closes in '+Math.max(0,Math.round((new Date(now.getFullYear(),11,31)-now)/86400000))+' days',4],['Some of your estate planning documents are missing','Plan accuracy · living will',5],['Rebalance the brokerage back to 60/40','Action · 71% stocks',3]].map(function(r){ return '<li data-hm-go="notifications"><div><div class="t">'+r[0]+'</div><div class="m">'+r[1]+'</div></div><div class="p">+'+r[2]+' pts</div></li>'; }).join('')
+        +'</ul></div>'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Explorers</div><a data-hm-go="optimize">All tools &#8594;</a></div><div class="p-tools">'
+        +'<div class="p-tool" data-hm-go="plan"><div class="t">Scenario comparison</div><div class="s">Baseline vs retire at 2043, side by side.</div></div>'
+        +'<div class="p-tool" data-hm-go="plan:income"><div class="t">Social Security explorer</div><div class="s">Every claiming age for both of you.</div></div>'
+        +'<div class="p-tool" data-hm-go="optimize"><div class="t">Roth conversion explorer</div><div class="s">Year by year, with the tax bill.</div></div>'
+        +'</div><div class="p-note" style="margin-top:14px">Stress test last run Oct 1: a 2022-style drop the year before retirement still funds the plan to 99.</div></div>'
+    +'</div>'
+    +'<div class="p-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Focus</button><button type="button" data-h2="brief">Briefing</button><button type="button" class="on" data-h2="planner">Planner</button></div></div>';
+  content.insertBefore(el, content.firstChild);
+  el.addEventListener('click', function(e){ var x=e.target.closest('[data-h2]'); if(x) window.__homeMode(x.dataset.h2); });
+  /* every other switch learns the fifth option */
+  document.querySelectorAll('.hm-page .sw').forEach(function(sw){ if(sw.closest('#home5') || sw.querySelector('[data-h2="planner"]')) return; var b=document.createElement('button'); b.type='button'; b.dataset.h2='planner'; b.textContent='Planner'; sw.appendChild(b); });
+})();
+</script>
+<!-- HOME 5 END -->
+
+<!-- HOME 6 BEGIN: Explore. For the dreamer and the visual learner: drag the future around and watch the plan answer. -->
+<style id="home6CSS">
+body:not(.home6) #home6{ display:none !important; }
+#home6{ display:block; }
+#home6 .x-top{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:24px; align-items:end; margin-bottom:var(--s-5); }
+#home6 .x-top h1{ font-size:34px; line-height:1.12; letter-spacing:-.3px; font-weight:400; color:var(--ink); margin:0; }
+#home6 .x-top h1 em{ font-style:normal; color:#0E794E; }
+#home6 .x-top .sub{ font-size:15px; color:var(--text-secondary); margin-top:6px; }
+#home6 .x-top .acts{ display:flex; gap:10px; }
+#home6 .x-top .acts button{ border:1px solid var(--hairline); background:#fff; border-radius:999px; padding:9px 16px; font:600 13.5px var(--font); color:var(--ink); cursor:pointer; }
+#home6 .x-top .acts button:hover{ border-color:var(--ink); }
+#home6 .x-top .acts button.pri{ background:#0E794E; border-color:#0E794E; color:#fff; }
+#home6 .x-top .acts button.pri:hover{ background:#0F5D45; }
+
+/* the stage */
+#home6 .x-stage{ display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:0; border:1px solid var(--hairline); border-radius:20px; overflow:hidden; background:#fff; }
+#home6 .x-canvas{ padding:22px 24px 14px; position:relative; min-width:0; }
+#home6 .x-canvas svg{ width:100%; height:auto; display:block; overflow:visible; touch-action:none; }
+#home6 .x-canvas text{ font-family:var(--font); user-select:none; }
+#home6 .x-hint{ position:absolute; left:24px; top:18px; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home6 .x-readout{ background:#F7FAF8; border-left:1px solid var(--hairline); padding:24px 24px 20px; display:flex; flex-direction:column; gap:18px; }
+#home6 .x-conf{ display:flex; align-items:center; gap:16px; }
+#home6 .x-ring{ position:relative; width:96px; height:96px; flex:none; }
+#home6 .x-ring svg{ width:96px; height:96px; transform:rotate(-90deg); display:block; }
+#home6 .x-ring circle{ fill:none; stroke-width:9; }
+#home6 .x-ring .bg{ stroke:#E6ECE8; }
+#home6 .x-ring .fg{ stroke:#0E794E; stroke-linecap:round; transition:stroke-dashoffset .5s var(--ease-out), stroke .3s ease; }
+#home6 .x-ring .fg.warn{ stroke:#E0A800; }
+#home6 .x-ring .fg.bad{ stroke:#B6442C; }
+#home6 .x-ring .big{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:600; letter-spacing:-.4px; color:var(--ink); }
+#home6 .x-ring .big small{ font-size:13px; font-weight:500; color:var(--text-secondary); margin-left:1px; }
+#home6 .x-conf .l{ font-size:14px; line-height:1.4; color:var(--ink); }
+#home6 .x-conf .l b{ font-weight:600; }
+#home6 .x-conf .l .k{ display:block; font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); margin-bottom:4px; }
+#home6 .x-outs{ display:grid; grid-template-columns:1fr 1fr; gap:12px 14px; }
+#home6 .x-out .k{ font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home6 .x-out .v{ font-size:20px; font-weight:600; color:var(--ink); margin-top:3px; font-variant-numeric:tabular-nums; letter-spacing:-.2px; transition:color .3s ease; }
+#home6 .x-out .v small{ font-size:12px; font-weight:500; color:var(--text-secondary); margin-left:2px; }
+#home6 .x-out .v.flash{ color:#0E794E; }
+#home6 .x-verdict{ font-size:14px; line-height:1.5; color:var(--ink); padding:12px 14px; border-radius:12px; background:#fff; border:1px solid var(--hairline); }
+#home6 .x-verdict b{ font-weight:600; }
+#home6 .x-verdict.good{ border-color:#CFE3D7; background:#F3FAF6; }
+#home6 .x-verdict.warn{ border-color:#EAD9A3; background:#FFFBEC; }
+#home6 .x-verdict.bad{ border-color:#E7C4BB; background:#FFF5F2; }
+
+/* the dials */
+#home6 .x-dials{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-5); margin-top:var(--s-5); }
+#home6 .x-dial{ border:1px solid var(--hairline); border-radius:var(--r-card); background:#fff; padding:16px 18px 14px; }
+#home6 .x-dial .h{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+#home6 .x-dial .k{ font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home6 .x-dial .v{ font-size:22px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; letter-spacing:-.2px; }
+#home6 .x-dial .v small{ font-size:12.5px; font-weight:500; color:var(--text-secondary); margin-left:2px; }
+#home6 .x-dial input[type=range]{ width:100%; margin:12px 0 4px; accent-color:#0E794E; cursor:pointer; }
+#home6 .x-dial .r{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-tertiary, #8A8D9A); }
+#home6 .x-dial .d{ font-size:12.5px; color:var(--text-secondary); margin-top:8px; min-height:18px; }
+#home6 .x-dial .d b{ color:#0E794E; font-weight:600; }
+#home6 .x-dial .d b.neg{ color:#B6442C; }
+
+/* the dreams */
+#home6 .x-dreams{ margin-top:var(--s-6); }
+#home6 .x-dreams .eb{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home6 .x-dreams h3{ font-size:21px; font-weight:600; letter-spacing:-.2px; margin:4px 0 14px; color:var(--ink); }
+#home6 .x-dreams h3 small{ font-weight:400; color:var(--text-secondary); font-size:15px; margin-left:8px; }
+#home6 .x-grid{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; }
+#home6 .x-dream{ position:relative; border:1.5px solid var(--hairline); border-radius:18px; background:#fff; padding:18px 18px 16px; cursor:pointer; text-align:left; font-family:var(--font); transition:border-color .2s ease, background .2s ease, transform .2s var(--ease-out), box-shadow .2s ease; }
+#home6 .x-dream:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(16,24,44,.06); }
+#home6 .x-dream.on{ border-color:#0E794E; background:#F3FAF6; }
+#home6 .x-dream .ic{ width:44px; height:44px; border-radius:12px; background:var(--eggshell); color:#0E794E; display:grid; place-items:center; margin-bottom:12px; }
+#home6 .x-dream .ic svg{ width:22px; height:22px; }
+#home6 .x-dream .t{ font-size:16px; font-weight:600; color:var(--ink); line-height:1.3; }
+#home6 .x-dream .s{ font-size:13px; color:var(--text-secondary); margin-top:4px; line-height:1.4; }
+#home6 .x-dream .c{ font-size:13px; font-weight:600; color:var(--ink); margin-top:10px; }
+#home6 .x-dream .c span{ font-weight:500; color:var(--text-secondary); }
+#home6 .x-dream .tg{ position:absolute; right:14px; top:14px; width:36px; height:22px; border-radius:999px; background:#DDE2DF; transition:background .2s ease; }
+#home6 .x-dream .tg::after{ content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .2s var(--ease-out); box-shadow:0 1px 2px rgba(0,0,0,.15); }
+#home6 .x-dream.on .tg{ background:#0E794E; }
+#home6 .x-dream.on .tg::after{ left:17px; }
+#home6 .x-dream .eff{ font-size:12px; font-weight:700; margin-top:6px; color:#B6442C; }
+#home6 .x-dream.on .eff{ color:#0E794E; }
+
+#home6 .x-foot{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:var(--s-6); padding:16px 20px; border-radius:var(--r-card); background:var(--eggshell); }
+#home6 .x-foot .t{ font-size:15px; color:var(--ink); }
+#home6 .x-foot .t b{ font-weight:600; }
+#home6 .x-foot .acts{ display:flex; gap:12px; }
+#home6 .x-foot .cta{ min-height:40px; padding:0 18px; font-size:14px; white-space:nowrap; }
+#home6 .x-foot .ai{ white-space:nowrap; }
+#home6 .x-foot .ai{ display:inline-flex; align-items:center; gap:6px; border:0; background:none; font:600 14px var(--font); color:#0E794E; cursor:pointer; }
+#home6 .x-foot .ai svg{ width:14px; height:14px; color:var(--green); }
+#home6 .x-foot .ai:hover{ text-decoration:underline; }
+#home6 .x-demo{ display:flex; align-items:center; gap:12px; margin-top:var(--s-12); padding-top:var(--s-6); border-top:1px dashed var(--hairline); font-size:12px; color:var(--text-tertiary, #8A8D9A); }
+#home6 .sw{ display:inline-flex; border:1px solid var(--hairline); border-radius:999px; padding:3px; }
+#home6 .sw button{ border:0; background:none; font:600 12px var(--font); color:var(--text-secondary); padding:5px 12px; border-radius:999px; cursor:pointer; }
+#home6 .sw button.on{ background:var(--ink); color:#fff; }
+@media (max-width:1100px){ #home6 .x-stage{ grid-template-columns:1fr; } #home6 .x-readout{ border-left:0; border-top:1px solid var(--hairline); } #home6 .x-dials{ grid-template-columns:1fr; } #home6 .x-grid{ grid-template-columns:1fr 1fr; } }
+</style>
+
+<script id="home6JS">
+(function(){
+  'use strict';
+  var content=document.querySelector('.layout.page[data-page="home"] > .content'); if(!content || document.getElementById('home6')) return;
+  var SPK='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
+  var SV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">';
+  var IC={
+    house:SV+'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
+    plane:SV+'<path d="M2 16l20-8-6 14-3-6-7-2z"/></svg>',
+    cap:SV+'<path d="M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>',
+    car:SV+'<path d="M3 13l2-5h14l2 5"/><rect x="2" y="13" width="20" height="6" rx="2"/><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/></svg>'
+  };
+  /* the dials and the dreams, with the baseline the plan is built on */
+  var S={ retire:2045, spend:6450, ss:67, dreams:{lake:true, trips:true, college:false, car:false} };
+  var DREAMS=[
+    { id:'lake', ic:'house', t:'The lakehouse', s:'Buy in 2046, keep the house too.', c:'$310,000', when:'2046', hit:6 },
+    { id:'trips', ic:'plane', t:'Three trips a year', s:'One big, two small, every year to 85.', c:'$12,000', when:'a year', hit:2 },
+    { id:'college', ic:'cap', t:'Help with college', s:'Two grandkids, a share each.', c:'$40,000', when:'2035 and 2038', hit:3 },
+    { id:'car', ic:'car', t:'A new car every 8 years', s:'Paid in cash, no loan.', c:'$38,000', when:'per car', hit:1.5 }
+  ];
+  function model(){
+    var c=87;
+    c += (S.retire-2045) * (S.retire<2045 ? 4 : 2.6);
+    c -= (S.spend-6450)/500 * (S.spend>6450 ? 3 : 2);
+    c += (S.ss-67) * (S.ss<67 ? 1.6 : 1.1);
+    DREAMS.forEach(function(d){ var base = d.id==='lake'||d.id==='trips'; var on=S.dreams[d.id]; if(on && !base) c-=d.hit; if(!on && base) c+=d.hit; });
+    c=Math.max(18, Math.min(99, Math.round(c)));
+    var age = c>=85 ? 99 : Math.max(72, Math.round(99-(85-c)*0.85));
+    var nw99 = Math.max(0.2, 4.37 + (c-87)*0.07);
+    var nwRet = Math.max(0.5, 3.47 + (S.retire-2045)*0.16 - (S.spend-6450)/1000*0.12);
+    var inc = Math.round(7600 + (S.ss-67)*180 + (S.retire-2045)*140);
+    return {c:c, age:age, nw99:nw99, nwRet:nwRet, inc:inc};
+  }
+
+  var el=document.createElement('div'); el.id='home6';
+  el.innerHTML=
+    '<div class="x-top"><div><h1>Play with your <em>future</em>.</h1><div class="sub">Drag the retirement year, turn the dials, switch a dream on or off. The plan answers as you go.</div></div>'
+      +'<div class="acts"><button type="button" data-x-reset>Back to my plan</button><button type="button" class="pri" data-hm-go="plan">Save as a scenario &#8594;</button></div></div>'
+    +'<div class="x-stage">'
+      +'<div class="x-canvas"><div class="x-hint">Net worth, now to 99 &middot; drag the marker</div><div id="x6Chart"></div></div>'
+      +'<div class="x-readout">'
+        +'<div class="x-conf"><div class="x-ring"><svg viewBox="0 0 96 96"><circle class="bg" cx="48" cy="48" r="40"/><circle class="fg" id="x6Fg" cx="48" cy="48" r="40"/></svg><div class="big"><span id="x6C">87</span><small>%</small></div></div>'
+          +'<div class="l"><span class="k">Chance of success</span><span id="x6Age">Funded to <b>age 99</b></span></div></div>'
+        +'<div class="x-outs">'
+          +'<div class="x-out"><div class="k">Retire in</div><div class="v" id="x6Ret">2045</div></div>'
+          +'<div class="x-out"><div class="k">At retirement</div><div class="v" id="x6NwRet">$3.47M</div></div>'
+          +'<div class="x-out"><div class="k">Monthly income</div><div class="v" id="x6Inc">$7,600</div></div>'
+          +'<div class="x-out"><div class="k">At 99</div><div class="v" id="x6Nw99">$4.37M</div></div>'
+        +'</div>'
+        +'<div class="x-verdict good" id="x6Verdict"></div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="x-dials">'
+      +'<div class="x-dial"><div class="h"><span class="k">Retire in</span><span class="v" id="x6dRet">2045</span></div><input type="range" min="2038" max="2052" step="1" value="2045" data-x="retire"><div class="r"><span>2038 &middot; age 68</span><span>2052 &middot; age 82</span></div><div class="d" id="x6dRetD">The plan’s year. 903 days away.</div></div>'
+      +'<div class="x-dial"><div class="h"><span class="k">Spend each month</span><span class="v" id="x6dSp">$6,450</span></div><input type="range" min="4500" max="9500" step="50" value="6450" data-x="spend"><div class="r"><span>$4,500</span><span>$9,500</span></div><div class="d" id="x6dSpD">What you spend today.</div></div>'
+      +'<div class="x-dial"><div class="h"><span class="k">Lily claims Social Security at</span><span class="v" id="x6dSS">67</span></div><input type="range" min="62" max="70" step="1" value="67" data-x="ss"><div class="r"><span>62</span><span>70</span></div><div class="d" id="x6dSSD">Her full retirement age.</div></div>'
+    +'</div>'
+    +'<div class="x-dreams"><div class="eb">Dreams</div><h3>What do you want the money for?<small>Switch one on and watch the number.</small></h3><div class="x-grid" id="x6Dreams"></div></div>'
+    +'<div class="x-foot"><div class="t" id="x6Foot"></div><div class="acts"><button type="button" class="ai" data-cn-ask="Which of these changes helps my plan the most?">'+SPK+'Ask AI which lever matters most</button><button type="button" class="cta" data-hm-go="plan">Open My Plans &#8594;</button></div></div>'
+    +'<div class="x-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Focus</button><button type="button" data-h2="brief">Briefing</button><button type="button" data-h2="planner">Planner</button><button type="button" class="on" data-h2="explore">Explore</button></div></div>';
+  content.insertBefore(el, content.firstChild);
+  document.querySelectorAll('.hm-page .sw').forEach(function(sw){ if(sw.closest('#home6') || sw.querySelector('[data-h2="explore"]')) return; var b=document.createElement('button'); b.type='button'; b.dataset.h2='explore'; b.textContent='Explore'; sw.appendChild(b); });
+
+  /* chart */
+  var W=760,H=300,L=44,Rr=16,T=26,B=34, y0=2026,y1=2071, mx=5.2;
+  function X(yr){ return L+(W-L-Rr)*(yr-y0)/(y1-y0); } function Y(v){ return T+(H-T-B)*(1-v/mx); } function YR(x){ return Math.round(y0+(x-L)/(W-L-Rr)*(y1-y0)); }
+  function curve(m){
+    var pts=[]; for(var yr=y0; yr<=y1; yr++){ var v; if(yr<=S.retire){ var t=(yr-y0)/Math.max(1,(S.retire-y0)); v=0.62+(m.nwRet-0.62)*Math.pow(t,1.35); } else { var u=Math.min(1,(yr-S.retire)/Math.max(1,(2069-S.retire))); v=m.nwRet+(m.nw99-m.nwRet)*Math.pow(u,.9); if(m.age<99 && yr>m.age-56+y0-0){ v=Math.max(0, v-(yr-(m.age-56+y0))*0.5); } }
+      pts.push([yr,Math.max(0,v)]); }
+    return pts;
+  }
+  function drawChart(m, animate){
+    var pts=curve(m); var d=pts.map(function(p,i){ return (i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(Math.min(mx,p[1])).toFixed(1); }).join(' ');
+    var s='<svg viewBox="0 0 '+W+' '+H+'" id="x6Svg">';
+    [1,2,3,4,5].forEach(function(g){ s+='<line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="rgba(16,24,44,.07)"/><text x="'+(L-8)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="#8A8D9A">$'+g+'M</text>'; });
+    s+='<path id="x6Area" d="'+d+' L'+X(y1)+' '+Y(0)+' L'+X(y0)+' '+Y(0)+' Z" fill="'+(m.c>=80?'rgba(4,180,119,.14)':m.c>=60?'rgba(224,168,0,.14)':'rgba(182,68,44,.12)')+'"/>';
+    s+='<path id="x6Line" d="'+d+'" fill="none" stroke="'+(m.c>=80?'#0E794E':m.c>=60?'#B88A00':'#B6442C')+'" stroke-width="2.6" stroke-linejoin="round"/>';
+    if(m.age<99){ var xa=X(y0+(m.age-56)); s+='<line x1="'+xa+'" x2="'+xa+'" y1="'+T+'" y2="'+Y(0)+'" stroke="#B6442C" stroke-dasharray="3 4"/><text x="'+(xa+6)+'" y="'+(T+12)+'" font-size="11.5" font-weight="600" fill="#B6442C">Money runs short at '+m.age+'</text>'; }
+    [2026,2035,2045,2055,2065].forEach(function(yr){ s+='<text x="'+X(yr)+'" y="'+(H-10)+'" text-anchor="middle" font-size="11" fill="#8A8D9A">'+yr+'</text>'; });
+    /* the draggable marker */
+    var xr=X(S.retire);
+    s+='<g id="x6Marker" style="cursor:ew-resize">'
+      +'<line x1="'+xr+'" x2="'+xr+'" y1="'+(T-4)+'" y2="'+Y(0)+'" stroke="#10182C" stroke-width="1.5" stroke-dasharray="4 4"/>'
+      +'<rect x="'+(xr-46)+'" y="'+(T-24)+'" width="92" height="24" rx="12" fill="#10182C"/>'
+      +'<text x="'+xr+'" y="'+(T-8)+'" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Retire '+S.retire+'</text>'
+      +'<circle cx="'+xr+'" cy="'+Y(Math.min(mx,m.nwRet))+'" r="9" fill="#fff" stroke="#10182C" stroke-width="2.5"/>'
+      +'<circle cx="'+xr+'" cy="'+Y(Math.min(mx,m.nwRet))+'" r="3" fill="#10182C"/>'
+      +'<rect x="'+(xr-18)+'" y="'+T+'" width="36" height="'+(Y(0)-T)+'" fill="transparent"/>'
+    +'</g></svg>';
+    document.getElementById('x6Chart').innerHTML=s;
+    var mk=document.getElementById('x6Marker');
+    mk.addEventListener('pointerdown', function(ev){ dragging=true; ev.preventDefault(); });
+  }
+  /* the chart is redrawn on every change, so the drag lives on the document, not the svg */
+  var dragging=false;
+  function toYear(ev){ var svg=document.getElementById('x6Svg'); if(!svg) return S.retire; var r=svg.getBoundingClientRect(); var x=(ev.clientX-r.left)*(W/r.width); return Math.max(2038, Math.min(2052, YR(x))); }
+  document.addEventListener('pointermove', function(ev){ if(!dragging) return; var yr=toYear(ev); if(yr!==S.retire){ S.retire=yr; el.querySelector('[data-x="retire"]').value=yr; update(); } });
+  document.addEventListener('pointerup', function(){ dragging=false; }); document.addEventListener('pointercancel', function(){ dragging=false; });
+  function fmtM(v){ return '$'+v.toFixed(2)+'M'; }
+  function flash(id, txt){ var e=document.getElementById(id); if(e.textContent!==txt){ e.textContent=txt; e.classList.add('flash'); setTimeout(function(){ e.classList.remove('flash'); }, 500); } }
+  function update(){
+    var m=model(); drawChart(m);
+    var C=2*Math.PI*40, fg=document.getElementById('x6Fg'); fg.style.strokeDasharray=C; fg.style.strokeDashoffset=C*(1-m.c/100); fg.className.baseVal='fg'+(m.c>=80?'':m.c>=60?' warn':' bad');
+    document.getElementById('x6C').textContent=m.c;
+    document.getElementById('x6Age').innerHTML = m.age>=99 ? 'Funded to <b>age 99</b>' : 'Money runs short at <b>'+m.age+'</b>';
+    flash('x6Ret', String(S.retire)); flash('x6NwRet', fmtM(m.nwRet)); flash('x6Inc', '$'+m.inc.toLocaleString('en-US')); flash('x6Nw99', fmtM(m.nw99));
+    var v=document.getElementById('x6Verdict'); var base=87;
+    v.className='x-verdict '+(m.c>=80?'good':m.c>=60?'warn':'bad');
+    v.innerHTML = m.c===base ? 'This is your plan as it stands. <b>87%</b> and funded through 99.' : m.c>base ? '<b>'+(m.c-base)+' points better</b> than your plan today. Worth saving as a scenario.' : m.c>=80 ? '<b>'+(base-m.c)+' points lower</b> than today, still comfortable.' : m.c>=60 ? '<b>'+(base-m.c)+' points lower.</b> It works in most markets, not all. One dial back fixes it.' : '<b>'+(base-m.c)+' points lower.</b> This version runs out at '+m.age+'. Retire a little later or spend a little less.';
+    document.getElementById('x6dRet').textContent=S.retire; document.getElementById('x6dSp').textContent='$'+S.spend.toLocaleString('en-US'); document.getElementById('x6dSS').textContent=S.ss;
+    document.getElementById('x6dRetD').innerHTML = S.retire===2045 ? 'The plan’s year. 903 days away.' : S.retire<2045 ? (2045-S.retire)+' year'+(2045-S.retire===1?'':'s')+' earlier. <b class="neg">Costs about '+Math.round((2045-S.retire)*4)+' pts.</b>' : (S.retire-2045)+' year'+(S.retire-2045===1?'':'s')+' later. <b>Adds about '+Math.round((S.retire-2045)*2.6)+' pts.</b>';
+    document.getElementById('x6dSpD').innerHTML = S.spend===6450 ? 'What you spend today.' : S.spend>6450 ? '$'+(S.spend-6450).toLocaleString('en-US')+' more a month. <b class="neg">About '+Math.round((S.spend-6450)/500*3)+' pts.</b>' : '$'+(6450-S.spend).toLocaleString('en-US')+' less a month. <b>Adds about '+Math.round((6450-S.spend)/500*2)+' pts.</b>';
+    document.getElementById('x6dSSD').innerHTML = S.ss===67 ? 'Her full retirement age.' : S.ss<67 ? 'Smaller check for life. <b class="neg">About '+Math.round((67-S.ss)*1.6)+' pts.</b>' : 'About '+Math.round((S.ss-67)*8)+'% more every month. <b>Adds about '+Math.round((S.ss-67)*1.1)+' pts.</b>';
+    var on=DREAMS.filter(function(d){ return S.dreams[d.id]; }).map(function(d){ return d.t.toLowerCase(); });
+    document.getElementById('x6Foot').innerHTML = on.length ? 'Retire in <b>'+S.retire+'</b>, spend <b>$'+S.spend.toLocaleString('en-US')+'</b> a month, and fund '+on.join(', ').replace(/, ([^,]*)$/, ' and $1')+'. <b>'+m.c+'%</b> chance it holds.' : 'Retire in <b>'+S.retire+'</b> with no extras. <b>'+m.c+'%</b> chance it holds.';
+    renderDreams();
+  }
+  function renderDreams(){
+    document.getElementById('x6Dreams').innerHTML=DREAMS.map(function(d){ var on=S.dreams[d.id]; return '<button type="button" class="x-dream'+(on?' on':'')+'" data-dream="'+d.id+'" aria-pressed="'+(on?'true':'false')+'"><span class="tg"></span><div class="ic">'+IC[d.ic]+'</div><div class="t">'+d.t+'</div><div class="s">'+d.s+'</div><div class="c">'+d.c+' <span>'+d.when+'</span></div><div class="eff">'+(on?'In the plan':'Costs about '+d.hit+' pts')+'</div></button>'; }).join('');
+  }
+  el.addEventListener('input', function(e){ var r=e.target.closest('input[data-x]'); if(!r) return; S[r.dataset.x]=+r.value; update(); });
+  el.addEventListener('click', function(e){
+    var d=e.target.closest('[data-dream]'); if(d){ S.dreams[d.dataset.dream]=!S.dreams[d.dataset.dream]; update(); return; }
+    if(e.target.closest('[data-x-reset]')){ S.retire=2045; S.spend=6450; S.ss=67; S.dreams={lake:true, trips:true, college:false, car:false}; el.querySelectorAll('input[data-x]').forEach(function(r){ r.value=S[r.dataset.x]; }); update(); if(typeof window.toast==='function') window.toast('Back to your plan as it stands.'); return; }
+    var x=e.target.closest('[data-h2]'); if(x) window.__homeMode(x.dataset.h2);
+  });
+  update();
+})();
+</script>
+<!-- HOME 6 END -->
