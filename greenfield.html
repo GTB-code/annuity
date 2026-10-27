@@ -27378,7 +27378,7 @@ body.home2[data-view="home"] .dock{ display:none !important; }
 #home2 .h2-hl{ max-width:18ch; }
 #home2 .h2-sub{ font-size:17px; line-height:1.5; color:var(--text-secondary); margin:0; max-width:48ch; }
 #home2 .h2-stats{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-4); margin-top:2px; }
-#home2 .h2-askline{ margin-bottom:24px; }
+#home2 .h2-askline{ margin-bottom:20px; }
 #home2 .h2-stat{ padding:0; border-top:0; cursor:pointer; }
 #home2 .h2-stat:hover .v{ color:#0E794E; }
 #home2 .h2-stat .k{ font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
@@ -27588,10 +27588,10 @@ body:not(.home2):not(.home3):not(.home4):not(.home5):not(.home6) .hm-page .conte
         +'<div class="q">“You did the hard part already. You wrote it down. The Roth move is the one I would not let slip past December.”</div>'
         +'<div class="act"><a data-hm-go="advisory">Read his four notes</a><a data-hm-go="advisory">Reply</a></div></div></div>'
     +'</section>'
-    +'<div class="h2-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" class="on" data-h2="new">Story</button><button type="button" data-h2="focus">Focus</button><button type="button" data-h2="brief">Briefing</button></div></div>';
+    +'<div class="h2-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" class="on" data-h2="new">Story</button><button type="button" data-h2="focus">Timeline</button><button type="button" data-h2="brief">Briefing</button></div></div>';
   content.insertBefore(el, content.firstChild);
   /* the classic view gets the same switch, so you can come back */
-  var cls=document.createElement('div'); cls.className='h2-demo-classic'; cls.innerHTML='<span>Home</span><div class="sw"><button type="button" class="on" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Focus</button><button type="button" data-h2="brief">Briefing</button></div>'; content.appendChild(cls);
+  var cls=document.createElement('div'); cls.className='h2-demo-classic'; cls.innerHTML='<span>Home</span><div class="sw"><button type="button" class="on" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Timeline</button><button type="button" data-h2="brief">Briefing</button></div>'; content.appendChild(cls);
 
   /* moves list */
   function renderMoves(){
@@ -27695,62 +27695,89 @@ body.home3 .hm-page .content > #home3{ display:block; }
 body.home4 .hm-page .content > #home4{ display:block; }
 body.home3 .hm-page .content > #home2, body.home4 .hm-page .content > #home2, body.home5 .hm-page .content > #home2, body.home6 .hm-page .content > #home2{ display:none !important; }
 
-/* ===== Focus: the whole page is one breath ===== */
-#home3{ position:relative; min-height:calc(100vh - 260px); display:flex; flex-direction:column; align-items:stretch; justify-content:center; text-align:center; padding:30px 0 40px; }
-#home3 > *{ margin-left:auto; margin-right:auto; }
-#home3 .f-halo{ position:absolute; left:50%; top:46%; width:640px; height:640px; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle, rgba(4,180,119,.14) 0%, rgba(4,180,119,.05) 45%, rgba(4,180,119,0) 70%); pointer-events:none; animation:f-breathe 7s ease-in-out infinite; }
-@keyframes f-breathe{ 0%,100%{ transform:translate(-50%,-50%) scale(1); opacity:.9;} 50%{ transform:translate(-50%,-50%) scale(1.08); opacity:1;} }
-#home3 .f-date{ position:relative; font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
-#home3 .f-num{ position:relative; font-size:168px; line-height:1; letter-spacing:-6px; font-weight:400; color:var(--ink); margin:18px 0 0; font-variant-numeric:tabular-nums; }
-#home3 .f-num small{ font-size:56px; letter-spacing:-1px; color:#0E794E; margin-left:4px; vertical-align:top; line-height:1; position:relative; top:22px; }
-#home3 .f-lbl{ position:relative; font-size:22px; color:var(--ink); margin-top:6px; letter-spacing:-.2px; }
-#home3 .f-lbl em{ font-style:normal; color:#0E794E; }
-#home3 .f-sub{ position:relative; font-size:15.5px; color:var(--text-secondary); margin-top:10px; }
-#home3 .f-move{ position:relative; margin-top:52px; max-width:560px; width:100%; }
-#home3 .f-move .k{ font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#0E794E; }
-#home3 .f-move .t{ font-size:28px; line-height:1.25; letter-spacing:-.3px; color:var(--ink); margin:10px 0 0; }
-#home3 .f-move .m{ font-size:14.5px; color:var(--text-secondary); margin-top:10px; }
-#home3 .f-move .m b{ color:var(--ink); font-weight:600; }
-#home3 .f-act{ display:flex; align-items:center; justify-content:center; gap:22px; margin-top:26px; }
-#home3 .f-act .cta{ min-height:52px; padding:0 30px; font-size:16px; }
-#home3 .f-act .skip{ border:0; background:none; font:500 15px var(--font); color:var(--text-secondary); cursor:pointer; }
-#home3 .f-act .skip:hover{ color:var(--ink); text-decoration:underline; }
-#home3 .f-else{ position:relative; margin-top:64px; display:flex; justify-content:center; gap:28px; font-size:14px; }
-#home3 .f-else a{ color:var(--text-secondary); cursor:pointer; text-decoration:none; }
-#home3 .f-else a:hover{ color:#0E794E; text-decoration:underline; }
-#home3 .f-else a b{ color:var(--ink); font-weight:600; }
-#home3 .f-done{ position:relative; margin-top:52px; max-width:560px; width:100%; }
-/* depth on demand: one quiet control opens the rest, and closes it again */
-#home3 .f-moreb{ position:relative; margin-top:40px; display:inline-flex; align-items:center; gap:6px; border:0; background:none; font:500 14px var(--font); color:var(--text-tertiary, #8A8D9A); cursor:pointer; }
-#home3 .f-moreb svg{ width:16px; height:16px; transition:transform .25s ease; }
-#home3 .f-moreb[aria-expanded="true"] svg{ transform:rotate(180deg); }
-#home3 .f-moreb:hover{ color:var(--ink); }
-#home3 .f-more{ position:relative; width:100%; max-width:1100px; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-5); margin-top:56px; text-align:left; }
-#home3 .f-more[hidden]{ display:none; }
-#home3 .f-mcard{ border:1px solid var(--hairline); border-radius:var(--r-card); background:#fff; padding:18px 20px 16px; }
-#home3 .f-mcard .eb{ font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); margin-bottom:10px; }
-#home3 .f-mcard ul{ list-style:none; margin:0; padding:0; }
-#home3 .f-mcard li{ font-size:14px; line-height:1.45; color:var(--ink); padding:8px 0; border-top:1px solid var(--hairline); cursor:pointer; }
-#home3 .f-mcard li:has(.n){ display:flex; gap:10px; align-items:baseline; }
-#home3 .f-mcard li:first-child{ border-top:0; padding-top:0; }
-#home3 .f-mcard li:hover{ text-decoration:underline; text-decoration-color:#B9C3BD; text-underline-offset:3px; }
-#home3 .f-mcard li b{ font-weight:600; }
-#home3 .f-mcard li .up{ color:#0E794E; font-weight:600; }
-#home3 .f-mcard li .n{ flex:none; min-width:72px; font-weight:600; color:#0E794E; font-variant-numeric:tabular-nums; }
-#home3 .f-mcard.life{ background:linear-gradient(135deg, #0D3F4A 0%, #0E794E 100%); color:#fff; border-color:transparent; }
-#home3 .f-mcard.life .eb{ color:rgba(255,255,255,.72); }
-#home3 .f-mcard.life .t{ font-size:18px; line-height:1.3; letter-spacing:-.2px; }
-#home3 .f-mcard.life .s{ font-size:13.5px; line-height:1.5; color:rgba(255,255,255,.82); margin-top:8px; }
-#home3 .f-mcard.life a{ display:inline-block; margin-top:12px; color:#fff; font-weight:600; font-size:13.5px; cursor:pointer; text-decoration:none; }
-#home3 .f-mcard.life a:hover{ text-decoration:underline; }
-@media (max-width:900px){ #home3 .f-more{ grid-template-columns:1fr; } }
-#home3 .f-done .t{ font-size:28px; line-height:1.25; letter-spacing:-.3px; color:var(--ink); }
-#home3 .f-done .m{ font-size:15px; color:var(--text-secondary); margin-top:10px; }
-#home3 .f-demo{ position:relative; margin-top:110px; margin-left:0; display:flex; align-items:center; gap:12px; font-size:12px; color:var(--text-tertiary, #8A8D9A); }
+/* ===== Timeline: your life as one road ===== */
+#home3{ position:relative; padding:0 0 40px; }
+#home3 .tl-wrap{ display:grid; grid-template-columns:200px minmax(0,1fr) 260px; gap:var(--s-8); align-items:start; }
+#home3 .tl-side{ position:sticky; top:96px; }
+#home3 .tl-tick .k{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home3 .tl-tick .yr{ font-size:44px; font-weight:600; letter-spacing:-1px; line-height:1; color:var(--ink); margin-top:6px; font-variant-numeric:tabular-nums; }
+#home3 .tl-tick .yr.long{ font-size:26px; letter-spacing:-.3px; margin-top:12px; }
+#home3 .tl-tick .age{ font-size:15px; color:var(--text-secondary); margin-top:4px; }
+#home3 .tl-tick .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--hairline); }
+#home3 .tl-tick .row .v{ font-size:16px; font-weight:600; color:var(--ink); margin-top:3px; font-variant-numeric:tabular-nums; }
+#home3 .tl-tick .tl-sw{ animation:tlSw .45s ease; }
+@keyframes tlSw{ 0%{ opacity:.2; transform:translateY(5px);} 100%{ opacity:1; transform:none;} }
+#home3 .tl-nav{ display:flex; flex-direction:column; gap:2px; margin-top:22px; }
+#home3 .tl-nav a{ display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--text-secondary); padding:7px 10px; border-radius:10px; cursor:pointer; text-decoration:none; }
+#home3 .tl-nav a .d{ width:8px; height:8px; border-radius:50%; background:#DDE2DF; flex:none; }
+#home3 .tl-nav a:hover{ background:#F6F7F8; }
+#home3 .tl-nav a.on{ color:var(--ink); font-weight:600; background:#F2F3F5; }
+#home3 .tl-nav a.on .d{ background:#0E794E; }
+#home3 .tl-add{ margin-top:18px; padding-top:14px; border-top:1px solid var(--hairline); }
+#home3 .ai{ display:inline-flex; align-items:center; gap:6px; border:0; background:none; font:600 14px var(--font); color:#0E794E; cursor:pointer; padding:0; text-align:left; }
+#home3 .ai svg{ width:14px; height:14px; color:var(--green); flex:none; }
+#home3 .ai:hover{ text-decoration:underline; }
+#home3 .tl-head{ margin-top:-6px; }
+#home3 .tl-date{ font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home3 .tl-head h1{ font-size:38px; line-height:1.1; letter-spacing:-.4px; font-weight:400; color:var(--ink); margin:10px 0 10px; max-width:18ch; }
+#home3 .tl-head h1 em{ font-style:normal; color:#0E794E; }
+#home3 .tl-head p{ font-size:16px; color:var(--text-secondary); margin:0; }
+/* the road */
+#home3 .tl-road{ position:relative; margin-top:30px; padding-left:34px; }
+#home3 .tl-road::before{ content:''; position:absolute; left:11px; top:8px; bottom:40px; width:2px; background:linear-gradient(to bottom, #0E794E 0, #0E794E 180px, rgba(14,121,78,.35) 180px, rgba(14,121,78,.35) 100%); }
+#home3 .tl-ch{ padding:8px 0 26px; }
+#home3 .tl-chh{ position:relative; margin-bottom:14px; }
+#home3 .tl-chh .eb{ font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#0E794E; }
+#home3 .tl-chh .eb span{ margin-left:10px; color:var(--text-tertiary, #8A8D9A); letter-spacing:.04em; }
+#home3 .tl-chh h2{ font-size:24px; font-weight:600; letter-spacing:-.3px; line-height:1.2; margin:6px 0 4px; color:var(--ink); }
+#home3 .tl-ch.big .tl-chh h2{ font-size:30px; }
+#home3 .tl-chh p{ font-size:14.5px; color:var(--text-secondary); margin:0; max-width:56ch; }
+#home3 .tl-node{ position:relative; margin:0 0 12px; }
+#home3 .tl-dot{ position:absolute; left:-29px; top:22px; width:12px; height:12px; border-radius:50%; background:#fff; border:2.5px solid #0E794E; box-sizing:border-box; }
+#home3 .tl-node.move .tl-dot{ background:#0E794E; box-shadow:0 0 0 5px rgba(4,180,119,.18); }
+#home3 .tl-ch:first-child .tl-node:first-child .tl-dot{ animation:tlPulse 2.2s ease-out infinite; }
+@keyframes tlPulse{ 0%{ box-shadow:0 0 0 0 rgba(4,180,119,.35);} 100%{ box-shadow:0 0 0 14px rgba(4,180,119,0);} }
+#home3 .tl-node.warn .tl-dot{ border-color:#B88A00; }
+#home3 .tl-node.mark .tl-dot, #home3 .tl-node.end .tl-dot{ background:var(--mint); border-color:#0E794E; width:16px; height:16px; left:-31px; top:20px; }
+#home3 .tl-node.dream .tl-dot{ border-color:#0D3F4A; }
+#home3 .tl-card{ border:1px solid var(--hairline); border-radius:14px; background:#fff; padding:14px 18px 14px; }
+#home3 .tl-node.move .tl-card{ background:#F8FCFA; border-color:#DCEBE3; }
+#home3 .tl-node.warn .tl-card{ background:#FFFBEC; border-color:#EAD9A3; }
+#home3 .tl-node.mark .tl-card{ background:linear-gradient(135deg, #0D3F4A 0%, #0E794E 100%); color:#fff; border-color:transparent; }
+#home3 .tl-node.mark .tl-t, #home3 .tl-node.mark .tl-s, #home3 .tl-node.mark .tl-when .w{ color:#fff; }
+#home3 .tl-node.mark .tl-s{ color:rgba(255,255,255,.82); }
+#home3 .tl-node.mark .tl-act a{ color:#fff; }
+#home3 .tl-when{ display:flex; align-items:center; gap:10px; font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home3 .tl-when .cnt{ color:#B88A00; letter-spacing:0; text-transform:none; font-size:12.5px; }
+#home3 .tl-t{ font-size:16.5px; font-weight:600; color:var(--ink); margin-top:4px; line-height:1.3; }
+#home3 .tl-s{ font-size:14px; color:var(--text-secondary); margin-top:3px; line-height:1.5; max-width:60ch; }
+#home3 .tl-act{ display:flex; align-items:center; gap:18px; margin-top:12px; flex-wrap:wrap; }
+#home3 .tl-act .cta{ min-height:34px; padding:0 14px; font-size:13.5px; }
+#home3 .tl-act a{ font-size:13.5px; font-weight:600; color:#0E794E; cursor:pointer; text-decoration:none; }
+#home3 .tl-act a:hover{ text-decoration:underline; }
+#home3 .tl-act .pts{ margin-left:auto; font-size:13px; font-weight:700; color:#0E794E; }
+#home3 .tl-endcap{ position:relative; padding:6px 0 0 0; }
+#home3 .tl-endcap::before{ content:''; position:absolute; left:-31px; top:10px; width:16px; height:16px; border-radius:50%; background:#0E794E; }
+#home3 .tl-endcap .k{ font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home3 .tl-endcap .t{ font-size:22px; font-weight:600; color:var(--ink); }
+/* right rail */
+#home3 .tl-rail{ position:sticky; top:96px; }
+#home3 .tl-rail .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; color:var(--ink); margin-bottom:var(--s-4); white-space:nowrap; }
+#home3 .tl-rail .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; }
+#home3 .tl-rail p{ font-size:15.5px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:34ch; }
+#home3 .tl-goal{ background:var(--eggshell); border-radius:14px; padding:14px 16px; }
+#home3 .tl-goal .k{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#0E794E; }
+#home3 .tl-goal .t{ font-size:15px; line-height:1.45; color:var(--ink); margin-top:6px; }
+#home3 .tl-goal a{ display:inline-block; margin-top:8px; font-size:13px; font-weight:600; color:#0E794E; cursor:pointer; text-decoration:none; }
+#home3 .tl-q{ margin-top:18px; display:flex; flex-direction:column; gap:10px; }
+#home3 .tl-q .k{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); margin-bottom:2px; }
+#home3 .tl-q .ai{ font-weight:500; color:var(--ink); }
+#home3 .tl-q .ai:hover{ color:#0E794E; }
+#home3 .f-demo{ display:flex; align-items:center; gap:12px; margin-top:var(--s-12); padding-top:var(--s-6); border-top:1px dashed var(--hairline); font-size:12px; color:var(--text-tertiary, #8A8D9A); }
 #home3 .sw, #home4 .sw{ display:inline-flex; border:1px solid var(--hairline); border-radius:999px; padding:3px; }
 #home3 .sw button, #home4 .sw button{ border:0; background:none; font:600 12px var(--font); color:var(--text-secondary); padding:5px 12px; border-radius:999px; cursor:pointer; }
 #home3 .sw button.on, #home4 .sw button.on{ background:var(--ink); color:#fff; }
-@media (max-width:760px){ #home3 .f-num{ font-size:110px; letter-spacing:-4px; } #home3 .f-num small{ font-size:40px; top:12px; } }
+@media (max-width:1100px){ #home3 .tl-wrap{ grid-template-columns:1fr; } #home3 .tl-side, #home3 .tl-rail{ position:static; } }
 
 /* ===== Briefing: the home talks to you ===== */
 #home4{ max-width:720px; margin:0 auto; padding:4px 0 40px; }
@@ -27806,42 +27833,80 @@ body.home3 .hm-page .content > #home2, body.home4 .hm-page .content > #home2, bo
   var now=new Date(), DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
   var hour=now.getHours(), greet = hour<12 ? 'Morning' : hour<17 ? 'Afternoon' : 'Evening';
   var toYearEnd=Math.max(0, Math.round((new Date(now.getFullYear(),11,31)-now)/86400000));
-  function sw(mode){ return '<div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button"'+(mode==='focus'?' class="on"':'')+' data-h2="focus">Focus</button><button type="button"'+(mode==='brief'?' class="on"':'')+' data-h2="brief">Briefing</button></div>'; }
+  function sw(mode){ return '<div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button"'+(mode==='focus'?' class="on"':'')+' data-h2="focus">Timeline</button><button type="button"'+(mode==='brief'?' class="on"':'')+' data-h2="brief">Briefing</button></div>'; }
 
-  /* ---- Focus ---- */
+  /* ---- Timeline (the Focus slot, rebuilt): your life as one road, from this week to age 99 ---- */
   var f=document.createElement('div'); f.id='home3';
-  f.innerHTML='<div class="f-halo"></div>'
-    +'<div class="f-date">'+DAYS[now.getDay()]+', '+MON[now.getMonth()]+' '+now.getDate()+'</div>'
-    +'<div class="f-num"><span id="f3Num">0</span><small>%</small></div>'
-    +'<div class="f-lbl">chance your plan holds to <em>age 99</em></div>'
-    +'<div class="f-sub">Up 2 since September. Marshall, that was you.</div>'
-    +'<div class="f-move" id="f3Move"><div class="k">One move today</div><div class="t">Convert $17,800 to Roth before the year ends.</div><div class="m"><b>10 minutes.</b> Adds 4 points. The window closes in <b>'+toYearEnd+' days</b> and does not roll over.</div>'
-      +'<div class="f-act"><button type="button" class="cta" data-hm-go="plan">Start &#8594;</button><button type="button" class="skip" data-f3-skip>Not today</button></div></div>'
-    +'<div class="f-done" id="f3Done" hidden><div class="t">That is it for today.</div><div class="m">Nothing else needs you. Come back tomorrow and there will be one more.</div></div>'
-    +'<div class="f-else"><a data-hm-go="today"><b>$620,000</b> net worth</a><a data-hm-go="plan"><b>903 days</b> to 2045</a><a data-hm-go="notifications"><b>9 things</b> the plan is waiting on</a><a data-cn-ask="What is the one thing hurting my plan most?">Ask anything</a></div>'
-    +'<div class="f-more" id="f3More">'
-      +'<div class="f-mcard"><div class="eb">Since Monday</div><ul>'
-        +'<li data-hm-go="connections"><b>Chase</b> refreshed four balances. Nothing to do.</li>'
-        +'<li data-hm-go="today:assets">Markets rose 1.2%. Net worth <span class="up">+$7,100</span>.</li>'
-        +'<li data-hm-go="advisory"><b>Marshall</b> left four notes on your review.</li>'
-        +'<li data-hm-go="today:debts">Car loan auto-pay cleared. <b>$410</b> a month freed up.</li>'
-      +'</ul></div>'
-      +'<div class="f-mcard"><div class="eb">Coming up</div><ul>'
-        +'<li data-hm-go="plan"><span class="n">'+toYearEnd+' days</span>Roth window closes, Dec 31</li>'
-        +'<li data-hm-go="today:debts"><span class="n">5 months</span>Car loan paid off</li>'
-        +'<li data-hm-go="plan:income"><span class="n">6 years</span>Lily’s Social Security</li>'
-        +'<li data-hm-go="plan"><span class="n">903 days</span>Retirement, 2045</li>'
-      +'</ul></div>'
-      +'<div class="f-mcard life"><div class="eb">The life it is all for</div><div class="t">Retire in 2045. Keep the house, buy the lakehouse, see the grandkids every month.</div><div class="s">At 87% it holds through a 2022-style drop the year before you retire.</div><a data-hm-go="plan">Your vision &#8594;</a></div>'
+  var SPK3='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
+  /* chapters: each one sets the ticker on the left while it is in view */
+  var CH=[
+    { id:'now', yr:'2026', age:56, nw:'$620,000', conf:87, k:'This week', t:'Three moves, fifteen minutes.', s:'The plan is in good shape. These keep it that way.', nodes:[
+      { kind:'move', w:'Today', t:'Convert $17,800 to Roth', s:'Fits under the 12% bracket. Closes Dec 31.', pts:4, cta:'Do it now', go:'plan', ask:'Walk me through the Roth conversion.' },
+      { kind:'move', w:'This week', t:'Name a beneficiary on the Fidelity 401(k)', s:'The only retirement account without one. Two minutes at Fidelity.', pts:2, cta:'Open the account', go:'today:assets' },
+      { kind:'move', w:'This week', t:'Connect Lily’s Roth IRA', s:'Her balance is eight months old. Linking it fixes that for good.', pts:3, cta:'Connect', go:'connections' }
+    ]},
+    { id:'year', yr:'2026', age:56, nw:'$632,000', conf:87, k:'The rest of this year', t:'One deadline. Everything else runs itself.', s:'', nodes:[
+      { kind:'date', w:'Dec 31', t:'Roth conversion window closes', s:'Last December you left $9,400 of room unused. It does not roll over.', n:'DAYS', soon:true, go:'plan' },
+      { kind:'note', w:'Ongoing', t:'Chase, Fidelity and Schwab update on their own', s:'Six balances still come from you. Linking them clears most of the Plan accuracy list.', go:'connections' }
+    ]},
+    { id:'before', yr:'2027–2044', age:'57 to 74', nw:'$1.1M to $3.3M', conf:87, k:'Before you retire', t:'Eighteen years. Four moments that matter.', s:'Most of this stretch is compounding. These are the turns in the road.', nodes:[
+      { kind:'date', w:'Mar 2027', t:'Car loan paid off', s:'$410 a month comes back. The plan routes it to the 401(k).', go:'today:debts' },
+      { kind:'date', w:'2031', t:'Mortgage paid off', s:'$1,210 a month, freed for good. Net worth crosses $1.1M.', go:'today:debts' },
+      { kind:'choice', w:'2032', t:'Lily can claim Social Security at 67', s:'Waiting to 70 raises her check about 24%, for life. The plan assumes 67.', ask:'Should Lily claim at 67 or 70?', go:'plan:income' },
+      { kind:'warn', w:'2041', t:'The thin year', s:'Planned withdrawal runs $18,000 past the brokerage balance that year. A small change to spending closes it.', ask:'How do I fix 2041?', go:'plan' }
+    ]},
+    { id:'retire', yr:'2045', age:75, nw:'$3.47M', conf:87, k:'Retirement', t:'Retire in 2045. The lakehouse year.', s:'$7,600 a month from Social Security, the pension and the portfolio. $420 to spare on average.', big:true, nodes:[
+      { kind:'mark', w:'2045', t:'Last day of work', s:'Portfolio at $3.47M. Income $7,600 a month, expenses $7,180.', go:'plan' },
+      { kind:'dream', w:'2046', t:'The lakehouse', s:'$310,000, cash. Keep the house too. It is in the plan.', go:'plan:home' },
+      { kind:'dream', w:'Every year', t:'Three trips', s:'One big, two small, through 85. $12,000 a year, already counted.', go:'plan:expenses' }
+    ]},
+    { id:'long', yr:'2058–2069', age:'88 to 99', nw:'$4.37M', conf:87, k:'The long run', t:'Funded to 99, with room.', s:'A 2022-style drop the year before you retire still leaves you here.', nodes:[
+      { kind:'date', w:'2058', t:'Medicare is behind you', s:'Premiums set by the income you show in 2056. Keep conversions under the first threshold that year.', go:'plan' },
+      { kind:'end', w:'2069', t:'Age 99. $4.37M still there.', s:'What is left goes where you said: the kids, the grandkids, and the lake.', go:'plan:estate' }
+    ]}
+  ];
+  function nodeHTML(n){
+    var cls='tl-node '+n.kind+(n.soon?' soon':'');
+    var right='';
+    if(n.kind==='move') right='<div class="tl-act"><button type="button" class="cta" data-hm-go="'+n.go+'">'+n.cta+' &#8594;</button>'+(n.ask?'<button type="button" class="ai" data-cn-ask="'+n.ask+'">'+SPK3+'Fix with AI</button>':'')+'<span class="pts">+'+n.pts+' pts</span></div>';
+    else if(n.kind==='choice' || n.kind==='warn') right='<div class="tl-act"><button type="button" class="ai" data-cn-ask="'+n.ask+'">'+SPK3+(n.kind==='warn'?'Fix with AI':'Decide with AI')+'</button><a data-hm-go="'+n.go+'">Open in plan &#8594;</a></div>';
+    else right='<div class="tl-act"><a data-hm-go="'+n.go+'">Open in plan &#8594;</a></div>';
+    var when = n.n==='DAYS' ? '<span class="w">'+n.w+'</span><span class="cnt">'+toYearEnd+' days</span>' : '<span class="w">'+n.w+'</span>';
+    return '<div class="'+cls+'"><div class="tl-dot"></div><div class="tl-card"><div class="tl-when">'+when+'</div><div class="tl-t">'+n.t+'</div><div class="tl-s">'+n.s+'</div>'+right+'</div></div>';
+  }
+  f.innerHTML='<div class="tl-wrap">'
+    +'<aside class="tl-side"><div class="tl-tick"><div class="k">You are looking at</div><div class="yr" id="tlYr">2026</div><div class="age" id="tlAge">Age 56</div><div class="row"><div><div class="k">Net worth</div><div class="v" id="tlNw">$620,000</div></div><div><div class="k">Confidence</div><div class="v" id="tlConf">87%</div></div></div></div>'
+      +'<nav class="tl-nav" id="tlNav">'+CH.map(function(c,i){ return '<a data-tl-go="'+c.id+'"'+(i===0?' class="on"':'')+'><span class="d"></span>'+c.k+'</a>'; }).join('')+'</nav>'
+      +'<div class="tl-add"><button type="button" class="ai" data-cn-ask="I want to add a milestone to my plan.">'+SPK3+'Add a milestone</button></div></aside>'
+    +'<main class="tl-main"><div class="tl-head"><div class="tl-date">'+DAYS[now.getDay()]+', '+MON[now.getMonth()]+' '+now.getDate()+'</div><h1>Marshall, here is the <em>road</em> from this week to 99.</h1><p>Every turn that matters, in order. The ones that need you are at the top.</p></div>'
+      +'<div class="tl-road">'
+      +CH.map(function(c){ return '<section class="tl-ch'+(c.big?' big':'')+'" id="tl-'+c.id+'" data-tl="'+c.id+'"><div class="tl-chh"><div class="eb">'+c.k+'<span>'+c.yr+'</span></div><h2>'+c.t+'</h2>'+(c.s?'<p>'+c.s+'</p>':'')+'</div>'+c.nodes.map(nodeHTML).join('')+'</section>'; }).join('')
+      +'<div class="tl-endcap"><div class="k">Funded to here</div><div class="t">Age 99</div></div>'
+      +'</div></main>'
+    +'<aside class="tl-rail"><div class="story-head">Your story <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'
+      +'<p>You wrote the goal yourself: retire at 63, keep every lake morning, stay generous the whole way to 92. The road above is that sentence, year by year.</p>'
+      +'</aside>'
     +'</div>'
     +'<div class="f-demo"><span>Home</span>'+sw('focus')+'</div>';
   content.insertBefore(f, content.firstChild);
   f.addEventListener('click', function(e){
     var b=e.target.closest('[data-h2]'); if(b){ window.__homeMode(b.dataset.h2); return; }
-    var mb=e.target.closest('[data-f3-more]'); if(mb){ var m=document.getElementById('f3More'); var open=m.hidden; m.hidden=!open; mb.setAttribute('aria-expanded', open?'true':'false'); mb.firstChild.textContent = open ? 'That is enough for today ' : 'What else is going on '; if(open) setTimeout(function(){ m.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 60); return; }
-    if(e.target.closest('[data-f3-skip]')){ document.getElementById('f3Move').hidden=true; document.getElementById('f3Done').hidden=false; if(typeof window.toast==='function') window.toast('Parked. It is on the Notifications page when you want it.'); }
+    var g=e.target.closest('[data-tl-go]'); if(g){ var sec=document.getElementById('tl-'+g.dataset.tlGo); if(sec){ var y=sec.getBoundingClientRect().top+window.scrollY-110; window.scrollTo({top:y, behavior:'smooth'}); } return; }
   });
-  function countUp(){ var el=document.getElementById('f3Num'), t0=performance.now(); (function step(t){ var k=Math.min(1,(t-t0)/1100); k=1-Math.pow(1-k,3); el.textContent=Math.round(87*k); if(k<1) requestAnimationFrame(step); })(t0); }
+  /* the ticker follows the chapter nearest the top of the screen */
+  function tickTo(c){
+    var yr=document.getElementById('tlYr'); if(yr.textContent===c.yr && document.getElementById('tlAge').textContent==='Age '+c.age) return;
+    [yr, document.getElementById('tlAge'), document.getElementById('tlNw'), document.getElementById('tlConf')].forEach(function(el){ el.classList.remove('tl-sw'); void el.offsetWidth; el.classList.add('tl-sw'); });
+    yr.textContent=c.yr; yr.classList.toggle('long', c.yr.length>4); document.getElementById('tlAge').textContent='Age '+c.age; document.getElementById('tlNw').textContent=c.nw; document.getElementById('tlConf').textContent=c.conf+'%';
+    f.querySelectorAll('[data-tl-go]').forEach(function(a){ a.classList.toggle('on', a.dataset.tlGo===c.id); });
+  }
+  function watch(){
+    var secs=[].slice.call(f.querySelectorAll('.tl-ch')); if(!secs.length) return;
+    var cur=secs[0]; secs.forEach(function(s){ if(s.getBoundingClientRect().top <= 260) cur=s; });
+    var c=CH.filter(function(x){ return x.id===cur.dataset.tl; })[0]; if(c) tickTo(c);
+  }
+  window.addEventListener('scroll', function(){ if(document.body.classList.contains('home3')) watch(); }, {passive:true});
+  function countUp(){ watch(); }
 
   /* ---- Briefing ---- */
   var b=document.createElement('div'); b.id='home4';
@@ -27905,6 +27970,12 @@ body:not(.home5) #home5{ display:none !important; }
 #home5 .p-h .t small{ font-weight:500; color:var(--text-secondary); margin-left:6px; font-size:13px; }
 #home5 .p-h a{ font-size:13px; font-weight:600; color:#0E794E; cursor:pointer; text-decoration:none; white-space:nowrap; }
 #home5 .p-h a:hover{ text-decoration:underline; }
+#home5 .p-links{ display:flex; align-items:center; gap:16px; flex:none; }
+#home5 .p-h .ai{ display:inline-flex; align-items:center; gap:5px; border:0; background:none; font:600 13px var(--font); color:#0E794E; cursor:pointer; padding:0; white-space:nowrap; }
+#home5 .p-h .ai svg{ width:13px; height:13px; color:var(--green); }
+#home5 .p-h .ai:hover{ text-decoration:underline; }
+#home5 .p-kpis{ position:relative; }
+#home5 .p-kpi .ai{ display:none; }
 /* chart */
 #home5 .p-chart svg{ width:100%; height:auto; display:block; overflow:visible; }
 #home5 .p-chart text{ font-family:var(--font); }
@@ -27958,6 +28029,7 @@ body:not(.home5) #home5{ display:none !important; }
   'use strict';
   var content=document.querySelector('.layout.page[data-page="home"] > .content'); if(!content || document.getElementById('home5')) return;
   var now=new Date(), MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var SPK5='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>';
   function lg(n){ var u=window.__instLogo && window.__instLogo(n); return u ? '<img class="lg" src="'+u+'" alt="">' : ''; }
   var ACC=[
     ['Chase','Everyday Checking','Cash',8254,204,'Today','today:assets'],
@@ -28008,7 +28080,7 @@ body:not(.home5) #home5{ display:none !important; }
       +'<div class="p-kpi" data-hm-go="today:income"><div class="k">Savings rate</div><div class="v">28<small>%</small></div><div class="d warn">Target 30%</div></div>'
     +'</div>'
     +'<div class="p-row">'
-      +'<div class="p-panel"><div class="p-h"><div class="t">Projected net worth<small>Baseline</small></div><a data-hm-go="plan">Projection details &#8594;</a></div><div class="p-chart">'+chart+'</div>'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Projected net worth<small>Baseline</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="Why does my net worth keep growing after I retire?">'+SPK5+'Ask AI</button><a data-hm-go="plan">Projection details &#8594;</a></div></div><div class="p-chart">'+chart+'</div>'
         +'<div class="p-legend"><span><i style="background:#0E794E"></i>Savings and investments</span><span><i style="background:rgba(16,24,44,.25)"></i>Retirement</span><span>Holds in 87 of 100 market histories</span></div>'
         +'<table style="margin-top:14px"><thead><tr><th>Milestone</th><th class="n">Year</th><th class="n">Net worth</th><th class="n">Monthly income</th></tr></thead><tbody>'
         +'<tr class="row" data-hm-go="today"><td>Today</td><td class="n">2026</td><td class="n">$620,000</td><td class="n">$11,300</td></tr>'
@@ -28017,7 +28089,7 @@ body:not(.home5) #home5{ display:none !important; }
         +'<tr class="row" data-hm-go="plan"><td>Thin year</td><td class="n">2041</td><td class="n">$2.9M</td><td class="n">$6,980</td></tr>'
         +'<tr class="row" data-hm-go="plan"><td>Age 99</td><td class="n">2069</td><td class="n">$4.37M</td><td class="n">$7,600</td></tr>'
         +'</tbody></table></div>'
-      +'<div class="p-panel"><div class="p-h"><div class="t">Retirement cash flow<small>Monthly average</small></div><a data-hm-go="plan:income">Lifetime view &#8594;</a></div>'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Retirement cash flow<small>Monthly average</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="What happens to my cash flow in the thin year, 2041?">'+SPK5+'Ask AI</button><a data-hm-go="plan:income">Lifetime view &#8594;</a></div></div>'
         +'<table><thead><tr><th>Income</th><th class="n">Per month</th></tr></thead><tbody>'
         +'<tr class="row" data-hm-go="plan:income"><td>Social Security<span class="s">Marshall at 70, Lily at 67</span></td><td class="n">$4,310</td></tr>'
         +'<tr class="row" data-hm-go="plan:income"><td>Pension<span class="s">Survivor benefit 50%</span></td><td class="n">$1,150</td></tr>'
@@ -28032,27 +28104,27 @@ body:not(.home5) #home5{ display:none !important; }
         +'</tbody></table><div class="p-note">Income covers expenses with <b>$420</b> a month to spare on average. The thin year is 2041.</div></div>'
     +'</div>'
     +'<div class="p-row">'
-      +'<div class="p-panel"><div class="p-h"><div class="t">Accounts<small>'+ACC.length+'</small></div><a data-hm-go="connections">Connections &#8594;</a></div>'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Accounts<small>'+ACC.length+'</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="Which of my accounts should I connect first?">'+SPK5+'Ask AI</button><a data-hm-go="connections">Connections &#8594;</a></div></div>'
         +'<table><thead><tr><th>Account</th><th>Type</th><th class="n">Balance</th><th class="n">30 days</th><th class="n">Updated</th></tr></thead><tbody>'
         +ACC.map(function(r){ return '<tr class="row" data-hm-go="'+r[6]+'"><td>'+lg(r[0])+r[1]+'<span class="s">'+r[0]+'</span></td><td>'+r[2]+'</td><td class="n">'+money(r[3])+'</td><td class="n">'+delta(r[4])+'</td><td class="n"><span class="s">'+r[5]+'</span></td></tr>'; }).join('')
         +'<tr class="sum"><td colspan="2">Net worth</td><td class="n">'+money(sum)+'</td><td class="n"><span class="up">+$'+ACC.reduce(function(a,r){ return a+r[4]; },0).toLocaleString('en-US')+'</span></td><td></td></tr>'
         +'</tbody></table></div>'
-      +'<div class="p-panel"><div class="p-h"><div class="t">Plan inputs<small>72% complete</small></div><a data-hm-go="notifications">What is missing &#8594;</a></div>'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Plan inputs<small>72% complete</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="Which missing input would raise my score the most?">'+SPK5+'Ask AI</button><a data-hm-go="notifications">What is missing &#8594;</a></div></div>'
         +'<ul class="p-inputs">'
         +[['Assets',100,'today:assets'],['Debts',100,'today:debts'],['Income',85,'plan:income'],['Home and real estate',60,'plan:home'],['Expenses',55,'plan:expenses'],['Rate assumptions',100,'plan'],['Money flows',70,'plan'],['Estate planning',20,'plan:estate']].map(function(r){ return '<li'+(r[1]<60?' class="low"':'')+' data-hm-go="'+r[2]+'"><span class="nm">'+r[0]+'</span><span class="bar"><i style="width:'+r[1]+'%"></i></span><span class="pc">'+r[1]+'%</span></li>'; }).join('')
         +'</ul><div class="p-note">Estate planning and expenses move the score most. Each is under ten minutes.</div></div>'
     +'</div>'
     +'<div class="p-row even">'
-      +'<div class="p-panel"><div class="p-h"><div class="t">Coach suggestions<small>9 open</small></div><a data-hm-go="notifications">See all &#8594;</a></div><ul class="p-sugg">'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Coach suggestions<small>9 open</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="Which suggestion should I do first, and why?">'+SPK5+'Ask AI</button><a data-hm-go="notifications">See all &#8594;</a></div></div><ul class="p-sugg">'
         +[['Update Lily’s retirement savings balances','Plan accuracy · 8 months old',3],['Convert $17,800 to Roth before December ends','Strategy · closes in '+Math.max(0,Math.round((new Date(now.getFullYear(),11,31)-now)/86400000))+' days',4],['Some of your estate planning documents are missing','Plan accuracy · living will',5],['Rebalance the brokerage back to 60/40','Action · 71% stocks',3]].map(function(r){ return '<li data-hm-go="notifications"><div><div class="t">'+r[0]+'</div><div class="m">'+r[1]+'</div></div><div class="p">+'+r[2]+' pts</div></li>'; }).join('')
         +'</ul></div>'
-      +'<div class="p-panel"><div class="p-h"><div class="t">Explorers</div><a data-hm-go="optimize">All tools &#8594;</a></div><div class="p-tools">'
+      +'<div class="p-panel"><div class="p-h"><div class="t">Explorers</div><div class="p-links"><button type="button" class="ai" data-cn-ask="Which explorer should I run first for my situation?">'+SPK5+'Ask AI</button><a data-hm-go="optimize">All tools &#8594;</a></div></div><div class="p-tools">'
         +'<div class="p-tool" data-hm-go="plan"><div class="t">Scenario comparison</div><div class="s">Baseline vs retire at 2043, side by side.</div></div>'
         +'<div class="p-tool" data-hm-go="plan:income"><div class="t">Social Security explorer</div><div class="s">Every claiming age for both of you.</div></div>'
         +'<div class="p-tool" data-hm-go="optimize"><div class="t">Roth conversion explorer</div><div class="s">Year by year, with the tax bill.</div></div>'
         +'</div><div class="p-note" style="margin-top:14px">Stress test last run Oct 1: a 2022-style drop the year before retirement still funds the plan to 99.</div></div>'
     +'</div>'
-    +'<div class="p-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Focus</button><button type="button" data-h2="brief">Briefing</button><button type="button" class="on" data-h2="planner">Planner</button></div></div>';
+    +'<div class="p-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Timeline</button><button type="button" data-h2="brief">Briefing</button><button type="button" class="on" data-h2="planner">Planner</button></div></div>';
   content.insertBefore(el, content.firstChild);
   el.addEventListener('click', function(e){ var x=e.target.closest('[data-h2]'); if(x) window.__homeMode(x.dataset.h2); });
   /* every other switch learns the fifth option */
@@ -28216,7 +28288,7 @@ body:not(.home6) #home6{ display:none !important; }
     +'</div>'
     +'<div class="x-dreams"><div class="eb">Dreams</div><h3>What do you want the money for?<small>Switch one on and watch the number.</small></h3><div class="x-grid" id="x6Dreams"></div></div>'
     +'<div class="x-foot"><div class="t" id="x6Foot"></div><div class="acts"><button type="button" class="ai" data-cn-ask="Which of these changes helps my plan the most?">'+SPK+'Ask AI which lever matters most</button><button type="button" class="cta" data-hm-go="plan">Open My Plans &#8594;</button></div></div>'
-    +'<div class="x-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Focus</button><button type="button" data-h2="brief">Briefing</button><button type="button" data-h2="planner">Planner</button><button type="button" class="on" data-h2="explore">Explore</button></div></div>';
+    +'<div class="x-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Timeline</button><button type="button" data-h2="brief">Briefing</button><button type="button" data-h2="planner">Planner</button><button type="button" class="on" data-h2="explore">Explore</button></div></div>';
   content.insertBefore(el, content.firstChild);
   document.querySelectorAll('.hm-page .sw').forEach(function(sw){ if(sw.closest('#home6') || sw.querySelector('[data-h2="explore"]')) return; var b=document.createElement('button'); b.type='button'; b.dataset.h2='explore'; b.textContent='Explore'; sw.appendChild(b); });
 
@@ -28336,5 +28408,16 @@ body:not(.home6) #home6{ display:none !important; }
   board.addEventListener('drop', function(e){ if(!dragging) return; var t=e.target.closest('.h2-sortable'); if(!t || t===dragging) return; e.preventDefault(); var side=sideOf(t,e); board.insertBefore(dragging, (side==='before'||side==='above') ? t : t.nextSibling); clear(); if(typeof window.toast==='function') window.toast('Moved.'); });
   var demo=el.querySelector('.h2-demo'); if(demo){ var b=document.createElement('button'); b.type='button'; b.className='reset'; b.textContent='Reset layout'; demo.appendChild(b);
     b.addEventListener('click', function(){ orig.forEach(function(t){ board.appendChild(t); }); if(typeof window.toast==='function') window.toast('Layout reset.'); }); }
+})();
+</script>
+
+<script id="homeSwitchOrderJS">
+(function(){
+  /* one order for every home switch: Classic, Story, Planner, Briefing, Explore, Focus */
+  var ORDER=['classic','new','planner','brief','explore','focus'];
+  document.querySelectorAll('.hm-page .sw').forEach(function(sw){
+    var btns=[].slice.call(sw.querySelectorAll('[data-h2]'));
+    btns.sort(function(a,b){ return ORDER.indexOf(a.dataset.h2)-ORDER.indexOf(b.dataset.h2); }).forEach(function(b){ sw.appendChild(b); });
+  });
 })();
 </script>
