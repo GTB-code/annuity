@@ -27157,7 +27157,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
       +'</div>'
       +'<div class="nf-act"><button type="button" class="go" data-hm-go="'+i.go+'" data-nf-open="'+i.id+'">'+i.cta+'</button>'
       +'<button type="button" class="ai" data-cn-ask="'+('Help me fix this: '+i.t).replace(/"/g,'&quot;')+'"><span class="spk">'+SPK+'</span><span class="lbl">Fix with AI</span></button>'
-      +(i.ignored?'<button type="button" class="lite" data-nf-restore="'+i.id+'">Put it back</button>':i.done?'<button type="button" class="lite" data-nf-undone="'+i.id+'">Not done yet</button>':'<button type="button" class="lite always" data-nf-done="'+i.id+'">'+IC.check+'Mark as done</button><button type="button" class="lite" data-nf-dismiss="'+i.id+'">Dismiss</button>')
+      +(i.ignored?'<button type="button" class="lite" data-nf-restore="'+i.id+'">Put it back</button>':i.done?'<button type="button" class="lite" data-nf-undone="'+i.id+'">Not done yet</button>':'<button type="button" class="lite always" data-nf-done="'+i.id+'">'+IC.check+'Resolve</button><button type="button" class="lite" data-nf-dismiss="'+i.id+'">Dismiss</button>')
       +'</div>'
       +'</div></div>';
   }
@@ -27194,7 +27194,7 @@ body.cn-match .layout.page[data-page="profile"] > .rail > #cmRail{ display:block
       var card=b.closest('.nf-card'); if(card && !card.classList.contains('finishing')){
         card.classList.add('finishing');
         /* 1. the link becomes Done, the row ticks green */
-        b.innerHTML='<span class="tick">'+IC.check+'</span>Done'; b.classList.add('is-done');
+        b.innerHTML='<span class="tick">'+IC.check+'</span>Resolved'; b.classList.add('is-done');
         /* 2. then the row folds away, and the list settles */
         setTimeout(function(){ card.style.height=card.getBoundingClientRect().height+'px'; card.offsetHeight; card.classList.add('gone'); }, 700);
         setTimeout(function(){ dn.done=true; render(); if(typeof window.toast==='function') window.toast('Done. +'+dn.pts+' pts toward a complete plan.'); }, 1150);
@@ -27347,20 +27347,48 @@ body.home2 .hm-page .content > #home2{ display:block; }
 
 /* hero: the story and the move */
 #home2 .h2-hero{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:var(--s-8); align-items:stretch; margin-top:-6px; }
-#home2 .h2-date{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-date{ font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); display:flex; align-items:center; gap:10px; }
+#home2 .h2-by{ display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; letter-spacing:0; text-transform:none; color:#0E794E; background:var(--eggshell); border-radius:999px; padding:4px 10px 4px 8px; }
+#home2 .h2-by svg{ width:12px; height:12px; color:var(--green); }
+#home2 .h2-tok{ opacity:0; transition:opacity .22s ease; }
+#home2 .h2-tok.show{ opacity:1; }
+#home2 .h2-cursor{ display:inline-block; width:2px; height:.9em; background:#0E794E; vertical-align:-.1em; margin-left:2px; animation:h2blink .9s steps(2) infinite; }
+@keyframes h2blink{ to{ opacity:0; } }
+#home2 .h2-take{ display:flex; gap:8px; align-items:flex-start; margin:14px 0 0; padding:12px 14px; border-radius:12px; background:#F6FBF8; font-size:13.5px; line-height:1.5; color:var(--ink); }
+#home2 .h2-take svg{ width:14px; height:14px; flex:none; color:var(--green); margin-top:3px; }
+#home2 .h2-take b{ font-weight:600; }
+#home2 .h2-take a{ color:#0E794E; font-weight:600; cursor:pointer; text-decoration:none; }
+#home2 .h2-take a:hover{ text-decoration:underline; }
+body.home2[data-view="home"] .dock{ display:none !important; }
+#home2 .h2-askline{ position:relative; display:flex; align-items:center; gap:10px; margin-top:22px; border:0; border-radius:999px; padding:8px 8px 8px 16px; max-width:520px; min-height:52px; background:#F5FDFF; }
+#home2 .h2-askline::before{ content:''; position:absolute; inset:0; border-radius:inherit; padding:1.5px; pointer-events:none;
+  background:conic-gradient(from var(--ask-ang), #70B0FF, #DCEEFF, #3F86F0, #70B0FF, #70B0FF);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:askSpin 7s linear infinite; }
+#home2 .h2-askline input::placeholder{ transition:opacity .4s ease; }
+#home2 .h2-askline input.sw::placeholder{ opacity:0; }
+@media (prefers-reduced-motion:reduce){ #home2 .h2-askline::before{ animation:none; } }
+#home2 .h2-askline svg{ width:16px; height:16px; color:var(--green); flex:none; }
+#home2 .h2-askline input{ flex:1; border:0; outline:0; background:none; font:400 14.5px var(--font); color:var(--ink); min-width:0; }
+#home2 .h2-askline input::placeholder{ color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-askline button{ border:0; background:#0E794E; color:#fff; border-radius:999px; width:32px; height:32px; display:grid; place-items:center; cursor:pointer; flex:none; }
+#home2 .h2-askline button svg{ color:#fff; width:14px; height:14px; }
 #home2 .h2-hl{ font-size:44px; line-height:1.08; letter-spacing:-.4px; font-weight:400; color:var(--ink); margin:10px 0 12px; max-width:16ch; }
-#home2 .h2-hl em{ font-style:normal; color:#0E794E; }
+#home2 .h2-hl em{ font-style:normal; color:#0E794E; white-space:nowrap; }
+#home2 .h2-hl{ max-width:18ch; }
 #home2 .h2-sub{ font-size:17px; line-height:1.5; color:var(--text-secondary); margin:0; max-width:48ch; }
-#home2 .h2-stats{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-4); margin-top:var(--s-6); }
-#home2 .h2-stat{ padding:16px 0 0; border-top:1px solid var(--hairline); cursor:pointer; }
+#home2 .h2-stats{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-4); margin-top:2px; }
+#home2 .h2-askline{ margin-bottom:24px; }
+#home2 .h2-stat{ padding:0; border-top:0; cursor:pointer; }
 #home2 .h2-stat:hover .v{ color:#0E794E; }
-#home2 .h2-stat .k{ font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
-#home2 .h2-stat .v{ font-size:26px; font-weight:600; letter-spacing:-.3px; color:var(--ink); line-height:1.15; margin-top:6px; font-variant-numeric:tabular-nums; transition:color .15s ease; }
-#home2 .h2-stat .d{ font-size:13.5px; color:var(--text-secondary); margin-top:3px; }
+#home2 .h2-stat .k{ font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
+#home2 .h2-stat .v{ font-size:20px; font-weight:600; letter-spacing:-.2px; color:var(--ink); line-height:1.15; margin-top:5px; font-variant-numeric:tabular-nums; transition:color .15s ease; }
+#home2 .h2-stat .d{ font-size:12.5px; color:var(--text-secondary); margin-top:2px; }
+#home2 .h2-stat{ padding-top:12px; }
 #home2 .h2-stat .d.up{ color:#0E794E; font-weight:600; }
 
-#home2 .h2-move{ background:var(--eggshell); border-radius:20px; padding:26px 28px 24px; display:flex; flex-direction:column; min-height:100%; position:relative; overflow:hidden; }
-#home2 .h2-move::after{ content:''; position:absolute; right:-70px; top:-70px; width:220px; height:220px; border-radius:50%; background:rgba(4,180,119,.10); pointer-events:none; }
+#home2 .h2-move{ background:#F8FCFA; border-radius:20px; padding:26px 28px 24px; display:flex; flex-direction:column; min-height:100%; position:relative; overflow:hidden; }
+#home2 .h2-move::after{ content:''; position:absolute; right:-70px; top:-70px; width:220px; height:220px; border-radius:50%; background:rgba(4,180,119,.05); pointer-events:none; }
 #home2 .h2-move .k{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#0E794E; }
 #home2 .h2-move .k .dot{ width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(4,180,119,.18); }
 #home2 .h2-move .t{ font-size:26px; font-weight:600; line-height:1.2; letter-spacing:-.3px; color:var(--ink); margin:14px 0 8px; }
@@ -27378,7 +27406,7 @@ body.home2 .hm-page .content > #home2{ display:block; }
 #home2 .h2-move .more a:hover{ text-decoration:underline; }
 
 /* the week: three columns */
-#home2 .h2-week{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-6); margin-top:var(--s-10); }
+#home2 .h2-week{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-6); margin-top:var(--s-16); }
 #home2 .h2-card{ border:1px solid var(--hairline); border-radius:var(--r-card); background:#fff; padding:22px 22px 18px; display:flex; flex-direction:column; }
 #home2 .h2-card .eb{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
 #home2 .h2-card h3{ font-size:19px; font-weight:600; letter-spacing:-.2px; line-height:1.25; margin:6px 0 14px; color:var(--ink); }
@@ -27428,7 +27456,7 @@ body.home2 .hm-page .content > #home2{ display:block; }
 #home2 .h2-dates li.soon .w{ color:#B88A00; }
 
 /* the life: journey band */
-#home2 .h2-life{ margin-top:var(--s-10); border-radius:20px; background:linear-gradient(135deg, #0D3F4A 0%, #0E794E 100%); color:#fff; padding:34px 36px 30px; display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:var(--s-8); align-items:center; position:relative; overflow:hidden; }
+#home2 .h2-life{ margin-top:0; border-radius:20px; background:linear-gradient(135deg, #0D3F4A 0%, #0E794E 100%); color:#fff; padding:34px 36px 30px; display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:var(--s-8); align-items:center; position:relative; overflow:hidden; }
 #home2 .h2-life::before{ content:''; position:absolute; left:-120px; bottom:-160px; width:360px; height:360px; border-radius:50%; background:rgba(255,255,255,.06); }
 #home2 .h2-life .eb{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.72); }
 #home2 .h2-life .t{ font-size:30px; line-height:1.15; letter-spacing:-.3px; font-weight:400; margin:10px 0 10px; }
@@ -27443,7 +27471,7 @@ body.home2 .hm-page .content > #home2{ display:block; }
 #home2 .h2-journey .ms:hover circle.m{ r:7; }
 
 /* ask: questions and the advisor */
-#home2 .h2-ask{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:var(--s-8); margin-top:var(--s-10); }
+#home2 .h2-ask{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:var(--s-8); margin-top:0; }
 #home2 .h2-qs{ display:flex; flex-direction:column; }
 #home2 .h2-qs .eb{ font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-tertiary, #8A8D9A); }
 #home2 .h2-qs h3{ font-size:19px; font-weight:600; letter-spacing:-.2px; margin:6px 0 14px; color:var(--ink); }
@@ -27515,33 +27543,36 @@ body:not(.home2):not(.home3):not(.home4):not(.home5):not(.home6) .hm-page .conte
     '<section class="h2-hero">'
       +'<div>'
         +'<div class="h2-date">'+DAYS[now.getDay()]+', '+MON[now.getMonth()]+' '+now.getDate()+'</div>'
-        +'<h1 class="h2-hl">'+greet+', Marshall. Your plan holds to <em>age 99</em>.</h1>'
-        +'<p class="h2-sub">87% confidence, up 2 points since September. The market did some of that. Most of it was you.</p>'
+        +'<h1 class="h2-hl" data-stream>'+greet+', Marshall. Your plan holds to <em>age 99</em>.</h1>'
+        +'<p class="h2-sub" data-stream>87% confidence, up 2 points since September. The market did some of that. Most of it was you.</p>'
         +'<div class="h2-stats">'
-          +'<div class="h2-stat" data-hm-go="today:assets"><div class="k">Net worth today</div><div class="v">$620,000</div><div class="d up">&#9650; $18.4k this quarter</div></div>'
-          +'<div class="h2-stat" data-hm-go="plan"><div class="k">Retiring</div><div class="v">2045</div><div class="d">903 days. On track.</div></div>'
-          +'<div class="h2-stat" data-hm-go="today:income"><div class="k">Surplus this month</div><div class="v">$3,450</div><div class="d">Three months running</div></div>'
+          +'<div class="h2-stat" data-hm-go="today:assets"><div class="k">Net worth today</div><div class="v" data-count="620000" data-fmt="$">$620,000</div><div class="d up">&#9650; $18.4k this quarter</div></div>'
+          +'<div class="h2-stat" data-hm-go="plan"><div class="k">Retiring</div><div class="v" data-count="2045" data-from="2026">2045</div><div class="d">903 days. On track.</div></div>'
+          +'<div class="h2-stat" data-hm-go="today:income"><div class="k">Surplus this month</div><div class="v" data-count="3450" data-fmt="$">$3,450</div><div class="d">Three months running</div></div>'
         +'</div>'
+        +'<form class="h2-askline" data-h2-ask><span>'+SPK+'</span><input type="text" placeholder="Ask about your plan, or tell me what changed" aria-label="Ask Boldin AI"><button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>'
       +'</div>'
-      +'<aside class="h2-move" aria-label="Today’s move">'
-        +'<div class="k"><span class="dot"></span>Today’s move</div>'
-        +'<div class="t">Convert $17,800 to Roth before the year ends.</div>'
-        +'<p class="s">It fits under the 12% bracket. Last December you left $9,400 of this room unused, and it does not roll over.</p>'
+      +'<aside class="h2-move" aria-label="Next best action">'
+        +'<div class="k"><span class="dot"></span>Next best action</div>'
+        +'<div class="t">Convert $17,800 to Roth.</div>'
+        +'<p class="s">It fits under the 12% bracket, so you pay the tax now at today’s lower rate instead of later at a higher one. Last December you left $9,400 of this room unused, and it does not roll over.</p>'
         +'<div class="meta"><span><b>10 min</b></span><span class="pts">+4 pts</span><span>Closes in <b>'+toYearEnd+' days</b></span></div>'
         +'<div class="act"><button type="button" class="cta" data-hm-go="plan">Do it now &#8594;</button><button type="button" class="ai" data-cn-ask="Walk me through converting $17,800 to Roth this year.">'+SPK+'Fix with AI</button></div>'
-        +'<div class="more">Two more moves this week. <a data-hm-go="notifications">See them all</a></div>'
       +'</aside>'
     +'</section>'
     +'<section class="h2-week">'
       +'<div class="h2-card"><div class="eb">This week</div><h3>Three moves, fifteen minutes.</h3><ul class="h2-moves" id="h2Moves"></ul>'
         +'<div class="h2-prog"><div class="l"><span>Plan completeness</span><span><b id="h2Pct">'+pct()+'%</b> &rarr; '+ifAll()+'% if you do all three</span></div><div class="bar"><i class="ghost" style="width:'+ifAll()+'%"></i><i id="h2Bar" style="width:'+pct()+'%"></i></div></div>'
+        +'<div class="h2-take" data-stream>'+SPK+'<span><b>My take:</b> do the Roth first. The other two can wait until Friday and still land this week.</span></div>'
         +'<div class="foot"><a data-hm-go="notifications">Everything your plan is waiting on &#8594;</a></div></div>'
       +'<div class="h2-card"><div class="eb">What changed</div><h3>Since Monday.</h3><ul class="h2-feed">'
         +FEED.map(function(f){ return '<li data-hm-go="'+f.go+'"><div class="d">'+f.d+'</div><div><div class="t">'+f.t+'</div><div class="s">'+f.s+'</div></div></li>'; }).join('')
-        +'</ul><div class="foot"><a data-hm-go="today">Open My Money &#8594;</a></div></div>'
+        +'</ul><div class="h2-take" data-stream>'+SPK+'<span>Nothing here needs you. The market and Chase did the work this week. <a data-cn-ask="What moved my net worth this week?">Ask why</a></span></div>'
+        +'<div class="foot"><a data-hm-go="today">Open My Money &#8594;</a></div></div>'
       +'<div class="h2-card"><div class="eb">Coming up</div><h3>Dates that move the plan.</h3><ul class="h2-dates">'
         +DATES.map(function(d){ return '<li'+(d.soon?' class="soon"':'')+' data-hm-go="'+d.go+'"><div><div class="w">'+d.w+'</div><div class="t">'+d.t+'</div></div><div class="n">'+d.n+'<small>'+d.u+'</small></div></li>'; }).join('')
-        +'</ul><div class="foot"><a data-hm-go="plan">See the whole timeline &#8594;</a></div></div>'
+        +'</ul><div class="h2-take" data-stream>'+SPK+'<span>Dec 31 is the only hard deadline. Everything else here moves on its own. <a data-cn-ask="What happens if I miss the Roth window?">What if I miss it?</a></span></div>'
+        +'<div class="foot"><a data-hm-go="plan">See the whole timeline &#8594;</a></div></div>'
     +'</section>'
     +'<section class="h2-life">'
       +'<div><div class="eb">The life it is all for</div><div class="t">Retire in 2045. Keep the house, buy the <em>lakehouse</em>, see the grandkids every month.</div>'
@@ -27568,9 +27599,56 @@ body:not(.home2):not(.home3):not(.home4):not(.home5):not(.home6) .hm-page .conte
     ul.innerHTML=MOVES.map(function(m){ return '<li'+(m.done?' class="done"':'')+' data-id="'+m.id+'"><button type="button" class="chk" aria-label="Mark done" aria-pressed="'+(m.done?'true':'false')+'">'+CK+'</button><div><div class="t" data-hm-go="'+m.go+'">'+m.t+'</div><div class="m">'+m.m+'</div></div><div class="p">+'+m.pts+'</div></li>'; }).join('');
     var p=pct(); document.getElementById('h2Pct').textContent=p+'%'; document.getElementById('h2Bar').style.width=p+'%';
     var left=MOVES.filter(function(m){ return !m.done; }).length;
-    var more=el.querySelector('.h2-move .more'); if(more) more.innerHTML = left>1 ? (left-1)+' more move'+(left-1===1?'':'s')+' this week. <a data-hm-go="notifications">See them all</a>' : left===1 ? 'That is the last one this week. <a data-hm-go="notifications">See everything</a>' : 'All three done. <a data-hm-go="notifications">See what is next</a>';
   }
   renderMoves();
+  /* the AI parts stream in word by word, like they are being written now */
+  function tokenize(node){ var walker=document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null); var texts=[]; while(walker.nextNode()) texts.push(walker.currentNode);
+    texts.forEach(function(t){ if(!t.nodeValue.trim()) return; var frag=document.createDocumentFragment(); t.nodeValue.split(/(\s+)/).forEach(function(w){ if(!w) return; if(/^\s+$/.test(w)){ frag.appendChild(document.createTextNode(w)); return; } var s=document.createElement('span'); s.className='h2-tok'; s.textContent=w; frag.appendChild(s); }); t.parentNode.replaceChild(frag, t); }); }
+  var streamed=false, reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function streamGroup(els, then){
+    var toks=[]; els.forEach(function(e){ [].slice.call(e.querySelectorAll('.h2-tok')).forEach(function(t){ t.classList.remove('show'); toks.push(t); }); });
+    if(reduce){ toks.forEach(function(t){ t.classList.add('show'); }); if(then) then(); return; }
+    var i=0, cur=document.createElement('span'); cur.className='h2-cursor';
+    (function step(){ if(i>=toks.length){ cur.remove(); if(then) setTimeout(then, 120); return; } var t=toks[i++]; t.classList.add('show'); t.parentNode.insertBefore(cur, t.nextSibling); setTimeout(step, 22+Math.random()*26); })();
+  }
+  /* in order: the headline, then the sentence under it, then the figures, then the notes in the cards */
+  var lastRun=0;
+  function stream(){
+    /* the view event fires more than once on boot; one run at a time, and never restart mid-animation */
+    var t=Date.now(); if(t-lastRun<6000) return; lastRun=t;
+    var all=[].slice.call(el.querySelectorAll('[data-stream]')); if(!streamed){ all.forEach(tokenize); streamed=true; }
+    var hl=el.querySelector('.h2-hl'), sub=el.querySelector('.h2-sub'), takes=[].slice.call(el.querySelectorAll('.h2-take'));
+    var stats=el.querySelector('.h2-stats'); stats.style.visibility='hidden';
+    all.forEach(function(e){ [].slice.call(e.querySelectorAll('.h2-tok')).forEach(function(t){ t.classList.remove('show'); }); });
+    streamGroup([hl], function(){ streamGroup([sub], function(){ setTimeout(function(){ stats.style.visibility=''; countStats(); setTimeout(function(){ streamGroup(takes); }, 600); }, 900); }); });
+  }
+  /* the three figures settle into place: a short count up, staggered, nothing showy */
+  function countStats(){
+    var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    [].slice.call(el.querySelectorAll('.h2-stat .v[data-count]')).forEach(function(v,k){
+      var to=+v.dataset.count, from = v.dataset.from ? +v.dataset.from : Math.round(to*0.92), fmt=v.dataset.fmt||'';
+      var out=function(n){ return fmt==='$' ? '$'+Math.round(n).toLocaleString('en-US') : String(Math.round(n)); };
+      if(reduce){ v.textContent=out(to); return; }
+      v.textContent=out(from); v.style.opacity='0'; v.style.transform='translateY(4px)'; v.style.transition='opacity .4s ease, transform .5s cubic-bezier(.22,1,.36,1)';
+      setTimeout(function(){ v.style.opacity='1'; v.style.transform='none'; var t0=performance.now(), dur=900;
+        (function step(t){ var p=Math.min(1,(t-t0)/dur); p=1-Math.pow(1-p,3); v.textContent=out(from+(to-from)*p); if(p<1) requestAnimationFrame(step); })(t0);
+      }, 260+k*140);
+    });
+  }
+  stream();
+  window.addEventListener('boldin:home', function(e){ if(e.detail==='new') stream(); });
+  window.addEventListener('boldin:view', function(e){ if(e.detail==='home' && document.body.classList.contains('home2')) stream(); });
+  /* the placeholder keeps offering a new question while nobody is typing */
+  (function(){ var inp=el.querySelector('.h2-askline input'); if(!inp) return;
+    var Q=['Ask about your plan, or tell me what changed','Can we retire a year earlier?','What is the one thing hurting my plan most?','Is the lakehouse still realistic?','What if the market drops 20% next year?','Should Lily claim at 67 or 70?','Where should the extra $3,450 a month go?'];
+    var i=0; setInterval(function(){ if(document.activeElement===inp || inp.value || !document.body.classList.contains('home2') || document.body.dataset.view!=='home') return;
+      i=(i+1)%Q.length; inp.classList.add('sw'); setTimeout(function(){ inp.setAttribute('placeholder', Q[i]); inp.classList.remove('sw'); }, 400); }, 6000);
+  })();
+  el.addEventListener('submit', function(e){ var f=e.target.closest('[data-h2-ask]'); if(!f) return; e.preventDefault(); var q=f.querySelector('input').value.trim(); if(!q) return;
+    /* the question opens Boldin AI in full view, with the answer already on its way */
+    if(window.__guided && window.__guided.ask) window.__guided.ask(q);
+    else if(window.__railAI && window.__railAI.send){ if(window.__railAI.expand) window.__railAI.expand(); if(window.setFullscreen) window.setFullscreen(true); window.__railAI.send(q); }
+    f.querySelector('input').value=''; f.querySelector('input').blur(); });
   el.addEventListener('click', function(e){
     var c=e.target.closest('.h2-moves .chk'); if(c){ var id=c.closest('li').dataset.id; var m=MOVES.filter(function(x){ return x.id===id; })[0]; m.done=!m.done; renderMoves(); if(m.done && typeof window.toast==='function') window.toast('Nice. +'+m.pts+' pts toward a complete plan.'); return; }
     var sw=e.target.closest('[data-h2]'); if(sw){ window.__homeMode(sw.dataset.h2); return; }
@@ -28207,3 +28285,54 @@ body:not(.home6) #home6{ display:none !important; }
 })();
 </script>
 <!-- HOME 6 END -->
+
+<style id="home2DragCSS">
+/* Story home: one board under the hero. Every block is its own tile and can go anywhere. */
+#home2 .h2-board{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-6); margin-top:var(--s-16); align-items:stretch; }
+#home2 .h2-board > .h2-card{ margin:0; }
+#home2 .h2-board > .h2-life, #home2 .h2-board > .h2-ask{ grid-column:1 / -1; margin-top:var(--s-4); margin-bottom:var(--s-4); }
+#home2 .h2-sortable{ position:relative; }
+#home2 .h2-grip{ position:absolute; top:10px; right:10px; width:28px; height:28px; border-radius:8px; border:1px solid var(--hairline); background:#fff; color:var(--text-tertiary, #8A8D9A); display:grid; place-items:center; cursor:grab; opacity:0; transition:opacity .15s ease, border-color .15s ease, color .15s ease; z-index:3; }
+#home2 .h2-grip svg{ width:12px; height:16px; }
+#home2 .h2-sortable:hover > .h2-grip, #home2 .h2-grip:focus-visible{ opacity:1; }
+#home2 .h2-grip:hover{ border-color:var(--ink); color:var(--ink); }
+#home2 .h2-grip:active{ cursor:grabbing; }
+#home2 .h2-life > .h2-grip{ background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.35); color:#fff; }
+#home2 .h2-sortable.dragging{ opacity:.45; }
+#home2 .h2-sortable.drop-before::before, #home2 .h2-sortable.drop-after::after{ content:''; position:absolute; top:0; bottom:0; width:3px; border-radius:3px; background:#0E794E; }
+#home2 .h2-sortable.drop-before::before{ left:-14px; } #home2 .h2-sortable.drop-after::after{ right:-14px; }
+#home2 .h2-sortable.drop-above::before, #home2 .h2-sortable.drop-below::after{ content:''; position:absolute; left:0; right:0; height:3px; border-radius:3px; background:#0E794E; }
+#home2 .h2-sortable.drop-above::before{ top:-14px; } #home2 .h2-sortable.drop-below::after{ bottom:-14px; }
+#home2 .h2-demo .reset{ border:0; background:none; font:600 12px var(--font); color:var(--text-secondary); cursor:pointer; margin-left:auto; }
+#home2 .h2-demo .reset:hover{ color:var(--ink); text-decoration:underline; }
+@media (max-width:1100px){ #home2 .h2-board{ grid-template-columns:1fr; } }
+</style>
+<script id="home2DragJS">
+(function(){
+  'use strict';
+  var el=document.getElementById('home2'); if(!el) return;
+  var GRIP='<svg viewBox="0 0 12 16" fill="currentColor"><circle cx="3" cy="3" r="1.6"/><circle cx="9" cy="3" r="1.6"/><circle cx="3" cy="8" r="1.6"/><circle cx="9" cy="8" r="1.6"/><circle cx="3" cy="13" r="1.6"/><circle cx="9" cy="13" r="1.6"/></svg>';
+  /* one board: the three cards, the life band, the ask row, each a tile of its own */
+  var week=el.querySelector('.h2-week'), life=el.querySelector('.h2-life'), ask=el.querySelector('.h2-ask'); if(!week) return;
+  var board=document.createElement('div'); board.className='h2-board';
+  var tiles=[].slice.call(week.querySelectorAll(':scope > .h2-card')).concat([life, ask]).filter(Boolean);
+  week.parentNode.insertBefore(board, week); tiles.forEach(function(t){ board.appendChild(t); }); week.remove();
+  var orig=tiles.slice();
+  var dragging=null;
+  function clear(){ board.querySelectorAll('.drop-before,.drop-after,.drop-above,.drop-below').forEach(function(n){ n.classList.remove('drop-before','drop-after','drop-above','drop-below'); }); }
+  function wide(n){ return n.classList.contains('h2-life') || n.classList.contains('h2-ask'); }
+  function sideOf(t, e){ var r=t.getBoundingClientRect(); if(wide(t)) return e.clientY < r.top+r.height/2 ? 'above' : 'below'; return e.clientX < r.left+r.width/2 ? 'before' : 'after'; }
+  tiles.forEach(function(node){
+    node.classList.add('h2-sortable');
+    var g=document.createElement('button'); g.type='button'; g.className='h2-grip'; g.title='Drag to rearrange'; g.setAttribute('aria-label','Drag to rearrange'); g.innerHTML=GRIP; node.appendChild(g);
+    g.addEventListener('pointerdown', function(){ node.setAttribute('draggable','true'); });
+    g.addEventListener('pointerup', function(){ setTimeout(function(){ node.removeAttribute('draggable'); }, 50); });
+    node.addEventListener('dragstart', function(e){ if(!node.getAttribute('draggable')){ e.preventDefault(); return; } dragging=node; node.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setData('text/plain','tile'); }catch(x){} });
+    node.addEventListener('dragend', function(){ node.classList.remove('dragging'); node.removeAttribute('draggable'); clear(); dragging=null; });
+  });
+  board.addEventListener('dragover', function(e){ if(!dragging) return; var t=e.target.closest('.h2-sortable'); if(!t || t===dragging) return; e.preventDefault(); e.dataTransfer.dropEffect='move'; clear(); t.classList.add('drop-'+sideOf(t,e)); });
+  board.addEventListener('drop', function(e){ if(!dragging) return; var t=e.target.closest('.h2-sortable'); if(!t || t===dragging) return; e.preventDefault(); var side=sideOf(t,e); board.insertBefore(dragging, (side==='before'||side==='above') ? t : t.nextSibling); clear(); if(typeof window.toast==='function') window.toast('Moved.'); });
+  var demo=el.querySelector('.h2-demo'); if(demo){ var b=document.createElement('button'); b.type='button'; b.className='reset'; b.textContent='Reset layout'; demo.appendChild(b);
+    b.addEventListener('click', function(){ orig.forEach(function(t){ board.appendChild(t); }); if(typeof window.toast==='function') window.toast('Layout reset.'); }); }
+})();
+</script>
