@@ -27974,8 +27974,16 @@ body:not(.home5) #home5{ display:none !important; }
 #home5 .p-h .ai{ display:inline-flex; align-items:center; gap:5px; border:0; background:none; font:600 13px var(--font); color:#0E794E; cursor:pointer; padding:0; white-space:nowrap; }
 #home5 .p-h .ai svg{ width:13px; height:13px; color:var(--green); }
 #home5 .p-h .ai:hover{ text-decoration:underline; }
-#home5 .p-kpis{ position:relative; }
-#home5 .p-kpi .ai{ display:none; }
+#home5 .p-kpi{ position:relative; }
+#home5 .p-kpi .kai{ position:absolute; top:10px; right:10px; width:24px; height:24px; border-radius:50%; border:0; background:none; color:var(--green); display:grid; place-items:center; cursor:pointer; opacity:.55; transition:opacity .15s ease, background .15s ease; }
+#home5 .p-kpi .kai svg{ width:13px; height:13px; }
+#home5 .p-kpi:hover .kai, #home5 .p-kpi .kai:focus-visible{ opacity:1; }
+#home5 .p-kpi .kai:hover{ background:var(--eggshell); }
+#home5 .p-take{ display:flex; gap:8px; align-items:flex-start; margin-top:auto; padding:10px 12px; border-radius:10px; background:#F6FBF8; font-size:13px; line-height:1.5; color:var(--ink); }
+#home5 .p-panel > table + .p-take, #home5 .p-panel > .p-note + .p-take, #home5 .p-panel > .p-inputs + .p-note + .p-take, #home5 .p-panel > .p-sugg + .p-take{ margin-top:14px; }
+#home5 .p-take svg{ width:13px; height:13px; flex:none; color:var(--green); margin-top:3px; }
+#home5 .p-take button{ border:0; background:none; font:600 13px var(--font); color:#0E794E; cursor:pointer; padding:0; }
+#home5 .p-take button:hover{ text-decoration:underline; }
 /* chart */
 #home5 .p-chart svg{ width:100%; height:auto; display:block; overflow:visible; }
 #home5 .p-chart text{ font-family:var(--font); }
@@ -28073,11 +28081,11 @@ body:not(.home5) #home5{ display:none !important; }
     '<div class="p-top"><div><h1>Marshall and Lily’s plan</h1><div class="sub">As of '+MON[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear()+' &middot; 13 accounts, 8 linked &middot; last full run 6:02 this morning</div></div>'
       +'<div class="tools"><button type="button" class="pri" data-hm-go="plan">View full plan &#8594;</button></div></div>'
     +'<div class="p-kpis">'
-      +'<div class="p-kpi" data-hm-go="plan"><div class="k">Chance of success</div><div class="v">87<small>%</small></div><div class="d up">&#9650; 2 pts since Sep</div></div>'
-      +'<div class="p-kpi" data-hm-go="today:assets"><div class="k">Net worth</div><div class="v">$620,000</div><div class="d up">&#9650; $18.4k this quarter</div></div>'
-      +'<div class="p-kpi" data-hm-go="plan"><div class="k">At retirement (2045)</div><div class="v">$3.47M</div><div class="d">$4.37M at 99</div></div>'
-      +'<div class="p-kpi" data-hm-go="plan"><div class="k">Safe spending</div><div class="v">$7,200<small>/mo</small></div><div class="d">vs $6,450 spent now</div></div>'
-      +'<div class="p-kpi" data-hm-go="today:income"><div class="k">Savings rate</div><div class="v">28<small>%</small></div><div class="d warn">Target 30%</div></div>'
+      +'<div class="p-kpi" data-hm-go="plan"><button type="button" class="kai" data-cn-ask="Why is my chance of success 87% and not higher?" title="Ask AI">'+SPK5+'</button><div class="k">Chance of success</div><div class="v">87<small>%</small></div><div class="d up">&#9650; 2 pts since Sep</div></div>'
+      +'<div class="p-kpi" data-hm-go="today:assets"><button type="button" class="kai" data-cn-ask="What moved my net worth this quarter?" title="Ask AI">'+SPK5+'</button><div class="k">Net worth</div><div class="v">$620,000</div><div class="d up">&#9650; $18.4k this quarter</div></div>'
+      +'<div class="p-kpi" data-hm-go="plan"><button type="button" class="kai" data-cn-ask="How is the $3.47M at retirement calculated?" title="Ask AI">'+SPK5+'</button><div class="k">At retirement (2045)</div><div class="v">$3.47M</div><div class="d">$4.37M at 99</div></div>'
+      +'<div class="p-kpi" data-hm-go="plan"><button type="button" class="kai" data-cn-ask="Could I safely spend more than $7,200 a month?" title="Ask AI">'+SPK5+'</button><div class="k">Safe spending</div><div class="v">$7,200<small>/mo</small></div><div class="d">vs $6,450 spent now</div></div>'
+      +'<div class="p-kpi" data-hm-go="today:income"><button type="button" class="kai" data-cn-ask="How do I get my savings rate from 28% to 30%?" title="Ask AI">'+SPK5+'</button><div class="k">Savings rate</div><div class="v">28<small>%</small></div><div class="d warn">Target 30%</div></div>'
     +'</div>'
     +'<div class="p-row">'
       +'<div class="p-panel"><div class="p-h"><div class="t">Projected net worth<small>Baseline</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="Why does my net worth keep growing after I retire?">'+SPK5+'Ask AI</button><a data-hm-go="plan">Projection details &#8594;</a></div></div><div class="p-chart">'+chart+'</div>'
@@ -28088,7 +28096,8 @@ body:not(.home5) #home5{ display:none !important; }
         +'<tr class="row" data-hm-go="plan"><td>Retirement</td><td class="n">2045</td><td class="n">$3.47M</td><td class="n">$7,600</td></tr>'
         +'<tr class="row" data-hm-go="plan"><td>Thin year</td><td class="n">2041</td><td class="n">$2.9M</td><td class="n">$6,980</td></tr>'
         +'<tr class="row" data-hm-go="plan"><td>Age 99</td><td class="n">2069</td><td class="n">$4.37M</td><td class="n">$7,600</td></tr>'
-        +'</tbody></table></div>'
+        +'</tbody></table>'
+        +'<div class="p-take">'+SPK5+'<span>The curve keeps rising after 2045 because withdrawals run at 3.6%, below what the portfolio earns on average. <button type="button" data-cn-ask="What happens to the projection in a bad decade?">Bad decade?</button></span></div></div>'
       +'<div class="p-panel"><div class="p-h"><div class="t">Retirement cash flow<small>Monthly average</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="What happens to my cash flow in the thin year, 2041?">'+SPK5+'Ask AI</button><a data-hm-go="plan:income">Lifetime view &#8594;</a></div></div>'
         +'<table><thead><tr><th>Income</th><th class="n">Per month</th></tr></thead><tbody>'
         +'<tr class="row" data-hm-go="plan:income"><td>Social Security<span class="s">Marshall at 70, Lily at 67</span></td><td class="n">$4,310</td></tr>'
@@ -28101,28 +28110,32 @@ body:not(.home5) #home5{ display:none !important; }
         +'<tr class="row" data-hm-go="plan:expenses"><td>Healthcare<span class="s">Medicare, out of pocket</span></td><td class="n">$640</td></tr>'
         +'<tr class="row" data-hm-go="plan"><td>Taxes<span class="s">Federal and state</span></td><td class="n">$930</td></tr>'
         +'<tr class="sum"><td>Total expenses</td><td class="n">$7,180</td></tr>'
-        +'</tbody></table><div class="p-note">Income covers expenses with <b>$420</b> a month to spare on average. The thin year is 2041.</div></div>'
+        +'</tbody></table><div class="p-note">Income covers expenses with <b>$420</b> a month to spare on average. The thin year is 2041.</div>'
+        +'<div class="p-take">'+SPK5+'<span>Delaying Lily’s Social Security to 70 turns the thin year into a comfortable one. <button type="button" data-cn-ask="Show me 2041 if Lily claims at 70.">Show me</button></span></div></div>'
     +'</div>'
     +'<div class="p-row">'
       +'<div class="p-panel"><div class="p-h"><div class="t">Accounts<small>'+ACC.length+'</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="Which of my accounts should I connect first?">'+SPK5+'Ask AI</button><a data-hm-go="connections">Connections &#8594;</a></div></div>'
         +'<table><thead><tr><th>Account</th><th>Type</th><th class="n">Balance</th><th class="n">30 days</th><th class="n">Updated</th></tr></thead><tbody>'
         +ACC.map(function(r){ return '<tr class="row" data-hm-go="'+r[6]+'"><td>'+lg(r[0])+r[1]+'<span class="s">'+r[0]+'</span></td><td>'+r[2]+'</td><td class="n">'+money(r[3])+'</td><td class="n">'+delta(r[4])+'</td><td class="n"><span class="s">'+r[5]+'</span></td></tr>'; }).join('')
         +'<tr class="sum"><td colspan="2">Net worth</td><td class="n">'+money(sum)+'</td><td class="n"><span class="up">+$'+ACC.reduce(function(a,r){ return a+r[4]; },0).toLocaleString('en-US')+'</span></td><td></td></tr>'
-        +'</tbody></table></div>'
+        +'</tbody></table>'
+        +'<div class="p-take">'+SPK5+'<span>Five balances are typed in by hand, and Lily’s is eight months old. Linking them clears most of the Plan accuracy list. <button type="button" data-cn-ask="Which account should I connect first?">Which first?</button></span></div></div>'
       +'<div class="p-panel"><div class="p-h"><div class="t">Plan inputs<small>72% complete</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="Which missing input would raise my score the most?">'+SPK5+'Ask AI</button><a data-hm-go="notifications">What is missing &#8594;</a></div></div>'
         +'<ul class="p-inputs">'
         +[['Assets',100,'today:assets'],['Debts',100,'today:debts'],['Income',85,'plan:income'],['Home and real estate',60,'plan:home'],['Expenses',55,'plan:expenses'],['Rate assumptions',100,'plan'],['Money flows',70,'plan'],['Estate planning',20,'plan:estate']].map(function(r){ return '<li'+(r[1]<60?' class="low"':'')+' data-hm-go="'+r[2]+'"><span class="nm">'+r[0]+'</span><span class="bar"><i style="width:'+r[1]+'%"></i></span><span class="pc">'+r[1]+'%</span></li>'; }).join('')
-        +'</ul><div class="p-note">Estate planning and expenses move the score most. Each is under ten minutes.</div></div>'
+        +'</ul><div class="p-note">Estate planning and expenses move the score most. Each is under ten minutes.</div>'
+        +'<div class="p-take">'+SPK5+'<span>Estate planning at 20% is the biggest gap. A living will alone is worth 5 points. <button type="button" data-cn-ask="Help me fill in estate planning.">Help me fill it in</button></span></div></div>'
     +'</div>'
     +'<div class="p-row even">'
       +'<div class="p-panel"><div class="p-h"><div class="t">Coach suggestions<small>9 open</small></div><div class="p-links"><button type="button" class="ai" data-cn-ask="Which suggestion should I do first, and why?">'+SPK5+'Ask AI</button><a data-hm-go="notifications">See all &#8594;</a></div></div><ul class="p-sugg">'
         +[['Update Lily’s retirement savings balances','Plan accuracy · 8 months old',3],['Convert $17,800 to Roth before December ends','Strategy · closes in '+Math.max(0,Math.round((new Date(now.getFullYear(),11,31)-now)/86400000))+' days',4],['Some of your estate planning documents are missing','Plan accuracy · living will',5],['Rebalance the brokerage back to 60/40','Action · 71% stocks',3]].map(function(r){ return '<li data-hm-go="notifications"><div><div class="t">'+r[0]+'</div><div class="m">'+r[1]+'</div></div><div class="p">+'+r[2]+' pts</div></li>'; }).join('')
-        +'</ul></div>'
+        +'</ul><div class="p-take">'+SPK5+'<span>Do the Roth first. It is the only one with a deadline. <button type="button" data-cn-ask="Walk me through the Roth conversion.">Walk me through it</button></span></div></div>'
       +'<div class="p-panel"><div class="p-h"><div class="t">Explorers</div><div class="p-links"><button type="button" class="ai" data-cn-ask="Which explorer should I run first for my situation?">'+SPK5+'Ask AI</button><a data-hm-go="optimize">All tools &#8594;</a></div></div><div class="p-tools">'
         +'<div class="p-tool" data-hm-go="plan"><div class="t">Scenario comparison</div><div class="s">Baseline vs retire at 2043, side by side.</div></div>'
         +'<div class="p-tool" data-hm-go="plan:income"><div class="t">Social Security explorer</div><div class="s">Every claiming age for both of you.</div></div>'
         +'<div class="p-tool" data-hm-go="optimize"><div class="t">Roth conversion explorer</div><div class="s">Year by year, with the tax bill.</div></div>'
-        +'</div><div class="p-note" style="margin-top:14px">Stress test last run Oct 1: a 2022-style drop the year before retirement still funds the plan to 99.</div></div>'
+        +'</div><div class="p-note" style="margin-top:14px">Stress test last run Oct 1: a 2022-style drop the year before retirement still funds the plan to 99.</div>'
+        +'<div class="p-take">'+SPK5+'<span>Start with the Social Security explorer. It is the biggest lever you have not pulled. <button type="button" data-cn-ask="Run the Social Security explorer for both of us.">Run it with me</button></span></div></div>'
     +'</div>'
     +'<div class="p-demo"><span>Home</span><div class="sw"><button type="button" data-h2="classic">Classic</button><button type="button" data-h2="new">Story</button><button type="button" data-h2="focus">Timeline</button><button type="button" data-h2="brief">Briefing</button><button type="button" class="on" data-h2="planner">Planner</button></div></div>';
   content.insertBefore(el, content.firstChild);
