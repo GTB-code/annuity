@@ -27644,7 +27644,9 @@ body:not(.home2):not(.home3):not(.home4):not(.home5):not(.home6) .hm-page .conte
     var i=0; setInterval(function(){ if(document.activeElement===inp || inp.value || !document.body.classList.contains('home2') || document.body.dataset.view!=='home') return;
       i=(i+1)%Q.length; inp.classList.add('sw'); setTimeout(function(){ inp.setAttribute('placeholder', Q[i]); inp.classList.remove('sw'); }, 400); }, 6000);
   })();
-  el.addEventListener('submit', function(e){ var f=e.target.closest('[data-h2-ask]'); if(!f) return; e.preventDefault(); var q=f.querySelector('input').value.trim(); if(!q) return;
+  el.addEventListener('submit', function(e){ var f=e.target.closest('[data-h2-ask]'); if(!f) return; e.preventDefault(); var inp=f.querySelector('input'); var q=inp.value.trim();
+    /* nothing typed: the question on screen is the question */
+    if(!q){ var ph=inp.getAttribute('placeholder')||''; if(/^Ask about your plan/.test(ph)){ if(window.__railAI){ window.__railAI.expand && window.__railAI.expand(); if(window.setFullscreen) window.setFullscreen(true); } return; } q=ph; }
     /* the question opens Boldin AI in full view, with the answer already on its way */
     if(window.__guided && window.__guided.ask) window.__guided.ask(q);
     else if(window.__railAI && window.__railAI.send){ if(window.__railAI.expand) window.__railAI.expand(); if(window.setFullscreen) window.setFullscreen(true); window.__railAI.send(q); }
