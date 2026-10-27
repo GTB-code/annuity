@@ -21390,6 +21390,7 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
   }
 
   sec.addEventListener('click', function(e){
+    if(e.target.closest('#connToday')) return;   /* the Connections page inside this section has its own handler */
     if(e.target.closest('.pf-tgl')){
       /* the shared profile handler flips the switch; keep the counts honest after it */
       var panel=e.target.closest('.pf-conn-acc');
