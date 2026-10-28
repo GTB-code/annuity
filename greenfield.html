@@ -27684,7 +27684,8 @@ body:not(.home2):not(.home3):not(.home4):not(.home5):not(.home6) .hm-page .conte
     document.getElementById('h2Journey').innerHTML=s;
   })();
 
-  document.body.classList.add('home2');
+  /* the prototype opens on the classic home; the switch at the bottom reaches the others */
+  document.querySelectorAll('[data-h2]').forEach(function(b){ b.classList.toggle('on', b.dataset.h2==='classic'); });
 })();
 </script>
 <!-- HOME 2 END -->
