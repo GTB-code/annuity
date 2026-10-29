@@ -15439,7 +15439,7 @@ body.fire-page .fire-side{ display:block; }
     var btn=sheet.querySelector('.cx-add');
     function paint(){
       var n=sheet.querySelectorAll('.cx-acct.sel').length;
-      btn.textContent = n ? 'Add '+n+(n===1?' account':' accounts') : 'Pick at least one';
+      btn.textContent = n ? 'Connect '+n+(n===1?' account':' accounts') : 'Pick at least one';
       btn.disabled = !n;
     }
     sheet.querySelectorAll('.cx-acct').forEach(function(row){
@@ -28901,4 +28901,155 @@ body[data-view="today"] #railCtx .ctx-metrics + .ctx-viewplan{ margin-top:16px; 
 <style id="hideAdvisoryNavCSS">
 /* My Advisory is parked for now: the link leaves the top nav, the page stays reachable by other routes */
 .topnav nav.modes a#navAdvisory{ display:none; }
+</style>
+
+<style id="todayFlatAssetsCSS">
+/* My Money: one flat list of accounts - no Savings / Other assets sub-groups. A single "Add account"
+   closes the list; the hidden group heads keep their rows and matching intact for My Plans. */
+body[data-view="today"] #assets-block .bucket + .bucket{ margin-top:0; }
+body[data-view="today"] #assets-block .bucket-head .bucket-label{ display:none; }
+body[data-view="today"] #assets-block .bucket:not(:last-of-type) > .bucket-head{ display:none; }
+body[data-view="today"] #assets-block .bucket:last-of-type > .bucket-head .add-row .ar-r{ position:static; width:auto; height:auto; margin:0; padding:0; overflow:visible; clip-path:none; white-space:normal; }
+body[data-view="today"] #assets-block .bucket:last-of-type > .bucket-head .add-row{ gap:5px; }
+body[data-view="today"] #assets-block .bucket:not(:last-of-type) > .acct-planned-hint{ display:none; }
+</style>
+<script id="todayFlatAssetsJS">
+(function(){
+  function fix(){
+    if(document.body.dataset.view!=='today') return;
+    var r=document.querySelector('#assets-block .bucket:last-of-type > .bucket-head .add-row .ar-r');
+    if(r) r.textContent=' account';
+  }
+  window.addEventListener('boldin:view', function(){ setTimeout(fix, 20); });
+  setTimeout(fix, 20);
+})();
+</script>
+
+<!-- ===================== Connect all your accounts: the sheet, then the accounts land right here ===================== -->
+<style id="connectLandCSS">
+/* the newly connected accounts arrive in a soft blue field at the top of the list, then the field dissolves
+   and they are simply part of the list - linked, like the ones already there */
+.cx-landing{ position:relative; background:#F6FBFE; border-radius:24px; padding:24px 0 14px; margin:8px 0 24px; transition:background 900ms ease, padding 900ms ease, margin 900ms ease; }
+.cx-landing .cx-landing-t{ padding:0 16px; }
+.cx-landing .acct:last-of-type{ border-bottom:0; }
+/* while a row glides to another section it must cross the section edge */
+body.cx-flying .acc-body{ overflow:visible; }
+/* the ring on the landing field is blue, in the field's own family, not the save green */
+.cx-landing .save-ring{
+  background:conic-gradient(from var(--sweep-ang),
+    rgba(120,180,220,0.18) 0deg,
+    rgba(120,180,220,0.18) 160deg,
+    rgba(90,160,210,0.45) 240deg,
+    #7FBCE4 305deg,
+    #B9DCF3 342deg,
+    #E3F1FA 360deg);
+}
+.cx-landing .cx-landing-t{ font-size:17px; font-weight:600; color:var(--ink); margin:0 0 16px; display:flex; align-items:center; gap:8px; transition:opacity 500ms ease, max-height 700ms ease, margin 700ms ease; max-height:40px; overflow:hidden; }
+.cx-landing .cx-landing-t .pc-ic{ width:28px; height:28px; background:#E9F4FA; }
+.cx-landing .cx-landing-t .pc-ic svg{ width:15px; height:15px; color:#0E794E; }
+.cx-landing .acct .amt{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+.cx-landing .acct .amt .cx-sync{ font-size:12.5px; font-weight:500; color:#0E794E; transition:opacity 500ms ease, max-height 500ms ease; max-height:18px; overflow:hidden; }
+.cx-landing.settled{ background:transparent; padding:0; margin:0; }
+.cx-landing.settled .acct:last-of-type{ border-bottom:1px solid var(--hairline); }
+.cx-landing.settled .cx-landing-t{ opacity:0; max-height:0; margin:0; }
+.cx-landing.settled .acct .amt .cx-sync{ opacity:0; max-height:0; }
+.acct .amt .cx-sync{ display:block; font-size:12.5px; font-weight:500; color:#0E794E; }
+.bucket > .acct .amt:has(.cx-sync){ display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+.bucket > .acct .cx-sync{ animation:cxSyncAway 600ms ease 2600ms both; }
+@keyframes cxSyncAway{ to{ opacity:0; max-height:0; } }
+</style>
+<script id="connectLandJS">
+(function(){
+  var ICON_LINK='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function sectionFor(title){ return [].slice.call(document.querySelectorAll('.layout.page[data-page="plan"] .acc')).find(function(a){ var h=a.querySelector('h2'); return h && h.textContent.trim()===title; }); }
+  function firstBucket(acc){ return acc && (acc.querySelector('.acc-body .bucket') || acc.querySelector('.acc-body')); }
+  function expand(acc){ var head=acc && acc.querySelector('.acc-head'); if(head && head.classList.contains('acc-collapsed')) head.click(); }
+  function rowHTML(r, inst){
+    return '<div><div class="nm">'+r[0]+'</div><div class="ty">'+r[1]+' <span class="acct-linked">'+ICON_LINK+'Connected &middot; updates daily</span></div></div>'+
+           '<div class="amt">'+r[2].replace(/^−/,'')+'<span class="cx-sync">Synced just now &middot; '+inst+'</span></div>';
+  }
+  function topOf(bucket){ var hd=bucket.querySelector(':scope > .bucket-head'); return (hd && hd===bucket.firstElementChild) ? hd.nextSibling : bucket.firstChild; }
+  /* FLIP: the row leaves the stack and glides to where it belongs, so the eye follows it there */
+  function fly(row, destBucket){
+    var a=row.getBoundingClientRect();
+    var ghost=document.createElement('div'); ghost.style.height=a.height+'px'; ghost.style.transition='height 420ms cubic-bezier(0.4,0,0.2,1)';
+    row.parentNode.insertBefore(ghost, row);
+    destBucket.insertBefore(row, topOf(destBucket));
+    /* the expand animation leaves overflow:hidden inline on the body; lift it for the glide */
+    var body=destBucket.closest('.acc-body');
+    if(body && body.dataset.cxOv===undefined) body.dataset.cxOv=body.style.overflow;   /* remember the original once, not a mid-flight value */
+    var prevOv=body ? body.dataset.cxOv : '';
+    if(body) body.style.overflow='visible';
+    var b=row.getBoundingClientRect();
+    if(!reduce){
+      row.style.position='relative'; row.style.zIndex='5'; row.style.background='#F6FBFE'; row.style.borderRadius='12px';
+      var anim=row.animate([{transform:'translate('+(a.left-b.left)+'px,'+(a.top-b.top)+'px)'},{transform:'none'}],{duration:760, easing:'cubic-bezier(0.22,1,0.36,1)'});
+      anim.onfinish=function(){ row.style.position=''; row.style.zIndex=''; row.style.borderRadius=''; if(body) body.style.overflow=prevOv;
+        row.animate([{background:'#F6FBFE'},{background:'transparent'}],{duration:1200, easing:'ease-out'}).onfinish=function(){ row.style.background=''; }; };
+      requestAnimationFrame(function(){ ghost.style.height='0px'; });
+      setTimeout(function(){ ghost.remove(); }, 460);
+    } else { ghost.remove(); if(body) body.style.overflow=prevOv; }
+  }
+  /* a row born through the section's own Add path carries the row editor wiring; we then dress it as a connected
+     account and stop the editor the spawn would have opened */
+  function spawnWired(bucket){
+    var acc=bucket.closest('.acc'); var add=bucket.querySelector('.add-row') || (acc && acc.querySelector('.add-row'));
+    if(!add) return null;
+    var before=[].slice.call(acc.querySelectorAll('.acct'));
+    add.click();
+    var row=[].slice.call(acc.querySelectorAll('.acct.acct-new')).find(function(x){ return before.indexOf(x)<0; });
+    if(!row) return null;
+    row.addEventListener('click', function(e){ e.stopImmediatePropagation(); }, {capture:true, once:true});
+    row.classList.remove('acct-new'); row.removeAttribute('style');
+    return row;
+  }
+  function onPicked(inst, picked){
+    var assets=sectionFor('Assets'), bucket=firstBucket(assets); if(!bucket || !picked.length) return;
+    expand(assets);
+    var wrap=document.createElement('div'); wrap.className='cx-landing';
+    wrap.innerHTML='<div class="cx-landing-t">'+picked.length+(picked.length===1?' account':' accounts')+' connected from '+inst+'</div>';
+    /* the same green ring that confirms a save traces the field once: connected */
+    if(!reduce){ var ring=document.createElement('span'); ring.className='save-ring'; wrap.appendChild(ring); setTimeout(function(){ ring.remove(); }, 3600); }
+    bucket.insertBefore(wrap, topOf(bucket));
+    var rows=picked.map(function(r,k){
+      var row=spawnWired(bucket) || document.createElement('div');
+      row.className='acct row-clickable'; row.innerHTML=rowHTML(r, inst);
+      row.dataset.dest = /^−/.test(r[2]) ? 'Debts' : 'Assets';
+      wrap.appendChild(row);
+      if(!reduce) row.animate([{opacity:0, transform:'translateY(-8px)'},{opacity:1, transform:'none'}],{duration:320, delay:180+k*110, easing:'cubic-bezier(0.22,1,0.36,1)', fill:'backwards'});
+      return row;
+    });
+    if(!reduce) wrap.animate([{opacity:0},{opacity:1}],{duration:260, easing:'ease-out'});
+    setTimeout(function(){ var y=window.scrollY + wrap.getBoundingClientRect().top - 150; window.scrollTo({top:Math.max(0,y), behavior:reduce?'auto':'smooth'}); }, 120);
+    var movers=rows.filter(function(r){ return r.dataset.dest!=='Assets'; });
+    if(movers.length){
+      var debts=sectionFor('Debts');
+      setTimeout(function(){ expand(debts); }, reduce?0:2600);                 /* open the destination so it is ready */
+      setTimeout(function(){ document.body.classList.add('cx-flying'); }, reduce?0:3400);
+      movers.forEach(function(row,k){
+        setTimeout(function(){ var db=firstBucket(debts); if(db) fly(row, db); }, reduce?100:3500+k*260);
+      });
+      setTimeout(function(){ document.body.classList.remove('cx-flying'); }, reduce?400:3500+movers.length*260+900);
+    }
+    /* the blue field has done its job once the eye has found - and followed - the new rows */
+    setTimeout(function(){ wrap.classList.add('settled'); retotal(); }, reduce?300:4400+movers.length*260);
+    /* once faded, the sync notes leave the DOM so the balance reads clean when the row is opened */
+    setTimeout(function(){ rows.forEach(function(r){ r.querySelectorAll('.cx-sync').forEach(function(n){ n.remove(); }); }); }, reduce?400:5200+movers.length*260);
+    retotal();
+  }
+  /* the rollup totals refresh on a Save click; a silent one asks for the same recount */
+  function retotal(){ var b=document.createElement('button'); b.className='btn-save'; b.hidden=true; document.body.appendChild(b); b.click(); setTimeout(function(){ b.remove(); }, 500); }
+  /* the pill opens the sheet instead of leaving for the Connections page */
+  document.addEventListener('click', function(e){
+    var b=e.target.closest('.acc .cx-all'); if(!b) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if(window.__connectSheet) window.__connectSheet.open(onPicked);
+  }, true);
+})();
+</script>
+
+<style id="listBadgeCSS">
+/* the mode chip belongs to an open editor, not to a card resting in the list */
+.edit-card.body-collapsed::before{ display:none !important; }
 </style>
