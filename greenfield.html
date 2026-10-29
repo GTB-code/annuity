@@ -28437,3 +28437,455 @@ body:not(.home6) #home6{ display:none !important; }
   });
 })();
 </script>
+
+<!-- ===================== My Plans: adding is modeling, not recording ===================== -->
+<style id="planModelCSS">
+/* A planned row reads differently from a real one: a mint "Planned" mark beside the type,
+   mirroring .acct-linked so the two states sit on the same visual footing. */
+.acct-planned-tag{ display:inline-flex; align-items:center; gap:4px; margin-left:8px; padding:2px 9px 2px 7px;
+  background:#E7F7F0; color:#0E794E; border-radius:999px; font-size:12.5px; font-weight:600; line-height:1; }
+.acct-planned-tag svg{ width:12px; height:12px; flex:none; }
+.acct-planned-note{ color:#0E794E; }
+/* Planned rows and modeled changes live in My Plans only - they never leak into today's balances. */
+body[data-view="today"] .acct.acct-planned,
+body[data-view="today"] .acct-planned-tag,
+body[data-view="today"] .acct-planned-note{ display:none; }
+.acct-ghost{ display:none !important; }
+/* My Money: a quiet pointer to what is modeled elsewhere, in the bucket-label voice */
+.acct-planned-hint{ display:none; color:#9AA0AE; font-size:15px; font-weight:500; margin:6px 4px 14px; }
+body[data-view="today"] .acct-planned-hint{ display:block; }
+.acct-planned-hint a{ color:var(--green-cta); font-weight:600; cursor:pointer; }
+.acct-planned-hint a::after{ content:" \2197"; }
+.acct.acct-planned .amt::after{ content:attr(data-pm); color:#0E794E; }
+/* the modeling editor: the first field is a choice, so it keeps the dropdown affordance */
+.edit-card .field.pm-choice .vselect{ flex:1; min-width:0; font-size:17px; color:var(--ink); font-family:inherit; cursor:pointer; }
+/* hypothetical entries have nothing to link, and the verb deserves its whole phrase */
+body[data-view="plan"] #assets-block .row-editor[data-pm="new"] .cx-link,
+body[data-view="plan"] #assets-block .bucket .cx-link:not(.pm-how){ display:none; }
+/* an account you already hold has no start date */
+#assets-block .row-editor[data-pm="today"] .plan-range{ display:none; }
+.ec-body > .pm-link.pm-model{ display:flex; margin:0 0 14px; }
+.ec-body > .pm-link.pm-over{ display:flex; }
+body[data-view="plan"] #assets-block .bucket-head .add-row .ar-r{ position:static; width:auto; height:auto; margin:0; padding:0; overflow:visible; clip-path:none; white-space:normal; }
+body[data-view="plan"] #assets-block .bucket-head .add-row{ gap:5px; }
+body[data-view="plan"] #assets-block .bucket-head .add-row .ar-s{ margin-right:-1px; }
+#assets-block .row-editor .pm-link{ margin:2px 0 16px; padding:4px 0; font-size:15px; }
+/* in-editor action links, set like .add-row (plus sign, green) without being bucket adds */
+.pm-link{ display:inline-flex; align-items:center; gap:7px; color:var(--green-cta); font-weight:600; font-size:15px; cursor:pointer; transition:color var(--dur-fast); }
+.pm-link::before{ content:"+"; font-size:19px; font-weight:500; line-height:1; }
+.pm-link:hover{ color:#0B5F3D; }
+/* the product's account fields: currency prefix, percent suffix, the three rate cases side by side */
+.field .val .pfx{ color:var(--text-secondary); margin-right:8px; font-size:17px; }
+.field .val .sfx{ color:var(--text-secondary); margin-left:auto; font-size:17px; }
+.field .val .pfx + .vtext{ flex:1; min-width:0; }
+.pm-rates{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.pm-rates .field{ margin-bottom:0; }
+.pm-rates .field .vtext{ flex:1; min-width:0; }
+.pm-rates:not(.is-custom) .field{ background:#FAFAF7; }
+.pm-rates:not(.is-custom) .field .vtext, .pm-rates:not(.is-custom) .field .sfx, .pm-rates:not(.is-custom) .field label{ color:var(--text-tertiary, #9AA0AE); }
+.pm-rates .field.is-empty::after{ display:none; }
+.pm-sd{ font-size:16px; color:var(--ink); margin:14px 0 10px; }
+.pm-sd b{ font-weight:600; margin-left:6px; }
+.ec-body > .cx-link.pm-how{ display:block; margin:0 0 4px; }
+.ec-body > .pm-link.pm-over{ display:inline-flex; color:var(--ink); font-weight:400; margin:6px 0 10px; }
+.ec-body > .pm-link.pm-over::before{ color:var(--ink); }
+.ec-body > .pm-sd{ margin:16px 0 12px; }
+/* a rate stage: the age it starts, then its own rate block */
+.pm-stage{ margin:12px 0 10px; }
+.pm-stage-head{ display:flex; align-items:flex-start; gap:10px; }
+.pm-stage-head .field{ flex:1; margin-bottom:0; }
+.pm-stage-head .ec-kebab.pm-del{ margin-top:10px; }
+.pm-stage .field.pm-req{ border-color:#C8102E; }
+.pm-stage .pm-reqtxt{ color:#C8102E; font-size:12.5px; margin:4px 0 0 2px; }
+.pm-stage-rate{ margin-top:14px; }
+.pm-stage-rate .pm-sd{ margin:14px 0 10px; }
+.pm-stage-rate .cx-link.pm-how{ display:block; margin:0 0 4px; }
+.pm-stage .field.pm-req select{ color:var(--text-secondary); }
+.ec-body .cx-link.pm-how::after{ content:none; }
+.ec-body > .pm-excl{ padding:16px 0 6px; margin-bottom:8px; align-items:center; }
+.ec-body > .pm-excl .pf-sl{ font-size:16px; }
+body[data-view="plan"] .edit-card .ec-sub.pm-sub{ display:inline; margin-left:10px; font-size:14px; font-weight:400; color:var(--text-secondary); }
+</style>
+<script id="planModelJS">
+(function(){
+  var ICON_PLAN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-6 4 3 7-8"/><path d="M15 6h5v5"/></svg>';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function assetsAcc(){ return document.getElementById('assets-block'); }
+  function inPlan(){ return document.body.dataset.view==='plan'; }
+  function realRows(){ var acc=assetsAcc(); if(!acc) return [];
+    return [].slice.call(acc.querySelectorAll('.acct:not(.acct-new):not(.acct-planned):not(.acct-ghost)')).filter(function(r){ return r.querySelector('.nm') && r.querySelector('.nm').textContent.trim(); }); }
+
+  /* ---- the rate of return presets, as the product carries them ---- */
+  var RATES=[
+    {k:'Checking',     avg:0.5, pess:0.3, opt:0.7, sd:0.5},
+    {k:'Savings',      avg:2,   pess:1.6, opt:2.4, sd:2},
+    {k:'Conservative', avg:4,   pess:3,   opt:5,   sd:6},
+    {k:'Moderate',     avg:6,   pess:4.5, opt:7.5, sd:10},
+    {k:'Aggressive',   avg:8,   pess:6,   opt:10,  sd:15},
+    {k:'Custom'}
+  ];
+  function rateFor(type){ type=(type||'').toLowerCase();
+    if(/check/.test(type)) return RATES[0]; if(/saving|cash|money market|cd\b/.test(type)) return RATES[1];
+    if(/bond|conservative/.test(type)) return RATES[2]; return RATES[3]; }
+  function rateLabel(r){ return r.k==='Custom' ? 'Custom' : r.k+' · '+r.avg+'%'; }
+  function pct(n){ return n==null ? '' : String(n); }
+
+  /* ---- 1. the verb: in My Plans the Assets add rows read "Model a change", not "Add account" ---- */
+  function relabel(){
+    var acc=assetsAcc(); if(!acc) return;
+    acc.querySelectorAll('.add-row:not(.pm-link)').forEach(function(add){
+      var s=add.querySelector('.ar-s'), r=add.querySelector('.ar-r');
+      if(s && r){
+        if(!s.dataset.orig){ s.dataset.orig=s.textContent; r.dataset.orig=r.textContent; }
+        s.textContent = inPlan() ? 'Model' : s.dataset.orig;
+        r.textContent = inPlan() ? ' a change' : r.dataset.orig;
+      } else {
+        if(!add.dataset.orig) add.dataset.orig=add.textContent;
+        add.textContent = inPlan() ? 'Model a change' : add.dataset.orig;
+      }
+    });
+  }
+  relabel();
+  window.addEventListener('boldin:view', function(){ setTimeout(relabel, 0); });
+
+  /* ---- helpers that speak the editor's own field language ---- */
+  function fieldHTML(label, value, dropdown, ph, pfx, sfx){
+    var v=(value||'').trim(); var car=dropdown?'<span class="car">&#9662;</span>':''; var hint=ph||'Add';
+    var pre=pfx?'<span class="pfx">'+pfx+'</span>':''; var suf=sfx?'<span class="sfx">'+sfx+'</span>':'';
+    if(v) return '<div class="field"><label>'+label+'</label><div class="val">'+pre+'<span class="vtext" contenteditable="true">'+v+'</span>'+suf+car+'</div></div>';
+    return '<div class="field is-empty"><label>'+label+'</label><div class="val">'+pre+'<span class="vtext is-placeholder" contenteditable="true">'+hint+'</span>'+suf+car+'</div></div>';
+  }
+  function selectHTML(label, opts, cur, key){
+    return '<div class="field pm-choice" data-pm="'+key+'"><label>'+label+'</label><div class="val"><select class="vselect">'+
+      opts.map(function(o){ return '<option'+(o===cur?' selected':'')+'>'+o+'</option>'; }).join('')+'</select><span class="car">&#9662;</span></div></div>';
+  }
+  /* the rate block: preset, the three cases, the deviation, and the two product links */
+  function rateHTML(r, nested){
+    var custom=r.k==='Custom';
+    return (nested?'<div class="pm-stage-rate">':'')+selectHTML('Rate of return', RATES.map(rateLabel), rateLabel(r), 'rate')+
+      '<div class="pm-rates'+(custom?' is-custom':'')+'">'+
+        fieldHTML('Pessimistic', pct(r.pess), false, '0', '', '%')+
+        fieldHTML('Average', pct(r.avg), false, '0', '', '%')+
+        fieldHTML('Optimistic', pct(r.opt), false, '0', '', '%')+
+      '</div>'+
+      '<div class="pm-sd">Standard deviation <b>'+(custom?'—':r.sd+'%')+'</b></div>'+
+      '<span class="cx-link pm-how" role="button" tabindex="0">How rates work</span>'+
+      (nested ? '</div>' : '<div class="pm-link pm-over" role="button" tabindex="0">Change your rate of return over time</div>');
+  }
+  /* the stage that "Change your rate of return over time" opens: an age, then its own rate block */
+  var ICON_TRASH_PM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
+  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function ageOptions(){
+    /* Marshall is 56y10m in Nov 2026; the list runs month by month to 75 */
+    var out=['Your retirement age']; var y=56, m=10, cy=2026, cm=10;
+    while(y<75 || (y===75 && m===0)){
+      out.push(y+'y'+m+'m \u00b7 '+MONTHS[cm]+' '+cy);
+      m++; if(m>11){ m=0; y++; } cm++; if(cm>11){ cm=0; cy++; }
+    }
+    return out;
+  }
+  function stageHTML(r){
+    var opts=ageOptions();
+    return '<div class="pm-stage">'+
+      '<div class="pm-stage-head">'+
+        '<div class="field pm-choice pm-req" data-pm="age"><label>At age</label><div class="val"><select class="vselect"><option value="" selected disabled>At age</option>'+
+          opts.map(function(o){ return '<option>'+o+'</option>'; }).join('')+'</select><span class="car">&#9662;</span></div></div>'+
+        '<button type="button" class="ec-kebab pm-del" aria-label="Remove this rate change">'+ICON_TRASH_PM+'</button>'+
+      '</div>'+
+      '<div class="pm-reqtxt">Required</div>'+
+      rateHTML(r, true)+
+    '</div>';
+  }
+  function excludeHTML(on){
+    return '<div class="pf-srow pm-excl"><div class="pf-stxt"><div class="pf-sl">Exclude this account from your withdrawal strategies?</div>'+
+      '<div class="pf-ss">Excluded accounts aren’t used for automatic withdrawals, income estimates, or RMD calculations.</div></div>'+
+      '<button type="button" class="pf-tgl'+(on?' on':'')+'" role="switch" aria-checked="'+(on?'true':'false')+'" aria-label="Exclude this account from your withdrawal strategies"><span class="knob"></span></button></div>';
+  }
+  function val(ed, label){
+    var f=[].slice.call(ed.querySelectorAll('.field')).find(function(x){ var l=x.querySelector('label'); return l && l.textContent.trim()===label; });
+    if(!f) return '';
+    var sel=f.querySelector('select'); if(sel) return sel.value;
+    var t=f.querySelector('.vtext'); return (t && !t.classList.contains('is-placeholder')) ? t.textContent.trim() : '';
+  }
+  function startYear(ed){ var s=ed.querySelector('.plan-range .field[data-pr-key="s"] .sub'); return s ? s.textContent.trim() : ''; }
+  function money(v){ var d=(v||'').replace(/[^0-9.]/g,''); if(!d) return ''; var n=parseFloat(d); return isNaN(n)?v:('$'+n.toLocaleString('en-US')); }
+
+  /* shared wiring: the preset drives the three cases; the toggle flips; the links are inert in the prototype */
+  function wireRate(ed){
+    ed.querySelectorAll('.field[data-pm="rate"] select').forEach(function(sel){ wireRateSelect(ed, sel); });
+    wireMisc(ed);
+    var over=ed.querySelector('.pm-over');
+    if(over && !over.dataset.wired){ over.dataset.wired='1';
+      over.addEventListener('click', function(e){
+        e.stopPropagation();
+        var top=ed.querySelector('.field[data-pm="rate"] select'); var r=RATES.find(function(x){ return top && rateLabel(x)===top.value; }) || RATES[1];
+        var tmp=document.createElement('div'); tmp.innerHTML=stageHTML(r); var st=tmp.firstChild;
+        over.parentNode.insertBefore(st, over); over.remove();
+        wireRate(ed);
+        var save=ed.querySelector('.btn-save'); if(save) save.disabled=false;
+        if(!reduce) st.animate([{opacity:0, transform:'translateY(-6px)'},{opacity:1, transform:'none'}],{duration:260, easing:'cubic-bezier(0.22,1,0.36,1)'});
+      }); }
+    ed.querySelectorAll('.pm-stage').forEach(function(st){ if(st.dataset.wired) return; st.dataset.wired='1';
+      var age=st.querySelector('.field[data-pm="age"]'), sel=age.querySelector('select'), req=st.querySelector('.pm-reqtxt');
+      sel.addEventListener('change', function(){ age.classList.remove('pm-req'); if(req) req.remove(); });
+      st.querySelector('.pm-del').addEventListener('click', function(e){
+        e.stopPropagation();
+        var link=document.createElement('div'); link.className='pm-link pm-over'; link.setAttribute('role','button'); link.tabIndex=0; link.textContent='Change your rate of return over time';
+        st.parentNode.insertBefore(link, st); st.remove(); wireRate(ed);
+      }); });
+  }
+  function sameScope(a, b){ return (a.closest('.pm-stage-rate')||null)===(b.closest('.pm-stage-rate')||null); }
+  function wireRateSelect(ed, sel){
+    if(!sel || sel.dataset.wired) return; sel.dataset.wired='1';
+    sel.addEventListener('change', function(){
+      var r=RATES.find(function(x){ return rateLabel(x)===sel.value; }) || RATES[5];
+      var box=[].slice.call(ed.querySelectorAll('.pm-rates')).find(function(b){ return sameScope(b, sel); }); if(!box) return;
+      box.classList.toggle('is-custom', r.k==='Custom');
+      var vs=box.querySelectorAll('.field .vtext');
+      [r.pess, r.avg, r.opt].forEach(function(n,i){ var t=vs[i]; if(!t) return; var f=t.closest('.field');
+        if(n==null){ t.textContent='0'; t.classList.add('is-placeholder'); f.classList.add('is-empty'); }
+        else { t.textContent=String(n); t.classList.remove('is-placeholder'); f.classList.remove('is-empty'); } });
+      var sd=[].slice.call(ed.querySelectorAll('.pm-sd b')).find(function(b){ return sameScope(b, sel); }); if(sd) sd.textContent = r.k==='Custom' ? '—' : r.sd+'%';
+      var save=ed.querySelector('.btn-save'); if(save) save.disabled=false;
+    });
+  }
+  function wireMisc(ed){
+    ed.querySelectorAll('.pm-excl .pf-tgl').forEach(function(t){ if(t.dataset.wired) return; t.dataset.wired='1';
+      t.addEventListener('click', function(e){ e.stopPropagation(); var on=!t.classList.contains('on'); t.classList.toggle('on', on); t.setAttribute('aria-checked', on?'true':'false');
+        var save=ed.querySelector('.btn-save'); if(save) save.disabled=false; }); });
+    ed.querySelectorAll('.pm-how').forEach(function(l){ if(l.dataset.wired) return; l.dataset.wired='1'; l.addEventListener('click', function(e){ e.stopPropagation(); }); });
+  }
+
+  /* ---- 2. the editor: a new row in My Plans asks what you are modeling, then shows the product's own fields ---- */
+  var CHANGE_OPTS=['Rate of return','Current balance','Withdrawal strategy'];
+  function body(ed, mode, pick, kind){
+    var names=realRows().map(function(r){ return r.querySelector('.nm').textContent.trim(); });
+    var html=selectHTML('What are you modeling?', ['A new account I plan to open','A change to an account I already have'], mode, 'mode');
+    if(mode==='A change to an account I already have'){
+      kind=kind||CHANGE_OPTS[0];
+      html+=selectHTML('Which account?', names, pick||names[0], 'pick');
+      html+=selectHTML('What changes?', CHANGE_OPTS, kind, 'kind');
+      if(kind==='Rate of return'){
+        var row=realRows().find(function(r){ return r.querySelector('.nm').textContent.trim()===(pick||names[0]); });
+        var ty=row && row.querySelector('.ty') ? row.querySelector('.ty').childNodes[0].textContent : '';
+        html+=rateHTML(rateFor(ty));
+      } else if(kind==='Current balance'){
+        html+=fieldHTML('New balance', '', false, '25,000', '$');
+      } else {
+        html+=excludeHTML(true);
+      }
+    } else {
+      html+=fieldHTML('Account name', '', false, 'e.g. Roth IRA at Fidelity');
+      html+=fieldHTML('Account type', '', true, 'e.g. Roth IRA, Brokerage');
+      html+=fieldHTML('Current balance', '', false, '0', '$');
+      html+=rateHTML(RATES[3]);
+      html+=excludeHTML(false);
+    }
+    return html;
+  }
+  function rebuild(ed, mode, pick, kind){
+    var ecb=ed.querySelector('.ec-body'); if(!ecb) return;
+    var range=ecb.querySelector('.plan-range'), actions=ecb.querySelector('.edit-actions');
+    ecb.querySelectorAll(':scope > .field, :scope > .pm-rates, :scope > .pm-sd, :scope > .pm-how, :scope > .pm-link, :scope > .pm-stage, :scope > .pm-excl, :scope > .cf-inline-link, :scope > .cf-inline').forEach(function(n){ n.remove(); });
+    var tmp=document.createElement('div'); tmp.innerHTML=body(ed, mode, pick, kind);
+    var anchor=range||actions;
+    while(tmp.firstChild) ecb.insertBefore(tmp.firstChild, anchor);
+    /* the exclusion question reads last, after the planning window */
+    var ex=ecb.querySelector(':scope > .pm-excl'); if(ex && range) ecb.insertBefore(ex, actions);
+    wireRate(ed);
+    var save=ed.querySelector('.btn-save'); if(save && !save.classList.contains('is-saving') && !save.classList.contains('is-saved')){ save.textContent='Add to plan'; }
+  }
+  function dressNew(ed, row){
+    if(ed.dataset.pm) return; ed.dataset.pm='new';
+    var t=ed.querySelector('.ecTitleText'); if(t) t.textContent='Model a change';
+    var sub=ed.querySelector('.ec-sub'); if(sub){ sub.textContent='In your plan only'; sub.classList.add('pm-sub'); }
+    var menu=ed.querySelector('.ec-menu-connect'); if(menu) menu.remove();   /* nothing to link: this is hypothetical */
+    rebuild(ed, 'A new account I plan to open');
+    /* a planned account starts next year by default */
+    setTimeout(function(){ var s=ed.querySelector('.plan-range .field[data-pr-key="s"]'); if(s && s.dataset.prIdx==='0') s.click(); }, 0);
+    ed.addEventListener('change', function(e){
+      var f=e.target.closest('.field.pm-choice'); if(!f || f.dataset.pm==='rate' || f.dataset.pm==='age') return;
+      var mode=val(ed,'What are you modeling?'), pick=val(ed,'Which account?'), kind=val(ed,'What changes?');
+      rebuild(ed, mode, pick, kind);
+      var save=ed.querySelector('.btn-save'); if(save) save.disabled=false;
+    });
+    /* the account type picks the rate preset the way the product does */
+    ed.addEventListener('focusout', function(e){
+      var t=e.target.closest('.vtext'); if(!t) return; var f=t.closest('.field'); var l=f && f.querySelector('label');
+      if(!l || l.textContent.trim()!=='Account type' || t.classList.contains('is-placeholder')) return;
+      var sel=ed.querySelector('.field[data-pm="rate"] select'); if(!sel) return;
+      sel.value=rateLabel(rateFor(t.textContent)); sel.dispatchEvent(new Event('change'));
+    });
+    /* commit: the saved result is a planned row, or a modeled change on a real row - never a second real account */
+    var save=ed.querySelector('.btn-save');
+    if(save) save.addEventListener('click', function(){
+      if(save.classList.contains('is-saved')) return;
+      var mode=val(ed,'What are you modeling?'), yr=startYear(ed);
+      if(mode==='A change to an account I already have'){
+        var pick=val(ed,'Which account?'), kind=val(ed,'What changes?');
+        var target=realRows().find(function(r){ return r.querySelector('.nm').textContent.trim()===pick; });
+        if(target){
+          var ty=target.querySelector('.ty');
+          if(ty){
+            ty.querySelectorAll('.acct-planned-tag, .acct-planned-note').forEach(function(n){ n.remove(); });
+            var txt = kind==='Rate of return' ? (val(ed,'Average')||'new')+'% return'
+                    : kind==='Current balance' ? money(val(ed,'New balance'))+' balance'
+                    : 'excluded from withdrawals';
+            ty.insertAdjacentHTML('beforeend', '<span class="acct-planned-note">&nbsp;&middot; '+txt+(yr?' from '+yr:'')+'</span><span class="acct-planned-tag">'+ICON_PLAN+'Modeled</span>');
+          }
+          if(!reduce) target.animate([{background:'var(--bg-soft-green)'},{background:'transparent'}],{duration:1400,delay:2000,easing:'ease-out'});
+        }
+        /* the spawned row was only a vehicle for the editor; it never becomes an account */
+        var nm=row.querySelector('.nm'); if(nm) nm.textContent='Change to '+pick;
+        row.classList.add('acct-ghost');
+        setTimeout(function(){ row.remove(); }, reduce?400:4600);
+      } else {
+        var name=val(ed,'Account name')||'Planned account', type=val(ed,'Account type')||'Account', avg=val(ed,'Average');
+        row.classList.add('acct-planned');
+        var nmEl=row.querySelector('.nm'), tyEl=row.querySelector('.ty');
+        if(nmEl) nmEl.textContent=name;
+        if(tyEl) tyEl.innerHTML=type+(avg?'<span class="acct-planned-note">&nbsp;&middot; '+avg+'% return</span>':'')+(yr?'<span class="acct-planned-note">&nbsp;&middot; from '+yr+'</span>':'')+'<span class="acct-planned-tag">'+ICON_PLAN+'Planned</span>';
+        var fix=function(){ if(nmEl && nmEl.textContent.trim()!==name) nmEl.textContent=name;
+          var amt=row.querySelector('.amt'); var ob=val(ed,'Current balance');
+          /* the figure is drawn, not written: a planned amount is never today's money, so the rollup total skips it */
+          if(amt){ var m=money(ob); amt.textContent=''; amt.dataset.pm = m || '$0'; } };
+        setTimeout(fix, reduce?50:2150); setTimeout(fix, reduce?120:2400);
+      }
+      setTimeout(hint, reduce?500:4800);
+    });
+  }
+  /* ---- 3. a real row opened in My Plans carries the product's full account fields ---- */
+  function dressReal(ed, row){
+    if(ed.dataset.pm) return; ed.dataset.pm='real';
+    var ecb=ed.querySelector('.ec-body'); if(!ecb) return;
+    var tyText=(row.querySelector('.ty') && row.querySelector('.ty').childNodes[0]) ? row.querySelector('.ty').childNodes[0].textContent.trim() : '';
+    var bal='', nm='';
+    ecb.querySelectorAll(':scope > .field').forEach(function(f){ var l=(f.querySelector('label')||{}).textContent||''; var t=f.querySelector('.vtext');
+      var v=t && !t.classList.contains('is-placeholder') ? t.textContent.trim() : '';
+      if(/^name$/i.test(l.trim())) nm=v; if(/balance/i.test(l)) bal=v; });
+    var range=ecb.querySelector('.plan-range'), actions=ecb.querySelector('.edit-actions');
+    ecb.querySelectorAll(':scope > .field, :scope > .cf-inline-link, :scope > .cf-inline').forEach(function(n){ n.remove(); });
+    if(range) range.remove();                             /* an account you already hold has no start date */
+    var tmp=document.createElement('div');
+    tmp.innerHTML=fieldHTML('Account name', nm, false, 'e.g. Wells Fargo, Chase')+
+      fieldHTML('Current balance', bal.replace(/^\$/,''), false, '0', '$')+
+      rateHTML(rateFor(tyText))+excludeHTML(false);
+    while(tmp.firstChild) ecb.insertBefore(tmp.firstChild, actions);
+    wireRate(ed);
+    if(!inPlan()) return;
+    /* My Plans keeps its planning layer on a held account: the modeling move is one tap away */
+    var sub=ed.querySelector('.ec-sub'); if(sub){ sub.textContent='In your plan'; sub.classList.add('pm-sub'); }
+    var link=document.createElement('div'); link.className='pm-link pm-model'; link.setAttribute('role','button'); link.tabIndex=0;
+    link.textContent='Model a change to this account';
+    var ex=ecb.querySelector(':scope > .pm-excl');
+    ecb.insertBefore(link, ex||actions);
+    /* the planning window sits above the exclusion question, as it does on a modeled change */
+    setTimeout(function(){ var ex2=ecb.querySelector(':scope > .pm-excl'), acts=ecb.querySelector(':scope > .edit-actions'); if(ex2 && acts && ecb.querySelector(':scope > .plan-range')) ecb.insertBefore(ex2, acts); }, 0);
+    link.addEventListener('click', function(e){
+      e.stopPropagation();
+      var pick=row.querySelector('.nm').textContent.trim();
+      var bucket=row.closest('.bucket'); var add=bucket && bucket.querySelector('.add-row:not(.pm-link)');
+      var tog=ed.querySelector('.ec-toggle'); if(tog) tog.click();
+      setTimeout(function(){
+        if(add) add.click();
+        setTimeout(function(){
+          var ned=bucket.querySelector('.acct-new + .row-editor'); if(!ned) return;
+          dressNew(ned, ned.previousElementSibling);
+          rebuild(ned, 'A change to an account I already have', pick);
+          var sel=ned.querySelector('.field[data-pm="mode"] select'); if(sel) sel.value='A change to an account I already have';
+          var s=ned.querySelector('.btn-save'); if(s) s.disabled=false;
+        }, 160);
+      }, 340);
+    });
+  }
+  /* ---- 4. My Money: say what is modeled elsewhere instead of showing it as if it were real ---- */
+  function hint(){
+    var acc=assetsAcc(); if(!acc) return;
+    acc.querySelectorAll('.bucket').forEach(function(b){
+      var n=b.querySelectorAll(':scope > .acct.acct-planned').length + b.querySelectorAll(':scope > .acct .acct-planned-tag').length - b.querySelectorAll(':scope > .acct.acct-planned .acct-planned-tag').length;
+      var h=b.querySelector(':scope > .acct-planned-hint');
+      if(!n){ if(h) h.remove(); return; }
+      if(!h){ h=document.createElement('div'); h.className='acct-planned-hint'; var head=b.querySelector(':scope > .bucket-head'); b.insertBefore(h, head && head===b.lastElementChild ? head : null); }
+      h.innerHTML=n+(n===1?' change modeled':' changes modeled')+' in <a data-pm-go="plan">My Plans</a>';
+    });
+  }
+  document.addEventListener('click', function(e){ var a=e.target.closest('[data-pm-go]'); if(!a) return; var l=document.querySelector('.topnav nav.modes a[data-view="plan"]'); if(l) l.click(); });
+
+  /* ---- 5. My Money: the account editor is the product's account editor, field for field ---- */
+  function dressToday(ed, row){ dressReal(ed, row); ed.dataset.pm='today'; }
+
+  /* editors appear via the row toggle; watch for them and dress the ones in Assets by mode */
+  var busy=false;
+  new MutationObserver(function(muts){
+    if(busy) return; busy=true;
+    try{
+      muts.forEach(function(m){ [].forEach.call(m.addedNodes, function(n){
+        if(!(n instanceof Element) || !n.classList.contains('row-editor')) return;
+        if(!n.closest('#assets-block')) return;
+        var row=n.previousElementSibling; if(!row || !row.classList.contains('acct')) return;
+        if(!inPlan()){ if(!row.classList.contains('acct-new')) dressToday(n, row); return; }
+        if(row.classList.contains('acct-new')) dressNew(n, row); else if(!row.classList.contains('acct-planned')) dressReal(n, row);
+      }); });
+    } finally{ busy=false; }
+  }).observe(document.body,{childList:true, subtree:true});
+})();
+</script>
+
+<!-- ===================== My Money is today only: planning lives in My Plans ===================== -->
+<style id="todayOnlyCSS">
+/* the Wells Fargo quest card drops its return assumptions in My Money - those are plan inputs */
+body[data-view="today"] #ecBody > .field:nth-of-type(4),
+body[data-view="today"] #ecBody > .field:nth-of-type(5){ display:none; }
+/* contributions are forward-looking: the inline flow stays in My Plans */
+body[data-view="today"] .row-editor .cf-inline-link,
+body[data-view="today"] .row-editor .cf-inline{ display:none; }
+/* after a save in My Money the rail confirms the balance, not the projection */
+body[data-view="today"] #railCtx .ctx-metrics,
+body[data-view="today"] #railCtx #ctxGraphLink{ display:none; }
+body[data-view="today"] #railCtx .ctx-metrics + .ctx-viewplan{ margin-top:16px; }
+</style>
+<script id="todayOnlyJS">
+(function(){
+  var rail=document.getElementById('railCtx'); if(!rail) return;
+  var TODAY_TAIL=['Today’s ','picture ','is ','up ','to ','date.'];
+  function reframe(){
+    if(document.body.dataset.view!=='today') return;
+    var eb=rail.querySelector('.ctx-eyebrow');
+    if(!eb || eb.textContent.trim()!=='Plan updated') return;
+    eb.textContent='Balance updated';
+    var body=rail.querySelector('[data-type]');
+    if(body){
+      var toks=[].slice.call(body.querySelectorAll('.tok'));
+      if(toks.length>=6 && /match\.$/.test(toks[toks.length-1].textContent)){
+        toks.slice(-6).forEach(function(t,i){ t.textContent=TODAY_TAIL[i]; });   /* same six word slots, so the typing cadence is untouched */
+      } else if(!toks.length){
+        body.textContent=body.textContent.replace('Your plan just shifted to match.', 'Today’s picture is up to date.');
+      }
+    }
+    var vp=rail.querySelector('.ctx-viewplan');
+    if(vp){ var svg=vp.querySelector('svg'); vp.textContent='See it in My Plans '; if(svg) vp.appendChild(svg); }
+  }
+  new MutationObserver(reframe).observe(rail,{childList:true});
+})();
+</script>
+
+<!-- ===================== Edit box: the connect link is just an icon and "Connect" ===================== -->
+<style id="cxSimpleCSS">
+.ec-head .cx-link.in-head{ display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:600; }
+.ec-head .cx-link.in-head::after{ content:none; }
+.ec-head .cx-link.in-head svg{ width:15px; height:15px; flex:none; }
+</style>
+<script id="cxSimpleJS">
+(function(){
+  var ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+  function simplify(l){ if(l.dataset.cxs) return; l.dataset.cxs='1'; l.innerHTML=ICON+'Connect'; l.setAttribute('aria-label','Connect all your accounts'); }
+  document.querySelectorAll('.ec-head .cx-link').forEach(simplify);
+  new MutationObserver(function(muts){
+    muts.forEach(function(m){ [].forEach.call(m.addedNodes, function(n){
+      if(!(n instanceof Element)) return;
+      if(n.matches && n.matches('.cx-link') && n.closest('.ec-head')) simplify(n);
+      else n.querySelectorAll && n.querySelectorAll('.ec-head .cx-link').forEach(simplify);
+    }); });
+  }).observe(document.body,{childList:true, subtree:true});
+})();
+</script>
