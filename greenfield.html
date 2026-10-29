@@ -29112,3 +29112,17 @@ body.cx-flying .acc-body{ overflow:visible; }
   label(); window.addEventListener('boldin:view', function(){ setTimeout(label, 0); });
 })();
 </script>
+
+<style id="todayFlatAllCSS">
+/* My Money: every section is one flat list. The header CTA is the way to add, so the per-group
+   "Add ..." rows and their group labels step out of the way (they stay in the DOM for My Plans and
+   for the CTA to drive). */
+body[data-view="today"] .layout.page[data-page="plan"] .acc .bucket-head,
+body[data-view="today"] .layout.page[data-page="plan"] .acc .bucket > .bucket-label,
+body[data-view="today"] .layout.page[data-page="plan"] .acc .add-row,
+body[data-view="today"] .layout.page[data-page="plan"] .acc .add-row-line > .add-row{ display:none; }
+/* the budgeter link keeps its line, just without the add beside it */
+body[data-view="today"] .layout.page[data-page="plan"] .acc .add-row-line{ margin-top:12px; }
+body[data-view="today"] .layout.page[data-page="plan"] .acc .bucket + .bucket{ margin-top:0; }
+body[data-view="today"] .layout.page[data-page="plan"] .acc .bucket:first-of-type{ margin-top:var(--s-4); }
+</style>
