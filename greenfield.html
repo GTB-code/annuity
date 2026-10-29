@@ -29053,3 +29053,35 @@ body.cx-flying .acc-body{ overflow:visible; }
 /* the mode chip belongs to an open editor, not to a card resting in the list */
 .edit-card.body-collapsed::before{ display:none !important; }
 </style>
+
+<style id="addAssetCtaCSS">
+/* Assets header: the connect pill gets a filled partner - the primary way to add by hand */
+.acc .cx-actions{ display:flex; align-items:center; gap:10px; margin-top:10px; }
+.acc .cx-actions .cx-all{ margin-top:0; }
+.acc .cx-actions .pc-btn.cx-add-asset{ min-height:0; height:32px; padding:0 16px; font-size:13px; line-height:1; display:inline-flex; align-items:center; gap:6px; }
+.acc .cx-actions .pc-btn.cx-add-asset::before{ content:"+"; font-size:16px; font-weight:500; line-height:1; margin-top:-1px; }
+.acc-head.acc-collapsed .cx-actions .cx-all{ display:none; }
+</style>
+<script id="addAssetCtaJS">
+(function(){
+  /* one filled CTA per section header; the label names what the section holds */
+  var LABELS={ 'Assets':'Add asset', 'Debts':'Add debt', 'Monthly Income':'Add income', 'Home & Real Estate':'Add property', 'Expenses':'Add expense' };
+  var ctas=[];
+  document.querySelectorAll('.layout.page[data-page="plan"] .acc').forEach(function(acc){
+    var h2=acc.querySelector('h2'); var title=h2 && h2.textContent.trim(); if(!title || !LABELS[title]) return;
+    var sub=h2.parentElement.querySelector('.sub'); if(!sub || acc.querySelector('.cx-add-asset')) return;
+    var all=acc.querySelector('.cx-all');
+    var wrap=document.createElement('div'); wrap.className='cx-actions';
+    if(all){ all.parentNode.insertBefore(wrap, all); wrap.appendChild(all); } else sub.insertAdjacentElement('afterend', wrap);
+    var btn=document.createElement('button'); btn.type='button'; btn.className='pc-btn cx-add-asset'; btn.dataset.label=LABELS[title];
+    wrap.appendChild(btn); ctas.push(btn);
+    btn.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      var head=acc.querySelector('.acc-head'); if(head && head.classList.contains('acc-collapsed')) head.click();
+      setTimeout(function(){ var add=acc.querySelector('.bucket .add-row, .add-row'); if(add) add.click(); }, head && head.classList.contains('acc-collapsed') ? 0 : 60);
+    });
+  });
+  function label(){ var plan=document.body.dataset.view==='plan'; ctas.forEach(function(b){ b.textContent = plan ? 'Model a change' : b.dataset.label; }); }
+  label(); window.addEventListener('boldin:view', function(){ setTimeout(label, 0); });
+})();
+</script>
