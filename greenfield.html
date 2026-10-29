@@ -28465,13 +28465,15 @@ body[data-view="plan"] #assets-block .bucket .cx-link:not(.pm-how){ display:none
 /* an account you already hold has no start date */
 #assets-block .row-editor[data-pm="today"] .plan-range{ display:none; }
 /* the planning layer sits below a hairline, apart from the account's own fields */
-.ec-body > .pm-link.pm-model{ display:flex; margin:0 0 14px; padding-top:18px; border-top:1px solid var(--hairline); }
+.ec-body > .plaid-cta.pm-model{ margin:18px 0 16px; }
+.ec-body > .plaid-cta.pm-model .pc-ic svg{ width:18px; height:18px; color:#0E794E; stroke-width:2; }
+.ec-body > .plaid-cta.pm-model::before{ content:none; }
+.ec-body > .pm-model-rule{ border-top:1px solid var(--hairline); margin-top:18px; }
 .ec-body > .pm-link.pm-over{ display:flex; }
 body[data-view="plan"] #assets-block .bucket-head .add-row .ar-r{ position:static; width:auto; height:auto; margin:0; padding:0; overflow:visible; clip-path:none; white-space:normal; }
 body[data-view="plan"] #assets-block .bucket-head .add-row{ gap:5px; }
 body[data-view="plan"] #assets-block .bucket-head .add-row .ar-s{ margin-right:-1px; }
 #assets-block .row-editor .pm-link{ margin:2px 0 16px; padding:4px 0; font-size:15px; }
-#assets-block .row-editor .pm-link.pm-model{ margin:14px 0 16px; padding:18px 0 4px; }
 /* in-editor action links, set like .add-row (plus sign, green) without being bucket adds */
 .pm-link{ display:inline-flex; align-items:center; gap:7px; color:var(--green-cta); font-weight:600; font-size:15px; cursor:pointer; transition:color var(--dur-fast); }
 .pm-link::before{ content:"+"; font-size:19px; font-weight:500; line-height:1; }
@@ -28688,7 +28690,7 @@ body[data-view="plan"] .edit-card .ec-sub.pm-sub{ display:inline; margin-left:10
   function rebuild(ed, mode, pick, kind){
     var ecb=ed.querySelector('.ec-body'); if(!ecb) return;
     var range=ecb.querySelector('.plan-range'), actions=ecb.querySelector('.edit-actions');
-    ecb.querySelectorAll(':scope > .field, :scope > .pm-rates, :scope > .pm-sd, :scope > .pm-how, :scope > .pm-link, :scope > .pm-stage, :scope > .pm-excl, :scope > .cf-inline-link, :scope > .cf-inline').forEach(function(n){ n.remove(); });
+    ecb.querySelectorAll(':scope > .field, :scope > .pm-rates, :scope > .pm-sd, :scope > .pm-how, :scope > .pm-link, :scope > .pm-model, :scope > .pm-model-rule, :scope > .pm-stage, :scope > .pm-excl, :scope > .cf-inline-link, :scope > .cf-inline').forEach(function(n){ n.remove(); });
     var tmp=document.createElement('div'); tmp.innerHTML=body(ed, mode, pick, kind);
     var anchor=range||actions;
     while(tmp.firstChild) ecb.insertBefore(tmp.firstChild, anchor);
@@ -28777,10 +28779,14 @@ body[data-view="plan"] .edit-card .ec-sub.pm-sub{ display:inline; margin-left:10
     if(!inPlan()) return;
     /* My Plans keeps its planning layer on a held account: the modeling move is one tap away */
     var sub=ed.querySelector('.ec-sub'); if(sub){ sub.textContent='In your plan'; sub.classList.add('pm-sub'); }
-    var link=document.createElement('div'); link.className='pm-link pm-model'; link.setAttribute('role','button'); link.tabIndex=0;
-    link.textContent='Model a change to this account';
+    /* the same row the connect prompt uses: icon, a line of copy, and a pill button that clearly acts */
+    var link=document.createElement('div'); link.className='plaid-cta pm-model';
+    link.innerHTML='<span class="pc-ic">'+ICON_PLAN+'</span>'+
+      '<span class="pc-txt"><b>Model a change to this account</b><span>Try a different rate, balance or strategy in your plan. Today\u2019s numbers stay as they are.</span></span>'+
+      '<button class="pc-btn" type="button">Model</button>';
     var ex=ecb.querySelector(':scope > .pm-excl');
-    ecb.insertBefore(link, ex||actions);
+    var rule=document.createElement('div'); rule.className='pm-model-rule';
+    ecb.insertBefore(rule, ex||actions); ecb.insertBefore(link, ex||actions);
     /* the planning window sits above the exclusion question, as it does on a modeled change */
     setTimeout(function(){ var ex2=ecb.querySelector(':scope > .pm-excl'), acts=ecb.querySelector(':scope > .edit-actions'); if(ex2 && acts && ecb.querySelector(':scope > .plan-range')) ecb.insertBefore(ex2, acts); }, 0);
     link.addEventListener('click', function(e){
@@ -28891,3 +28897,8 @@ body[data-view="today"] #railCtx .ctx-metrics + .ctx-viewplan{ margin-top:16px; 
   }).observe(document.body,{childList:true, subtree:true});
 })();
 </script>
+
+<style id="hideAdvisoryNavCSS">
+/* My Advisory is parked for now: the link leaves the top nav, the page stays reachable by other routes */
+.topnav nav.modes a#navAdvisory{ display:none; }
+</style>
