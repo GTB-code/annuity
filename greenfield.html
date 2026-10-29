@@ -28464,12 +28464,14 @@ body[data-view="plan"] #assets-block .row-editor[data-pm="new"] .cx-link,
 body[data-view="plan"] #assets-block .bucket .cx-link:not(.pm-how){ display:none; }
 /* an account you already hold has no start date */
 #assets-block .row-editor[data-pm="today"] .plan-range{ display:none; }
-.ec-body > .pm-link.pm-model{ display:flex; margin:0 0 14px; }
+/* the planning layer sits below a hairline, apart from the account's own fields */
+.ec-body > .pm-link.pm-model{ display:flex; margin:0 0 14px; padding-top:18px; border-top:1px solid var(--hairline); }
 .ec-body > .pm-link.pm-over{ display:flex; }
 body[data-view="plan"] #assets-block .bucket-head .add-row .ar-r{ position:static; width:auto; height:auto; margin:0; padding:0; overflow:visible; clip-path:none; white-space:normal; }
 body[data-view="plan"] #assets-block .bucket-head .add-row{ gap:5px; }
 body[data-view="plan"] #assets-block .bucket-head .add-row .ar-s{ margin-right:-1px; }
 #assets-block .row-editor .pm-link{ margin:2px 0 16px; padding:4px 0; font-size:15px; }
+#assets-block .row-editor .pm-link.pm-model{ margin:14px 0 16px; padding:18px 0 4px; }
 /* in-editor action links, set like .add-row (plus sign, green) without being bucket adds */
 .pm-link{ display:inline-flex; align-items:center; gap:7px; color:var(--green-cta); font-weight:600; font-size:15px; cursor:pointer; transition:color var(--dur-fast); }
 .pm-link::before{ content:"+"; font-size:19px; font-weight:500; line-height:1; }
