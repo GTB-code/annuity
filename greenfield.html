@@ -29007,6 +29007,10 @@ body.cx-flying .acc-body{ overflow:visible; }
   function onPicked(inst, picked){
     var assets=sectionFor('Assets'), bucket=firstBucket(assets); if(!bucket || !picked.length) return;
     expand(assets);
+    /* the spawn path scrolls to what it thinks is the new row's editor; with several rows stacked at once
+       that lands on the wrong element, so the page holds still until the spawns have finished */
+    var _scrollTo=window.scrollTo; window.scrollTo=function(){};
+    setTimeout(function(){ window.scrollTo=_scrollTo; }, 400);
     var wrap=document.createElement('div'); wrap.className='cx-landing';
     wrap.innerHTML='<div class="cx-landing-t">'+picked.length+(picked.length===1?' account':' accounts')+' connected from '+inst+'</div>';
     /* the same green ring that confirms a save traces the field once: connected */
@@ -29021,7 +29025,7 @@ body.cx-flying .acc-body{ overflow:visible; }
       return row;
     });
     if(!reduce) wrap.animate([{opacity:0},{opacity:1}],{duration:260, easing:'ease-out'});
-    setTimeout(function(){ var y=window.scrollY + wrap.getBoundingClientRect().top - 150; window.scrollTo({top:Math.max(0,y), behavior:reduce?'auto':'smooth'}); }, 120);
+    setTimeout(function(){ var y=window.scrollY + wrap.getBoundingClientRect().top - 150; window.scrollTo({top:Math.max(0,y), behavior:reduce?'auto':'smooth'}); }, 450);
     var movers=rows.filter(function(r){ return r.dataset.dest!=='Assets'; });
     if(movers.length){
       var debts=sectionFor('Debts');
