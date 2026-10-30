@@ -29582,7 +29582,8 @@ body.plan-view.lens-snapshot[data-view="plan"] [data-page="plan"] .center > #eve
 body[data-view="plan"] #sideNav li[data-key="assets"],
 body[data-view="plan"] #sideNav li[data-key="debts"],
 body[data-view="plan"] #sideNav li[data-key="income"],
-body[data-view="plan"] #sideNav li[data-key="home"]{ display:none; }
+body[data-view="plan"] #sideNav li[data-key="home"],
+body[data-view="plan"] #sideNav li[data-key="estate"]{ display:none; }   /* Estate planning lives under Explore my plan */
 /* the two inputs that matter sit above the fold of the group; Expenses steps out of the "more" clip */
 body[data-view="plan"] #sideNav.in-clipped li[data-key="expenses"].nav-extra{ display:flex; }
 #sideNav li[data-key="events"]{ display:none; }
@@ -29639,8 +29640,8 @@ body[data-view="plan"] .pe-only{ display:block; }
 /* ---- Expenses: the spending line, then the chapters ---- */
 /* room to breathe: the header CTA, the chart, the chapters and the first row each get their own air */
 body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
-.acc-body > .pe-spend{ margin:64px 4px 0; }
-.pe-spend + .bucket{ margin-top:56px; }
+.acc-body > .pe-spend{ margin:40px 4px 0; }
+.pe-spend + .bucket{ margin-top:40px; }
 .pe-spend-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:24px; }
 .pe-spend-head .t{ font-size:16px; font-weight:600; color:var(--ink); }
 .pe-spend-head .s{ font-size:13px; color:var(--text-secondary); }
@@ -29653,6 +29654,8 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
 .pe-spend text{ font-family:var(--font); font-size:11.5px; fill:var(--text-secondary); }
 .pe-spend text.ev{ fill:var(--ink); font-weight:600; }
 .pe-spend text.ax{ font-size:11px; }
+.pe-spend text.lab{ font-size:12px; fill:var(--text-secondary); }
+.pe-spend text.fig{ font-size:15px; font-weight:600; fill:var(--ink); font-variant-numeric:tabular-nums; }
 .pe-spend .step{ cursor:pointer; }
 .pe-spend .step rect{ fill:transparent; }
 .pe-spend .step:hover rect, .pe-spend .step.on rect{ fill:rgba(16,24,44,0.04); }
@@ -29725,7 +29728,7 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
     var ex=ul.querySelector('li[data-key="expenses"]'); if(ex){ var d=ex.querySelector('.nav-dot'); if(d) d.classList.add('done'); }
     /* the group now hides five, not seven */
     var more=nav.querySelector('.nav-more[data-more="in"]');
-    function fixMore(){ if(!more) return; var n=more.querySelector('.nav-more-n'); var t=(n||more).textContent; if(/more/i.test(t)){ if(n) n.textContent='5 more'; else more.textContent='5 more'; more.dataset.label='5 more'; } }
+    function fixMore(){ if(!more) return; var n=more.querySelector('.nav-more-n'); var t=(n||more).textContent; if(/more/i.test(t)){ if(n) n.textContent='4 more'; else more.textContent='4 more'; more.dataset.label='4 more'; } }
     fixMore();
     if(more) more.addEventListener('click', function(){ setTimeout(fixMore, 0); });
     li.addEventListener('click', function(){ jumpTo(document.getElementById('events-block'), 'events', $('.snap-ultra')); });
@@ -29735,7 +29738,7 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
   function fold(){
     $$('.center .acc').forEach(function(acc){
       var t=((acc.querySelector('.acc-head h2')||{}).textContent||'').trim().toLowerCase();
-      if(acc.id==='assets-block' || t==='debts' || t==='monthly income' || t==='home & real estate') acc.setAttribute('data-pe-hide','1');
+      if(acc.id==='assets-block' || t==='debts' || t==='monthly income' || t==='home & real estate' || t==='estate planning') acc.setAttribute('data-pe-hide','1');
     });
   }
 
@@ -30033,7 +30036,6 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
     var pts=[]; for(var y=Y0; y<=Y1; y++){
       var m=8850;
       if(y>=2029){ m+=450; m-=2100; }                 /* retired: leisure up, work life gone */
-      if(y>=2029 && y<=2029) m+=1180;                  /* the insurance bridge */
       if(y>=2045 && y<=2047) m+=6500;                  /* the care years */
       if(y>=2046) m-=1120;                              /* the house is yours */
       pts.push([y,m]);
@@ -30048,28 +30050,24 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
   ];
   function paintSpend(){
     var wrap=$('.pe-spend'); if(!wrap) return;
-    var pts=series(); var W=620, H=250, L=44, R=12, T=46, B=32;
-    var maxV=16000; function sx(y){ return L+(y-Y0)/(Y1-Y0)*(W-L-R); } function sy(v){ return T+(1-v/maxV)*(H-T-B); }
+    /* one line, four figures written on it. No axis, no grid, no tiles. */
+    var pts=series(); var W=620, H=200, L=8, R=8, T=46, B=28;
+    var maxV=14200; function sx(y){ return L+(y-Y0)/(Y1-Y0)*(W-L-R); } function sy(v){ return T+(1-v/maxV)*(H-T-B); }
     var d='', area='M'+sx(Y0)+' '+sy(0);
     pts.forEach(function(p,i){ var X=sx(p[0]), Y=sy(p[1]); var nx=sx(p[0]+1);
       d+=(i?'L':'M')+X+' '+Y+' L'+nx+' '+Y+' '; area+=' L'+X+' '+Y+' L'+nx+' '+Y; });
     area+=' L'+sx(Y1+1)+' '+sy(0)+' Z';
     var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
-    [4000,8000,12000,16000].forEach(function(v){ s+='<line class="grid" x1="'+L+'" y1="'+sy(v)+'" x2="'+(W-R)+'" y2="'+sy(v)+'"/><text class="ax" x="'+(L-8)+'" y="'+(sy(v)+4)+'" text-anchor="end">$'+(v/1000)+'k</text>'; });
+    s+='<line class="grid" x1="'+L+'" y1="'+sy(0)+'" x2="'+(W-R)+'" y2="'+sy(0)+'"/>';
     s+='<path class="area" d="'+area+'"/><path class="line" d="'+d+'"/>';
-    [2030,2040,2050,2060].forEach(function(y){ s+='<text class="ax" x="'+sx(y)+'" y="'+(H-10)+'" text-anchor="middle">'+y+'</text>'; });
-    /* the events that bend the line */
-    var marks=[['retire',2028,'Retire'],['medicare',2030,'Medicare'],['care',2045,'Care years'],['house',2046,'House paid']];
-    marks.forEach(function(m,i){ var X=sx(m[1]+ (m[0]==='retire'?1:0)); var low=(m[0]==='medicare'||m[0]==='house'); var ty=low?T-10:T-26;
-      s+='<line class="tick" x1="'+X+'" y1="'+(ty+4)+'" x2="'+X+'" y2="'+(H-B)+'"/><text class="ev" x="'+(X+5)+'" y="'+ty+'" text-anchor="start" data-ev="'+m[0]+'">'+m[2]+'</text>'; });
-    s+='<line class="tick now" x1="'+sx(Y0)+'" y1="'+T+'" x2="'+sx(Y0)+'" y2="'+(H-B)+'"/><text class="ev" x="'+(sx(Y0)+5)+'" y="'+(H-B-6)+'" text-anchor="start">Today</text>';
-    /* hover steps: one per chapter */
-    var bounds=[[2026,2029],[2029,2030],[2030,2045],[2045,2048],[2048,2061]];
-    bounds.forEach(function(b,i){ var X0=sx(b[0]), X1=sx(b[1]); s+='<g class="step" data-chap="'+i+'"><rect x="'+X0+'" y="'+T+'" width="'+(X1-X0)+'" height="'+(H-T-B)+'"/></g>'; });
+    [2030,2040,2050,2060].forEach(function(y){ s+='<text class="ax" x="'+sx(y)+'" y="'+(H-8)+'" text-anchor="'+(y===2060?'end':'middle')+'">'+y+'</text>'; });
+    var labs=[ ['',2026,8850,'Today','start'], ['retire',2031,7200,'Retired','start'], ['care',2046,13700,'Care years','middle'], ['house',2054,6080,'House paid','middle'] ];
+    labs.forEach(function(m){ var X=sx(m[1]), Y=sy(m[2]); var dx=m[4]==='start'?4:0;
+      s+='<text class="lab" x="'+(X+dx)+'" y="'+(Y-22)+'" text-anchor="'+m[4]+'"'+(m[0]?' data-ev="'+m[0]+'"':'')+'>'+m[3]+'</text>'
+        +'<text class="fig" x="'+(X+dx)+'" y="'+(Y-7)+'" text-anchor="'+m[4]+'"'+(m[0]?' data-ev="'+m[0]+'"':'')+'>'+money(m[2])+'</text>'; });
     s+='</svg>';
     var chart=wrap.querySelector('.pe-spend-chart'); if(chart) chart.innerHTML=s;
-    $$('.pe-spend text.ev[data-ev]').forEach(function(t){ t.style.cursor='pointer'; t.addEventListener('click', function(){ goEvent(t.dataset.ev); }); });
-    $$('.pe-spend .step').forEach(function(g){ g.addEventListener('mouseenter', function(){ hiChap(+g.dataset.chap, true); }); g.addEventListener('mouseleave', function(){ hiChap(+g.dataset.chap, false); }); });
+    $$('.pe-spend text[data-ev]').forEach(function(t){ t.style.cursor='pointer'; t.addEventListener('click', function(){ goEvent(t.dataset.ev); }); });
   }
   function hiChap(i, on){ var c=$$('.pe-chap')[i]; if(c) c.classList.toggle('on', on); var g=$$('.pe-spend .step')[i]; if(g) g.classList.toggle('on', on); }
   function goEvent(id){ var r=$('#events-block .acct[data-ev="'+id+'"]'); if(!r) return; var acc=document.getElementById('events-block'); if(acc._expand) acc._expand(); r.scrollIntoView({block:'center', behavior:reduce?'auto':'smooth'}); lit(id,true); setTimeout(function(){ lit(id,false); }, 1600); }
@@ -30081,13 +30079,9 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
     var ex=expensesAcc(); if(!ex || ex.querySelector('.pe-spend')) return;
     var body=ex.querySelector('.acc-body');
     var top=document.createElement('div'); top.className='pe-spend pe-only';
-    top.innerHTML='<div class="pe-spend-head"><div class="t">Monthly spending, year by year</div><div class="s">Today’s dollars · shaped by your life events</div></div>'
-      +'<div class="pe-spend-chart"></div>'
-      +'<div class="pe-chapters">'+CHAPS.map(function(c,i){ return '<div class="pe-chap" data-i="'+i+'" role="button" tabindex="0"><div class="k">'+c.k+'</div><div class="f">'+money(c.f)+'<small>/mo</small></div><div class="d '+c.tone+'">'+c.yr+(c.d?' · '+c.d:'')+'</div></div>'; }).join('')+'</div>';
+    top.innerHTML='<div class="pe-spend-chart"></div>';
     body.insertBefore(top, body.firstChild);
     paintSpend();
-    $$('.pe-chap', top).forEach(function(c){ var i=+c.dataset.i; c.addEventListener('mouseenter', function(){ hiChap(i,true); }); c.addEventListener('mouseleave', function(){ hiChap(i,false); });
-      c.addEventListener('click', function(){ var map=['','retire','medicare','care','house']; if(map[i]) goEvent(map[i]); }); });
     /* today's recurring lines, each with the event that changes it */
     var rec=ex.querySelector('.bucket[data-bucket="recurring"]');
     function place(bucket, row){
