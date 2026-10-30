@@ -29127,3 +29127,378 @@ body[data-view="today"] .layout.page[data-page="plan"] .acc .add-row-line{ margi
 body[data-view="today"] .layout.page[data-page="plan"] .acc .bucket + .bucket{ margin-top:0; }
 body[data-view="today"] .layout.page[data-page="plan"] .acc .bucket:first-of-type{ margin-top:var(--s-4); }
 </style>
+
+<!-- ===================== Classic onboarding, rebuilt for greenfield =====================
+     Captured from staging on 2026-10-30: sign-up -> Boldin AI chat (12 steps) -> PlannerPlus
+     trial -> dashboard with a six-step tour. Same order, same copy, greenfield surfaces. -->
+<style id="classicOnboardCSS">
+.ob{ position:fixed; inset:0; z-index:90; background:#fff; overflow:auto; font-family:var(--font); color:var(--ink); display:none; }
+.ob.on{ display:block; }
+body.ob-open .topnav, body.ob-open .dock, body.ob-open .demo-reset{ display:none !important; }
+body.ob-open .layout.page{ display:none !important; }
+.ob-top{ position:sticky; top:0; z-index:2; background:#fff; height:72px; display:flex; align-items:center; justify-content:space-between; padding:0 var(--s-8); border-bottom:1px solid var(--hairline); }
+.ob-top .brand svg{ height:30px; width:auto; display:block; }
+.ob-top .ob-ai{ display:flex; align-items:center; gap:10px; font-size:17px; font-weight:600; }
+.ob-top .ob-ai svg{ height:22px; width:auto; }
+.ob-top .ob-right{ display:flex; align-items:center; gap:14px; font-size:14.5px; color:var(--text-secondary); }
+.ob-top .ob-right button{ border:1px solid var(--hairline-strong); background:#fff; border-radius:999px; padding:9px 16px; font:600 14px var(--font); color:var(--ink); cursor:pointer; }
+/* sign-up */
+.ob-su{ max-width:440px; margin:64px auto 80px; padding:0 20px; }
+.ob-su h1{ font-size:34px; font-weight:600; letter-spacing:-0.3px; margin:0 0 6px; text-align:center; }
+.ob-su .ob-sub{ font-size:16px; color:var(--text-secondary); text-align:center; margin:0 0 28px; }
+.ob-su .su-field{ position:relative; }
+.ob-su .su-eye{ position:absolute; right:14px; top:38px; width:22px; height:22px; color:var(--text-secondary); cursor:pointer; background:none; border:0; padding:0; }
+.ob-rules{ margin:-6px 0 14px; font-size:13.5px; color:var(--text-secondary); display:none; }
+.ob-rules.show{ display:block; }
+.ob-rules .bar{ height:4px; border-radius:999px; background:#EEF0F3; overflow:hidden; margin-bottom:8px; }
+.ob-rules .bar i{ display:block; height:100%; width:0; background:var(--green-cta); border-radius:999px; transition:width .3s ease; }
+.ob-rules .t{ font-weight:600; color:var(--ink); margin-bottom:6px; }
+.ob-rules li{ list-style:none; display:flex; align-items:center; gap:8px; padding:2px 0; }
+.ob-rules li::before{ content:''; width:14px; height:14px; border-radius:999px; border:1.5px solid var(--hairline-strong); flex:none; background-size:10px; background-position:center; background-repeat:no-repeat; }
+.ob-rules li.ok{ color:var(--ink); }
+.ob-rules li.ok::before{ border-color:var(--green-cta); background-color:var(--green-cta); background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 13l4 4L19 7'/></svg>"); }
+.ob-rules ul{ margin:0; padding:0; }
+.ob-check{ display:flex; align-items:center; gap:10px; font-size:15px; margin:4px 0 18px; cursor:pointer; }
+.ob-check input{ width:18px; height:18px; accent-color:var(--green-cta); }
+.ob-or{ display:flex; align-items:center; gap:14px; margin:18px 0; font-size:12.5px; color:var(--text-secondary); letter-spacing:.04em; }
+.ob-or::before, .ob-or::after{ content:''; flex:1; height:1px; background:var(--hairline); }
+.ob-su .ob-signin{ text-align:center; font-size:15px; color:var(--text-secondary); margin:18px 0 10px; }
+.ob-su .ob-signin a, .ob-su .ob-terms a{ color:var(--ink); text-decoration:underline; cursor:pointer; }
+.ob-su .ob-terms{ text-align:center; font-size:12.5px; color:var(--text-secondary); }
+.ob-foot{ border-top:1px solid var(--hairline); margin-top:40px; padding:28px 20px 40px; text-align:center; font-size:13.5px; color:var(--text-secondary); max-width:560px; margin-left:auto; margin-right:auto; line-height:1.5; }
+.ob-foot .links{ margin-top:10px; display:flex; gap:18px; justify-content:center; }
+.ob-foot .links span{ color:var(--ink); }
+/* chat */
+.ob-chat{ display:flex; flex-direction:column; min-height:100%; }
+.ob-thread{ flex:1; max-width:640px; width:100%; margin:0 auto; padding:28px 20px 240px; box-sizing:border-box; }
+.ob-msg{ font-size:16px; line-height:1.5; color:var(--text-secondary); margin:0 0 14px; max-width:520px; opacity:0; transform:translateY(6px); animation:obIn .32s cubic-bezier(0.22,1,0.36,1) forwards; }
+.ob-msg.q{ color:var(--ink); font-weight:500; }
+.ob-msg .tok{ opacity:0; transition:opacity .18s ease; }
+.ob-msg .tok.show{ opacity:1; }
+.ob-user{ display:flex; flex-direction:column; align-items:flex-end; margin:4px 0 16px; opacity:0; animation:obIn .3s ease forwards; }
+.ob-user .b{ background:#F3F4F6; border-radius:14px; padding:12px 14px; font-size:15.5px; max-width:200px; color:var(--ink); line-height:1.4; cursor:pointer; }
+.ob-user .b:hover{ background:#ECEEF1; }
+.ob-user .c{ font-size:11.5px; color:var(--text-tertiary,#9AA0AE); margin-top:5px; }
+@keyframes obIn{ to{ opacity:1; transform:none; } }
+.ob-dock{ position:fixed; left:0; right:0; bottom:0; padding:30px 20px 34px; background:linear-gradient(to top,#fff 0%,#fff 70%,rgba(255,255,255,0) 100%); pointer-events:none; }
+.ob-dock .in{ max-width:640px; margin:0 auto; pointer-events:auto; }
+.ob-box{ background:#fff; border:1px solid var(--hairline-strong); border-radius:16px; padding:14px 14px 10px; }
+.ob-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px; }
+.ob-chip{ border:1px solid var(--green-cta); color:var(--green-cta); background:#fff; border-radius:999px; padding:7px 13px; font:500 13.5px var(--font); cursor:pointer; transition:background .15s ease, color .15s ease; }
+.ob-chip:hover{ background:#EAF6F0; }
+.ob-chip.on{ background:var(--green-cta); color:#fff; }
+.ob-inrow{ display:flex; align-items:center; gap:10px; margin-top:6px; }
+.ob-inrow input{ flex:1; border:0; outline:0; font:400 15.5px var(--font); color:var(--ink); padding:8px 2px; background:transparent; }
+.ob-inrow input::placeholder{ color:#9AA0AE; }
+.ob-send{ width:30px; height:30px; border-radius:999px; border:0; background:var(--ink); color:#fff; display:none; align-items:center; justify-content:center; cursor:pointer; flex:none; }
+.ob-send.show{ display:flex; }
+.ob-send svg{ width:14px; height:14px; }
+.ob-mic{ width:30px; height:30px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); flex:none; }
+.ob-mic svg{ width:16px; height:16px; }
+.ob-card{ background:#fff; border:1px solid var(--hairline-strong); border-radius:16px; padding:16px; }
+.ob-card .lab{ font-size:14px; font-weight:600; margin:0 0 10px; }
+.ob-card .row{ display:flex; gap:12px; }
+.ob-card .field{ margin-bottom:0; }
+.ob-card .field.small{ width:150px; }
+.ob-card .field label{ background:#fff; }
+.ob-card .field .val select{ appearance:none; -webkit-appearance:none; border:0; background:transparent; font:400 17px var(--font); color:var(--ink); width:100%; outline:0; }
+.ob-card .field .val input{ border:0; outline:0; font:400 17px var(--font); color:var(--ink); width:100%; background:transparent; }
+.ob-card .err{ color:#C8102E; font-size:12.5px; margin:6px 2px 0; min-height:0; }
+.ob-card .su-cta{ margin-top:14px; min-height:46px; font-size:15.5px; border-radius:999px; }
+.ob-card .su-cta:disabled{ background:#A7CBBB; cursor:default; }
+/* the trial sheet */
+.ob-upsell{ width:min(960px, calc(100vw - 40px)); padding:0; overflow:hidden; display:grid; grid-template-columns:1.1fr 1fr; }
+.ob-upsell .l{ padding:34px 34px 30px; }
+.ob-upsell .l h2{ font-size:26px; font-weight:600; margin:0 0 8px; }
+.ob-upsell .l p{ font-size:15.5px; color:var(--text-secondary); line-height:1.5; margin:0 0 18px; }
+.ob-upsell .l p b{ color:var(--ink); font-weight:600; }
+.ob-upsell .l li{ list-style:none; display:flex; align-items:center; gap:12px; font-size:15px; padding:6px 0; }
+.ob-upsell .l li .ic{ width:34px; height:34px; border-radius:10px; background:#EAF6F0; display:flex; align-items:center; justify-content:center; color:var(--green-cta); flex:none; }
+.ob-upsell .l li .ic svg{ width:18px; height:18px; }
+.ob-upsell .l ul{ margin:0 0 22px; padding:0; }
+.ob-upsell .l h3{ font-size:17px; font-weight:600; margin:0 0 12px; }
+.ob-upsell .proj{ border:1px solid var(--hairline); border-radius:14px; padding:14px 16px 10px; }
+.ob-upsell .proj .t{ font-size:11.5px; font-weight:700; letter-spacing:.06em; color:var(--text-secondary); margin-bottom:8px; }
+.ob-upsell .r{ background:#F7F8F6; padding:34px 30px 30px; border-left:1px solid var(--hairline); }
+.ob-upsell .r h2{ font-size:24px; font-weight:600; margin:0 0 4px; display:flex; align-items:center; gap:10px; }
+.ob-upsell .r h2 .free{ color:var(--green-cta); }
+.ob-upsell .r h2 .pp{ margin-left:auto; width:28px; height:28px; border-radius:999px; background:#E8563A; color:#fff; font:700 12px var(--font); display:flex; align-items:center; justify-content:center; }
+.ob-upsell .r .sub{ font-size:13.5px; color:var(--text-secondary); margin:0 0 16px; }
+.ob-upsell .pay{ background:#fff; border:1px solid var(--hairline); border-radius:14px; padding:16px; }
+.ob-upsell .pay .hd{ font-size:13px; font-weight:600; color:var(--green-cta); display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.ob-upsell .pay .field{ margin-bottom:12px; }
+.ob-upsell .pay .field label{ background:#fff; }
+.ob-upsell .pay .field .val span{ color:#9AA0AE; }
+.ob-upsell .pay .row{ display:flex; gap:12px; }
+.ob-upsell .pay .row .field{ flex:1; }
+.ob-upsell .pay .fine{ font-size:12.5px; color:var(--text-secondary); line-height:1.45; margin-top:2px; }
+.ob-upsell .su-cta{ margin-top:18px; min-height:48px; font-size:16px; }
+.ob-upsell .basic{ display:block; text-align:center; margin-top:14px; font-size:14.5px; color:var(--text-secondary); text-decoration:underline; cursor:pointer; background:none; border:0; font-family:inherit; width:100%; }
+.cx-sheet.ob-upsell{ max-height:calc(100vh - 40px); overflow:auto; }
+@media (max-width:860px){ .ob-upsell{ grid-template-columns:1fr; } .ob-upsell .r{ border-left:0; border-top:1px solid var(--hairline); } }
+/* the tour */
+.ob-tip{ position:fixed; z-index:95; width:260px; background:var(--ink); color:#fff; border-radius:12px; padding:14px 14px 12px; font-family:var(--font); opacity:0; transform:translateY(6px); transition:opacity .25s ease, transform .25s ease; }
+.ob-tip.on{ opacity:1; transform:none; }
+.ob-tip .who{ display:flex; align-items:center; gap:8px; font-size:12px; color:#C9CDD6; margin-bottom:10px; }
+.ob-tip .who .av{ width:24px; height:24px; border-radius:999px; background:linear-gradient(135deg,#F0C9A8,#C98A6B); flex:none; }
+.ob-tip .who .x{ margin-left:auto; background:none; border:0; color:#C9CDD6; cursor:pointer; font-size:16px; line-height:1; }
+.ob-tip h4{ font-size:13.5px; font-weight:700; margin:0 0 6px; }
+.ob-tip p{ font-size:12.5px; line-height:1.45; margin:0; color:#E3E6EC; }
+.ob-tip .ft{ display:flex; align-items:center; justify-content:space-between; margin-top:12px; font-size:12px; color:#C9CDD6; }
+.ob-tip .ft .snooze{ background:none; border:0; color:#C9CDD6; cursor:pointer; font:inherit; }
+.ob-tip .ft .next{ background:var(--green-cta); color:#fff; border:0; border-radius:8px; padding:7px 14px; font:600 12.5px var(--font); cursor:pointer; }
+.ob-tip::before{ content:''; position:absolute; width:12px; height:12px; background:var(--ink); transform:rotate(45deg); left:24px; top:-6px; }
+.ob-tip.below::before{ top:auto; bottom:-6px; }
+.ob-tip.right::before{ left:auto; right:24px; }
+.ob-hl{ position:fixed; z-index:94; border:2px solid var(--green-cta); border-radius:10px; pointer-events:none; transition:all .3s ease; }
+</style>
+<script id="classicOnboardJS">
+(function(){
+  'use strict';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var LOGO = (document.querySelector('.topnav .brand') || {}).innerHTML || 'Boldin';
+  var ARCH = '<svg viewBox="0 0 72 54" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M30.6 20.7C17.6 20.7 7 31.2 6.3 44.6l0 .2h3.8l0-.2c.3-5.2 2.4-10.1 6-13.9 1.9-1.9 4.1-3.5 6.5-4.6 2.5-1.1 5.2-1.7 8-1.7s5.5.6 8 1.7c2.4 1.1 4.7 2.6 6.5 4.6 3.6 3.7 5.7 8.6 6 13.9l0 .2h3.8l0-.2C43.6 31.2 33 20.7 30.6 20.7zM27.5 30.4c-7.7 0-14.2 6.3-14.7 14.2l0 .2h3.8l0-.2c.2-2.7 1.3-5.2 3.2-7.1 1-1.1 2.2-1.9 3.5-2.5 1.3-.6 2.8-.9 4.2-.9s2.9.3 4.2.9c1.3.6 2.5 1.4 3.5 2.5 1.8 1.9 3 4.4 3.2 7.1l0 .2h3.8l0-.2c-.5-8-7-14.2-14.7-14.2zM72 44.6C71.7 35 67.8 25.9 61.1 19.2 54.4 12.4 45.4 8.7 36 8.7S17.6 12.4 10.9 19.2C4.1 25.9.2 35 0 44.6l0 .2h3.8l0-.2c.2-8.6 3.7-16.7 9.7-22.7 6-6 14.1-9.3 22.5-9.3s16.4 3.3 22.4 9.3c6 6 9.5 14.2 9.7 22.7l0 .2h3.8L72 44.6z" fill="#04B477"/></svg>';
+  var MIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+  var ARROW_UP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+  var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var A={ name:'Marshall', goal:'', style:'', bmonth:'', byear:'', retire:'', savings:'', gender:'', who:[], sname:'', smonth:'', syear:'', sretire:'', sgender:'' };
+
+  /* ---------- the screens ---------- */
+  var root=document.createElement('div'); root.className='ob'; root.id='classicOnboard';
+  document.body.appendChild(root);
+  function open(){ root.classList.add('on'); document.body.classList.add('ob-open'); window.scrollTo(0,0); signup(); }
+  function closeAll(){ root.classList.remove('on'); document.body.classList.remove('ob-open'); root.innerHTML=''; }
+
+  /* ---------- 1. sign up ---------- */
+  function signup(){
+    root.innerHTML=
+      '<div class="ob-top"><div class="brand">'+LOGO+'</div><div class="ob-right"><span>Already have an account?</span><button type="button" data-ob-signin>Sign In</button></div></div>'+
+      '<div class="ob-su">'+
+        '<h1>Sign up</h1><p class="ob-sub">Financial wellness at your fingertips</p>'+
+        '<label class="su-field"><span>Email</span><input type="email" placeholder="Email" autocomplete="off"></label>'+
+        '<label class="su-field"><span>Password</span><input type="password" placeholder="Password" autocomplete="new-password">'+
+          '<button type="button" class="su-eye" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></label>'+
+        '<div class="ob-rules"><div class="bar"><i></i></div><div class="t">Password strength</div><ul>'+
+          '<li data-r="case">Uppercase &amp; lowercase</li><li data-r="num">Number (0&ndash;9)</li><li data-r="sp">Special character, choose from: !@#$%^&amp;*</li><li data-r="len">At least 9 characters</li></ul></div>'+
+        '<label class="ob-check"><input type="checkbox" checked> Subscribe to our weekly newsletter</label>'+
+        '<button type="button" class="su-cta" data-ob-go>Sign up &rarr;</button>'+
+        '<div class="ob-or">OR</div>'+
+        '<button type="button" class="su-google" data-ob-go><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4H24v7.6h12.9c-.3 2.2-1.7 5.4-4.9 7.6l7.5 5.8c4.5-4.1 7-10.2 7-17z"/><path fill="#FBBC05" d="M10.5 28.7A14.6 14.6 0 0 1 9.7 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.9-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2 1.4-4.8 2.4-8.4 2.4-6.3 0-11.6-4.1-13.5-9.8l-7.9 6C6.6 42.6 14.6 48 24 48z"/></svg>Sign up with Google</button>'+
+        '<div class="ob-signin">Already have an account? <a data-ob-signin>Sign in</a></div>'+
+        '<div class="ob-terms">By signing up, you agree to our <a>Terms of Use</a> and <a>Privacy Policy</a></div>'+
+      '</div>'+
+      '<div class="ob-foot">No commissions, ads, spam, referrals, or fees. You are protected with bank-level security, a strong privacy policy, and clear terms of use.'+
+        '<div class="links"><span>Privacy Policy</span><span>Security</span><span>Terms</span><span>Contact Us</span></div></div>';
+    var pw=root.querySelector('input[type="password"]'), rules=root.querySelector('.ob-rules'), eye=root.querySelector('.su-eye');
+    pw.addEventListener('focus', function(){ rules.classList.add('show'); });
+    pw.addEventListener('input', function(){
+      var v=pw.value; var ok={ 'case':/[a-z]/.test(v)&&/[A-Z]/.test(v), num:/[0-9]/.test(v), sp:/[!@#$%^&*]/.test(v), len:v.length>=9 };
+      var n=0; Object.keys(ok).forEach(function(k){ var li=rules.querySelector('[data-r="'+k+'"]'); li.classList.toggle('ok', ok[k]); if(ok[k]) n++; });
+      rules.querySelector('.bar i').style.width=(n*25)+'%';
+      rules.querySelector('.t').textContent = n===4 ? 'You did it!' : 'Password strength';
+    });
+    eye.addEventListener('click', function(){ pw.type = pw.type==='password' ? 'text' : 'password'; });
+    root.querySelectorAll('[data-ob-go]').forEach(function(b){ b.addEventListener('click', chat); });
+    root.querySelectorAll('[data-ob-signin]').forEach(function(b){ b.addEventListener('click', function(){ closeAll(); }); });
+  }
+
+  /* ---------- 2. the Boldin AI chat ---------- */
+  var thread, dock;
+  function chat(){
+    root.innerHTML='<div class="ob-top"><div class="ob-ai">'+ARCH+'Boldin AI</div><div></div></div>'+
+      '<div class="ob-chat"><div class="ob-thread"></div></div><div class="ob-dock"><div class="in"></div></div>';
+    thread=root.querySelector('.ob-thread'); dock=root.querySelector('.ob-dock .in');
+    root.scrollTop=0;
+    say(['👋 Welcome to Boldin!','We help you make confident decisions about your money and your future.','Let’s start with a few basics.'], function(){
+      ask('First things first, what’s your name?', function(){ input('Your first name...', function(v){ A.name=v||'Marshall'; user(A.name, true); goal(); }); });
+    });
+  }
+  function el(html){ var d=document.createElement('div'); d.innerHTML=html; return d.firstElementChild; }
+  function scrollEnd(){ root.scrollTo({ top: root.scrollHeight, behavior: reduce?'auto':'smooth' }); }
+  /* bot lines arrive one after another; each types in word by word */
+  function say(lines, done, q){
+    var i=0;
+    (function next(){
+      if(i>=lines.length){ if(done) done(); return; }
+      var m=el('<p class="ob-msg'+(q&&i===lines.length-1?' q':'')+'"></p>');
+      var toks=lines[i].match(/\S+\s*/g)||[];
+      toks.forEach(function(t){ var s=document.createElement('span'); s.className='tok'; s.textContent=t; m.appendChild(s); });
+      thread.appendChild(m); scrollEnd();
+      var k=0; (function step(){ if(k>=toks.length){ i++; setTimeout(next, reduce?0:260); return; } m.children[k++].classList.add('show'); setTimeout(step, reduce?0:22+Math.random()*20); })();
+    })();
+  }
+  function ask(line, then){ say([line], then, true); }
+  function user(text, first){
+    var u=el('<div class="ob-user"><div class="b">'+text+'</div>'+(first?'<div class="c">Click to edit a response</div>':'')+'</div>');
+    thread.appendChild(u); dock.innerHTML=''; scrollEnd();
+  }
+  function input(ph, onSubmit, opts){
+    opts=opts||{};
+    var box=el('<div class="ob-box">'+(opts.chips?'<div class="ob-chips">'+opts.chips.map(function(c){ return '<button type="button" class="ob-chip">'+c+'</button>'; }).join('')+'</div>':'')+
+      (ph!==null?'<div class="ob-inrow"><input type="text" placeholder="'+ph+'"><span class="ob-mic">'+MIC+'</span><button type="button" class="ob-send" aria-label="Send">'+ARROW_UP+'</button></div>':'')+'</div>');
+    dock.innerHTML=''; dock.appendChild(box);
+    var inp=box.querySelector('input'), send=box.querySelector('.ob-send'), mic=box.querySelector('.ob-mic');
+    var picked=[];
+    function refresh(){ var has=(inp && inp.value.trim()) || picked.length; if(send) send.classList.toggle('show', !!has); if(mic) mic.style.display = has ? 'none' : ''; }
+    box.querySelectorAll('.ob-chip').forEach(function(c){ c.addEventListener('click', function(){
+      if(opts.single){ onSubmit([c.textContent]); return; }
+      c.classList.toggle('on'); picked = [].slice.call(box.querySelectorAll('.ob-chip.on')).map(function(x){ return x.textContent; }); refresh();
+    }); });
+    function submit(){ var v=inp ? inp.value.trim() : ''; var out = picked.length ? picked.concat(v?[v]:[]) : (v ? [v] : []); if(!out.length) return; onSubmit(opts.chips ? out : out[0]); }
+    if(inp){ inp.addEventListener('input', refresh); inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); }); setTimeout(function(){ inp.focus(); }, 50); }
+    if(send) send.addEventListener('click', submit);
+    scrollEnd();
+  }
+  function goal(){
+    ask('What brings you to Boldin today?', function(){
+      input('Pick a goal, or type your own', function(v){ A.goal=v.join(', '); user(A.goal); style(); },
+        { chips:['Figuring out when I can retire','Making sure my money lasts','Knowing how to invest','Paying less in taxes','Afford what matters to me','Understand where my money goes'] });
+    });
+  }
+  function style(){
+    ask('Some people love planning. Others just want results. Which sounds more like you?', function(){
+      input(null, function(v){ A.style=v[0]; user(A.style); birthday(); },
+        { chips:['I love financial planning','I enjoy financial planning','I’m more interested in better outcomes than planning itself','I’m not much of a planner'], single:true });
+    });
+  }
+  function dateCard(label, onDone){
+    var years=[]; var y=new Date().getFullYear()-18; for(var i=0;i<80;i++) years.push(y-i);
+    var card=el('<div class="ob-card"><div class="lab">'+label+'</div><div class="row">'+
+      '<div class="field small"><label>Month</label><div class="val"><select><option value="" selected disabled>Month</option>'+MONTHS.map(function(m,i){ return '<option value="'+(i+1)+'">'+m+'</option>'; }).join('')+'</select><span class="car">&#9662;</span></div></div>'+
+      '<div class="field small"><label>Year</label><div class="val"><select><option value="" selected disabled>Year</option>'+years.map(function(v){ return '<option>'+v+'</option>'; }).join('')+'</select><span class="car">&#9662;</span></div></div>'+
+      '</div><div class="err"></div><button type="button" class="su-cta" disabled>Continue</button></div>');
+    dock.innerHTML=''; dock.appendChild(card);
+    var m=card.querySelectorAll('select')[0], yr=card.querySelectorAll('select')[1], btn=card.querySelector('.su-cta'), err=card.querySelector('.err');
+    function check(){
+      var age = yr.value ? (new Date().getFullYear()-+yr.value) : 0;
+      if(m.value && !yr.value) err.textContent='This field is required.'; else if(yr.value && age<21) err.textContent='Must be at least 21 years old'; else err.textContent='';
+      btn.disabled = !(m.value && yr.value && age>=21);
+    }
+    m.addEventListener('change', check); yr.addEventListener('change', check);
+    btn.addEventListener('click', function(){ onDone(MONTHS[+m.value-1], yr.value); });
+    scrollEnd();
+  }
+  function numberCard(label, onDone, placeholder){
+    var card=el('<div class="ob-card"><div class="field is-empty"><label>'+label+'</label><div class="val"><input type="text" inputmode="numeric" placeholder="'+(placeholder||label)+'"></div></div><button type="button" class="su-cta" disabled>Continue</button></div>');
+    dock.innerHTML=''; dock.appendChild(card);
+    var inp=card.querySelector('input'), btn=card.querySelector('.su-cta');
+    inp.addEventListener('input', function(){ btn.disabled=!inp.value.trim(); card.querySelector('.field').classList.toggle('is-empty', !inp.value.trim()); });
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter' && inp.value.trim()) btn.click(); });
+    btn.addEventListener('click', function(){ onDone(inp.value.trim()); });
+    setTimeout(function(){ inp.focus(); }, 50); scrollEnd();
+  }
+  function money(v){ var d=v.replace(/[^0-9.]/g,''); var n=parseFloat(d); return isNaN(n) ? v : n.toLocaleString('en-US'); }
+  function birthday(){
+    say(['Good to hear. We\'ll keep things moving, and you can go deeper whenever you\'re curious.','In order to build a plan, we\'ll need some high level details about you. You can always edit your information in your profile and summary.'], function(){
+      ask('When\'s your birthday?', function(){ dateCard('Birth date', function(mo, yr){ A.bmonth=mo; A.byear=yr; user(mo+' '+yr); retire(); }); });
+    });
+  }
+  function retire(){
+    say(['Thanks! This will help us get started.'], function(){
+      ask('Now that we know your birthday, when would you like to retire?', function(){ numberCard('Retirement age', function(v){ A.retire=v; user(v); savings(); }); });
+    });
+  }
+  function savings(){
+    ask('Now for savings. Roughly how much do you have in retirement savings?', function(){ numberCard('Retirement savings', function(v){ A.savings=money(v); user(A.savings); gender(); }, 'Enter a high level estimate'); });
+  }
+  function gender(){
+    say(['To get a more accurate projection, add your other savings and income streams later.'], function(){
+      ask('Which best describes you? Life expectancy varies, so this helps us plan for the right number of years.', function(){
+        input(null, function(v){ A.gender=v[0]; user(A.gender); who(); }, { chips:['Male','Female','Nonbinary or gender non-conforming','Prefer not to answer'], single:true });
+      });
+    });
+  }
+  function who(){
+    ask('Besides yourself, who are you planning for?', function(){
+      input('Someone else...?', function(v){ A.who=v; user(v.join(', ')); if(v.indexOf('My spouse/partner')>-1) spouse(); else finish(); }, { chips:['My spouse/partner','Children','Aging parents','Just me'] });
+    });
+  }
+  function spouse(){
+    say(['Thanks! Your spouse\'s details matter a lot to your projections. Let\'s get a little more information.'], function(){
+      ask('First, what\'s their name?', function(){ input('First name...', function(v){ A.sname=v||'Lily'; user(A.sname);
+        ask('And their birthday?', function(){ dateCard('Spouse\'s birth date', function(mo, yr){ A.smonth=mo; A.syear=yr; user(mo+' '+yr);
+          ask('When would they like to retire?', function(){ numberCard('Retirement Age', function(v){ A.sretire=v; user(v);
+            ask('And what best describes them?', function(){ input(null, function(g){ A.sgender=g[0]; user(A.sgender); finish(); }, { chips:['Male','Female','Nonbinary or gender non-conforming','Prefer not to answer'], single:true }); });
+          }); });
+        }); });
+      }); });
+    });
+  }
+  /* ---------- 3. the PlannerPlus trial, then Home ---------- */
+  function finish(){
+    dock.innerHTML='';
+    setTimeout(function(){
+      closeAll(); goHome();
+      setTimeout(upsell, 500);
+    }, reduce?0:700);
+  }
+  function goHome(){ var l=document.querySelector('.topnav nav.modes a[data-view="home"]'); if(l) l.click(); window.scrollTo(0,0); }
+  function upsell(){
+    var scrim=el('<div class="cx-scrim"></div>'), sheet=el('<div class="cx-sheet ob-upsell"></div>');
+    var bars=[]; for(var i=0;i<34;i++){ var h=i<8?4:Math.min(100, 6+Math.pow(i-8,1.55)*2.2); bars.push('<rect x="'+(i*9)+'" y="'+(100-h)+'" width="6" height="'+h+'" rx="1.5" fill="'+(i>26?'#E8A04A':'#F3C77B')+'"/>'); }
+    sheet.innerHTML='<button class="cx-x" type="button" aria-label="Close"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>'+
+      '<div class="l"><h2>'+A.name+',</h2><p>We’re excited to give you the confidence to retire at '+(A.retire||'66')+'. <b>PlannerPlus</b> has all the tools you need to plan with confidence.</p>'+
+        '<ul><li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6"/></svg></span>Model tax savings with our Roth Conversion Explorer</li>'+
+        '<li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 5-7 4 5"/></svg></span>Stress-test how much you can spend when the market swings</li>'+
+        '<li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18.5 9.5l-4.7 1.6L12 16l-1.8-4.9L5.5 9.5l4.7-1.9z"/></svg></span>Ask our AI Planner Assistant anything about your plan</li></ul>'+
+        '<h3>Know where your money is coming from in retirement and much more…</h3>'+
+        '<div class="proj"><div class="t">Lifetime income projection</div><svg viewBox="0 0 310 104" width="100%" height="120" aria-hidden="true">'+bars.join('')+'<path d="M0 98 C 60 96, 120 88, 180 60 S 260 30, 306 8" stroke="#10182C" stroke-width="1.5" fill="none"/></svg></div></div>'+
+      '<div class="r"><h2>Planner Plus <span class="free">Free Trial</span><span class="pp">P+</span></h2><p class="sub">Start your 14-day free trial, then $144.00/year</p>'+
+        '<div class="pay"><div class="hd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Card</div>'+
+          '<div class="field"><label>Card number</label><div class="val"><span>1234 1234 1234 1234</span></div></div>'+
+          '<div class="row"><div class="field"><label>Expiration date</label><div class="val"><span>MM / YY</span></div></div><div class="field"><label>Security code</label><div class="val"><span>CVC</span></div></div></div>'+
+          '<div class="field"><label>ZIP code</label><div class="val"><span>12345</span></div></div>'+
+          '<div class="fine">By subscribing, you authorize Boldin to charge you according to the terms until you cancel.</div></div>'+
+        '<button type="button" class="su-cta" data-ob-trial>Start Free Trial</button>'+
+        '<button type="button" class="basic" data-ob-basic>Continue with Basic →</button></div>';
+    document.body.appendChild(scrim); document.body.appendChild(sheet);
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ scrim.classList.add('on'); sheet.classList.add('on'); }); });
+    function close(){ sheet.classList.remove('on'); scrim.classList.remove('on'); setTimeout(function(){ sheet.remove(); scrim.remove(); tour(); }, 280); }
+    sheet.querySelector('.cx-x').addEventListener('click', close);
+    sheet.querySelector('[data-ob-basic]').addEventListener('click', close);
+    sheet.querySelector('[data-ob-trial]').addEventListener('click', close);
+    scrim.addEventListener('click', close);
+  }
+  /* ---------- 4. the six-step tour, anchored to greenfield's equivalents ---------- */
+  var STEPS=[
+    { t:'Welcome to Boldin. We’re here to guide you as you complete your plan.', p:'Connect accounts, upload statements, or type it in yourself. Here’s where to find each option.', a:function(){ return visible('.layout.page.on .pf-hl, .layout.page.on h1, .layout.page.on h2'); }, snooze:true },
+    { h:'Connect your accounts', p:'Link your bank, retirement, and investment accounts so your balances stay up to date on their own.', a:function(){ return visible('.layout.page.on [data-hm-go="connections"]') || document.querySelector('.topnav nav.modes a[data-view="today"]'); } },
+    { h:'Watch your Planner Score grow', p:'Enter your core information and explore Boldin\'s features.', a:function(){ return document.querySelector('.topnav nav.modes a[data-view="plan"]'); } },
+    { h:'Ask Boldin AI', p:'Open Boldin AI and add plan data with a simple message.', a:function(){ return document.querySelector('.dock .askbar'); } },
+    { h:'Type it in', p:'Manually enter data in My Plan. Start with what you know, and come back anytime to add more.', a:function(){ return document.querySelector('.topnav nav.modes a[data-view="today"]'); } },
+    { h:'Learn as you go', p:'The Get Started Series in Boldin Classroom walks you through each section in short lessons.', a:function(){ return document.querySelector('.topnav .right .iconbtn[aria-label="Menu"]'); }, done:true }
+  ];
+  function visible(sel){ return [].slice.call(document.querySelectorAll(sel)).find(function(e){ var r=e.getBoundingClientRect(); return e.offsetParent!==null && r.width>0 && r.height>0; }) || null; }
+  function tour(){
+    var i=0, tip=el('<div class="ob-tip"></div>'), hl=el('<div class="ob-hl"></div>');
+    document.body.appendChild(hl); document.body.appendChild(tip);
+    function end(){ tip.remove(); hl.remove(); window.removeEventListener('resize', place); window.removeEventListener('scroll', place); }
+    function place(){
+      var s=STEPS[i], a=s.a(); if(!a){ tip.style.left='50%'; tip.style.top='40%'; hl.style.display='none'; return; }
+      var r=a.getBoundingClientRect(); if(r.bottom<0 || r.top>window.innerHeight){ a.scrollIntoView({block:'center', behavior:reduce?'auto':'smooth'}); r=a.getBoundingClientRect(); }
+      hl.style.display=''; hl.style.left=(r.left-6)+'px'; hl.style.top=(r.top-6)+'px'; hl.style.width=(r.width+12)+'px'; hl.style.height=(r.height+12)+'px';
+      var below = r.bottom+16+200 < window.innerHeight; tip.classList.toggle('below', !below);
+      var left=Math.max(12, Math.min(window.innerWidth-272, r.left)); tip.classList.toggle('right', left+260 > r.right+40 && r.left>window.innerWidth/2);
+      if(tip.classList.contains('right')) left=Math.max(12, r.right-260);
+      tip.style.left=left+'px'; tip.style.top=(below ? r.bottom+16 : r.top-16-tip.offsetHeight)+'px';
+    }
+    function render(){
+      var s=STEPS[i];
+      tip.innerHTML='<div class="who"><span class="av"></span>Nancy from Boldin [T…<button class="x" type="button" aria-label="Close">×</button></div>'+(s.h?'<h4>'+s.h+'</h4>':'')+'<p>'+(s.t||'')+(s.t&&s.p?'</p><p>':'')+s.p+'</p>'+
+        '<div class="ft">'+(s.snooze?'<button type="button" class="snooze">Snooze</button>':'<span></span>')+'<span>'+(i+1)+' of '+STEPS.length+'</span><button type="button" class="next">'+(s.done?'Done':'Next')+'</button></div>';
+      tip.querySelector('.x').addEventListener('click', end);
+      var sn=tip.querySelector('.snooze'); if(sn) sn.addEventListener('click', end);
+      tip.querySelector('.next').addEventListener('click', function(){ i++; if(i>=STEPS.length){ end(); return; } tip.classList.remove('on'); setTimeout(function(){ render(); }, 160); });
+      place(); requestAnimationFrame(function(){ place(); tip.classList.add('on'); });
+    }
+    window.addEventListener('resize', place); window.addEventListener('scroll', place, {passive:true});
+    render();
+  }
+  /* ---------- entry: the logo opens the classic flow; #onboard deep-links to it ---------- */
+  var brand=document.querySelector('.topnav .brand');
+  if(brand){ brand.addEventListener('click', function(e){ e.stopImmediatePropagation(); var old=document.getElementById('signupPage'); if(old) old.hidden=true; open(); }, true); }
+  var nav=performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  if(location.hash==='#onboard' || (nav && /#onboard$/.test(nav.name))) setTimeout(open, 300);
+  window.__classicOnboard={ open:open, tour:tour, upsell:upsell };
+})();
+</script>
