@@ -29085,7 +29085,8 @@ body.cx-flying .acc-body{ overflow:visible; }
 /* Assets header: the connect pill gets a filled partner - the primary way to add by hand */
 .acc .cx-actions{ display:flex; align-items:center; gap:10px; margin-top:10px; }
 .acc .cx-actions .cx-all{ margin-top:0; }
-.acc .cx-actions .pc-btn.cx-add-asset{ min-height:0; height:32px; padding:0 16px; font-size:13px; line-height:1; display:inline-flex; align-items:center; gap:6px; }
+.acc .cx-actions .cx-all, .acc .cx-actions .pc-btn.cx-add-asset{ box-sizing:border-box; height:34px; padding:0 14px; font-size:13px; line-height:1; display:inline-flex; align-items:center; }
+.acc .cx-actions .pc-btn.cx-add-asset{ min-height:0; padding:0 16px; gap:6px; }
 .acc .cx-actions .pc-btn.cx-add-asset::before{ content:"+"; font-size:16px; font-weight:500; line-height:1; margin-top:-1px; }
 .acc-head.acc-collapsed .cx-actions{ display:none; }
 </style>
