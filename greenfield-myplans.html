@@ -29612,6 +29612,12 @@ body[data-view="plan"] .snap-ultra .snap-route-cta{ display:none; }
 #events-block .bucket-head{ display:none; }
 #events-block .bucket{ margin-top:0; }
 #events-block .acc-body > .bucket:first-child{ margin-top:var(--s-5); }
+/* Expenses in My Plans: one flat list. The header's Model a change is the only add. */
+body[data-view="plan"] .acc[data-pe-exp] .bucket-head,
+body[data-view="plan"] .acc[data-pe-exp] .bucket > .add-row,
+body[data-view="plan"] .acc[data-pe-exp] .add-row-line,
+body[data-view="plan"] .acc[data-pe-exp] .bucket-label{ display:none; }
+body[data-view="plan"] .acc[data-pe-exp] .bucket{ margin-top:0; }
 body[data-view="plan"] .pe-only{ display:block; }
 .pe-only{ display:none; }
 
@@ -29620,7 +29626,13 @@ body[data-view="plan"] .pe-only{ display:block; }
 .pe-legend i{ width:9px; height:9px; border-radius:50%; background:var(--green); display:inline-block; }
 .pe-legend i.spend{ background:#0D3F4A; } .pe-legend i.once{ background:#E0A030; } .pe-legend i.marker{ background:#9AA0AE; }
 
-/* the event rows reuse .acct; the kind chip is the existing mint mark */
+/* the event rows reuse .acct, set a shade lighter than the account rows: ten bold names and ten
+   bold chips in a row read heavy, so the name drops to medium and the kind chip steps aside
+   (the "to income / to spending" line under the figure already says it) */
+#events-block .acct .nm{ font-weight:500; }
+#events-block .acct .ty .acct-planned-tag{ display:none; }
+#events-block .acct .amt{ font-weight:500; }
+#events-block .acct .amt small{ font-weight:400; }
 #events-block .acct .ty .acct-planned-tag{ margin-left:8px; }
 #events-block .acct .ty .acct-planned-tag.spend{ background:#E8EEF0; color:#0D3F4A; }
 #events-block .acct .ty .acct-planned-tag.once{ background:#FBF1D3; color:#8A6A00; }
@@ -30077,6 +30089,7 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
   }
   function buildExpenses(){
     var ex=expensesAcc(); if(!ex || ex.querySelector('.pe-spend')) return;
+    ex.dataset.peExp='1';
     var body=ex.querySelector('.acc-body');
     var top=document.createElement('div'); top.className='pe-spend pe-only';
     top.innerHTML='<div class="pe-spend-chart"></div>';
