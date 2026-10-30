@@ -29566,6 +29566,14 @@ body.ob-open .layout.page{ display:none !important; }
    the left rail and the centre column keep their 200px and 620px, the 1fr rail grows */
 .topnav, .layout, .dock-inner, .layout.page.sum-layout, .su-head-inner, .sut4-logo, .vbp-stage,
 #vpModal .vp-top, #vpModal .vp-body{ max-width:1200px; }
+/* the wider page keeps the fixed left rail on the same edge as the first grid column */
+.side{ left:max(32px, 50% - 568px); }
+/* the route: no left rail, the graph takes that column too (200px + the 32px gutter), the route keeps its own */
+.sum-layout > .side{ display:none; }
+.layout.page.sum-layout{ grid-template-columns:minmax(0,852px) minmax(0,1fr); }
+.sum-layout .center{ grid-column:1; }
+.sum-layout .sum-route{ grid-column:2; }
+@media (max-width:1080px){ .layout.page.sum-layout{ grid-template-columns:minmax(0,1fr); } .sum-layout .sum-route{ grid-column:auto; } }
 /* My Plans asks two questions: what happens, and what it costs. The balance sheet
    (assets, debts, income, property) stays on My Money and folds away here. */
 body[data-view="plan"] [data-page="plan"] .center > .acc[data-pe-hide]{ display:none !important; }
