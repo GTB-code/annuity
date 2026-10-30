@@ -29612,6 +29612,9 @@ body[data-view="plan"] .snap-ultra .snap-route-cta{ display:none; }
 #events-block .bucket-head{ display:none; }
 #events-block .bucket{ margin-top:0; }
 #events-block .acc-body > .bucket:first-child{ margin-top:var(--s-5); }
+/* In My Plans the section is Future Expenses. The word is added in front of the product's own
+   heading so every script that matches the section by its title keeps working. */
+body[data-view="plan"] .acc[data-pe-exp] .acc-head h2::before{ content:"Future "; }
 /* Expenses in My Plans: one flat list. The header's Model a change is the only add. */
 body[data-view="plan"] .acc[data-pe-exp] .bucket-head,
 body[data-view="plan"] .acc[data-pe-exp] .bucket > .add-row,
@@ -30162,6 +30165,9 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
     if(!ex) return;
     if(inPlan()){ if(ev && ev.nextElementSibling!==ex) ev.after(ex); }
     else if(home && home.nextElementSibling!==ex) home.after(ex);
+    var txt=ex.querySelector('.nav-txt'); var label=inPlan() ? 'Future Expenses' : 'Expenses';
+    if(txt) txt.textContent=label; else { var tn=[].slice.call(ex.childNodes).filter(function(n){ return n.nodeType===3 && n.textContent.trim(); })[0]; if(tn) tn.textContent=label; }
+    ex.dataset.label=label;
   }
   function onView(){
     seatExpenses();
