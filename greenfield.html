@@ -29165,6 +29165,21 @@ body.ob-open .layout.page{ display:none !important; }
 .ob-su .ob-signin{ text-align:center; font-size:15px; color:var(--text-secondary); margin:18px 0 10px; }
 .ob-su .ob-signin a, .ob-su .ob-terms a{ color:var(--ink); text-decoration:underline; cursor:pointer; }
 .ob-su .ob-terms{ text-align:center; font-size:12.5px; color:var(--text-secondary); }
+/* AuthKit-shaped card: one decision per screen */
+.ob-ak{ max-width:420px; }
+.ak-card{ border:1px solid var(--hairline); border-radius:20px; padding:30px 28px 22px; }
+.ak-card h1{ font-size:28px; }
+.ak-card .ob-sub{ margin-bottom:22px; }
+.ak-card .ob-sub b{ color:var(--ink); font-weight:600; }
+.ak-card .ak-edit{ color:var(--green-cta); font-weight:600; cursor:pointer; }
+.ak-card .su-google{ margin-bottom:0; }
+.ak-card .su-cta:disabled{ background:#A7CBBB; cursor:default; }
+.ak-card .ob-rules{ margin-top:2px; }
+.ak-powered{ text-align:center; font-size:11.5px; color:var(--text-tertiary,#9AA0AE); margin-top:20px; }
+.ak-powered b{ font-weight:600; color:var(--text-secondary); }
+.ak-code-row{ display:flex; gap:10px; margin:6px 0 18px; }
+.ak-code-row input{ flex:1; min-width:0; height:56px; text-align:center; font:500 22px var(--font); color:var(--ink); border:1px solid var(--hairline-strong); border-radius:12px; outline:0; }
+.ak-code-row input:focus{ border-color:var(--green-cta); }
 .ob-foot{ border-top:1px solid var(--hairline); margin-top:40px; padding:28px 20px 40px; text-align:center; font-size:13.5px; color:var(--text-secondary); max-width:560px; margin-left:auto; margin-right:auto; line-height:1.5; }
 .ob-foot .links{ margin-top:10px; display:flex; gap:18px; justify-content:center; }
 .ob-foot .links span{ color:var(--ink); }
@@ -29269,37 +29284,79 @@ body.ob-open .layout.page{ display:none !important; }
   function open(){ root.classList.add('on'); document.body.classList.add('ob-open'); window.scrollTo(0,0); signup(); }
   function closeAll(){ root.classList.remove('on'); document.body.classList.remove('ob-open'); root.innerHTML=''; }
 
-  /* ---------- 1. sign up ---------- */
-  function signup(){
+  /* ---------- 1. sign up, the AuthKit way (WorkOS): email first, then a password or a code ---------- */
+  var SU={ email:'' };
+  function suFrame(inner){
     root.innerHTML=
       '<div class="ob-top"><div class="brand">'+LOGO+'</div><div class="ob-right"><span>Already have an account?</span><button type="button" data-ob-signin>Sign In</button></div></div>'+
-      '<div class="ob-su">'+
-        '<h1>Sign up</h1><p class="ob-sub">Financial wellness at your fingertips</p>'+
-        '<label class="su-field"><span>Email</span><input type="email" placeholder="Email" autocomplete="off"></label>'+
-        '<label class="su-field"><span>Password</span><input type="password" placeholder="Password" autocomplete="new-password">'+
-          '<button type="button" class="su-eye" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></label>'+
-        '<div class="ob-rules"><div class="bar"><i></i></div><div class="t">Password strength</div><ul>'+
-          '<li data-r="case">Uppercase &amp; lowercase</li><li data-r="num">Number (0&ndash;9)</li><li data-r="sp">Special character, choose from: !@#$%^&amp;*</li><li data-r="len">At least 9 characters</li></ul></div>'+
-        '<label class="ob-check"><input type="checkbox" checked> Subscribe to our weekly newsletter</label>'+
-        '<button type="button" class="su-cta" data-ob-go>Sign up &rarr;</button>'+
-        '<div class="ob-or">OR</div>'+
-        '<button type="button" class="su-google" data-ob-go><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4H24v7.6h12.9c-.3 2.2-1.7 5.4-4.9 7.6l7.5 5.8c4.5-4.1 7-10.2 7-17z"/><path fill="#FBBC05" d="M10.5 28.7A14.6 14.6 0 0 1 9.7 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.9-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2 1.4-4.8 2.4-8.4 2.4-6.3 0-11.6-4.1-13.5-9.8l-7.9 6C6.6 42.6 14.6 48 24 48z"/></svg>Sign up with Google</button>'+
-        '<div class="ob-signin">Already have an account? <a data-ob-signin>Sign in</a></div>'+
-        '<div class="ob-terms">By signing up, you agree to our <a>Terms of Use</a> and <a>Privacy Policy</a></div>'+
-      '</div>'+
+      '<div class="ob-su ob-ak">'+inner+'</div>'+
       '<div class="ob-foot">No commissions, ads, spam, referrals, or fees. You are protected with bank-level security, a strong privacy policy, and clear terms of use.'+
         '<div class="links"><span>Privacy Policy</span><span>Security</span><span>Terms</span><span>Contact Us</span></div></div>';
-    var pw=root.querySelector('input[type="password"]'), rules=root.querySelector('.ob-rules'), eye=root.querySelector('.su-eye');
-    pw.addEventListener('focus', function(){ rules.classList.add('show'); });
+    root.querySelectorAll('[data-ob-signin]').forEach(function(b){ b.addEventListener('click', function(){ closeAll(); }); });
+  }
+  function signup(){
+    suFrame('<div class="ak-card">'+
+      '<h1>Sign up</h1><p class="ob-sub">Financial wellness at your fingertips</p>'+
+      '<button type="button" class="su-google" data-ob-google><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4H24v7.6h12.9c-.3 2.2-1.7 5.4-4.9 7.6l7.5 5.8c4.5-4.1 7-10.2 7-17z"/><path fill="#FBBC05" d="M10.5 28.7A14.6 14.6 0 0 1 9.7 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.9-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2 1.4-4.8 2.4-8.4 2.4-6.3 0-11.6-4.1-13.5-9.8l-7.9 6C6.6 42.6 14.6 48 24 48z"/></svg>Continue with Google</button>'+
+      '<div class="ob-or">or</div>'+
+      '<label class="su-field"><span>Email</span><input type="email" placeholder="you@example.com" autocomplete="off"></label>'+
+      '<button type="button" class="su-cta" data-ob-next disabled>Continue</button>'+
+      '<div class="ob-signin">Already have an account? <a data-ob-signin>Sign in</a></div>'+
+      '<div class="ob-terms">By signing up, you agree to our <a>Terms of Use</a> and <a>Privacy Policy</a></div>'+
+      '<div class="ak-powered">Secured by <b>WorkOS</b></div>'+
+    '</div>');
+    var em=root.querySelector('input[type="email"]'), next=root.querySelector('[data-ob-next]');
+    em.addEventListener('input', function(){ next.disabled=!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em.value.trim()); });
+    em.addEventListener('keydown', function(e){ if(e.key==='Enter' && !next.disabled) next.click(); });
+    next.addEventListener('click', function(){ SU.email=em.value.trim(); password(); });
+    root.querySelector('[data-ob-google]').addEventListener('click', chat);
+    root.querySelectorAll('.ob-signin [data-ob-signin]').forEach(function(b){ b.addEventListener('click', closeAll); });
+    setTimeout(function(){ em.focus(); }, 80);
+  }
+  function password(){
+    suFrame('<div class="ak-card">'+
+      '<h1>Create your password</h1><p class="ob-sub">for <b>'+SU.email+'</b> &middot; <a class="ak-edit" data-ob-back>Change</a></p>'+
+      '<label class="su-field"><span>Password</span><input type="password" placeholder="Password" autocomplete="new-password">'+
+        '<button type="button" class="su-eye" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></label>'+
+      '<div class="ob-rules show"><div class="bar"><i></i></div><div class="t">Password strength</div><ul>'+
+        '<li data-r="case">Uppercase &amp; lowercase</li><li data-r="num">Number (0&ndash;9)</li><li data-r="sp">Special character, choose from: !@#$%^&amp;*</li><li data-r="len">At least 9 characters</li></ul></div>'+
+      '<label class="ob-check"><input type="checkbox" checked> Subscribe to our weekly newsletter</label>'+
+      '<button type="button" class="su-cta" data-ob-go disabled>Continue</button>'+
+      '<div class="ob-or">or</div>'+
+      '<button type="button" class="su-google ak-code" data-ob-go><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Email me a sign-in code instead</button>'+
+      '<div class="ak-powered">Secured by <b>WorkOS</b></div>'+
+    '</div>');
+    var pw=root.querySelector('input[type="password"]'), rules=root.querySelector('.ob-rules'), eye=root.querySelector('.su-eye'), go=root.querySelector('.su-cta[data-ob-go]');
     pw.addEventListener('input', function(){
       var v=pw.value; var ok={ 'case':/[a-z]/.test(v)&&/[A-Z]/.test(v), num:/[0-9]/.test(v), sp:/[!@#$%^&*]/.test(v), len:v.length>=9 };
       var n=0; Object.keys(ok).forEach(function(k){ var li=rules.querySelector('[data-r="'+k+'"]'); li.classList.toggle('ok', ok[k]); if(ok[k]) n++; });
       rules.querySelector('.bar i').style.width=(n*25)+'%';
       rules.querySelector('.t').textContent = n===4 ? 'You did it!' : 'Password strength';
+      go.disabled = n<4;
     });
+    pw.addEventListener('keydown', function(e){ if(e.key==='Enter' && !go.disabled) go.click(); });
     eye.addEventListener('click', function(){ pw.type = pw.type==='password' ? 'text' : 'password'; });
-    root.querySelectorAll('[data-ob-go]').forEach(function(b){ b.addEventListener('click', chat); });
-    root.querySelectorAll('[data-ob-signin]').forEach(function(b){ b.addEventListener('click', function(){ closeAll(); }); });
+    root.querySelector('[data-ob-back]').addEventListener('click', signup);
+    go.addEventListener('click', chat);
+    root.querySelector('.ak-code').addEventListener('click', code);
+    setTimeout(function(){ pw.focus(); }, 80);
+  }
+  function code(){
+    suFrame('<div class="ak-card">'+
+      '<h1>Check your email</h1><p class="ob-sub">We sent a 6-digit code to <b>'+SU.email+'</b></p>'+
+      '<div class="ak-code-row">'+[0,1,2,3,4,5].map(function(){ return '<input type="text" inputmode="numeric" maxlength="1">'; }).join('')+'</div>'+
+      '<button type="button" class="su-cta" data-ob-go disabled>Continue</button>'+
+      '<div class="ob-signin"><a data-ob-resend>Resend code</a> &middot; <a data-ob-back>Use a password instead</a></div>'+
+      '<div class="ak-powered">Secured by <b>WorkOS</b></div>'+
+    '</div>');
+    var cells=[].slice.call(root.querySelectorAll('.ak-code-row input')), go=root.querySelector('.su-cta[data-ob-go]');
+    cells.forEach(function(c,i){
+      c.addEventListener('input', function(){ c.value=c.value.replace(/\D/g,'').slice(-1); if(c.value && cells[i+1]) cells[i+1].focus(); go.disabled = cells.some(function(x){ return !x.value; }); if(!go.disabled) setTimeout(chat, 350); });
+      c.addEventListener('keydown', function(e){ if(e.key==='Backspace' && !c.value && cells[i-1]) cells[i-1].focus(); });
+    });
+    root.querySelector('[data-ob-back]').addEventListener('click', password);
+    go.addEventListener('click', chat);
+    setTimeout(function(){ cells[0].focus(); }, 80);
   }
 
   /* ---------- 2. the Boldin AI chat ---------- */
