@@ -29565,12 +29565,14 @@ body.ob-open .layout.page{ display:none !important; }
 /* the page is 20px wider, and every one of those pixels goes to the right rail:
    the left rail and the centre column keep their 200px and 620px, the 1fr rail grows */
 .topnav, .layout, .dock-inner, .layout.page.sum-layout, .su-head-inner, .sut4-logo, .vbp-stage,
-#vpModal .vp-top, #vpModal .vp-body{ max-width:1200px; }
+#vpModal .vp-top, #vpModal .vp-body{ max-width:1350px; }
+/* +50px to the centre column (620 -> 670) and +50px to the right rail */
+.layout, .dock .dock-inner{ grid-template-columns:200px minmax(0,670px) 1fr; }
 /* the wider page keeps the fixed left rail on the same edge as the first grid column */
-.side{ left:max(32px, 50% - 568px); }
+.side{ left:max(32px, 50% - 643px); }
 /* the route: no left rail, the graph takes that column too (200px + the 32px gutter), the route keeps its own */
 .sum-layout > .side{ display:none; }
-.layout.page.sum-layout{ grid-template-columns:minmax(0,852px) minmax(0,1fr); }
+.layout.page.sum-layout{ grid-template-columns:minmax(0,902px) minmax(0,1fr); }
 .sum-layout .center{ grid-column:1; }
 .sum-layout .sum-route{ grid-column:2; }
 @media (max-width:1080px){ .layout.page.sum-layout{ grid-template-columns:minmax(0,1fr); } .sum-layout .sum-route{ grid-column:auto; } }
@@ -29701,8 +29703,8 @@ body.rail-mini .side h1.side-top{ display:flex; justify-content:center; margin:0
 body.rail-mini .side h1.side-top .side-top-t, body.rail-mini .side h1.side-top .plan-cmp{ display:none; }
 body.rail-mini .side h1.side-top .pe-rail-tg{ margin:0; }
 /* the mini rail hands its width to the right rail; the centre keeps its 620px */
-body.rail-mini .layout.page[data-page="plan"]{ grid-template-columns:64px minmax(0,620px) 1fr; }
-body.rail-mini .dock .dock-inner{ grid-template-columns:64px minmax(0,620px) 1fr; }
+body.rail-mini .layout.page[data-page="plan"]{ grid-template-columns:64px minmax(0,670px) 1fr; }
+body.rail-mini .dock .dock-inner{ grid-template-columns:64px minmax(0,670px) 1fr; }
 body.rail-mini .layout.page[data-page="plan"] .side{ width:64px; }
 body.rail-mini .side .plan-select, body.rail-mini .side .group-label,
 body.rail-mini .side .side-download, body.rail-mini .side #sideNav .side-download,
