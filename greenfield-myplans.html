@@ -29688,6 +29688,40 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
 .acct[data-ex] .ty .acct-planned-note{ display:block; margin:3px 0 0; cursor:pointer; font-size:14px; }
 .acct[data-ex] .ty .pe-sep{ display:none; }
 .acct[data-ex] .ty .acct-planned-note:hover{ text-decoration:underline; }
+
+/* ---- the rail folds to icons: one quiet chevron on its edge, like the live app ---- */
+.pe-rail-tg{ display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; margin:0 4px 0 -6px;
+  vertical-align:middle; border:0; background:none; border-radius:8px; color:#8A90A0; cursor:pointer; padding:0;
+  transition:color var(--dur-fast), background var(--dur-fast); }
+.pe-rail-tg svg{ width:16px; height:16px; }
+.pe-rail-tg:hover{ color:var(--ink); background:#F6F7F8; }
+body.rail-mini .pe-rail-tg svg{ transform:scaleX(-1); }
+/* folded: the title line keeps only the chevron, centred over the icons */
+body.rail-mini .side h1.side-top{ display:flex; justify-content:center; margin:0 0 var(--s-3); }
+body.rail-mini .side h1.side-top .side-top-t, body.rail-mini .side h1.side-top .plan-cmp{ display:none; }
+body.rail-mini .side h1.side-top .pe-rail-tg{ margin:0; }
+/* the mini rail hands its width to the right rail; the centre keeps its 620px */
+body.rail-mini .layout.page[data-page="plan"]{ grid-template-columns:64px minmax(0,620px) 1fr; }
+body.rail-mini .dock .dock-inner{ grid-template-columns:64px minmax(0,620px) 1fr; }
+body.rail-mini .layout.page[data-page="plan"] .side{ width:64px; }
+body.rail-mini .side .plan-select, body.rail-mini .side .group-label,
+body.rail-mini .side .side-download, body.rail-mini .side #sideNav .side-download,
+body.rail-mini .side #sideNav .side-download.sd-today, body.rail-mini .side #sideNav .nav-txt,
+body.rail-mini .side #sideNav .nav-dot, body.rail-mini .side > .side-divider,
+body.rail-mini .side #sideNav .side-divider:not(.ins-div), body.rail-mini .side #sideNav .nav-more-n{ display:none; }
+body.rail-mini .side #sideNav .nav-ic{ display:block; }
+body.rail-mini .side #sideNav{ display:flex; flex-direction:column; align-items:center; margin-top:0; }
+body.rail-mini .side #sideNav ul + ul{ margin-top:2px; }
+body.rail-mini .side #sideNav li + li{ margin-top:2px; }
+body.rail-mini .side #sideNav li{ position:relative; width:44px; height:40px; padding:0; justify-content:center; border-radius:11px; }
+body.rail-mini .side #sideNav li.nav-indent{ padding-left:0; }
+body.rail-mini .side #sideNav li.active::after{ display:none; }
+body.rail-mini .side #sideNav .ins-div{ width:40px; margin:var(--s-3) 0; }
+body.rail-mini #sideNav .nav-more{ width:44px; height:34px; padding:0; justify-content:center; gap:0; margin:2px 0 0; }
+body.rail-mini .side #sideNav .nav-more-dots{ display:block; color:#8A90A0; }
+body.rail-mini .side #sideNav .nav-more:hover .nav-more-dots{ color:var(--green-cta); }
+body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transition:width var(--dur-base) var(--ease-out); }
+@media (prefers-reduced-motion: reduce){ .pe-rail-tg, body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transition:none; } }
 </style>
 <script id="planEventsJS">
 (function(){
@@ -30176,6 +30210,27 @@ body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
       if(!opened){ opened=true; var ex=expensesAcc(); if(ex){ var b=ex.querySelector('.btn-collapse'); if(b && b.getAttribute('aria-expanded')==='false') ex.querySelector('.acc-head').click(); } }
     } else { unroll(); }
   }
+
+  /* ---------- 8. the rail folds to icons from a chevron on its edge ---------- */
+  (function(){
+    var side=$('.layout.page[data-page="plan"] > .side'); if(!side || side.querySelector('.pe-rail-tg')) return;
+    var b=document.createElement('button'); b.type='button'; b.className='pe-rail-tg';
+    b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6L8.5 12l6 6"/></svg>';
+    var h1=side.querySelector('h1.side-top'); if(h1){ var t=h1.querySelector('.side-top-t'); if(t) t.before(b); else h1.insertBefore(b, h1.firstChild); } else side.appendChild(b);
+    function sync(){ var mini=document.body.classList.contains('rail-mini'); b.setAttribute('aria-label', mini?'Expand the menu':'Collapse the menu'); b.setAttribute('aria-expanded', mini?'false':'true'); b.title=mini?'Expand':'Collapse'; }
+    function set(mini){ document.body.classList.toggle('rail-mini', !!mini); sync(); try{ localStorage.setItem('boldin.railMini', mini?'1':'0'); }catch(e){} }
+    b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); set(!document.body.classList.contains('rail-mini')); });
+    var saved=null; try{ saved=localStorage.getItem('boldin.railMini'); }catch(e){}
+    set(saved==='1'); sync();
+    /* icon-only rows name themselves on hover, in the rail's own tooltip layer */
+    var tip=document.getElementById('railTip'), hideT=null;
+    function show(el){ if(!tip) return; var t=el.dataset.label; if(!t) return; tip.textContent=t; var r=el.getBoundingClientRect(); tip.style.left=(r.right+12)+'px'; tip.style.top=(r.top+r.height/2)+'px'; tip.classList.add('on'); }
+    function hide(){ if(tip) tip.classList.remove('on'); }
+    document.addEventListener('pointerover', function(e){ if(!document.body.classList.contains('rail-mini') || document.body.classList.contains('prism-mini')) return; var el=e.target.closest('.side li, #sideNav .nav-more'); if(el){ clearTimeout(hideT); show(el); } else hide(); });
+    document.addEventListener('pointerout', function(e){ if(!document.body.classList.contains('rail-mini')) return; var el=e.target.closest('.side li, #sideNav .nav-more'); if(el) hideT=setTimeout(hide, 60); });
+    window.addEventListener('scroll', hide, true);
+  })();
+
   function init(){
     rail(); fold(); buildSection(); buildExpenses(); onView();
   }
