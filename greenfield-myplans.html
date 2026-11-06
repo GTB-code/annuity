@@ -31545,7 +31545,7 @@ PAGES["signup"]=function(){
   R.getElementById('eye').addEventListener('click',function(){ pw.type=pw.type==='password'?'text':'password'; this.setAttribute('aria-label',pw.type==='password'?'Show password':'Hide password'); });
   function next(){ go.disabled=true; go.textContent='Creating your account…'; setTimeout(function(){ FLOW.go('onboarding'); },700); }
   R.getElementById('pwForm').addEventListener('submit',function(e){ e.preventDefault(); if(go.disabled) return; if(pw.value.length<8){ hint.classList.add('bad'); hint.textContent='Password needs at least 8 characters.'; pw.focus(); return; } next(); });
-  R.getElementById('google').addEventListener('click',function(){ var t=document.createElement('div'); t.className='toast'; t.textContent='In the product this opens Google sign-in through WorkOS. Continuing to onboarding.'; R.appendChild(t); setTimeout(function(){ FLOW.go('onboarding'); },1400); });
+  R.getElementById('google').addEventListener('click',function(){ var t=document.createElement('div'); t.className='toast'; t.textContent='In the product this opens Google sign-in through WorkOS. Continuing to onboarding.'; R.getElementById('pg-signup').appendChild(t); setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 1500); setTimeout(function(){ FLOW.go('onboarding'); },1400); });
 })();
 
 };
