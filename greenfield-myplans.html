@@ -24881,12 +24881,12 @@ const ICON={check:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><
   spark2:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg>',
   explore:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'};
 let cid=0;
-function card({title,src,take,draw,table,ask,wide,plain}){
+function card({title,src,take,draw,table,ask,wide,plain,power}){
   const id='c'+(++cid);
   MOUNTS.push({id,draw,table});
   return `<section class="card${plain?' plain':''}" id="${id}">
     <div class="ch"><div class="tt"><h3>${title}</h3></div>
-      <div class="tools">${table?`<button class="tbtn" type="button" data-table="${id}" aria-pressed="false">${ICON.table}Table</button>`:''}</div></div>
+      <div class="tools">${power?`<button class="tbtn pbtn" type="button" data-power="${power}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>Power mode</button>`:''}${table?`<button class="tbtn" type="button" data-table="${id}" aria-pressed="false">${ICON.table}Table</button>`:''}</div></div>
     <div class="body"></div><div class="tablewrap" hidden></div>
     <a class="xp-ask" role="button" tabindex="0" data-xp-ask="${esc(ask||askFor(title))}">${SPK}<span>${esc(ask||askFor(title))}</span><span class="arr">›</span></a>
   </section>`;
@@ -25069,6 +25069,7 @@ function vFirst(){
   +nextRow(0);
 }
 
+window.__xpData=function(){ return {M:M,YRS:YRS,COL:COL,money:money,mo:mo,pct:pct,lab:lab,K:K}; };
 /* ---------- 2. Budgeting ---------- */
 function vBudget(){
   const r0=M[0];
@@ -25077,7 +25078,7 @@ function vBudget(){
   const sur=M.map(r=>r.surplus);
   return head(1,'Where your money comes from, and goes.','Today, and what changes when the paychecks stop.')+flag('budget')
   +answer(`Your paychecks cover everything today with about ${mo(K.surplus0)} a month to spare, and that flips in 2037 when Luis stops working.`,['Is my retirement budget realistic?'])
-  +card({plain:true,title:'Where does my money go this year?',src:'Lifetime Cash Flow (Sankey)',take:`Of every dollar you earn, <b>${pct(r0.expenses.living/210000)}</b> goes to everyday living and <b>${pct(36000/210000)}</b> to savings.`,
+  +card({plain:true,power:'budget-flow',title:'Where does my money go this year?',src:'Lifetime Cash Flow (Sankey)',take:`Of every dollar you earn, <b>${pct(r0.expenses.living/210000)}</b> goes to everyday living and <b>${pct(36000/210000)}</b> to savings.`,
     draw:h=>sankey(h,{left:[{name:'Maya’s pay',v:115000,color:COL.c1},{name:'Luis’s pay',v:95000,color:COL.c2}],right:[{name:'Everyday living',v:r0.expenses.living,color:COL.c1},{name:'Taxes',v:Math.round(r0.fed),color:COL.c4},{name:'Saving',v:36000,color:COL.c2},{name:'Mortgage',v:26000,color:COL.c5},{name:'Left over',v:Math.round(r0.surplus),color:COL.c3},{name:'Healthcare',v:r0.expenses.health,color:COL.c0}],mid:''})})
   +strip([{k:'Income this year',v:money(r0.work),d:'two paychecks'},{k:'Spending',v:money(r0.expenses.living+r0.expenses.housing+r0.expenses.health),d:`${mo(r0.expenses.living+r0.expenses.housing+r0.expenses.health)}/mo incl. mortgage`},{k:'Saving rate',v:pct(36000/210000),d:'into 401(k)s and Roth IRAs'},{k:'Left over',v:money(K.surplus0),d:'after everything'}])
   +insight(`Paychecks cover everything today with <b>${mo(K.surplus0)} a month</b> spare. In 2037 the income stops and the spending stays.`)
@@ -29811,6 +29812,563 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
   window.addEventListener('boldin:view', function(){ setTimeout(onView, 0); setTimeout(rollups, 450); });
   window.PE={ events:function(){ return EVENTS; }, base:BASE, go:goEvent };
+})();
+</script>
+
+<!-- ===================== Power mode =====================
+     Every major Explore card can open full screen: a large chart with its own views, Boldin AI typing out what it
+     shows, and the table underneath. A card opts in with power:'<key>'; a spec registered below says how to draw it.
+     First spec: Budgeting > "Where does my money go this year?" (budget-flow). -->
+<style id="powerModeCSS">
+#xpChapters .tbtn.pbtn{ color:var(--green-cta); border-color:rgba(14,121,78,.35); }
+#xpChapters .tbtn.pbtn:hover{ background:var(--eggshell); }
+#xpChapters .tbtn.pbtn svg{ flex:none; }
+#xpChapters .card .tools{ gap:8px; }
+
+body.pm-open{ overflow:hidden; }
+/* Assets shows in My Plans' inputs again: it opens Power mode */
+body[data-view="plan"] #sideNav li[data-key="assets"]{ display:flex; }
+/* the chart's options, exposed across one bar instead of folded into a kebab */
+.pm-bar{ display:flex; align-items:center; flex-wrap:wrap; gap:14px 24px; width:100%; padding:12px 0 14px; border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
+.pm-opt{ display:flex; align-items:center; gap:10px; }
+.pm-opt > span{ font-size:13px; color:var(--text-secondary); white-space:nowrap; }
+.pm-bar .pm-seg button{ height:32px; padding:0 13px; font-size:13.5px; }
+.pm-bar .pm-dl{ margin-left:auto; display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 14px; border-radius:var(--r-pill); border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); font:inherit; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap; }
+.pm-bar .pm-dl:hover{ background:#F6F7F8; }
+.pm-bar .pm-dl svg{ width:15px; height:15px; }
+.pm-tbl th.yr, .pm-tbl td.yr{ position:sticky; left:0; background:#fff; z-index:1; }
+.pm-tbl tr.sel td.yr{ background:var(--eggshell); }
+.pm-tbl th.yr{ z-index:2; }
+.pm-legend .grp{ font-weight:600; color:var(--ink); margin-right:4px; }
+.pm-legend .brk{ flex-basis:100%; height:0; }
+/* the page's ask bar would float over the chart; Boldin AI is already built into Power mode */
+body.pm-open .dock{ display:none !important; }
+#powerMode{ position:fixed; inset:73px 0 0 0; z-index:50; background:#fff; color:var(--ink); font-family:var(--font); display:flex; flex-direction:column; animation:pmIn .22s ease; }
+#powerMode[hidden]{ display:none; }
+@keyframes pmIn{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+@media (prefers-reduced-motion:reduce){ #powerMode{ animation:none } }
+#powerMode *{ box-sizing:border-box; }
+.pm-top{ flex:none; height:56px; border-bottom:1px solid var(--hairline); display:flex; align-items:center; justify-content:space-between; padding:0 max(32px, calc(50% - 643px)); }
+.pm-id{ display:flex; align-items:center; gap:12px; font-size:15px; color:var(--text-secondary); }
+.pm-badge{ display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; border-radius:var(--r-pill); background:var(--eggshell); color:var(--green-cta); font-weight:600; font-size:13px; }
+.pm-x{ display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px 0 12px; border-radius:var(--r-pill); border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); font:inherit; font-size:14px; font-weight:600; cursor:pointer; }
+.pm-x:hover{ background:#F6F7F8; }
+.pm-scroll{ flex:1; overflow:auto; }
+.pm-wrap{ max-width:1350px; margin:0 auto; padding:40px 32px 96px; }
+.pm-title{ font-size:34px; line-height:1.15; font-weight:400; letter-spacing:0; margin:0 0 6px; }
+.pm-sub{ font-size:16px; color:var(--text-secondary); margin:0 0 28px; }
+.pm-controls{ display:flex; align-items:center; flex-wrap:wrap; gap:16px 28px; margin-bottom:20px; }
+.pm-seg{ display:inline-flex; padding:3px; border:1px solid var(--hairline-strong); border-radius:var(--r-pill); background:#fff; }
+.pm-seg button{ height:34px; padding:0 16px; border:0; border-radius:var(--r-pill); background:none; font:inherit; font-size:14px; font-weight:500; color:var(--text-secondary); cursor:pointer; white-space:nowrap; }
+.pm-seg button:hover{ color:var(--ink); }
+.pm-seg button[aria-pressed="true"]{ background:var(--eggshell); color:var(--green-cta); font-weight:600; }
+.pm-year{ display:flex; align-items:center; gap:14px; font-size:14px; color:var(--text-secondary); flex:1 1 320px; min-width:260px; max-width:520px; }
+.pm-year b{ color:var(--ink); font-weight:600; white-space:nowrap; min-width:150px; }
+.pm-year input[type=range]{ flex:1; accent-color:var(--green-cta); height:4px; }
+.pm-chart{ position:relative; width:100%; }
+.pm-chart svg{ display:block; width:100%; height:auto; overflow:visible; }
+.pm-chart text{ font-family:var(--font); }
+.pm-legend{ display:flex; flex-wrap:wrap; gap:8px 22px; margin:14px 0 0; font-size:13.5px; color:var(--text-secondary); }
+.pm-legend span{ display:inline-flex; align-items:center; gap:7px; }
+.pm-legend i{ width:10px; height:10px; border-radius:3px; display:inline-block; }
+.pm-tip{ position:absolute; pointer-events:none; z-index:3; background:var(--ink); color:#fff; border-radius:10px; padding:10px 12px; font-size:13px; line-height:1.45; white-space:nowrap; opacity:0; transition:opacity .12s; }
+.pm-tip.on{ opacity:1; }
+.pm-tip b{ font-weight:600; }
+.pm-tip span{ color:rgba(255,255,255,.72); }
+/* ranked */
+.pm-rank{ display:flex; flex-direction:column; gap:14px; padding:6px 0; }
+.pm-rank .rw{ display:grid; grid-template-columns:200px minmax(0,1fr) 170px; align-items:center; gap:20px; font-size:16px; }
+.pm-rank .nm{ font-weight:500; }
+.pm-rank .tr{ height:30px; border-radius:8px; background:#F3F4F6; overflow:hidden; }
+.pm-rank .tr i{ display:block; height:100%; border-radius:8px; transform-origin:left; animation:pmGrow .6s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes pmGrow{ from{ transform:scaleX(0) } to{ transform:none } }
+.pm-rank .vl{ text-align:right; white-space:nowrap; }
+.pm-rank .vl b{ font-weight:600; }
+.pm-rank .vl span{ color:var(--text-secondary); margin-left:8px; }
+@media (max-width:760px){ .pm-rank .rw{ grid-template-columns:110px minmax(0,1fr); } .pm-rank .vl{ grid-column:1 / -1; text-align:left; } }
+/* Boldin AI explanation */
+.pm-ai{ margin:28px 0 0; border:1px solid var(--hairline); border-radius:14px; background:var(--eggshell); padding:16px 20px 16px; display:flex; gap:14px; }
+.pm-ai .ic{ flex:none; width:30px; height:30px; border-radius:999px; background:#fff; color:var(--green-cta); display:flex; align-items:center; justify-content:center; }
+.pm-ai .lab{ font-size:13px; font-weight:600; color:var(--green-cta); margin:0 0 4px; }
+.pm-ai .tx{ font-size:15px; line-height:1.55; margin:0; max-width:100ch; min-height:4.7em; }
+.pm-ai .tx b{ font-weight:600; }
+.pm-ai .caret{ display:inline-block; width:2px; height:1.05em; background:var(--green-cta); margin-left:2px; vertical-align:-3px; animation:pmCaret 1s steps(1) infinite; }
+@keyframes pmCaret{ 50%{ opacity:0 } }
+.pm-ai .fu{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.pm-ai .fu button{ height:28px; padding:0 12px; border-radius:var(--r-pill); border:1px solid rgba(14,121,78,.35); background:#fff; color:var(--green-cta); font:inherit; font-size:13px; font-weight:500; cursor:pointer; }
+.pm-ai .fu button:hover{ background:#F6FBF8; }
+/* table */
+.pm-tblh{ font-size:22px; font-weight:600; margin:44px 0 14px; letter-spacing:0; }
+.pm-tbl-wrap{ border:1px solid var(--hairline); border-radius:16px; overflow:auto; }
+.pm-tbl{ width:100%; border-collapse:collapse; font-size:15px;  }
+.pm-tbl th{ position:sticky; top:0; background:#fff; text-align:right; font-weight:600; font-size:13.5px; color:var(--text-secondary); padding:13px 18px; border-bottom:1px solid var(--hairline-strong); white-space:nowrap; }
+.pm-tbl th:first-child, .pm-tbl td:first-child{ text-align:left; }
+.pm-tbl td{ text-align:right; padding:12px 18px; border-bottom:1px solid var(--hairline); white-space:nowrap; }
+.pm-tbl tr:last-child td{ border-bottom:0; }
+.pm-tbl td:first-child{ font-weight:500; }
+.pm-tbl tr.sec td{ background:#FAFAFB; font-weight:600; color:var(--text-secondary); font-size:13.5px; }
+.pm-tbl tr.tot td{ font-weight:600; border-top:1px solid var(--hairline-strong); }
+.pm-tbl tr.sel td{ background:var(--eggshell); }
+.pm-tbl tr.clk{ cursor:pointer; }
+.pm-tbl tr.clk:hover td{ background:#F6F7F8; }
+.pm-tbl tr.sel.clk:hover td{ background:var(--eggshell); }
+.pm-tbl .dot{ display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:10px; }
+.pm-tbl .neg{ color:#B3391B; }
+.pm-tbl-scroll{ max-height:560px; overflow:auto; }
+@media (max-width:760px){ .pm-wrap{ padding:28px 16px 72px; } .pm-title{ font-size:26px; } .pm-ai{ padding:14px 16px; flex-direction:column; gap:8px; } .pm-top{ padding:0 16px; } }
+</style>
+
+<script id="powerModeJS">
+(function(){
+  'use strict';
+  var SPECS={}, PM={}, root=null, st=null, typeTok=0, lastTrigger=null, D=null;
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var BOLT='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>';
+  var SPARK='<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg>';
+  var NS='http://www.w3.org/2000/svg';
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function svgEl(tag,attrs,parent){ var e=document.createElementNS(NS,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+
+  /* ---------------- the shell: header, title, controls, chart, AI, table ---------------- */
+  function build(){
+    root=document.createElement('div'); root.id='powerMode'; root.hidden=true;
+    root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Power mode');
+    root.innerHTML=
+      '<header class="pm-top"><div class="pm-id"><span class="pm-badge">'+BOLT+'Power mode</span><span id="pmCrumb"></span></div>'+
+      '<button type="button" class="pm-x" id="pmX"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Exit</button></header>'+
+      '<div class="pm-scroll" id="pmScroll"><div class="pm-wrap">'+
+        '<h1 class="pm-title" id="pmTitle"></h1><p class="pm-sub" id="pmSub"></p>'+
+        '<div class="pm-controls" id="pmControls"></div>'+
+        '<div class="pm-chart" id="pmChart"></div><div class="pm-legend" id="pmLegend"></div>'+
+        '<section class="pm-ai" aria-live="polite"><span class="ic">'+SPARK+'</span><div><p class="lab">Boldin AI</p><p class="tx" id="pmTx"></p><div class="fu" id="pmFu"></div></div></section>'+
+        '<h2 class="pm-tblh" id="pmTblH">The numbers</h2><div class="pm-tbl-wrap" id="pmTbl"></div>'+
+      '</div></div>';
+    document.body.appendChild(root);
+    root.querySelector('#pmX').addEventListener('click',close);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape' && root && !root.hidden){ e.preventDefault(); close(); } });
+    var rz; window.addEventListener('resize',function(){ if(!root||root.hidden) return; clearTimeout(rz); rz=setTimeout(drawChart,120); });
+    root.addEventListener('click',function(e){
+      var seg=e.target.closest('[data-pm-view]'); if(seg){ st.view=seg.dataset.pmView; refresh(true); return; }
+      var un=e.target.closest('[data-pm-unit]'); if(un){ st.unit=un.dataset.pmUnit; refresh(false); return; }
+      var set=e.target.closest('[data-pm-set]'); if(set){ var kv=set.dataset.pmSet.split('='); st[kv[0]]=kv[1]; refresh(true); return; }
+      var act=e.target.closest('[data-pm-act]'); if(act){ if(st.spec.act) st.spec.act(act.dataset.pmAct, st); return; }
+      var tr=e.target.closest('tr[data-pm-year]'); if(tr){ st.year=+tr.dataset.pmYear; refresh(true); return; }
+      var fu=e.target.closest('[data-pm-ask]'); if(fu){ var q=fu.dataset.pmAsk; close(); setTimeout(function(){ if(window.__railAI&&window.__railAI.send){ window.__railAI.expand&&window.__railAI.expand(); setTimeout(function(){ window.__railAI.send(q); },120); } },200); }
+    });
+    root.addEventListener('input',function(e){ if(e.target.id==='pmYr'){ st.year=+e.target.value; refresh(true,true); } });
+  }
+
+  function open(key,trigger){
+    var spec=SPECS[key]; if(!spec) return;
+    D=window.__xpData?window.__xpData():null; if(!D) return;
+    if(!root) build();
+    lastTrigger=trigger||null;
+    st={key:key,spec:spec,view:spec.views[0].id,year:0,unit:'year',data:spec.data(D)};
+    if(spec.init) spec.init(st);
+    root.hidden=false; document.body.classList.add('pm-open');
+    root.querySelector('#pmCrumb').textContent=spec.crumb;
+    
+    refresh(true,false,true);
+    root.querySelector('#pmScroll').scrollTop=0;
+    setTimeout(function(){ var b=root.querySelector('.pm-seg button'); b&&b.focus({preventScroll:true}); },60);
+  }
+  function close(){
+    if(!root) return; typeTok++; root.hidden=true; document.body.classList.remove('pm-open');
+    if(lastTrigger&&lastTrigger.focus) try{ lastTrigger.focus({preventScroll:true}); }catch(e){}
+  }
+
+  function refresh(retype,keepSlider,first){
+    var spec=st.spec, hadFocus=document.activeElement && document.activeElement.id==='pmYr';
+    root.querySelector('#pmTitle').textContent=spec.titleFor(st); root.querySelector('#pmSub').textContent=spec.sub(st);
+    var views=spec.views.map(function(v){ return '<button type="button" data-pm-view="'+v.id+'" aria-pressed="'+(v.id===st.view)+'">'+esc(v.label)+'</button>'; }).join('');
+    var units='<button type="button" data-pm-unit="year" aria-pressed="'+(st.unit==='year')+'">Per year</button><button type="button" data-pm-unit="month" aria-pressed="'+(st.unit==='month')+'">Per month</button>';
+    var n=st.data.rows.length;
+    var yr='<label class="pm-year"><b id="pmYrLab">'+esc(st.data.label(st.year))+'</b><input type="range" id="pmYr" min="0" max="'+(n-1)+'" step="1" value="'+st.year+'" aria-label="Year"></label>';
+    if(spec.controls){ root.querySelector('#pmControls').innerHTML=spec.controls(st); }
+    else if(!keepSlider){
+      root.querySelector('#pmControls').innerHTML='<div class="pm-seg" role="group" aria-label="Chart view">'+views+'</div>'+yr+'<div class="pm-seg" role="group" aria-label="Units">'+units+'</div>';
+      if(hadFocus){ var s=root.querySelector('#pmYr'); s&&s.focus({preventScroll:true}); }
+    }else{
+      root.querySelector('#pmYrLab').textContent=st.data.label(st.year);
+    }
+    drawChart();
+    root.querySelector('#pmTbl').innerHTML=spec.table(st);
+    root.querySelector('#pmTblH').textContent=spec.tableTitle(st);
+    if(retype) typeInto(root.querySelector('#pmTx'),spec.explain(st), keepSlider);
+    var fu=spec.follow(st);
+    root.querySelector('#pmFu').innerHTML=fu.map(function(q){ return '<button type="button" data-pm-ask="'+esc(q)+'">'+esc(q)+'</button>'; }).join('');
+  }
+
+  function drawChart(){
+    var host=root.querySelector('#pmChart'); host.innerHTML='';
+    var w=Math.max(320,Math.floor(host.getBoundingClientRect().width||host.parentNode.getBoundingClientRect().width));
+    st.spec.chart(st,host,w);
+    root.querySelector('#pmLegend').innerHTML=st.spec.legend(st);
+  }
+
+  /* Boldin AI types its explanation out; a year drag re-types quickly */
+  function typeInto(node,html,fast){
+    var tok=++typeTok;
+    var parts=html.match(/<\/?b>|[\s\S]/g)||[];
+    if(reduce){ node.innerHTML=html; return; }
+    var i=0, bold=false, out='', step=fast?3:2, delay=fast?9:16;
+    (function tick(){
+      if(tok!==typeTok) return;
+      for(var n=0;n<step && i<parts.length;n++,i++){ var p=parts[i]; if(p==='<b>'){ bold=true; out+=p; } else if(p==='</b>'){ bold=false; out+=p; } else out+=(p==='<'?'&lt;':p==='&'?'&amp;':p); }
+      node.innerHTML=out+(bold?'</b>':'')+'<span class="caret"></span>';
+      if(i<parts.length) setTimeout(tick,delay); else setTimeout(function(){ if(tok===typeTok) node.innerHTML=html; },700);
+    })();
+  }
+
+  /* shared helpers for specs */
+  function tip(host){
+    var t=document.createElement('div'); t.className='pm-tip'; host.appendChild(t);
+    return {
+      show:function(html,ev){ t.innerHTML=html; t.classList.add('on'); var r=host.getBoundingClientRect(); var x=ev.clientX-r.left+16, y=ev.clientY-r.top+14; var tw=t.offsetWidth; if(x+tw>r.width) x=ev.clientX-r.left-tw-16; t.style.left=Math.max(0,x)+'px'; t.style.top=y+'px'; },
+      hide:function(){ t.classList.remove('on'); }
+    };
+  }
+  function squarify(items,x,y,w,h){
+    var out=[], tot=items.reduce(function(a,b){ return a+b.v; },0), k=w*h/tot;
+    var rest=items.map(function(it){ return {it:it,a:it.v*k}; });
+    function worst(arr,s){ var sum=0,mx=0,mn=Infinity; arr.forEach(function(b){ sum+=b.a; mx=Math.max(mx,b.a); mn=Math.min(mn,b.a); }); return Math.max(s*s*mx/(sum*sum), sum*sum/(s*s*mn)); }
+    while(rest.length){
+      var s=Math.min(w,h), c=1;
+      while(c<rest.length && worst(rest.slice(0,c+1),s)<=worst(rest.slice(0,c),s)) c++;
+      var row=rest.splice(0,c), sum=row.reduce(function(a,b){ return a+b.a; },0), off=0;
+      if(w>=h){ var cw=sum/h; row.forEach(function(b){ var bh=b.a/cw; out.push({it:b.it,x:x,y:y+off,w:cw,h:bh}); off+=bh; }); x+=cw; w-=cw; }
+      else{ var rh=sum/w; row.forEach(function(b){ var bw=b.a/rh; out.push({it:b.it,x:x+off,y:y,w:bw,h:rh}); off+=bw; }); y+=rh; h-=rh; }
+    }
+    return out;
+  }
+
+  /* =====================================================================================
+     Spec: Budgeting > Where does my money go this year?   key: budget-flow
+     ===================================================================================== */
+  SPECS['budget-flow']={
+    crumb:'Budgeting',
+    title:'Where does my money go this year?',
+    titleFor:function(s){ return s.view==='time' ? 'Where does my money go, year by year?' : (s.year===0 ? 'Where does my money go this year?' : 'Where does my money go in '+s.data.rows[s.year].y+'?'); },
+    views:[{id:'flow',label:'Flow'},{id:'rank',label:'Ranked'},{id:'blocks',label:'Blocks'},{id:'time',label:'Over time'}],
+    data:function(d){
+      var C=d.COL, rows=d.M.map(function(r,i){
+        var inc=r.work+r.ss+r.rmd, hs=r.expenses.housing, out=r.expenses.living+hs+r.expenses.health+(r.fed+r.irmaa)+r.contrib;
+        var gap=Math.max(0,-r.surplus), left=Math.max(0,r.surplus);
+        var src=[];
+        if(i===0 && r.work>0){ src.push({k:'maya',name:'Maya’s pay',v:Math.round(r.work*115/210),color:C.c1}); src.push({k:'luis',name:'Luis’s pay',v:r.work-Math.round(r.work*115/210),color:C.c2}); }
+        else if(r.work>0) src.push({k:'pay',name:'Pay',v:r.work,color:C.c1});
+        if(r.ss>0) src.push({k:'ss',name:'Social Security',v:r.ss,color:C.c2});
+        if(r.rmd>0) src.push({k:'rmd',name:'Required distributions',v:r.rmd,color:C.c3});
+        if(gap>0.5) src.push({k:'sav',name:'From savings',v:gap,color:C.c0});
+        var dst=[
+          {k:'living',name:'Everyday living',v:r.expenses.living,color:C.c1},
+          {k:'tax',name:'Taxes',v:r.fed+r.irmaa,color:C.c4},
+          {k:'save',name:'Saving',v:r.contrib,color:C.c2},
+          {k:'mort',name:'Mortgage',v:hs,color:C.c5},
+          {k:'left',name:'Left over',v:left,color:C.c3},
+          {k:'health',name:'Healthcare',v:r.expenses.health,color:C.c0}
+        ].filter(function(x){ return x.v>0.5; });
+        return {y:r.y,i:i,inc:inc,out:out,gap:gap,left:left,src:src,dst:dst,total:src.reduce(function(a,b){ return a+b.v; },0),
+                parts:{living:r.expenses.living,mort:hs,health:r.expenses.health,tax:r.fed+r.irmaa,save:r.contrib},surplus:r.surplus};
+      });
+      return {rows:rows,d:d,label:function(i){ return d.lab(i); }};
+    },
+    sub:function(s){ var r=s.data.rows[s.year]; return s.view==='time' ? 'Every year of the plan. Click a column, or drag the year, to look closer.' : 'The year '+r.y+', '+(s.unit==='month'?'a month at a time':'all twelve months')+'.'; },
+    tableTitle:function(s){ return s.view==='time' ? 'Year by year' : 'The numbers behind '+s.data.rows[s.year].y; },
+    chart:function(s,host,w){
+      var rows=s.data.rows, r=rows[s.year], d=s.data.d, C=d.COL, t=tip(host), U=function(v){ return fmt(s,v); };
+      function pctOf(v){ return Math.round(v/r.total*100)+'%'; }
+      function tipFor(n,extra){ return '<b>'+esc(n.name)+'</b><br>'+usd(n.v)+' a year<br>'+usd(n.v/12)+' a month<br><span>'+Math.round(n.v/r.total*100)+'% of the money'+(extra||'')+'</span>'; }
+      if(s.view==='flow'){
+        var H=Math.round(Math.min(560,Math.max(420,w*0.4))), T=14,B=14,nw=14, gapL=14,gapR=10;
+        var L=r.src, R=r.dst, tot=r.total, sc=(H-T-B-gapR*(R.length-1))/tot, svg=svgEl('svg',{viewBox:'0 0 '+w+' '+H,role:'img','aria-label':'Cash flow for '+r.y},host);
+        var narrow=w<720, xL=narrow?96:Math.min(260,w*.2), xR=w-(narrow?150:Math.min(300,w*.23)), xM=(xL+xR)/2-nw/2;
+        var mh=tot*sc, my=T+((H-T-B)-(mh))/2, flows=[], yl=T+((H-T-B)-(tot*sc+gapL*(L.length-1)))/2, ym=my;
+        function dim(on,nodes){ flows.forEach(function(f){ f.el.setAttribute('fill-opacity',on? (nodes.indexOf(f)>=0?0.5:0.1) : 0.3); }); }
+        L.forEach(function(n){ var h=n.v*sc;
+          svgEl('rect',{x:xL-nw,y:yl,width:nw,height:h,fill:n.color,rx:2},svg);
+          var p=svgEl('path',{d:'M'+xL+','+yl+'C'+(xL+xM)/2+','+yl+' '+(xL+xM)/2+','+ym+' '+xM+','+ym+'L'+xM+','+(ym+h)+'C'+(xL+xM)/2+','+(ym+h)+' '+(xL+xM)/2+','+(yl+h)+' '+xL+','+(yl+h)+'Z',fill:n.color,'fill-opacity':.3},svg);
+          var f={el:p}; flows.push(f);
+          p.addEventListener('pointermove',function(ev){ dim(true,[f]); t.show(tipFor(n),ev); }); p.addEventListener('pointerleave',function(){ dim(false); t.hide(); });
+          var a=svgEl('text',{x:xL-nw-12,y:yl+h/2-(h>34?2:-4),'text-anchor':'end','font-size':15,'font-weight':600,fill:C.ink},svg); a.textContent=n.name;
+          if(h>34){ var b=svgEl('text',{x:xL-nw-12,y:yl+h/2+17,'text-anchor':'end','font-size':14,fill:C.t2},svg); b.textContent=U(n.v); }
+          yl+=h+gapL; ym+=h; });
+        svgEl('rect',{x:xM,y:my,width:nw,height:mh,fill:C.ink,rx:2},svg);
+        var yr=T, ym2=my;
+        R.forEach(function(n){ var h=n.v*sc;
+          svgEl('rect',{x:xR,y:yr,width:nw,height:h,fill:n.color,rx:2},svg);
+          var p=svgEl('path',{d:'M'+(xM+nw)+','+ym2+'C'+(xM+nw+xR)/2+','+ym2+' '+(xM+nw+xR)/2+','+yr+' '+xR+','+yr+'L'+xR+','+(yr+h)+'C'+(xM+nw+xR)/2+','+(yr+h)+' '+(xM+nw+xR)/2+','+(ym2+h)+' '+(xM+nw)+','+(ym2+h)+'Z',fill:n.color,'fill-opacity':.3},svg);
+          var f={el:p}; flows.push(f);
+          p.addEventListener('pointermove',function(ev){ dim(true,[f]); t.show(tipFor(n),ev); }); p.addEventListener('pointerleave',function(){ dim(false); t.hide(); });
+          var a=svgEl('text',{x:xR+nw+12,y:yr+h/2+(h>34?-2:5),'font-size':15,'font-weight':600,fill:C.ink},svg); a.textContent=n.name;
+          if(h>34){ var b=svgEl('text',{x:xR+nw+12,y:yr+h/2+17,'font-size':14,fill:C.t2},svg); b.textContent=U(n.v)+' · '+pctOf(n.v); }
+          else{ a.textContent=n.name+'  '+U(n.v); }
+          yr+=h+gapR; ym2+=h; });
+        var lab=svgEl('text',{x:xM+nw/2,y:Math.max(12,my-8),'text-anchor':'middle','font-size':14,'font-weight':600,fill:C.ink},svg); lab.textContent=U(tot);
+      }
+      else if(s.view==='rank'){
+        var list=r.dst.slice().sort(function(a,b){ return b.v-a.v; }), mx=list[0].v, html='<div class="pm-rank">';
+        list.forEach(function(n,k){ html+='<div class="rw"><span class="nm">'+esc(n.name)+'</span><span class="tr"><i style="width:'+(n.v/mx*100).toFixed(1)+'%;background:'+n.color+';animation-delay:'+(k*60)+'ms"></i></span><span class="vl"><b>'+U(n.v)+'</b><span>'+pctOf(n.v)+'</span></span></div>'; });
+        host.innerHTML=html+'</div>';
+      }
+      else if(s.view==='blocks'){
+        var H2=Math.round(Math.min(520,Math.max(360,w*.36))), svg=svgEl('svg',{viewBox:'0 0 '+w+' '+H2,role:'img','aria-label':'Share of the money for '+r.y},host);
+        squarify(r.dst.slice().sort(function(a,b){ return b.v-a.v; }),0,0,w,H2).forEach(function(b){
+          var n=b.it, g=svgEl('g',{},svg), rc=svgEl('rect',{x:b.x+2,y:b.y+2,width:Math.max(0,b.w-4),height:Math.max(0,b.h-4),rx:12,fill:n.color,'fill-opacity':.2,stroke:n.color,'stroke-opacity':.5},g);
+          rc.addEventListener('pointermove',function(ev){ rc.setAttribute('fill-opacity',.34); t.show(tipFor(n),ev); }); rc.addEventListener('pointerleave',function(){ rc.setAttribute('fill-opacity',.2); t.hide(); });
+          if(b.w>110&&b.h>62){ var a=svgEl('text',{x:b.x+18,y:b.y+34,'font-size':16,'font-weight':600,fill:C.ink,'pointer-events':'none'},g); a.textContent=n.name;
+            var c=svgEl('text',{x:b.x+18,y:b.y+58,'font-size':15,fill:C.t2,'pointer-events':'none'},g); c.textContent=U(n.v)+' · '+pctOf(n.v); }
+          else if(b.w>60&&b.h>34){ var e=svgEl('text',{x:b.x+12,y:b.y+26,'font-size':13,'font-weight':600,fill:C.ink,'pointer-events':'none'},g); e.textContent=n.name; }
+        });
+      }
+      else{ /* over time */
+        var Ht=Math.round(Math.min(520,Math.max(380,w*.34))), ML=64, MR=12, MT=16, MB=34, n=rows.length, svg=svgEl('svg',{viewBox:'0 0 '+w+' '+Ht,role:'img','aria-label':'Income and spending by year'},host);
+        var ymax=0; rows.forEach(function(q){ ymax=Math.max(ymax,q.out,q.inc); });
+        var step=[25000,50000,100000,200000].filter(function(x){ return ymax/x<=6; })[0]||200000, top=Math.ceil(ymax/step)*step, iw=w-ML-MR, ih=Ht-MT-MB, bw=iw/n;
+        function X(i){ return ML+bw*i; } function Y(v){ return MT+ih*(1-v/top); }
+        for(var g=0; g<=top; g+=step){ svgEl('line',{x1:ML,x2:w-MR,y1:Y(g),y2:Y(g),stroke:C.grid},svg); var gl=svgEl('text',{x:ML-10,y:Y(g)+4,'text-anchor':'end','font-size':12.5,fill:C.t3},svg); var gv=s.unit==='month'?g/12:g; gl.textContent=gv>=1000?'$'+(Math.round(gv/100)/10).toString().replace(/\.0$/,'')+'k':'$'+Math.round(gv); }
+        svgEl('rect',{x:X(s.year),y:MT,width:bw,height:ih,fill:'#EBF8F2'},svg);
+        var order=[['living',C.c1],['mort',C.c5],['health',C.c0],['tax',C.c4],['save',C.c2]];
+        rows.forEach(function(q,i){ var acc=0; order.forEach(function(o){ var v=q.parts[o[0]]; if(v<=0) return; svgEl('rect',{x:X(i)+bw*.14,y:Y(acc+v),width:bw*.72,height:Math.max(0,Y(acc)-Y(acc+v)),fill:o[1]},svg); acc+=v; });
+          if(i%5===0||i===n-1){ var xl=svgEl('text',{x:X(i)+bw/2,y:Ht-10,'text-anchor':'middle','font-size':12.5,fill:C.t3},svg); xl.textContent=q.y; }
+          var hit=svgEl('rect',{x:X(i),y:MT,width:bw,height:ih,fill:'transparent',style:'cursor:pointer'},svg);
+          hit.addEventListener('pointermove',function(ev){ t.show('<b>'+q.y+'</b><br>Income '+usd(q.inc)+'<br>Spending and saving '+usd(q.out)+'<br><span>'+(q.surplus>=0?usd(q.surplus)+' left over':usd(-q.surplus)+' from savings')+'</span>',ev); });
+          hit.addEventListener('pointerleave',function(){ t.hide(); });
+          hit.addEventListener('click',function(){ st.year=i; refresh(true); });
+        });
+        var pts=rows.map(function(q,i){ return (i?'L':'M')+(X(i)+bw/2).toFixed(1)+' '+Y(q.inc).toFixed(1); }).join(' ');
+        svgEl('path',{d:pts,fill:'none',stroke:C.ink,'stroke-width':2.25,'stroke-linejoin':'round','pointer-events':'none'},svg);
+      }
+    },
+    legend:function(s){
+      var C=s.data.d.COL, r=s.data.rows[s.year], sw=function(c,n){ return '<span><i style="background:'+c+'"></i>'+n+'</span>'; };
+      if(s.view==='time') return sw(C.c1,'Everyday living')+sw(C.c5,'Mortgage')+sw(C.c0,'Healthcare')+sw(C.c4,'Taxes')+sw(C.c2,'Saving')+'<span><i style="background:'+C.ink+';height:2px;border-radius:0"></i>Income (pay, Social Security, required distributions)</span>';
+      return '';
+    },
+    table:function(s){
+      var rows=s.data.rows, d=s.data.d, r=rows[s.year], f=function(v){ return fmt(s,v); };
+      if(s.view==='time'){
+        var h='<div class="pm-tbl-scroll"><table class="pm-tbl"><thead><tr><th>Year</th><th>Income</th><th>Living</th><th>Mortgage</th><th>Healthcare</th><th>Taxes</th><th>Saving</th><th>Left over / from savings</th></tr></thead><tbody>';
+        rows.forEach(function(q,i){ var p=q.parts, net=q.surplus; h+='<tr class="clk'+(i===s.year?' sel':'')+'" data-pm-year="'+i+'"><td>'+q.y+'</td><td>'+f(q.inc)+'</td><td>'+f(p.living)+'</td><td>'+(p.mort?f(p.mort):'–')+'</td><td>'+f(p.health)+'</td><td>'+f(p.tax)+'</td><td>'+(p.save?f(p.save):'–')+'</td><td class="'+(net<0?'neg':'')+'">'+(net<0?'−'+f(-net):f(net))+'</td></tr>'; });
+        return h+'</tbody></table></div>';
+      }
+      var first=rows[0], pv=function(arr,k){ if(k==='pay') return arr.filter(function(x){ return x.k==='pay'||x.k==='maya'||x.k==='luis'; }).reduce(function(a,x){ return a+x.v; },0); var m=arr.filter(function(x){ return x.k===k; })[0]; return m?m.v:0; };
+      function chg(v,v0){ if(s.year===0) return '–'; if(v0<0.5&&v<0.5) return '–'; if(v0<0.5) return 'new'; var c=(v-v0)/v0*100; return (c>=0?'+':'−')+Math.abs(Math.round(c))+'%'; }
+      var h2='<table class="pm-tbl"><thead><tr><th>'+r.y+'</th><th>'+(s.unit==='month'?'Per month':'Per year')+'</th><th>Share of the money</th><th>Change since '+first.y+'</th></tr></thead><tbody>';
+      h2+='<tr class="sec"><td colspan="4">Where it comes from</td></tr>';
+      r.src.forEach(function(n){ var k=n.k==='maya'||n.k==='luis'?'pay':n.k; h2+='<tr><td><span class="dot" style="background:'+n.color+'"></span>'+esc(n.name)+'</td><td>'+f(n.v)+'</td><td>'+Math.round(n.v/r.total*100)+'%</td><td>'+(n.k==='maya'||n.k==='luis'?'–':chg(n.v,pv(first.src,k)))+'</td></tr>'; });
+      h2+='<tr class="tot"><td>Total coming in</td><td>'+f(r.total)+'</td><td>100%</td><td>'+chg(r.total,first.total)+'</td></tr>';
+      h2+='<tr class="sec"><td colspan="4">Where it goes</td></tr>';
+      r.dst.slice().sort(function(a,b){ return b.v-a.v; }).forEach(function(n){ h2+='<tr><td><span class="dot" style="background:'+n.color+'"></span>'+esc(n.name)+'</td><td>'+f(n.v)+'</td><td>'+Math.round(n.v/r.total*100)+'%</td><td>'+chg(n.v,pv(first.dst,n.k))+'</td></tr>'; });
+      h2+='<tr class="tot"><td>Total going out</td><td>'+f(r.total)+'</td><td>100%</td><td>'+chg(r.total,first.total)+'</td></tr></tbody></table>';
+      return h2;
+    },
+    explain:function(s){
+      var rows=s.data.rows, r=rows[s.year], d=s.data.d, M$=function(v){ return '<b>'+fmt(s,v)+'</b>'; }, first=rows[0];
+      var dst=r.dst.slice().sort(function(a,b){ return b.v-a.v; }), top=dst[0], p=function(v){ return Math.round(v/r.total*100)+'%'; };
+      var spend=r.parts.living+r.parts.mort+r.parts.health;
+      if(s.view==='flow'){
+        var srcNames=r.src.filter(function(x){ return x.k!=='sav'; }).map(function(x){ return x.name.toLowerCase().replace('maya’s pay','Maya’s pay').replace('luis’s pay','Luis’s pay'); });
+        var from=srcNames.length>1?srcNames.slice(0,-1).join(', ')+' and '+srcNames[srcNames.length-1]:(srcNames[0]||'savings');
+        var t='In <b>'+r.y+'</b> '+M$(r.inc)+' comes in from '+from+'. ';
+        t+=top.name+' takes the biggest share at '+M$(top.v)+' ('+p(top.v)+'), ';
+        var nx=dst[1], nx2=dst[2]; t+='then '+nx.name.toLowerCase()+' at '+M$(nx.v)+(nx2?' and '+nx2.name.toLowerCase()+' at '+M$(nx2.v):'')+'. ';
+        if(r.gap>0.5) t+='Spending and saving outrun income by '+M$(r.gap)+', so that much comes out of savings this year. ';
+        else t+='After everything, '+M$(r.left)+' is left over'+(s.unit==='month'?'. ':', about <b>'+usd(r.left/12)+' a month</b>. ');
+        if(s.year>0){ var ds=Math.round((r.out-first.out)/first.out*100); t+='Total spending is '+(ds>=0?'up ':'down ')+Math.abs(ds)+'% from '+first.y+'.'; }
+        else t+='This is the picture today, while both paychecks are still coming in.';
+        return t;
+      }
+      if(s.view==='rank'){
+        var t3=dst.slice(0,3).reduce(function(a,b){ return a+b.v; },0);
+        return 'Ranked by size, <b>'+top.name.toLowerCase()+'</b> comes first at '+M$(top.v)+', '+p(top.v)+' of the money in '+r.y+'. '+(dst.length>3?'The top three together are '+Math.round(t3/r.total*100)+'%. ':'')+
+          (r.gap>0.5?'Because spending is higher than income this year, '+M$(r.gap)+' is drawn from savings.':'The smallest slice is '+dst[dst.length-1].name.toLowerCase()+' at '+M$(dst[dst.length-1].v)+'.');
+      }
+      if(s.view==='blocks'){
+        return 'Each block is sized by its share of the money in <b>'+r.y+'</b>. <b>'+top.name+'</b> is the largest at '+p(top.v)+'. Hover a block for the monthly figure. '+
+          (r.parts.save>0?'Saving is '+p(r.parts.save)+' of the total, which is what keeps growing the plan.':'Saving has stopped, so every dollar is now going to living costs, healthcare and taxes.');
+      }
+      /* over time */
+      var gaps=rows.filter(function(q){ return q.gap>0.5; }), peak=rows.reduce(function(a,b){ return b.gap>a.gap?b:a; },rows[0]);
+      var t4='Bars are what you spend and save each year; the line is what comes in. ';
+      if(gaps.length){ t4+='Income stays above spending until <b>'+gaps[0].y+'</b>. After that, savings fill the difference, peaking at '+M$(peak.gap)+' in <b>'+peak.y+'</b>, before Social Security and required distributions lift income again. ';
+        t4+='You draw on savings in '+gaps.length+' of '+rows.length+' years.'; }
+      else t4+='Income covers spending in every year of the plan.';
+      return t4+' Selected: <b>'+r.y+'</b>, with '+(r.gap>0.5?M$(r.gap)+' from savings':M$(r.left)+' left over')+'.';
+    },
+    follow:function(s){
+      if(s.view==='time') return ['When should I start Social Security to shrink the gap years?','How long do my savings last at this spending?'];
+      return ['Which expense am I underestimating the most?','How would retiring a year later change this picture?'];
+    }
+  };
+  function usd(v){ return '$'+Math.round(v).toLocaleString('en-US'); }
+  function fmt(s,v){ return s.unit==='month' ? usd(v/12)+'/mo' : usd(v); }
+
+  PM.open=open; PM.close=close; PM.register=function(k,sp){ SPECS[k]=sp; }; PM.helpers={tip:tip,svgEl:svgEl,esc:esc,usd:usd}; window.PowerMode=PM;
+  /* My Plans > Assets opens as its own Power mode page: the balance sheet stays folded away in My Plans */
+  document.addEventListener('click',function(e){
+    var li=e.target.closest('#sideNav li[data-key="assets"]'); if(!li || document.body.dataset.view!=='plan') return;
+    e.preventDefault(); e.stopPropagation(); open('assets',li);
+  },true);
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-power]'); if(!b) return;
+    e.preventDefault(); e.stopPropagation(); open(b.dataset.power,b);
+  },true);
+})();
+</script>
+
+<!-- ===================== Power mode: My Plans > Assets (projected savings) =====================
+     Mirrors the greenfield Assets page: every account played forward year by year, as stacked bars or areas,
+     with the chart's options (chart type, dollars, compare, timeframe, download) exposed across one bar. -->
+<script id="powerAssetsJS">
+(function(){
+  'use strict';
+  var PM=window.PowerMode; if(!PM) return;
+  var H=PM.helpers, svgEl=H.svgEl, esc=H.esc, usd=H.usd;
+  /* the My Plans household: Marshall (61) and Lily (59); the journey chart's own portfolio curve, in future dollars */
+  var INFL=0.025, Y0=2026, Y1=2057, RETIRE=2028, AGE0={m:61,l:59};
+  var PORT=[[2026,0.567],[2028,0.72],[2030,0.86],[2035,1.25],[2040,1.55],[2045,1.82],[2050,2.02],[2056,2.16],[2058,2.05]];
+  function lerp(keys,y){ if(y<=keys[0][0]) return keys[0][1]; for(var i=1;i<keys.length;i++){ if(y<=keys[i][0]){ var a=keys[i-1],b=keys[i]; return a[1]+(b[1]-a[1])*(y-a[0])/(b[0]-a[0]); } } return keys[keys.length-1][1]; }
+  /* how the buckets shift over the plan: conversions and withdrawals move money out of tax-deferred, into Roth */
+  var SHARE={def:[[2026,.70],[2038,.62],[2057,.42]], roth:[[2026,.07],[2038,.15],[2057,.34]]};
+  var CASH0=40200;
+  var ACCTS=[
+    {k:'chase',  nm:'JPMorgan Chase Bank, N.A.', ty:'Checking',        b:'cash', v:8450,   c:'#5B9BD5'},
+    {k:'ally',   nm:'Ally Bank',                 ty:'Savings',         b:'cash', v:12000,  c:'#8FBCE6'},
+    {k:'wells',  nm:'Wells Fargo Savings',       ty:'Savings',         b:'cash', v:18000,  c:'#BBD7F0'},
+    {k:'cashd',  nm:'Cash (default account)',    ty:'Cash',            b:'cash', v:1750,   c:'#D9E6F2'},
+    {k:'marcus', nm:'Marcus by Goldman Sachs',   ty:'Investment',      b:'txb',  v:18300,  c:'#0B84A5'},
+    {k:'schwab', nm:'Charles Schwab brokerage',  ty:'Brokerage',       b:'txb',  v:68864,  c:'#2FA7C4'},
+    {k:'vgidx',  nm:'Vanguard index fund',       ty:'Brokerage',       b:'txb',  v:34000,  c:'#7CCBDD'},
+    {k:'fid',    nm:'Fidelity Investments',      ty:'401(k)',          b:'def',  v:10000,  c:'#0E794E'},
+    {k:'vgi',    nm:'Vanguard Institutional',    ty:'401(k)',          b:'def',  v:85000,  c:'#1E9A66'},
+    {k:'emp',    nm:'Empower Retirement',        ty:'401(k)',          b:'def',  v:96000,  c:'#04B477'},
+    {k:'roll',   nm:'Marshall’s rollover IRA',   ty:'Traditional IRA', b:'def',  v:127760, c:'#6FD3A8'},
+    {k:'lira',   nm:'Lily’s traditional IRA',    ty:'Traditional IRA', b:'def',  v:50000,  c:'#B6E8D1'},
+    {k:'mroth',  nm:'Marshall’s Roth IRA',       ty:'Roth IRA',        b:'roth', v:21876,  c:'#E0A800'},
+    {k:'lroth',  nm:'Lily’s Roth IRA',           ty:'Roth IRA',        b:'roth', v:15000,  c:'#F3CF5C'}
+  ];
+  var BUCKET={cash:'Cash',txb:'Taxable',def:'Tax-deferred',roth:'Tax-free'};
+  /* what the chart can be compared with, in today's dollars */
+  function income(y){ var v=0; if(y<=2028) v+=93000; if(y<=2032) v+=92000; if(y>=2034) v+=28000; if(y>=2035) v+=42000; if(y>=2038) v+=38000+1800*(y-2038); return v; }
+  function expenses(y){ var v=92000; if(y<=2046) v+=26000; v+=(y>=2029&&y<=2030)?12000:(y>=2031?6000:8000); if(y>=2045) v+=18000; v+=Math.round(income(y)*0.16); return v; }
+  function debts(y){ return Math.max(0,332500*(1-(y-2026)/20)); }
+  function home(y){ return 905000*Math.pow(1.02,y-2026)/Math.pow(1+INFL,y-2026); }
+  var CMP={debts:{lab:'Debts',f:debts},income:{lab:'Income',f:income},expenses:{lab:'Expenses',f:expenses},home:{lab:'Home and real estate',f:home}};
+  function infl(s,v,i){ return s.unit==='future' ? v*Math.pow(1+INFL,i) : v; }
+  function fmtK(v){ return v>=1e6 ? '$'+(Math.round(v/1e5)/10).toFixed(1).replace(/\.0$/,'')+'M' : v>=1000 ? '$'+Math.round(v/1000)+'k' : '$'+Math.round(v); }
+
+  PM.register('assets',{
+    crumb:'My plan inputs · Assets',
+    title:'Projected savings',
+    titleFor:function(){ return 'Projected savings'; },
+    views:[{id:'bar',label:'Bar'},{id:'area',label:'Area'}],
+    init:function(s){ s.unit='today'; s.cmp='none'; s.span='all'; },
+    data:function(){
+      var tot0={}; ACCTS.forEach(function(a){ tot0[a.b]=(tot0[a.b]||0)+a.v; });
+      var rows=[];
+      for(var y=Y0;y<=Y1;y++){
+        var i=y-Y0, total=lerp(PORT,y)*1e6/Math.pow(1+INFL,i);      /* today's dollars */
+        var cash=Math.min(CASH0*(1+0.004*i), total*.2), rest=total-cash;
+        var bk={cash:cash, def:rest*lerp(SHARE.def,y), roth:rest*lerp(SHARE.roth,y)}; bk.txb=rest-bk.def-bk.roth;
+        var vals={}; ACCTS.forEach(function(a){ vals[a.k]=bk[a.b]*(a.v/tot0[a.b]); });
+        rows.push({y:y,i:i,age:AGE0.m+i,ageL:AGE0.l+i,vals:vals,total:total,bk:bk});
+      }
+      return {rows:rows,retire:RETIRE,label:function(i){ return rows[i].y; }};
+    },
+    range:function(s){ var rows=s.data.rows; if(s.span==='retire') return rows.filter(function(q){ return q.y<=RETIRE; }); if(s.span==='ten') return rows.slice(0,11); return rows; },
+    sub:function(s){ var R=this.range(s); return ACCTS.length+' accounts, '+R[0].y+' to '+R[R.length-1].y+', in '+(s.unit==='future'?'future':'today’s')+' dollars'+(s.cmp!=='none'?', compared with '+CMP[s.cmp].lab.toLowerCase():'')+'.'; },
+    tableTitle:function(){ return 'Projected savings table'; },
+    controls:function(s){
+      function seg(name,key,opts){ return '<div class="pm-opt"><span>'+name+'</span><div class="pm-seg" role="group" aria-label="'+name+'">'+opts.map(function(o){ return '<button type="button" data-pm-set="'+key+'='+o[0]+'" aria-pressed="'+(s[key]===o[0])+'">'+o[1]+'</button>'; }).join('')+'</div></div>'; }
+      return '<div class="pm-bar">'
+        +seg('Chart type','view',[['bar','Bar'],['area','Area']])
+        +seg('Dollars','unit',[['today','Today’s dollars'],['future','Future dollars']])
+        +seg('Compare','cmp',[['none','None'],['debts','Debts'],['income','Income'],['expenses','Expenses'],['home','Home and real estate']])
+        +seg('Timeframe','span',[['retire','Until retirement · '+RETIRE],['ten','Next 10 years'],['all','Until end of plan']])
+        +'<button type="button" class="pm-dl" data-pm-act="download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>Download data</button>'
+        +'</div>';
+    },
+    chart:function(s,host,w){
+      var R=this.range(s), n=R.length, C={grid:'rgba(16,24,44,.08)',axis:'rgba(16,24,44,.28)',t3:'#7A7D8C',ink:'#10182C'}, t=H.tip(host);
+      var Ht=Math.round(Math.min(520,Math.max(380,w*.34))), ML=70, MR=16, MT=28, MB=34, iw=w-ML-MR, ih=Ht-MT-MB;
+      var cmp=s.cmp!=='none'?CMP[s.cmp]:null;
+      var ymax=0; R.forEach(function(q){ ymax=Math.max(ymax,infl(s,q.total,q.i), cmp?infl(s,cmp.f(q.y),q.i):0); });
+      var step=[100000,200000,250000,400000,500000,800000,1000000,2000000].filter(function(x){ return ymax/x<=6; })[0]||2000000, top=Math.ceil(ymax/step)*step;
+      var svg=svgEl('svg',{viewBox:'0 0 '+w+' '+Ht,role:'img','aria-label':'Projected savings by account, '+R[0].y+' to '+R[n-1].y},host);
+      var bw=iw/n; function X(i){ return ML+bw*i; } function Y(v){ return MT+ih*(1-v/top); }
+      for(var g=0; g<=top; g+=step){ svgEl('line',{x1:ML,x2:w-MR,y1:Y(g),y2:Y(g),stroke:C.grid},svg); var gl=svgEl('text',{x:ML-10,y:Y(g)+4,'text-anchor':'end','font-size':12.5,fill:C.t3},svg); gl.textContent=fmtK(g); }
+      if(s.view==='area'){
+        var acc=R.map(function(){ return 0; });
+        ACCTS.forEach(function(a){
+          var up=R.map(function(q,i){ return acc[i]+infl(s,q.vals[a.k],q.i); });
+          var dPath='M'+(X(0)+bw/2).toFixed(1)+' '+Y(up[0]).toFixed(1);
+          for(var i=1;i<n;i++) dPath+='L'+(X(i)+bw/2).toFixed(1)+' '+Y(up[i]).toFixed(1);
+          for(var j=n-1;j>=0;j--) dPath+='L'+(X(j)+bw/2).toFixed(1)+' '+Y(acc[j]).toFixed(1);
+          svgEl('path',{d:dPath+'Z',fill:a.c,'fill-opacity':.92,stroke:'#fff','stroke-width':.6},svg);
+          acc=up;
+        });
+      }else{
+        R.forEach(function(q,i){ var acc=0; ACCTS.forEach(function(a){ var v=infl(s,q.vals[a.k],q.i); if(v<=0) return; svgEl('rect',{x:X(i)+bw*.12,y:Y(acc+v),width:bw*.76,height:Math.max(0,Y(acc)-Y(acc+v)),fill:a.c},svg); acc+=v; }); });
+      }
+      var ri=R.map(function(q){ return q.y; }).indexOf(RETIRE);
+      if(ri>=0){ var rx=X(ri)+bw/2; svgEl('line',{x1:rx,x2:rx,y1:MT-4,y2:MT+ih,stroke:C.axis,'stroke-dasharray':'3 4'},svg);
+        var pill=svgEl('g',{},svg); svgEl('rect',{x:rx-40,y:4,width:80,height:18,rx:9,fill:'#fff',stroke:'#E0A800'},pill); var pt=svgEl('text',{x:rx,y:17,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'#8A6D00'},pill); pt.textContent='Retire · '+RETIRE; }
+      if(cmp){ var pts=R.map(function(q,i){ return (i?'L':'M')+(X(i)+bw/2).toFixed(1)+' '+Y(infl(s,cmp.f(q.y),q.i)).toFixed(1); }).join(' ');
+        svgEl('path',{d:pts,fill:'none',stroke:'#fff','stroke-width':5,'stroke-linejoin':'round','pointer-events':'none'},svg);
+        svgEl('path',{d:pts,fill:'none',stroke:C.ink,'stroke-width':2.25,'stroke-linejoin':'round','stroke-dasharray':'6 4','pointer-events':'none'},svg);
+        var last=R[n-1], lv=infl(s,cmp.f(last.y),last.i), lab=svgEl('text',{x:X(n-1)+bw/2-8,y:Y(lv)-9,'text-anchor':'end','font-size':12.5,'font-weight':600,fill:C.ink,stroke:'#fff','stroke-width':4,'paint-order':'stroke'},svg); lab.textContent=cmp.lab+' '+fmtK(lv); }
+      var every=n>24?5:n>12?2:1;
+      R.forEach(function(q,i){
+        if(i%every===0||i===n-1){ var xl=svgEl('text',{x:X(i)+bw/2,y:Ht-10,'text-anchor':'middle','font-size':12.5,fill:C.t3},svg); xl.textContent=q.y; }
+        var hit=svgEl('rect',{x:X(i),y:MT,width:bw,height:ih,fill:'transparent'},svg);
+        hit.addEventListener('pointermove',function(ev){
+          var list=ACCTS.map(function(a){ return {a:a,v:infl(s,q.vals[a.k],q.i)}; }).sort(function(p,r){ return r.v-p.v; }).slice(0,5);
+          var html='<b>'+q.y+' · Marshall '+q.age+', Lily '+q.ageL+'</b><br><b>'+usd(infl(s,q.total,q.i))+'</b> across '+ACCTS.length+' accounts';
+          list.forEach(function(x){ html+='<br><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:'+x.a.c+';margin-right:6px"></span>'+esc(x.a.nm)+' '+usd(x.v); });
+          if(cmp) html+='<br><span>'+cmp.lab+' '+usd(infl(s,cmp.f(q.y),q.i))+'</span>';
+          t.show(html,ev); });
+        hit.addEventListener('pointerleave',function(){ t.hide(); });
+      });
+    },
+    legend:function(s){
+      var out='', last='';
+      ACCTS.forEach(function(a){ if(a.b!==last){ out+=(last?'<span class="brk"></span>':'')+'<span class="grp">'+BUCKET[a.b]+'</span>'; last=a.b; } out+='<span><i style="background:'+a.c+'"></i>'+esc(a.nm)+'</span>'; });
+      if(s.cmp!=='none') out+='<span class="brk"></span><span><i style="background:#10182C;height:2px;border-radius:0"></i>'+CMP[s.cmp].lab+'</span>';
+      return out;
+    },
+    table:function(s){
+      var R=this.range(s), cmp=s.cmp!=='none'?CMP[s.cmp]:null;
+      var h='<div class="pm-tbl-scroll"><table class="pm-tbl"><thead><tr><th class="yr">Year</th><th>Age</th>';
+      ACCTS.forEach(function(a){ h+='<th><span class="dot" style="background:'+a.c+'"></span>'+esc(a.nm)+'</th>'; });
+      h+='<th>Total</th>'+(cmp?'<th>'+cmp.lab+'</th>':'')+'</tr></thead><tbody>';
+      R.forEach(function(q){ h+='<tr><td class="yr">'+q.y+'</td><td>'+q.age+'</td>'; ACCTS.forEach(function(a){ h+='<td>'+usd(infl(s,q.vals[a.k],q.i))+'</td>'; }); h+='<td><b>'+usd(infl(s,q.total,q.i))+'</b></td>'+(cmp?'<td>'+usd(infl(s,cmp.f(q.y),q.i))+'</td>':'')+'</tr>'; });
+      return h+'</tbody></table></div>';
+    },
+    explain:function(s){
+      var rows=s.data.rows, R=this.range(s), first=rows[0], end=rows[rows.length-1];
+      var V=function(q){ return infl(s,q.total,q.i); }, M$=function(v){ return '<b>'+usd(v)+'</b>'; };
+      var peak=rows.reduce(function(a,b){ return V(b)>V(a)?b:a; },rows[0]);
+      var t='Your savings start at '+M$(V(first))+' across '+ACCTS.length+' accounts, with '+Math.round(first.bk.def/first.total*100)+'% in tax-deferred accounts. ';
+      t+='They keep growing past retirement in <b>'+RETIRE+'</b>, because Lily’s paycheck runs to 2032 and the Roth conversions move money rather than spend it, and peak at '+M$(V(peak))+' in <b>'+peak.y+'</b>';
+      t+=(peak.y<end.y?', then ease to '+M$(V(end))+' by '+end.y+'. ':'. ');
+      t+='By then tax-free accounts hold '+Math.round(end.bk.roth/end.total*100)+'% of the total, up from '+Math.round(first.bk.roth/first.total*100)+'% today. ';
+      if(s.cmp!=='none'){ var c=CMP[s.cmp], a=R[0], b=R[R.length-1]; t+=c.lab+' runs from '+M$(infl(s,c.f(a.y),a.i))+' to '+M$(infl(s,c.f(b.y),b.i))+' over the same years. '; }
+      if(s.unit==='future') t+='Future dollars include '+(INFL*100).toFixed(1)+'% a year of inflation, so later years look larger than they will feel. ';
+      if(s.span==='retire') t+='Showing the years up to Marshall’s retirement in '+RETIRE+'.';
+      else if(s.span==='ten') t+='Showing the next ten years.';
+      else t+='The chart runs to the end of the plan in '+end.y+', when Marshall is '+end.age+'.';
+      return t;
+    },
+    follow:function(){ return ['Which account should I draw from first?','How would a Roth conversion change this picture?','What happens if the market drops 30% in 2029?']; },
+    act:function(name,s){
+      if(name!=='download') return;
+      var R=this.range(s), cmp=s.cmp!=='none'?CMP[s.cmp]:null;
+      var lines=[['Year','Age'].concat(ACCTS.map(function(a){ return a.nm; })).concat(['Total']).concat(cmp?[cmp.lab]:[]).join(',')];
+      R.forEach(function(q){ lines.push([q.y,q.age].concat(ACCTS.map(function(a){ return Math.round(infl(s,q.vals[a.k],q.i)); })).concat([Math.round(infl(s,q.total,q.i))]).concat(cmp?[Math.round(infl(s,cmp.f(q.y),q.i))]:[]).join(',')); });
+      var blob=new Blob([lines.join('\n')],{type:'text/csv'}), a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='projected-savings-'+R[0].y+'-'+R[R.length-1].y+'.csv'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+    }
+  });
 })();
 </script>
 
