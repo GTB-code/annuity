@@ -30614,7 +30614,11 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
 /* the onboarding header and the sign-up back link sit on the same left edge as the app's logo */
 #pg-onboarding .hdr{ height:73px; padding-left:0; padding-right:0; }
 #pg-onboarding .hdr svg{ margin-left:max(32px, calc(50% - 675px + 32px)); width:117px; }
-#pg-signup .backlink{ left:max(32px, calc(50% - 675px + 32px)); }
+/* sign-up: the Boldin mark sits top left on the app's frame edge and returns to the index; it replaces the back link */
+#pg-signup .backlink{ display:none; }
+#pg-signup .ak-card > a[href="#site"]{ position:absolute; top:0; left:max(32px, calc(50% - 675px + 32px)); height:73px; display:flex; align-items:center; z-index:2; }
+#pg-signup .ak-card > a[href="#site"] .ak-logo{ width:117px; margin:0; }
+#pg-signup .ak.split2{ padding-top:128px; }
 /* the hero shot mirrors the app's own nav and tiles: 42px icon buttons 12px apart, the tab underline 16px
    up from the nav's bottom edge under an ink (not green) active label, and the 11px/16px stat tiles */
 #pg-home .gf-nav{ gap:0; height:73px; }
@@ -30633,6 +30637,9 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
 /* the hero's subheading reads on one line wherever it fits */
 #pg-home .hero > .wrap > p{ max-width:none; white-space:nowrap; }
 @media (max-width:1100px){ #pg-home .hero > .wrap > p{ white-space:normal; max-width:58ch; } }
+/* trial-over: onboarding's own header, steps and footer step aside so only the free-trial dialog shows over Home */
+:host(.trial-on) #pg-onboarding{ background:transparent; min-height:0; height:0; }
+:host(.trial-on) #pg-onboarding > :not(#roadblock){ display:none !important; }
 /* the site nav never wraps a label; below 1080px it folds to the essentials, as it does at 900 */
 #pg-home .nav ul li, #pg-home .nav .login, #pg-home .nav .btn, #pg-trust .nav ul li, #pg-trust .nav .login, #pg-trust .nav .btn{ white-space:nowrap; }
 @media (max-width:1080px){ #pg-home .nav ul li:not(.keep), #pg-home .nav .login, #pg-trust .nav ul, #pg-trust .nav .login{ display:none; } }
@@ -31441,6 +31448,8 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
 #flowHost{ display:none; font-family:var(--font); color:var(--ink); }
 body.flow-open #flowHost{ display:block; }
 body.flow-open .topnav, body.flow-open .dock, body.flow-open .demo-reset, body.flow-open .hm-tip, body.flow-open #classicOnboard{ display:none !important; }
+/* the free-trial modal over Home: the host is a transparent full-screen layer showing only the dialog */
+body.trial-over #flowHost{ display:block; position:fixed; inset:0; z-index:400; background:transparent; }
 body.flow-open .layout.page{ display:none !important; }
 body.flow-open #signupPage, body.flow-open #suTrial{ display:none !important; }
 </style>
@@ -31462,12 +31471,14 @@ body.flow-open #signupPage, body.flow-open #suTrial{ display:none !important; }
     if(!inited[h] && PAGES[h]){ inited[h]=true; try{ PAGES[h](); }catch(e){ console.error(e); } }
     window.scrollTo(0,0); window.dispatchEvent(new Event('resize'));
   }
-  function enter(){
+  function enter(trial){
     document.body.classList.remove('flow-open'); document.body.style.overflow='';
+    if(trial===true){ document.body.classList.add('trial-over'); host.classList.add('trial-on'); }
     try{ sessionStorage.setItem('gf.inApp','1'); sessionStorage.removeItem('gf.flow'); }catch(e){}
     window.scrollTo(0,0); window.dispatchEvent(new Event('resize'));
   }
-  FLOW.go=go; FLOW.enter=enter; window.FLOW=FLOW;
+  function endTrial(){ document.body.classList.remove('trial-over'); host.classList.remove('trial-on'); document.body.style.overflow=''; }
+  FLOW.go=go; FLOW.enter=enter; FLOW.endTrial=endTrial; window.FLOW=FLOW;
   /* in-page links route here; nothing touches location.hash, which the app owns */
   R.addEventListener('click', function(e){
     var a=e.target.closest('a[href^="#"]'); if(!a) return;
@@ -31585,7 +31596,7 @@ PAGES["onboarding"]=function(){
     var f=s.dataset.fact; if(f){var p=f.split('|');factEl.innerHTML=p[0]+'<small>'+(p[1]||'')+'</small>';factEl.hidden=false} else factEl.hidden=true;
     if(s.dataset.editor && !backward){ if(KINDS[s.dataset.editor].list.length && s.dataset.shown) renderList(s); else openStepEditor(s,-1); }
     if(s.dataset.editor && backward){ if(KINDS[s.dataset.editor].list.length) renderList(s); else openStepEditor(s,-1); }
-    if(s.dataset.step==='thanks'){ buildSummary(); if(!backward) setTimeout(openRb,450); }
+    if(s.dataset.step==='thanks'){ buildSummary();  }
     if(s.dataset.step==='ss') buildSS();
     if(s.dataset.step==='expenses') R.getElementById('xHouse').value=(homes[0]&&homes[0].pay)?Number(homes[0].pay).toLocaleString('en-US'):'0';
     window.scrollTo({top:0,behavior:'smooth'});
@@ -31771,7 +31782,7 @@ PAGES["onboarding"]=function(){
     drawRbChart(); rb.hidden=false; rb.querySelector('.rb-dlg').scrollTop=0; document.body.style.overflow='hidden';
     setTimeout(function(){ R.getElementById('rbClose').focus(); },50);
   }
-  function closeRb(){ rb.hidden=true; document.body.style.overflow=''; }
+  function closeRb(){ rb.hidden=true; if(FLOW.endTrial) FLOW.endTrial(); document.body.style.overflow=''; }
   ['rbClose','rbBasic'].forEach(function(id){ R.getElementById(id).addEventListener('click',closeRb); });
   R.getElementById('rbStart').addEventListener('click',function(){ var b=this; b.textContent='Trial started'; setTimeout(function(){ closeRb(); b.textContent='Start free trial'; },700); });
   rb.addEventListener('click',function(e){ if(e.target===rb) closeRb(); });
@@ -31793,7 +31804,7 @@ PAGES["onboarding"]=function(){
     show(0,true);
   }
   R.getElementById('restart').addEventListener('click',reset);
-  R.getElementById('toDash').addEventListener('click',function(){ FLOW.enter(); });
+  R.getElementById('toDash').addEventListener('click',function(){ FLOW.enter(true); openRb(); });
   applySingular(); show(0,false);
 })();
 
