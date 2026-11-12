@@ -31169,6 +31169,7 @@ body.hc-open .hc-modal{ display:flex; }
     /* lift the two cards out of their dropzones so the grid can place them */
     ['#s-money','#s-plans'].forEach(function(sel){ var e=grid.querySelector(sel); if(e && e.parentNode!==grid) grid.insertBefore(e, bai||null); });
     var w=document.querySelector('.hm-page .welcome');
+    if(w){ var h2=w.querySelector('h2'); if(h2) h2.textContent='Your money is working for you today'; }
     if(w && !w.querySelector('.hm-customize')){ var b=document.createElement('button'); b.type='button'; b.className='hm-customize'; b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Customize'; b.addEventListener('click', open); w.appendChild(b); }
     dressCards(); layout(); return true;
   }
@@ -32498,6 +32499,8 @@ body.msum-open .layout.page[data-page="plan"] > .center > :not(#sumToday){ displ
 <style id="futureBalCSS">
 /* ===== My Plans › Future Balances: the same accounts as My Money, with when each one starts and stops ===== */
 #fbPage{ display:none; padding-bottom:var(--s-16); }
+/* Future Expenses leaves the My Plans nav */
+body[data-view="plan"] #sideNav li[data-key="expenses"]{ display:none !important; }
 body.fb-open .layout.page[data-page="plan"] > .center > #fbPage{ display:block !important; }
 body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:none !important; }
 #fbPage .inv-sub{ max-width:none; }
@@ -32511,10 +32514,46 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
 #fbPage .fb-power svg{ width:14px; height:14px; color:var(--green-cta); }
 #fbPage .bucket{ margin-top:var(--s-6); }
 #fbPage .bucket-label{ display:block; margin:0 4px 8px; }
-#fbPage .fb-head{ display:grid; grid-template-columns:minmax(0,1fr) 168px 168px 110px; gap:16px; align-items:center; padding:0 4px 8px; font-size:12.5px; font-weight:600; color:#9AA0AE; border-bottom:1px solid var(--hairline); }
+#fbPage .fb-head{ display:grid; grid-template-columns:minmax(0,1fr) 260px 110px; gap:16px; align-items:center; padding:0 4px 8px; font-size:12.5px; font-weight:600; color:#9AA0AE; border-bottom:1px solid var(--hairline); }
 #fbPage .fb-head span:nth-child(n+2){ text-align:left; }
 #fbPage .fb-head span:last-child{ text-align:right; }
-#fbPage .fb-row{ display:grid; grid-template-columns:minmax(0,1fr) 168px 168px 110px; gap:16px; align-items:center; padding:14px 4px; border-bottom:1px solid var(--hairline); }
+#fbPage .fb-row{ display:grid; grid-template-columns:minmax(0,1fr) 260px 110px; gap:16px; align-items:center; padding:14px 4px; border-bottom:1px solid var(--hairline); cursor:pointer; }
+#fbPage .fb-row:hover{ background:#FAFAFA; }
+#fbPage .fb-row.open{ border-bottom-color:transparent; }
+#fbPage .fb-rate{ font:inherit; font-size:14px; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:10px; padding:8px 12px; width:100%; text-align:left; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+#fbPage .fb-rate small{ color:var(--text-secondary); font-size:12.5px; }
+#fbPage .fb-rate.changed{ border-color:var(--green-cta); background:#F3FBF7; }
+#fbPage .fb-ed{ padding:6px 4px 20px; border-bottom:1px solid var(--hairline); }
+#fbPage .fb-ed .edit-card{ margin:0; padding-top:6px; }
+#fbPage .fb-ed .edit-card::before{ display:none !important; }
+#fbPage .fb-ed .plan-range, #fbPage .fb-ed [data-pe-range], #fbPage .fb-ed .ps-range{ display:none !important; }
+#fbPage .fb-period:first-child{ padding-top:8px; }
+#fbPage .fb-period{ padding:14px 0 4px; }
+#fbPage .fb-period + .fb-period{ border-top:1px solid var(--hairline); margin-top:10px; }
+#fbPage .fb-lab{ font-size:14px; font-weight:500; color:var(--ink); margin:0 0 6px; display:flex; align-items:center; justify-content:space-between; }
+#fbPage .fb-lab.req{ color:#B3261E; }
+#fbPage .fb-lab .fb-del{ background:none; border:0; padding:0; cursor:pointer; color:var(--ink); display:flex; }
+#fbPage .fb-lab .fb-del svg{ width:16px; height:16px; }
+#fbPage .fb-field{ margin-bottom:14px; }
+#fbPage .fb-sel, #fbPage .fb-in{ font:inherit; font-size:15px; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:10px; padding:10px 12px; width:100%; box-sizing:border-box; }
+#fbPage .fb-sel{ appearance:none; -webkit-appearance:none; padding-right:34px; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310182C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 12px center; background-size:14px; }
+#fbPage .fb-sel.req{ border-color:#B3261E; box-shadow:0 0 0 3px #F5D5D3; }
+#fbPage .fb-req{ color:#B3261E; font-size:14px; margin:6px 0 0; }
+#fbPage .fb-three{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+#fbPage .fb-three .fb-lab{ color:var(--text-secondary); font-weight:400; }
+#fbPage .fb-pct{ position:relative; }
+#fbPage .fb-pct .fb-in{ padding-right:30px; }
+#fbPage .fb-pct::after{ content:'%'; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:15px; }
+#fbPage .fb-sd{ font-size:14.5px; color:var(--ink); margin:12px 0 10px; }
+#fbPage .fb-sd b{ font-weight:600; margin-left:6px; }
+#fbPage .fb-how{ font-size:15px; font-weight:600; color:var(--green-cta); cursor:pointer; background:none; border:0; padding:0; }
+#fbPage .fb-how:hover{ text-decoration:underline; text-underline-offset:3px; }
+#fbPage .fb-add{ font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:none; border:0; padding:0; cursor:pointer; margin-top:12px; }
+#fbPage .fb-add:hover{ text-decoration:underline; text-underline-offset:3px; }
+#fbPage .fb-ed .edit-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+#fbPage .fb-ed .btn-save{ font:inherit; font-size:14px; font-weight:600; height:38px; padding:0 18px; border-radius:999px; border:0; background:var(--green-cta); color:#fff; cursor:pointer; }
+#fbPage .fb-ed .btn-save:disabled{ opacity:.5; cursor:default; }
+#fbPage .fb-ed .btn-cancel{ font:inherit; font-size:14px; font-weight:600; height:38px; padding:0 14px; border-radius:999px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; }
 #fbPage .fb-row .nm{ font-size:16px; font-weight:600; color:var(--ink); }
 #fbPage .fb-row .ty{ font-size:13.5px; color:var(--text-secondary); margin-top:2px; }
 #fbPage .fb-row .amt{ font-size:16px; font-weight:600; text-align:right; }
@@ -32530,39 +32569,53 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   var plan=document.querySelector('.layout.page[data-page="plan"]'); if(!plan) return;
   var center=plan.querySelector(':scope > .center'); if(!center) return;
   var BOLT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>';
-  var YRS=[]; for(var y=2026;y<=2060;y++) YRS.push(y);
-  /* sensible defaults by account type; the member changes them here, nowhere else */
+  var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>';
+  var PRESETS=[['Checking',0.5,0.5],['Savings',2,2],['Bonds',4,5],['Balanced',6,10],['Stocks & bonds',7,12],['Stocks',8,15],['Real estate',3,6],['Custom',null,null]];
+  /* a sensible rate by account type; the member changes it here, nowhere else */
   function defaults(nm, ty){
     var t=(ty||'').toLowerCase(), n=(nm||'').toLowerCase();
-    if(/401|403|457|tsp|pension/.test(n+t)) return ['Today','Retirement (2028)'];
-    if(/checking/.test(t)) return ['Today','Never'];
-    if(/savings|money market/.test(t)) return ['Today','Never'];
-    if(/roth/.test(n+t)) return ['Today','Never'];
-    if(/ira|rollover/.test(n+t)) return ['Today','2050'];
-    if(/529|education/.test(n+t)) return ['Today','2032'];
-    if(/brokerage|investment|taxable/.test(t)) return ['Today','Never'];
-    return ['Today','Never'];
+    if(/checking/.test(t)) return 'Checking';
+    if(/savings|money market|cash/.test(t)) return 'Savings';
+    if(/hsa/.test(n+t)) return 'Balanced';
+    if(/roth/.test(n+t)) return 'Stocks';
+    if(/401|403|457|tsp|ira|rollover/.test(n+t)) return 'Stocks & bonds';
+    if(/brokerage|investment|taxable/.test(t)) return 'Stocks & bonds';
+    if(/home|real estate|property/.test(n+t)) return 'Real estate';
+    return 'Balanced';
   }
-  function sel(kind, cur){
-    var opts = kind==='start' ? ['Today','Retirement (2028)'].concat(YRS.slice(1).map(String)) : ['Never','Retirement (2028)','Social Security (2031)'].concat(YRS.slice(2).map(String));
-    return '<select class="fb-sel" data-kind="'+kind+'">'+opts.map(function(o){ return '<option'+(o===cur?' selected':'')+'>'+o+'</option>'; }).join('')+'</select>';
+  function preset(name){ return PRESETS.filter(function(p){ return p[0]===name; })[0]||PRESETS[3]; }
+  var DATA={};
+  function periodHTML(per, i){
+    var pr=preset(per.preset), avg=per.avg!=null?per.avg:pr[1], sd=per.sd!=null?per.sd:pr[2];
+    var pess=per.pess!=null?per.pess:Math.round((avg-avg*0.2)*10)/10, opt=per.opt!=null?per.opt:Math.round((avg+avg*0.2)*10)/10;
+    var ages=''; for(var a=55;a<=95;a++) ages+='<option value="'+a+'"'+(per.age===a?' selected':'')+'>'+a+'</option>';
+    return '<div class="fb-period" data-i="'+i+'">'+
+      (i===0 ? '' : '<div class="fb-field"><div class="fb-lab'+(per.age?'':' req')+'">At age'+'<button type="button" class="fb-del" aria-label="Remove">'+TRASH+'</button></div><select class="fb-sel fb-age'+(per.age?'':' req')+'"><option value="">Select\u2026</option>'+ages+'</select>'+(per.age?'':'<p class="fb-req">Required</p>')+'</div>')+
+      '<div class="fb-field"><div class="fb-lab">Rate of return</div><select class="fb-sel fb-preset">'+PRESETS.map(function(p){ return '<option value="'+p[0]+'"'+(p[0]===pr[0]?' selected':'')+'>'+p[0]+(p[1]!=null?' \u00b7 '+p[1]+'%':'')+'</option>'; }).join('')+'</select></div>'+
+      '<div class="fb-three"><div><div class="fb-lab">Pessimistic</div><div class="fb-pct"><input class="fb-in fb-pess" type="number" step="0.1" value="'+pess+'"></div></div><div><div class="fb-lab">Average</div><div class="fb-pct"><input class="fb-in fb-avg" type="number" step="0.1" value="'+avg+'"></div></div><div><div class="fb-lab">Optimistic</div><div class="fb-pct"><input class="fb-in fb-opt" type="number" step="0.1" value="'+opt+'"></div></div></div>'+
+      '<div class="fb-sd">Standard deviation<b class="fb-sdv">'+sd+'%</b></div><button type="button" class="fb-how">How rates work</button></div>';
   }
+  function edHTML(id){
+    var d=DATA[id];
+    return '<div class="fb-ed" data-acct="'+id+'"><div class="edit-card"><div class="ec-body">'+d.periods.map(periodHTML).join('')+'<button type="button" class="fb-add">+ Add a rate change at an age</button><div class="edit-actions"><button type="button" class="btn-cancel">Cancel</button><button type="button" class="btn-save">Save</button></div></div></div></div>';
+  }
+  function summary(d){ var p0=d.periods[0], pr=preset(p0.preset), avg=p0.avg!=null?p0.avg:pr[1]; var more=d.periods.length>1?'<small>'+(d.periods.length-1)+' change'+(d.periods.length>2?'s':'')+'</small>':'<small>'+(p0.sd!=null?p0.sd:pr[2])+'% sd</small>'; return (pr[0]==='Custom'?'Custom':pr[0])+' \u00b7 '+avg+'%'+more; }
   var host=document.createElement('div'); host.id='fbPage';
   function build(){
     var src=document.getElementById('assetsBody'); if(!src) return false;
-    var h='<div class="fb-top"><div><h1 class="inv-title">Future <em>Balances</em></h1><p class="inv-sub">Your My Money accounts, with start and end dates.</p></div><button type="button" class="fb-power" data-fb-power>'+BOLT+'Power mode</button></div>';
-    h+='<div class="fb-note"><span>Balances live in <b>My Money</b>. Here you set only the dates.</span><a data-fb-edit>Edit balances in My Money &rsaquo;</a></div>';
+    var h='<div class="fb-top"><div><h1 class="inv-title">Future <em>Balances</em></h1><p class="inv-sub">Your My Money accounts, with the rate each one grows at.</p></div><button type="button" class="fb-power" data-fb-power>'+BOLT+'Power mode</button></div>';
+    h+='<div class="fb-note"><span>Balances live in <b>My Money</b>. Here you set only the rates of return.</span><a data-fb-edit>Edit balances in My Money &rsaquo;</a></div>';
     var n=0;
     src.querySelectorAll('.bucket').forEach(function(b){
       var lab=(b.querySelector('.bucket-label')||{}).textContent||''; var rows=[].slice.call(b.querySelectorAll('.acct')).filter(function(a){ return !a.closest('.edit-card'); });
       var ec=b.querySelector('.edit-card'); if(ec){ var t=ec.querySelector('#ecTitleText'), st=ec.querySelector('#ecSub'), am=ec.querySelector('#ecAmt'); if(t) rows.push({custom:true, nm:t.textContent, ty:st?st.textContent:'', amt:am?am.textContent:''}); }
       if(!rows.length) return;
-      h+='<div class="bucket"><div class="bucket-label">'+lab.replace(/\s*\(\d+\)\s*$/,'')+'</div><div class="fb-head"><span>Account</span><span>Starts</span><span>Ends</span><span>Balance today</span></div>';
-      rows.forEach(function(r){ var nm=r.custom?r.nm:(r.querySelector('.nm')||{}).textContent||''; var ty=r.custom?r.ty:((r.querySelector('.ty')||{}).textContent||'').replace(/Connected.*$/,'').trim(); var amt=r.custom?r.amt:(r.querySelector('.amt')||{}).textContent||''; amt=(amt||'').trim().split('\n')[0]; var d=defaults(nm,ty); n++;
-        h+='<div class="fb-row" data-acct="'+n+'"><div><div class="nm">'+nm+'</div><div class="ty">'+ty+'</div></div><div>'+sel('start',d[0])+'</div><div>'+sel('end',d[1])+'</div><div class="amt">'+amt+'<small>from My Money</small></div></div>'; });
+      h+='<div class="bucket"><div class="bucket-label">'+lab.replace(/\s*\(\d+\)\s*$/,'')+'</div><div class="fb-head"><span>Account</span><span>Rate of return</span><span>Balance today</span></div>';
+      rows.forEach(function(r){ var nm=r.custom?r.nm:(r.querySelector('.nm')||{}).textContent||''; var ty=r.custom?r.ty:((r.querySelector('.ty')||{}).textContent||'').replace(/Connected.*$/,'').trim(); var amt=r.custom?r.amt:(r.querySelector('.amt')||{}).textContent||''; amt=(amt||'').trim().split('\n')[0]; n++; if(!DATA[n]) DATA[n]={ periods:[{ age:null, preset:defaults(nm,ty) }] }; var d=DATA[n];
+        h+='<div class="fb-row" data-acct="'+n+'"><div><div class="nm">'+nm+'</div><div class="ty">'+ty+'</div></div><div><button type="button" class="fb-rate'+(d.changed?' changed':'')+'">'+summary(d)+'</button></div><div class="amt">'+amt+'<small>from My Money</small></div></div>'; });
       h+='</div>';
     });
-    h+='<p class="fb-foot">An account that ends before the plan does is drawn down to zero by that date. One that never ends is carried to the end of the plan and passed on.</p>';
+    h+='<p class="fb-foot">Each account grows at its average rate in the baseline. The pessimistic and optimistic rates set the range the plan tests against.</p>';
     host.innerHTML=h; return true;
   }
   center.appendChild(host);
@@ -32572,7 +32625,24 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   window.__futureBal={open:open, close:close, isOpen:function(){ return document.body.classList.contains('fb-open'); }};
   var holding=false; new MutationObserver(function(){ if(holding || !document.body.classList.contains('fb-open')) return; var nav=document.getElementById('sideNav'); var stray=nav && nav.querySelector('li.active:not([data-key="assets"])'); if(!stray) return; holding=true; mark(true); holding=false; }).observe(document.getElementById('sideNav')||document.body,{subtree:true, attributes:true, attributeFilter:['class']});
   document.addEventListener('click', function(e){ if(!document.body.classList.contains('fb-open')) return; if(e.target.closest('#fbPage, li[data-key="assets"]')) return; if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-view], .plan-row')) close(); }, true);
-  host.addEventListener('change', function(e){ var s=e.target; if(!s.classList || !s.classList.contains('fb-sel')) return; s.classList.add('changed'); });
+  function openEd(row){ var id=row.dataset.acct; closeEds(); row.classList.add('open'); row.insertAdjacentHTML('afterend', edHTML(id)); }
+  function closeEds(){ host.querySelectorAll('.fb-ed').forEach(function(x){ x.remove(); }); host.querySelectorAll('.fb-row.open').forEach(function(x){ x.classList.remove('open'); }); }
+  function readEd(ed){ var id=ed.dataset.acct, periods=[]; ed.querySelectorAll('.fb-period').forEach(function(p,i){ var age=p.querySelector('.fb-age'); periods.push({ age:i===0?null:(age&&age.value?+age.value:null), preset:p.querySelector('.fb-preset').value, pess:+p.querySelector('.fb-pess').value, avg:+p.querySelector('.fb-avg').value, opt:+p.querySelector('.fb-opt').value, sd:parseFloat(p.querySelector('.fb-sdv').textContent) }); }); return { id:id, periods:periods }; }
+  host.addEventListener('click', function(e){
+    var row=e.target.closest('.fb-row'); if(row){ if(row.classList.contains('open')) closeEds(); else openEd(row); return; }
+    var ed=e.target.closest('.fb-ed'); if(!ed) return;
+    if(e.target.closest('.btn-cancel')){ closeEds(); return; }
+    if(e.target.closest('.btn-save')){ var r=readEd(ed); var missing=r.periods.some(function(p,i){ return i>0 && !p.age; }); if(missing){ ed.querySelectorAll('.fb-age').forEach(function(a){ if(!a.value){ a.classList.add('req'); a.previousElementSibling.classList.add('req'); if(!a.nextElementSibling) a.insertAdjacentHTML('afterend','<p class="fb-req">Required</p>'); } }); return; } DATA[r.id]={ periods:r.periods, changed:true }; var rw=host.querySelector('.fb-row[data-acct="'+r.id+'"] .fb-rate'); if(rw){ rw.innerHTML=summary(DATA[r.id]); rw.classList.add('changed'); } closeEds(); return; }
+    if(e.target.closest('.fb-add')){ var r2=readEd(ed); r2.periods.push({ age:null, preset:r2.periods[r2.periods.length-1].preset }); DATA[r2.id]={ periods:r2.periods, changed:DATA[r2.id]&&DATA[r2.id].changed }; var row2=host.querySelector('.fb-row[data-acct="'+r2.id+'"]'); closeEds(); openEd(row2); return; }
+    if(e.target.closest('.fb-del')){ var per=e.target.closest('.fb-period'), r3=readEd(ed); r3.periods.splice(+per.dataset.i,1); DATA[r3.id]={ periods:r3.periods, changed:DATA[r3.id]&&DATA[r3.id].changed }; var row3=host.querySelector('.fb-row[data-acct="'+r3.id+'"]'); closeEds(); openEd(row3); return; }
+    if(e.target.closest('.fb-how')){ if(window.__bai) window.__bai.open('How do rates of return work in my plan?'); return; }
+  });
+  host.addEventListener('change', function(e){
+    var ed=e.target.closest('.fb-ed'); if(!ed) return; var per=e.target.closest('.fb-period'); if(!per) return;
+    if(e.target.classList.contains('fb-preset')){ var pr=preset(e.target.value); if(pr[1]!=null){ per.querySelector('.fb-avg').value=pr[1]; per.querySelector('.fb-pess').value=Math.round(pr[1]*0.8*10)/10; per.querySelector('.fb-opt').value=Math.round(pr[1]*1.2*10)/10; per.querySelector('.fb-sdv').textContent=pr[2]+'%'; } }
+    if(e.target.classList.contains('fb-age') && e.target.value){ e.target.classList.remove('req'); e.target.previousElementSibling.classList.remove('req'); var rq=per.querySelector('.fb-req'); if(rq) rq.remove(); }
+  });
+  host.addEventListener('input', function(e){ var per=e.target.closest('.fb-period'); if(!per || !e.target.classList.contains('fb-in')) return; var pr=per.querySelector('.fb-preset'); if(e.target.classList.contains('fb-avg') && pr && preset(pr.value)[1]!==+e.target.value) pr.value='Custom'; var p=+per.querySelector('.fb-pess').value, o=+per.querySelector('.fb-opt').value; per.querySelector('.fb-sdv').textContent=(Math.round(Math.abs(o-p)/2*10)/10)+'%'; });
   host.addEventListener('click', function(e){
     if(e.target.closest('[data-fb-power]')){ if(window.PowerMode) PowerMode.open('assets', e.target.closest('[data-fb-power]')); return; }
     if(e.target.closest('[data-fb-edit]')){ close(); var m=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my money/i.test(x.textContent); })[0]; if(m) m.click(); setTimeout(function(){ var li=document.querySelector('#sideNav li[data-key="assets"]'); if(li) li.click(); }, 350); }
