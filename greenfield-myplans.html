@@ -30264,8 +30264,8 @@ body.pm-open .dock{ display:none !important; }
 
   PM.register('assets',{
     crumb:'My plan inputs · Assets',
-    title:'Projected savings',
-    titleFor:function(){ return 'Projected savings'; },
+    title:'Assets',
+    titleFor:function(){ return 'Assets'; },
     views:[{id:'bar',label:'Bar'},{id:'area',label:'Area'}],
     init:function(s){ s.unit='today'; s.cmp='none'; s.span='all'; },
     data:function(){
@@ -30282,7 +30282,7 @@ body.pm-open .dock{ display:none !important; }
     },
     range:function(s){ var rows=s.data.rows; if(s.span==='retire') return rows.filter(function(q){ return q.y<=RETIRE; }); if(s.span==='ten') return rows.slice(0,11); return rows; },
     sub:function(s){ var R=this.range(s); return ACCTS.length+' accounts, '+R[0].y+' to '+R[R.length-1].y+', in '+(s.unit==='future'?'future':'today’s')+' dollars'+(s.cmp!=='none'?', compared with '+CMP[s.cmp].lab.toLowerCase():'')+'.'; },
-    tableTitle:function(){ return 'Projected savings table'; },
+    tableTitle:function(){ return 'Assets table'; },
     controls:function(s){
       function seg(name,key,opts){ return '<div class="pm-opt"><span>'+name+'</span><div class="pm-seg" role="group" aria-label="'+name+'">'+opts.map(function(o){ return '<button type="button" data-pm-set="'+key+'='+o[0]+'" aria-pressed="'+(s[key]===o[0])+'">'+o[1]+'</button>'; }).join('')+'</div></div>'; }
       return '<div class="pm-bar">'
@@ -30414,6 +30414,8 @@ body.bai-open .hm-page .bai-col .bai{ transform:none; }
 @media (max-width:1180px){ .hm-page .grid2, body.bai-open .hm-page .grid2{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); } .hm-page .bai-col{ display:none; margin-left:0; } body.bai-open .hm-page .bai-col{ display:block; grid-column:1 / -1; min-height:440px; } .hm-page .bai-col .bai{ width:auto; right:0; } }
 @media (max-width:900px){ .hm-page .grid2{ grid-template-columns:1fr; } }
 @media (prefers-reduced-motion:reduce){ .hm-page .grid2, .hm-page .bai-col, .hm-page .bai-col .bai{ transition:none; } }
+/* on Home the rail is simply there: the layout does not animate, only the words do */
+body.bai-still .hm-page .grid2, body.bai-still .hm-page .bai-col, body.bai-still .hm-page .bai-col .bai{ transition:none !important; }
 /* the two Home cards at 439px */
 body.bai-open .hm-page #s-money .tlegend{ flex-wrap:wrap; justify-content:flex-start; gap:6px 14px; }
 body.bai-open .hm-page #s-money .money-total .big, body.bai-open .hm-page #s-plans .money-total .big{ font-size:26px; }
@@ -30609,7 +30611,7 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
     for(var i=0;i<rails.length;i++){ if(rails[i].offsetParent!==null && rails[i].getBoundingClientRect().width>0) return rails[i]; }
     return null;
   }
-  function findHost(){ if(isHome()) return homeCol; var r=visibleRail(); if(r) return r; var lays=[].slice.call(document.querySelectorAll('.layout.page.on')).filter(function(l){ return getComputedStyle(l).display!=='none'; }); for(var i=0;i<lays.length;i++){ var rr=lays[i].querySelector(':scope > .rail'); if(rr) return rr; } var opt=document.querySelector('.layout.page.opt-index.on'); return opt && !document.body.classList.contains('fire-page') ? opt.querySelector(':scope > .rail') : null; }
+  function findHost(){ if(document.body.classList.contains('scn-open')){ var sr=document.querySelector('#scnPage .scn-rail'); if(sr) return sr; } if(isHome()) return homeCol; var r=visibleRail(); if(r) return r; var lays=[].slice.call(document.querySelectorAll('.layout.page.on')).filter(function(l){ return getComputedStyle(l).display!=='none'; }); for(var i=0;i<lays.length;i++){ var rr=lays[i].querySelector(':scope > .rail'); if(rr) return rr; } var opt=document.querySelector('.layout.page.opt-index.on'); return opt && !document.body.classList.contains('fire-page') ? opt.querySelector(':scope > .rail') : null; }
   function settle(){ var t0=performance.now(); (function f(){ window.dispatchEvent(new Event('resize')); if(performance.now()-t0<560) requestAnimationFrame(f); })(); }
 
   function open(q){
@@ -30672,16 +30674,20 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
   fullBtn.addEventListener('click',function(){ setFull(!full); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape' && full) setFull(false); });
   /* a page change closes the rail; it reopens from the ask bar or the star on the new page */
-  document.addEventListener('click',function(e){ if(e.target.closest && e.target.closest('.topnav nav.modes a, .topnav .iconbtn[data-view], [data-hm-go], #sideNav li')) { if(isOpen()) setTimeout(close,80); } },true);
+  document.addEventListener('click',function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a, .topnav .iconbtn[data-view], [data-hm-go], #sideNav li'); if(!a) return; var toHome=(a.dataset.view==='home')||/^\s*home\s*$/i.test(a.textContent||'')||a.dataset.hmGo==='home'; if(toHome){ document.body.classList.add('bai-still'); homeAI(0); homeAI(60); homeAI(200); return; } if(isOpen()) setTimeout(close,80); },true);
   /* the ask bar at the bottom: typing there sends into the rail */
   document.addEventListener('keydown',function(e){
     if(e.key!=='Enter') return;
     var inp=e.target && e.target.closest && e.target.closest('.dock .askbar input'); if(!inp) return;
     e.preventDefault(); e.stopPropagation(); var v=inp.value; inp.value=''; open(v.trim()||null);
   },true);
-  /* Home opens with Boldin AI already beside the plan */
-  setTimeout(function(){ if(isHome() && !document.body.classList.contains('flow-open') && !document.body.classList.contains('trial-over')) open(); }, 700);
-  window.__bai={ active:function(){ return !!findHost(); }, open:open, close:close, isOpen:isOpen, toggle:function(){ if(isOpen()) close(); else open(); }, ask:function(q){ if(!isOpen()) open(q); else ask(q); } };
+  /* Home always has Boldin AI beside the plan: on load, and every time Home is chosen */
+  function homeAI(delay){ setTimeout(function(){ if(isHome() && (!isOpen() || host!==homeCol) && !document.body.classList.contains('flow-open') && !document.body.classList.contains('trial-over')){ document.body.classList.add('bai-still'); open(); } setTimeout(function(){ document.body.classList.remove('bai-still'); }, 400); }, delay); }
+  homeAI(700);
+  document.addEventListener('click', function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a, .topnav .brand, .topnav a[href="#home"], [data-view="home"], [data-hm-go="home"]'); if(!a) return; var toHome=(a.dataset.view==='home') || /^\s*home\s*$/i.test(a.textContent||'') || a.classList.contains('brand') || (a.getAttribute('href')||'')==='#home'; if(toHome) homeAI(420); }, true);
+  window.addEventListener('boldin:view', function(){ homeAI(420); });
+  document.addEventListener('trial:end', function(){ homeAI(300); });
+  window.__bai={ active:function(){ return !!findHost(); }, open:open, close:close, isOpen:isOpen, toggle:function(){ if(isOpen()) close(); else open(); }, ask:function(q){ if(!isOpen()) open(q); else ask(q); }, say:function(html){ var d=add('',''); typeInto(d, html, function(){}); return d; }, context:function(html, list){ thread.innerHTML=''; var d=add('',''); typeInto(d, html, function(){}); if(list){ chips.innerHTML=list.map(function(c){ return '<button type="button" data-q="'+c.replace(/"/g,'&quot;')+'">'+c+'</button>'; }).join(''); chips.hidden=false; } }, resetChips:function(){ chips.innerHTML=CHIPS.map(function(c){ return '<button type="button" data-q="'+c.replace(/"/g,'&quot;')+'">'+c+'</button>'; }).join(''); }, rehost:function(){ var h=findHost(); if(h && h!==host){ open(); } } };
   window.__homeAI=window.__bai;
 
   /* the star in the top nav, right of the vault */
@@ -30713,6 +30719,25 @@ body.bai-open:not(.fire-page) .opt-index > .rail.bai-host{ display:block; grid-c
 body.bai-open:not(.fire-page) .opt-index .opt-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
 body:not(.fire-page) .opt-index > .rail.bai-host > :not(.bai){ display:none; }
 
+
+/* ---- version 2: rails. Left rail = the card titles; right rail = Boldin AI, open ---- */
+body.opt-v2:not(.fire-page) .layout.page.opt-index{ grid-template-columns:220px minmax(0,1fr); }
+body.opt-v2:not(.fire-page) .opt-index > .side{ display:block; grid-column:1; }
+body.opt-v2:not(.fire-page) .opt-index > .center{ grid-column:2; }
+body.opt-v2.bai-open:not(.fire-page) .layout.page.opt-index{ grid-template-columns:220px minmax(0,1fr) 360px; }
+body.opt-v2.bai-open:not(.fire-page) .opt-index > .rail.bai-host{ grid-column:3 !important; }
+body.opt-v2:not(.fire-page) .opt-index .opt-grid{ column-count:2; }
+body.opt-v2.bai-open:not(.fire-page) .opt-index .opt-grid{ column-count:1; }
+body.opt-v2.bai-open:not(.fire-page) .opt-index .opt-grid > *{ max-width:none; }
+body.opt-v2:not(.fire-page) .opt-index > .side h1{ font-size:17px; font-weight:600; margin:0 0 12px; }
+body.opt-v2:not(.fire-page) .opt-index > .side .onav-item{ padding:8px 10px; border-radius:10px; font-size:15px; }
+body.opt-v2:not(.fire-page) .opt-index > .side .onav-item:hover{ background:#F6F7F8; }
+.os-view{ position:fixed; left:24px; bottom:22px; z-index:72; display:inline-flex; align-items:center; gap:2px; padding:3px; border:1px solid var(--hairline-strong); border-radius:999px; background:#fff; }
+body:not([data-view="optimize"]) .os-view, body.fire-page .os-view, body.stress-open .os-view, body.alo-open .os-view, body.bud-open .os-view, body.soc-open .os-view, body.tax-open .os-view, body.wdr-open .os-view, body.pm-open .os-view, body.flow-open .os-view{ display:none; }
+.os-view button{ font:inherit; font-size:13.5px; font-weight:600; height:30px; padding:0 14px; border:0; border-radius:999px; background:none; color:var(--text-secondary); cursor:pointer; transition:background .15s ease, color .15s ease; }
+.os-view button.on{ background:var(--ink); color:#fff; }
+.os-page-head .os-headrow{ display:flex; align-items:flex-start; width:100%; gap:16px; }
+
 /* ---- the page opens with a word to Marshall and the first move; the chart is a card in the grid ---- */
 body:not(.fire-page) .opt-index .center{ display:flex; flex-direction:column; gap:var(--s-6); }
 .os-page-head{ display:flex; flex-direction:column; align-items:flex-start; gap:16px; padding:4px 0 6px; }
@@ -30728,6 +30753,24 @@ body:not(.fire-page) .opt-index .center{ display:flex; flex-direction:column; ga
 .opt-index .opt-grid > .oli{ min-width:0; border:1px solid var(--hairline); border-radius:18px; padding:var(--s-6); display:flex; flex-direction:column; gap:12px; }
 .opt-index .opt-grid > .oli .oli-eyebrow{ font-size:18px; font-weight:600; color:var(--ink); }
 .opt-index .opt-grid > .oli .oli-eyesub{ font-size:15px; color:var(--text-secondary); line-height:1.5; margin-top:-6px; }
+/* the card is the breakdown, not a second opportunities list */
+.opt-index .opt-grid > .oli > svg{ max-height:150px; margin:6px 0 0; }
+.opt-index .opt-grid > .oli .oli-node, .opt-index .opt-grid > .oli .oli-node + text{ display:none; }
+.opt-index .opt-grid > .oli > .oli-legend{ margin:0 0 14px; font-size:13px; }
+.opt-index .opt-grid > .oli > #oliDetail{ display:none; }
+.opt-index .opt-grid > .oli > #oliDetail:has(.cf-inline:not([hidden])){ display:flex; }
+.oli-stack{ display:flex; gap:3px; height:14px; border-radius:999px; overflow:hidden; margin:2px 0 12px; }
+.oli-stack i{ display:block; height:100%; }
+.oli-parts{ display:flex; flex-direction:column; }
+.oli-part{ display:flex; align-items:center; gap:10px; padding:10px 2px; border:0; border-top:1px solid var(--hairline); background:none; font:inherit; color:var(--ink); cursor:pointer; text-align:left; border-radius:6px; }
+.oli-part:first-child{ border-top:0; }
+.oli-part:hover .n{ color:var(--green-cta); }
+.oli-part i{ width:10px; height:10px; border-radius:3px; flex:0 0 auto; }
+.oli-part .n{ flex:1 1 auto; font-size:15px; }
+.oli-part .v{ font-size:15px; font-weight:600; }
+.oli-cta{ margin-top:auto; padding-top:16px; }
+.oli-try{ font:inherit; font-size:15px; font-weight:600; height:44px; padding:0 20px; border-radius:999px; border:1px dashed var(--ink); background:#fff; color:var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:background .15s ease; }
+.oli-try:hover{ background:#F6F7F8; }
 .opt-index .opt-grid > .oli > svg{ max-height:230px; }
 .opt-index .opt-grid > .oli > .oli-legend{ margin:0 0 8px; justify-content:flex-start; }
 .opt-index .oli > #oliDetail > .cf-inline{ margin-top:14px; }
@@ -30877,7 +30920,19 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
     if(!wrap.hidden) return; a.classList.add('cf-inline-link'); CONTRIB.openInline(wrap, a); }, true);
   head.querySelector('.sec').addEventListener('click',function(){ if(window.__bai) window.__bai.open('Which of the three moves should I make first?'); });
   /* the chart becomes the first card, beside the opportunities */
-  oli.insertAdjacentHTML('afterbegin','<div class="oli-eyebrow">Between the lines</div><div class="oli-eyesub">Your plan as it stands, and the same plan with every move made.</div>');
+  oli.insertAdjacentHTML('afterbegin','<div class="oli-eyebrow">Where the $412,000 comes from</div><div class="oli-eyesub">Three moves, in order. The chart is your plan with and without them.</div>');
+  /* the breakdown: one bar, three segments, that add up to the headline */
+  (function(){
+    var PARTS=[['Super catch-up',286,'#0E794E','Max the super catch-up'],['Roth conversions',61,'#4CB782','Convert $40,000 to Roth this December'],['Social Security at 70',65,'#A9DEC2','Delay Social Security to 70']];
+    var tot=PARTS.reduce(function(a,p){ return a+p[1]; },0);
+    var bar='<div class="oli-stack" role="img" aria-label="$412,000 made of three moves">'+PARTS.map(function(p){ return '<i style="flex:'+p[1]+';background:'+p[2]+'"></i>'; }).join('')+'</div>';
+    var rows='<div class="oli-parts">'+PARTS.map(function(p,i){ return '<button type="button" class="oli-part" data-part="'+i+'"><i style="background:'+p[2]+'"></i><span class="n">'+p[0]+'</span><span class="v">+$'+p[1]+'K</span></button>'; }).join('')+'</div>';
+    var cta='<div class="oli-cta"><button type="button" class="oli-try">Try all three as a what-if</button></div>';
+    var svg=oli.querySelector(':scope > svg'); var ref=oli.querySelector(':scope > .oli-legend')||svg;
+    ref.insertAdjacentHTML('afterend', bar+rows+cta);
+    oli.querySelector('.oli-try').addEventListener('click', function(){ if(!window.WHATIF) return; WHATIF.state.moves={}; WHATIF.state.title='All three moves'; WHATIF.addMove('Max the super catch-up','+$286K','by retirement'); WHATIF.addMove('Roth conversions through 2028','-$61K','lifetime tax'); WHATIF.addMove('Social Security at 70','+$65K','by 92'); WHATIF.state.cmp=true; WHATIF.open(); window.scrollTo({top:0,behavior:'smooth'}); });
+    oli.querySelectorAll('.oli-part').forEach(function(b){ b.addEventListener('click', function(){ var go=['contrib','tax','ss'][+b.dataset.part]; if(go==='contrib'){ var nodes=document.querySelectorAll('#oli .oli-node'); var n=[].slice.call(nodes).filter(function(x){ return /catch/i.test(x.getAttribute('aria-label')||''); })[0]||nodes[0]; if(n) n.dispatchEvent(new MouseEvent('click',{bubbles:true})); setTimeout(function(){ var a=document.querySelector('#oliDetail .oli-dact'); if(a) a.click(); }, 60); return; } var card=document.querySelector('.opt-grid [data-opt="'+go+'"]'); if(card) card.click(); }); });
+  })();
   grid.insertBefore(oli, grid.firstChild);
   grid.insertBefore(big, oli.nextSibling);
   function card(opt, html){ var d=document.createElement('div'); d.className='opt-card'; d.dataset.opt=opt; d.innerHTML=html; return d; }
@@ -30951,6 +31006,26 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
   function liftFire(){ var fs=opt && opt.querySelector('.fire-side'); if(!fs) return false; var center=opt.querySelector(':scope > .center'), card=document.getElementById('fireCard'); if(!card) return false;
     if(fs.dataset.lifted) return true; fs.dataset.lifted='1'; var head=document.createElement('div'); head.className='os-head fire-head'; var b=fs.querySelector('.bud-back'), h=fs.querySelector('h1'), nav=fs.querySelector('ul'); if(b) head.appendChild(b); if(h) head.appendChild(h); card.insertBefore(head, card.firstChild); if(nav){ nav.classList.add('os-tabs'); card.insertBefore(nav, head.nextSibling); } return true; }
   if(!liftFire()){ var tries=0, t=setInterval(function(){ if(liftFire() || ++tries>40) clearInterval(t); }, 250); }
+  /* two versions of the index: Dashboard (no rails) and Rails (titles left, AI right) */
+  (function(){
+    var head=document.querySelector('.os-page-head'); if(!head) return;
+    var hl=head.querySelector('.oli-head'); var row=document.createElement('div'); row.className='os-headrow'; head.insertBefore(row, head.firstChild); if(hl) row.appendChild(hl);
+    document.body.insertAdjacentHTML('beforeend','<div class="os-view" role="tablist"><button type="button" data-v="1">Dashboard</button><button type="button" data-v="2">Rails</button><button type="button" data-v="3">Rails + AI</button></div>');
+    var side=document.querySelector('.opt-index > .side'), nav=side && side.querySelector('.onav');
+    if(nav && !nav.querySelector('[data-opt="fire"]')){ nav.insertAdjacentHTML('afterbegin','<div class="onav-item" data-opt="fire">Financial Independence</div>'); }
+    if(nav && !nav.querySelector('[data-opt="ssx"]')){ var ssl=nav.querySelector('[data-opt="ss"]'); if(ssl) ssl.insertAdjacentHTML('afterend','<div class="onav-item" data-opt="ssx">Social Security Explorer</div>'); }
+    nav && nav.querySelectorAll('.onav-item').forEach(function(it){ var l=it.querySelector('.onav-lbl'); if(l){ var a=l.querySelector('.onav-alert'); if(a) a.remove(); } });
+    var fireIt=nav && nav.querySelector('[data-opt="fire"]'); if(fireIt) fireIt.addEventListener('click', function(){ var c=document.querySelector('.opt-grid [data-opt="fire-card-link"]'); if(c) c.click(); });
+    var ssx=nav && nav.querySelector('[data-opt="ssx"]'); if(ssx) ssx.addEventListener('click', function(){ var c=document.querySelector('.opt-grid [data-opt="ss"]'); if(c) c.click(); });
+    function set(v, user){ document.body.classList.toggle('opt-v2', v==='2'||v==='3'); document.body.dataset.optView=v; document.querySelectorAll('.os-view button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); }); try{ localStorage.setItem('boldin.optView', v); }catch(e){}
+      if(v==='3' && window.__bai && !window.__bai.isOpen()) setTimeout(function(){ window.__bai.open(); }, user?120:600);
+      if(v!=='3' && user && window.__bai && window.__bai.isOpen()) window.__bai.close(); }
+    document.querySelectorAll('.os-view button').forEach(function(b){ b.addEventListener('click', function(){ set(b.dataset.v, true); }); });
+    var v='1'; try{ v=localStorage.getItem('boldin.optView')||'1'; }catch(e){}
+    set(v, false);
+    /* entering Optimize in Rails mode brings the AI with it */
+    document.addEventListener('click', function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a'); if(a && /optimize/i.test(a.textContent) && document.body.dataset.optView==='3') setTimeout(function(){ if(window.__bai && !window.__bai.isOpen()) window.__bai.open(); }, 500); }, true);
+  })();
   /* the opportunities go somewhere: each row is a door to its section */
   (function(){
     var GO={ 'catch-up':'contrib', 'Roth':'tax', 'Social Security':'ss' };
@@ -31132,7 +31207,15 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
 /* ---- the plan selector: kept scenarios live under My Financial Plan ---- */
 .plan-row.wi-row .plan-box{ border-radius:999px; }
 .plan-row.wi-row .wi-letter{ display:none; }
-.plan-select[data-wi-n]:not([data-wi-n="0"]) .plan-row[data-plan="b"]{ display:none; }
+.plan-row[data-plan="b"]{ order:99; }
+.plan-select{ display:flex; flex-direction:column; }
+.plan-row[data-plan="b"] .plan-box{ border-style:dashed; border-radius:999px; position:relative; }
+.plan-row[data-plan="b"] .plan-box > span{ display:none; }
+.plan-row[data-plan="b"] .plan-box::before, .plan-row[data-plan="b"] .plan-box::after{ content:''; position:absolute; left:50%; top:50%; background:var(--green-cta); transform:translate(-50%,-50%); }
+.plan-row[data-plan="b"] .plan-box::before{ width:8px; height:1.6px; }
+.plan-row[data-plan="b"] .plan-box::after{ width:1.6px; height:8px; }
+.plan-row[data-plan="b"] .plan-row-label{ color:var(--green-cta); font-weight:600; }
+.plan-row[data-plan="b"] .plan-setup{ display:none; }
 .plan-row.wi-row .plan-row-label{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
 /* ---- a quiet toast ---- */
@@ -31184,9 +31267,10 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
     var cur=s.run(s.S,false); cur.conf=s.conf(cur); var b=s.base;
     var extra=0; Object.keys(W.moves).forEach(function(k){ extra+=W.moves[k].end||0; });
     return { plan:{ funded:92, conf:b.conf, end:b.end, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend },
-             what:{ funded:cur.out||92, conf:cur.conf, end:cur.end+extra, ret:s.S.ret, ss:s.S.ss, spend:s.S.spend } };
+             what:{ funded:cur.out?(61+(cur.out-2026)):92, conf:cur.conf, end:cur.end+extra, ret:s.S.ret, ss:s.S.ss, spend:s.S.spend } };
   }
   function autoName(){
+    if(W.title) return W.title;
     var parts=[]; Object.keys(W.moves).forEach(function(k){ parts.push(W.moves[k].label); });
     Object.keys(W.changes).forEach(function(k){ var c=W.changes[k]; parts.push(k==='spend'?('Spend '+c.to):(k==='life'||k==='ret_r')?(c.to+' '+KEYS[k].toLowerCase()):(KEYS[k]+' '+c.to)); });
     return parts.join(' · ') || 'A what-if';
@@ -31245,7 +31329,7 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
     document.querySelectorAll('.sbox .meter > i').forEach(function(i){ if(!i.dataset.wiW) i.dataset.wiW=i.style.width; i.style.width=m.what.conf+'%'; });
   }
   function paint(){
-    fit(); reflect();
+    fit(); reflect(); document.dispatchEvent(new CustomEvent('whatif:paint'));
     document.body.classList.toggle('whatif-open', W.open);
     document.body.classList.toggle('whatif-solid', !!W.solid);
     band.classList.toggle('on', W.open);
@@ -31273,7 +31357,7 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
   }
   function discard(){
     var s=st();
-    W.open=false; W.cmp=false; W.changes={}; W.moves={}; W.solid=null; $name.removeAttribute('contenteditable');
+    W.open=false; W.cmp=false; W.changes={}; W.moves={}; W.solid=null; W.title=''; $name.removeAttribute('contenteditable');
     if(s){ s.reset(); }
     document.querySelectorAll('.plan-row.wi-row').forEach(function(r){ r.setAttribute('aria-checked','false'); });
     document.querySelectorAll('.plan-row[data-plan="financial"]').forEach(function(r){ r.setAttribute('aria-checked','true'); });
@@ -31320,6 +31404,9 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
 
   /* ---------- the plan selector in the rail ---------- */
   function rail(){
+    document.dispatchEvent(new CustomEvent('whatif:change'));
+    document.querySelectorAll('.plan-row[data-plan="b"]').forEach(function(r){ if(r.dataset.wiAdd) return; r.dataset.wiAdd='1'; var l=r.querySelector('.plan-row-label'); if(l) l.textContent='Add scenario'; r.setAttribute('aria-checked','false'); r.title='Try a change to your plan without touching it';
+      r.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); r.setAttribute('aria-checked','false'); if(window.SCENARIOS) SCENARIOS.open(); }, true); });
     document.querySelectorAll('.plan-select').forEach(function(ps){
       ps.querySelectorAll('.wi-row').forEach(function(r){ r.remove(); });
       ps.dataset.wiN=SOLID.length;
@@ -31358,7 +31445,7 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
     if((m=/(?:social security|ss|claim\w*)\s+(?:at|by)\s+(\d{2})/.exec(s))) out.ss=+m[1];
     if((m=/(?:spend\w*|spending)\s+(?:of\s+)?\$?([\d,]{4,6})/.exec(s))) out.spend=parseInt(m[1].replace(/,/g,''),10);
     if(/frugal/.test(s)) out.life=0; if(/generous/.test(s)) out.life=2;
-    if(/conservative/.test(s)) out.ret_r=0; if(/aggressive/.test(s)) out.ret_r=2;
+    if(/conservative|cautious|downturn|crash|(poor|bad|rough|weak).*market|market.*(poor|bad|rough|weak)/.test(s)) out.ret_r=0; if(/aggressive|strong market/.test(s)) out.ret_r=2;
     return out;
   }
   function wrapAI(){
@@ -31382,7 +31469,7 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
   /* straight to the plan, no scenario in between */
   function applyNow(label){ var s=st(); if(!s) return; if(W.solid){ makePlan(); return; } var nm=autoName(); s.rebase(); reflect(); ORIG.forEach(function(v,el){ el.classList.remove('wi-shadowed'); }); ORIG.clear(); document.querySelectorAll('.sbox .meter > i').forEach(function(i){ delete i.dataset.wiW; }); W.open=false; W.cmp=false; W.changes={}; W.moves={}; paint(); say('Plan updated \u2014 '+nm); }
   function applyMove(label){ if(W.open && !W.solid && Object.keys(W.moves).length===0 && !count()){ W.open=false; } paint(); say('Plan updated \u2014 '+label); }
-  window.WHATIF={ open:function(){ ensureOpen(); paint(); }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
+  window.WHATIF={ open:function(){ ensureOpen(); paint(); }, keepAs:function(name){ if(W.solid) return; finalize((name||'').trim()||autoName()); }, lines:function(){ var m=metrics(); return m? lines(m) : []; }, metrics:metrics, levers:function(){ var s=st(); return s? s.S : null; }, activate:activate, makePlan:makePlan, remove:function(id){ SOLID=SOLID.filter(function(x){ return x.id!==id; }); SOLID.forEach(function(x,i){ x.letter='Plan '+String.fromCharCode(66+i); }); save(); if(W.solid&&W.solid.id===id) discard(); rail(); }, list:function(){ return SOLID.slice(); }, metricsFor:function(vals, moves){ var s=st(); if(!s) return null; var r=s.run(vals,false); r.conf=s.conf(r); var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); return { funded:r.out?(61+(r.out-2026)):92, conf:r.conf, end:r.end+extra, rows:r.rows, ret:vals.ret, ss:vals.ss, spend:vals.spend }; }, planMetrics:function(){ var s=st(); if(!s) return null; var b=s.base; return { funded:92, conf:b.conf, end:b.end, rows:b.rows, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend }; }, setLevers:function(o){ var s=st(); if(!s) return; Object.keys(o).forEach(function(k){ var inp=document.getElementById('st_'+k); var v=o[k]; if(inp){ v=Math.max(+inp.min, Math.min(+inp.max, v)); inp.value=v; inp.dispatchEvent(new Event('input')); } s.S[k]=v; }); s.render(null); syncStress(); }, base:function(){ var s=st(); return s? s.BASE : null; }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
 })();
 </script>
 <style id="osApplyCSS">
@@ -31456,6 +31543,284 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
   document.addEventListener('change', function(e){ if(e.target.classList && e.target.classList.contains('st-slider')) setTimeout(stressText, 0); }, true);
   document.addEventListener('click', function(e){ if(e.target.closest && (e.target.closest('[data-opt="stress"]') || e.target.closest('[data-stress-reset]'))) setTimeout(stressText, 50); }, true);
   stressText();
+})();
+</script>
+<style id="scenariosCSS">
+/* ======================================================================
+   Scenarios: a page about the difference between a plan and a question.
+   ====================================================================== */
+#scnPage{ position:fixed; inset:73px 0 0 0; z-index:50; background:#fff; overflow:auto; display:none; }
+body.scn-open #scnPage{ display:block; }
+#scnPage .scn-frame{ max-width:1180px; margin:0 auto; padding:0 var(--s-8); display:grid; grid-template-columns:minmax(0,1fr); gap:var(--s-6); align-items:start; }
+body.scn-open.bai-open #scnPage .scn-frame{ grid-template-columns:minmax(0,1fr) 360px; }
+#scnPage .scn-body{ grid-column:1; min-width:0; }
+#scnPage .scn-rail{ grid-column:2 !important; grid-row:1; position:sticky; top:24px; height:calc(100vh - 73px - 48px); min-height:0; display:none; margin-top:24px; }
+body.scn-open.bai-open #scnPage .scn-rail{ display:block; }
+#scnPage .scn-rail.bai-host{ min-height:0; padding:0; box-sizing:border-box; }
+#scnPage .scn-rail.bai-host .bai{ position:absolute; inset:0; width:auto; }
+.scn{ padding:28px 0 120px; }
+.scn-back{ display:inline-flex; align-items:center; gap:6px; font-size:15px; font-weight:600; color:var(--green-cta); text-decoration:none; margin-bottom:22px; cursor:pointer; background:none; border:0; font-family:inherit; padding:0; }
+.scn-back svg{ width:16px; height:16px; }
+.scn h1{ font-size:40px; line-height:1.1; letter-spacing:-0.02em; margin:0 0 10px; font-weight:500; }
+.scn h1 em{ font-style:normal; color:var(--green-cta); }
+.scn h1 b{ font-weight:500; color:#E8B23A; }
+.scn .lede{ font-size:18px; color:var(--text-secondary); margin:0 0 34px; max-width:720px; line-height:1.5; }
+.scn h2{ font-size:22px; letter-spacing:-0.01em; font-weight:600; margin:44px 0 6px; }
+.scn .h2sub{ font-size:15px; color:var(--text-secondary); margin:0 0 18px; }
+
+/* --- the lesson: one strip, three cells --- */
+.scn-lesson{ border:1px solid var(--hairline); border-radius:18px; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); overflow:hidden; }
+.scn-tile{ display:flex; flex-direction:column; gap:8px; padding:18px 20px 16px; border-left:1px solid var(--hairline); }
+.scn-tile:first-child{ border-left:0; }
+.scn-tile svg{ width:72px; height:44px; display:block; overflow:visible; }
+.scn-tile .t{ font-size:15.5px; font-weight:600; margin-top:4px; }
+.scn-tile p{ margin:0; font-size:13.5px; line-height:1.45; color:var(--text-secondary); }
+
+/* --- starters --- */
+.scn-starters{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }
+body.bai-open .scn-starters, body.bai-open .scn-faq{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+body.bai-open .scn-cmp{ grid-template-columns:minmax(0,1fr); }
+.scn-start{ display:flex; flex-direction:column; gap:8px; padding:18px 18px 16px; border:1px solid var(--hairline); border-radius:16px; background:#fff; text-align:left; font:inherit; color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+.scn-start:hover{ border-color:var(--hairline-strong); background:#FAFBFB; }
+.scn-start .t{ font-size:16px; font-weight:600; }
+.scn-start .s{ font-size:13.5px; color:var(--text-secondary); line-height:1.45; }
+.scn-start .go{ margin-top:auto; padding-top:6px; display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:600; color:var(--green-cta); }
+.scn-start .go svg{ width:12px; height:12px; }
+.scn-start.ai .t::before{ content:'\2726\00a0'; color:var(--green-cta); }
+
+/* --- your scenarios --- */
+.scn-list{ display:flex; flex-direction:column; gap:10px; }
+.scn-row{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:16px; align-items:center; padding:16px 18px; border:1px solid var(--hairline); border-radius:16px; }
+.scn-row.on{ border-color:var(--ink); }
+.scn-row .pick{ width:22px; height:22px; border-radius:7px; border:1.5px solid var(--hairline-strong); display:grid; place-items:center; cursor:pointer; background:#fff; }
+.scn-row .pick i{ width:12px; height:12px; border-radius:3px; display:block; opacity:0; transition:opacity .15s ease; }
+.scn-row.on .pick i{ opacity:1; }
+.scn-row .nm{ font-size:16px; font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.scn-row .tag{ font-size:11.5px; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--green-cta); color:#fff; }
+.scn-row .tag.plan{ background:var(--ink); }
+.scn-row .ch{ font-size:13.5px; color:var(--text-secondary); margin-top:3px; }
+.scn-row .acts{ display:flex; gap:4px; }
+.scn-row .acts button{ font:inherit; font-size:13.5px; font-weight:600; height:34px; padding:0 12px; border-radius:999px; border:1px solid transparent; background:none; color:var(--ink); cursor:pointer; }
+.scn-row .acts button:hover{ background:#F6F7F8; }
+.scn-row .acts button.pri{ background:var(--green-cta); color:#fff; }
+.scn-row .acts button.pri:hover{ background:#0B6440; }
+.scn-row .acts button.ghost{ color:var(--text-secondary); }
+.scn-empty{ border:1px dashed var(--hairline-strong); border-radius:16px; padding:22px; font-size:15px; color:var(--text-secondary); line-height:1.5; }
+.scn-empty b{ color:var(--ink); font-weight:600; }
+
+/* --- compare --- */
+.scn-cmp{ display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:28px; align-items:start; }
+.scn-chart{ border:1px solid var(--hairline); border-radius:16px; padding:18px 18px 12px; }
+.scn-chart svg{ width:100%; height:auto; display:block; }
+.scn-legend{ display:flex; flex-wrap:wrap; gap:6px 18px; font-size:13px; color:var(--text-secondary); margin-top:10px; }
+.scn-legend i{ display:inline-block; width:18px; border-top:2.5px solid; vertical-align:middle; margin-right:8px; }
+.scn-legend i.dash{ border-top-style:dashed; }
+.scn-tbl{ width:100%; border-collapse:collapse; font-size:15px; }
+.scn-tbl th{ text-align:right; font-size:13px; font-weight:600; color:var(--text-secondary); padding:0 0 10px 12px; border-bottom:1px solid var(--hairline); white-space:nowrap; }
+.scn-tbl th:first-child{ text-align:left; padding-left:0; }
+.scn-tbl th i{ display:inline-block; width:14px; border-top:2.5px solid; vertical-align:middle; margin-right:6px; }
+.scn-tbl th i.dash{ border-top-style:dashed; }
+.scn-tbl td{ padding:10px 0 10px 12px; border-bottom:1px solid var(--hairline); text-align:right; color:var(--ink); white-space:nowrap; }
+.scn-tbl td:first-child{ text-align:left; padding-left:0; color:var(--text-secondary); }
+.scn-tbl tr:last-child td{ border-bottom:0; }
+.scn-tbl td small{ display:block; font-size:12px; font-weight:600; color:var(--text-secondary); }
+.scn-tbl td small.pos{ color:var(--green-cta); } .scn-tbl td small.neg{ color:#B4452B; }
+.scn-tbl td.best{ font-weight:600; }
+.scn-read{ margin-top:16px; font-size:15px; line-height:1.55; color:var(--ink); }
+.scn-read b{ font-weight:600; }
+
+/* --- one scenario: its own page and flow --- */
+body.scn-one .wi-band{ display:none !important; }
+body.scn-one.scn-open #scnPage{ top:73px !important; }
+.so-head{ display:flex; align-items:center; gap:12px; margin:0 0 6px; }
+.so-head .wi-tag{ font-size:12px; }
+.so-name{ font:inherit; font-size:34px; font-weight:500; letter-spacing:-0.02em; color:var(--ink); border:0; border-bottom:1.5px solid transparent; background:none; padding:2px 0; min-width:200px; width:100%; outline:none; }
+.so-name:focus{ border-bottom-color:var(--green-cta); }
+.so-sub{ font-size:15px; color:var(--text-secondary); margin:0 0 26px; }
+.so-step{ font-size:12.5px; font-weight:600; color:var(--text-secondary); letter-spacing:.02em; margin:0 0 10px; }
+.so-step b{ display:inline-grid; place-items:center; width:20px; height:20px; border-radius:999px; background:var(--ink); color:#fff; font-size:11.5px; margin-right:8px; }
+.so-levers{ display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:12px; margin-bottom:30px; }
+body.bai-open .so-levers{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+.so-lever{ border:1px solid var(--hairline); border-radius:14px; padding:14px 16px 12px; }
+.so-lever.changed{ border-color:#4A99C4; background:#F7FBFE; }
+.so-lever .l{ font-size:13px; color:var(--text-secondary); display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
+.so-lever .l .base{ font-size:11.5px; white-space:nowrap; flex:0 0 auto; }
+.so-lever .v{ font-size:20px; font-weight:600; margin:2px 0 6px; }
+.so-lever .v small{ font-size:12px; font-weight:500; color:var(--text-secondary); margin-left:6px; }
+.so-lever input[type=range]{ width:100%; accent-color:var(--green-cta); }
+.so-result{ display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:24px; align-items:start; margin-bottom:30px; }
+body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
+.so-stats{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-bottom:14px; }
+.so-stat{ border:1px solid var(--hairline); border-radius:14px; padding:14px 16px; }
+.so-stat .k{ font-size:13px; color:var(--text-secondary); }
+.so-stat .n{ font-size:24px; font-weight:600; margin-top:2px; }
+.so-stat .d{ font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-top:2px; }
+.so-stat .d.pos{ color:var(--green-cta); } .so-stat .d.neg{ color:#B4452B; }
+.so-words{ border-left:1px solid var(--hairline); padding-left:22px; }
+.so-words .t{ font-size:13px; font-weight:600; color:var(--text-secondary); margin:0 0 8px; }
+.so-words p{ margin:0 0 10px; font-size:15px; line-height:1.5; }
+.so-words p b{ font-weight:600; }
+.so-decide{ display:flex; align-items:center; gap:10px; padding-top:20px; border-top:1px solid var(--hairline); flex-wrap:wrap; }
+.so-decide .btn{ font:inherit; font-size:15px; font-weight:600; height:44px; padding:0 20px; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+.so-decide .btn:hover{ background:#F6F7F8; }
+.so-decide .btn.pri{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+.so-decide .btn.pri:hover{ background:#0B6440; }
+.so-decide .btn.ghost{ border-color:transparent; color:var(--text-secondary); margin-left:auto; }
+.so-decide .hint{ font-size:13.5px; color:var(--text-secondary); flex-basis:100%; }
+
+/* --- the small print that teaches --- */
+.scn-faq{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:0 32px; }
+.scn-faq > div{ padding:14px 0; border-top:1px solid var(--hairline); }
+.scn-faq .q{ font-size:15px; font-weight:600; margin-bottom:4px; }
+.scn-faq .a{ font-size:14.5px; color:var(--text-secondary); line-height:1.55; }
+@media (max-width:900px){ .scn-lesson, .scn-starters, .scn-cmp, .scn-faq{ grid-template-columns:minmax(0,1fr); } .scn h1{ font-size:34px; } }
+</style>
+<script id="scenariosJS">
+(function(){
+  'use strict';
+  var COLORS=['#4A99C4','#0E794E','#E0A84C'];
+  var ARROW='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var BACK='<svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function big(n){ return Math.abs(n)>=1e6 ? ('$'+(n/1e6).toFixed(2)+'M') : ('$'+Math.round(n/1e3)+'K'); }
+  var page=document.createElement('div'); page.id='scnPage'; page.setAttribute('role','region'); page.setAttribute('aria-label','Scenarios'); document.body.appendChild(page); var frame=document.createElement('div'); frame.className='scn-frame'; page.appendChild(frame); var body=document.createElement('div'); body.className='scn-body'; frame.appendChild(body); var rail=document.createElement('aside'); rail.className='rail scn-rail'; frame.appendChild(rail);
+  var picked={};
+
+  var STARTERS=[
+    { t:'Retire two years earlier', s:'The question most people ask first. See what it costs, and what covers it.', set:function(b){ return {ret:b.ret-2}; } },
+    { t:'Claim Social Security early', s:'At 67 instead of 70. See what the hurry costs, in your own numbers.', set:function(b){ return {ss:b.ss>=70?67:70}; } },
+    { t:'Spend $500 less a month', s:'Small, permanent, and it compounds. Usually the quiet hero of a plan.', set:function(b){ return {spend:b.spend-500}; } },
+    { t:'A more generous life', s:'The opposite question: how much more could you spend and still be fine?', set:function(b){ return {life:2}; } },
+    { t:'Cautious markets', s:'Dial returns down to conservative and see whether the plan still holds.', set:function(b){ return {ret_r:0}; } },
+    { t:'Ask Boldin AI', s:'Say it in words: “what if Lily works until 66 and we sell the house at 75?”', ai:true }
+  ];
+
+  function lessonSVG(kind){
+    var base='M3 36 C 24 33, 44 24, 69 12';
+    var dot=function(x,y,c){ return '<circle cx="'+x+'" cy="'+y+'" r="3.5" fill="'+c+'"/>'; };
+    if(kind==='plan') return '<svg viewBox="0 0 72 44"><path d="'+base+'" stroke="#0F172A" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+dot(69,12,'#0F172A')+'</svg>';
+    if(kind==='scn') return '<svg viewBox="0 0 72 44"><path d="'+base+'" stroke="#C9CDD6" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M34 27 C 46 27, 58 30, 69 32" stroke="#4A99C4" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-dasharray="5 4"/>'+dot(34,27,'#0F172A')+dot(69,32,'#4A99C4')+'</svg>';
+    return '<svg viewBox="0 0 72 44"><path d="'+base+'" stroke="#C9CDD6" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M34 27 C 46 27, 58 30, 69 32" stroke="#E0A84C" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-dasharray="5 4"/><path d="M34 27 C 46 20, 58 12, 69 6" stroke="#0E794E" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+dot(34,27,'#0F172A')+'<circle cx="69" cy="6" r="6" fill="#0E794E"/><path d="M66 6l2 2 4-4" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  function chart(series){
+    var W=640,H=260,L=56,R=12,T=14,B=30; var yrs=series[0].rows.map(function(r){ return r.y; });
+    var max=0; series.forEach(function(s){ s.rows.forEach(function(r){ if(r.bal>max) max=r.bal; }); }); max=max*1.08||1;
+    var x=function(i){ return L+(W-L-R)*i/(yrs.length-1); }, y=function(v){ return T+(H-T-B)*(1-v/max); };
+    var out='<svg viewBox="0 0 '+W+' '+H+'" font-family="var(--font)">';
+    for(var g=0; g<=3; g++){ var v=max*g/3; out+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#EDEFF2"/><text x="'+(L-8)+'" y="'+(y(v)+4)+'" text-anchor="end" font-size="11" fill="#6B7280">'+(v>=1e6?('$'+(v/1e6).toFixed(1)+'M'):('$'+Math.round(v/1e3)+'K'))+'</text>'; }
+    [0, Math.floor((yrs.length-1)/3), Math.floor(2*(yrs.length-1)/3), yrs.length-1].forEach(function(i){ out+='<text x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="#6B7280">'+yrs[i]+'</text>'; });
+    series.forEach(function(s){ var d=s.rows.map(function(r,i){ return (i?'L':'M')+x(i).toFixed(1)+' '+y(r.bal).toFixed(1); }).join(' '); out+='<path d="'+d+'" fill="none" stroke="'+s.color+'" stroke-width="'+(s.plan?2.2:2.6)+'" stroke-linecap="round" stroke-linejoin="round"'+(s.dash?' stroke-dasharray="7 6"':'')+'/>'; });
+    return out+'</svg>';
+  }
+
+  function render(){
+    var WI=window.WHATIF; var list=WI?WI.list():[]; var plan=WI?WI.planMetrics():null; var base=WI?WI.base():null;
+    var h='<div class="scn">';
+    h+='<button type="button" class="scn-back">'+BACK+'My plan</button>';
+    h+='<h1>One <em>plan</em>. Any number of <b>scenarios</b>.</h1>';
+    h+='<p class="lede">Your plan, with a few changes, in pencil.</p>';
+    h+='<div class="scn-lesson">'+
+      '<div class="scn-tile">'+lessonSVG('plan')+'<div><div class="t">Your plan</div><p>One plan, in ink. Every number comes from it.</p></div></div>'+
+      '<div class="scn-tile">'+lessonSVG('scn')+'<div><div class="t">A scenario</div><p>A branch, in pencil. Keep it or let it go.</p></div></div>'+
+      '<div class="scn-tile">'+lessonSVG('cmp')+'<div><div class="t">Compare, then choose</div><p>Side by side. Make the better one your plan.</p></div></div>'+
+    '</div>';
+    h+='<h2>Start one</h2><p class="h2sub">Each of these opens a scenario at the top of the page. Keep it, or let it go.</p><div class="scn-starters">'+STARTERS.map(function(s,i){ return '<button type="button" class="scn-start'+(s.ai?' ai':'')+'" data-i="'+i+'"><span class="t">'+esc(s.t)+'</span><span class="s">'+esc(s.s)+'</span><span class="go">'+(s.ai?'Ask':'Try it')+' '+ARROW+'</span></button>'; }).join('')+'</div>';
+    if(list.length){ h+='<h2>Your scenarios</h2><p class="h2sub">Tick up to three to compare them with your plan below.</p>'; h+='<div class="scn-list">'+list.map(function(it,i){ var on=picked[it.id]!==false && i<3; picked[it.id]=on; var col=COLORS[i%3]; var ch=[]; Object.keys(it.moves||{}).forEach(function(k){ ch.push(it.moves[k].label); }); Object.keys(it.changes||{}).forEach(function(k){ var c=it.changes[k]; ch.push(({ret:'Retire',ss:'Social Security',spend:'Spend',life:'Lifestyle',ret_r:'Returns'})[k]+' '+String(c.to).replace(/^at /,'at ')); });
+      return '<div class="scn-row'+(on?' on':'')+'" data-id="'+it.id+'"><button type="button" class="pick" aria-label="Compare"><i style="background:'+col+'"></i></button><div><div class="nm"><span class="tag">'+esc(it.letter)+'</span>'+esc(it.name)+'</div><div class="ch">'+esc(ch.join(' · ')||'No changes')+'</div></div><div class="acts"><button type="button" data-act="open">Open</button><button type="button" class="pri" data-act="plan">Make this my plan</button><button type="button" class="ghost" data-act="del">Remove</button></div></div>'; }).join('')+'</div>'; }
+    /* compare */
+    if(plan && base && list.length){
+      var series=[{name:'Your plan', color:'#0F172A', rows:plan.rows, plan:true, m:plan}];
+      list.forEach(function(it,i){ if(!picked[it.id]) return; var m=WI.metricsFor(it.vals, it.moves); if(m) series.push({name:it.name, color:COLORS[i%3], rows:m.rows, m:m, it:it}); });
+      h+='<h2>Compare</h2><p class="h2sub">'+(series.length>1?'Your plan in ink, your scenarios in colour. Same chart, same rules.':'Keep a scenario and it appears here beside your plan.')+'</p>';
+      h+='<div class="scn-cmp"><div class="scn-chart">'+chart(series)+'<div class="scn-legend">'+series.map(function(s){ return '<span><i style="border-color:'+s.color+'"></i>'+esc(s.name)+'</span>'; }).join('')+'</div></div>';
+      function row(lab, f, cls){ var vals=series.map(function(s){ return f(s.m); }); var best=null; if(cls){ best=vals.slice(1).reduce(function(a,v){ return (a===null|| (cls==='hi'?v>a:v<a))?v:a; }, null); }
+        return '<tr><td>'+lab+'</td>'+series.map(function(s,i){ var v=f(s.m); var d=''; if(i>0){ var dv=v-vals[0]; if(lab==='Ending balance') d=Math.abs(dv)>=1000?'<small class="'+(dv>0?'pos':'neg')+'">'+(dv>0?'+':'−')+big(Math.abs(dv))+'</small>':'<small>same</small>'; else if(lab==='Confidence'||lab==='Funded to') d=dv?'<small class="'+(dv>0?'pos':'neg')+'">'+(dv>0?'+':'')+dv+(lab==='Confidence'?' pts':' yrs')+'</small>':'<small>same</small>'; }
+          var txt=lab==='Ending balance'?big(v):lab==='Confidence'?(v+'%'):lab==='Funded to'?('age '+v):lab==='Monthly spending'?('$'+v.toLocaleString('en-US')):('at '+v);
+          return '<td'+(i>0&&cls&&v===best&&series.length>2?' class="best"':'')+'>'+txt+d+'</td>'; }).join('')+'</tr>'; }
+      h+='<div><table class="scn-tbl"><thead><tr><th></th>'+series.map(function(s){ return '<th><i style="border-color:'+s.color+'"></i>'+esc(s.name.length>18?s.name.slice(0,17)+'…':s.name)+'</th>'; }).join('')+'</tr></thead><tbody>'+
+        row('Funded to', function(m){ return m.funded; }, 'hi')+row('Confidence', function(m){ return m.conf; }, 'hi')+row('Ending balance', function(m){ return m.end; }, 'hi')+row('Retire', function(m){ return m.ret; })+row('Social Security', function(m){ return m.ss; })+row('Monthly spending', function(m){ return m.spend; })+'</tbody></table>';
+      if(series.length>1){ var bestS=series.slice(1).sort(function(a,b){ return b.m.conf-a.m.conf; })[0]; var dc=bestS.m.conf-plan.conf; h+='<p class="scn-read">'+(dc>0?('<b>'+esc(bestS.name)+'</b> is the stronger plan: '+dc+' points more confidence and '+big(bestS.m.end)+' at the end. If that is the life you want, make it your plan.'):dc<0?('None of these beats your plan on confidence. <b>'+esc(bestS.name)+'</b> comes closest, '+(-dc)+' points behind. That is useful to know: the plan you have is the one to keep.'):(function(){ var de=bestS.m.end-plan.end; return '<b>'+esc(bestS.name)+'</b> matches your plan on confidence'+(Math.abs(de)>=1000?(' but ends '+big(Math.abs(de))+(de<0?' lighter. The plan you have is the better deal.':' heavier. Same safety, more left over.')):', with a different shape. Choose the life, not the number.'); })())+'</p>'; }
+      h+='</div></div>';
+    }
+    h+='<h2>Good to know</h2><div class="scn-faq">'+
+      '<div><div class="q">Why only one plan?</div><div class="a">Because every page in Boldin answers one question: how is my plan doing? Two plans would mean two answers. Scenarios let you explore without splitting that.</div></div>'+
+      '<div><div class="q">What happens when I keep a scenario?</div><div class="a">It gets a name and a slot in the plan selector on My Plans. Your plan is untouched. You can open it any time, compare it here, or remove it.</div></div>'+
+      '<div><div class="q">What does “Make this my plan” do?</div><div class="a">It replaces your plan with the scenario. The Stress Test baseline, Home and My Plans all follow. There is no undo, but you can always make another scenario from the new plan.</div></div>'+
+      '<div><div class="q">Where do Optimize’s moves fit?</div><div class="a">Every Optimize section ends with the same two choices: save it as a scenario, or update your plan. Scenarios are how you try a move before you commit to it.</div></div>'+
+    '</div></div>';
+    body.innerHTML=h;
+  }
+
+  var said=false;
+  /* ---------- one scenario, its own page ---------- */
+  var LEV=[
+    {k:'ret', l:'Retirement age', min:55, max:75, step:1, f:function(v){ return v; }},
+    {k:'ss', l:'Social Security age', min:62, max:70, step:1, f:function(v){ return v; }},
+    {k:'spend', l:'Monthly spending', min:3000, max:10000, step:100, f:function(v){ return '$'+Number(v).toLocaleString('en-US'); }},
+    {k:'life', l:'Lifestyle', min:0, max:2, step:1, f:function(v){ return ['Frugal','Comfortable','Generous'][v]; }},
+    {k:'ret_r', l:'Investment return', min:0, max:2, step:1, f:function(v){ return ['Conservative','Balanced','Aggressive'][v]; }}
+  ];
+  var inOne=false;
+  function renderOne(){
+    var WI=window.WHATIF; var S=WI.levers(), B=WI.base(); if(!S||!B) return; var W=WI.state; var solid=W.solid;
+    var name=solid?solid.name:(W.title||autoNameOf(W));
+    var h='<div class="scn">';
+    h+='<button type="button" class="scn-back" data-so="back">'+BACK+'Scenarios</button>';
+    h+='<div class="so-head"><span class="wi-tag'+(solid?' solid':'')+'" style="'+(solid?'border:0;background:var(--green-cta);color:#fff;':'')+'">'+(solid?esc(solid.letter):'What-if')+'</span><input class="so-name" value="'+esc(name)+'" '+(solid?'readonly':'')+' aria-label="Scenario name"></div>';
+    h+='<p class="so-sub">'+(solid?'A kept scenario. Your plan is untouched until you make this your plan.':'Pull the levers, or tell Boldin AI the change in words. Nothing is saved until you keep it.')+'</p>';
+    h+='<div class="so-step"><b>1</b>Change something</div><div class="so-levers">'+LEV.map(function(L){ var v=S[L.k]; var ch=v!==B[L.k]; return '<div class="so-lever'+(ch?' changed':'')+'" data-k="'+L.k+'"><div class="l"><span>'+L.l+'</span><span class="base">plan: '+L.f(B[L.k])+'</span></div><div class="v"><span class="val">'+L.f(v)+'</span></div><input type="range" min="'+L.min+'" max="'+L.max+'" step="'+L.step+'" value="'+v+'" '+(solid?'disabled':'')+'></div>'; }).join('')+'</div>';
+    h+='<div class="so-step"><b>2</b>See what it does</div><div class="so-result"><div><div class="so-stats"></div><div class="scn-chart"></div></div><div class="so-words"></div></div>';
+    h+='<div class="so-step"><b>3</b>Decide</div><div class="so-decide">'+(solid?'<button type="button" class="btn pri" data-so="plan">Make this my plan</button><button type="button" class="btn" data-so="compare">Compare with others</button><button type="button" class="btn ghost" data-so="close">Close</button>':'<button type="button" class="btn pri" data-so="keep">Keep this scenario</button><button type="button" class="btn" data-so="plan">Make this my plan</button><button type="button" class="btn ghost" data-so="discard">Discard</button><span class="hint">Keep it and it becomes '+('Plan '+String.fromCharCode(66+WI.list().length))+', next to your plan on My Plans.</span>')+'</div>';
+    h+='</div>';
+    body.innerHTML=h; fillResult();
+  }
+  function autoNameOf(W){ var parts=[]; Object.keys(W.moves||{}).forEach(function(k){ parts.push(W.moves[k].label); }); Object.keys(W.changes||{}).forEach(function(k){ var c=W.changes[k]; parts.push(({ret:'Retire ',ss:'Social Security ',spend:'Spend ',life:'',ret_r:''})[k]+c.to+(k==='life'?' lifestyle':k==='ret_r'?' returns':'')); }); return parts.join(' \u00b7 ')||'A what-if'; }
+  function fillResult(){
+    var WI=window.WHATIF; var m=WI.metrics(); if(!m) return; var S=WI.levers(), B=WI.base();
+    var st=body.querySelector('.so-stats'), ch=body.querySelector('.scn-chart'), wd=body.querySelector('.so-words'); if(!st) return;
+    function tile(k,n,d,cls){ return '<div class="so-stat"><div class="k">'+k+'</div><div class="n">'+n+'</div><div class="d '+(cls||'')+'">'+d+'</div></div>'; }
+    var df=m.what.funded-m.plan.funded, dc=m.what.conf-m.plan.conf, de=m.what.end-m.plan.end;
+    st.innerHTML=tile('Funded to','age '+m.what.funded, df?((df>0?'+':'')+df+' yrs vs plan'):'same as plan', df>0?'pos':df<0?'neg':'')+tile('Confidence', m.what.conf+'%', dc?((dc>0?'+':'')+dc+' pts vs plan'):'same as plan', dc>0?'pos':dc<0?'neg':'')+tile('Ending balance', big(m.what.end), Math.abs(de)>=1000?((de>0?'+':'\u2212')+big(Math.abs(de))+' vs plan'):'same as plan', de>=1000?'pos':de<=-1000?'neg':'');
+    var cur=WI.metricsFor(S, WI.state.moves);
+    ch.innerHTML=chart([{name:'Your plan', color:'#0F172A', rows:m.plan.rows||WI.planMetrics().rows, plan:true},{name:body.querySelector('.so-name').value||'This scenario', color:'#4A99C4', rows:cur.rows, dash:!WI.state.solid}])+'<div class="scn-legend"><span><i style="border-color:#0F172A"></i>Your plan</span><span><i class="'+(WI.state.solid?'':'dash')+'" style="border-color:#4A99C4"></i>'+esc(body.querySelector('.so-name').value||'This scenario')+'</span></div>';
+    wd.innerHTML='<div class="t">In plain words</div>'+WI.lines().map(function(l){ return '<p>'+l+'</p>'; }).join('');
+    var nmEl=body.querySelector('.so-name'); if(nmEl && !nameTouched && !WI.state.solid){ nmEl.value=autoNameOf(WI.state); }
+    body.querySelectorAll('.so-lever').forEach(function(el){ var k=el.dataset.k; var L=LEV.filter(function(x){ return x.k===k; })[0]; el.classList.toggle('changed', S[k]!==B[k]); el.querySelector('.val').textContent=L.f(S[k]); var inp=el.querySelector('input'); if(document.activeElement!==inp) inp.value=S[k]; });
+  }
+  function showOne(){ inOne=true; nameTouched=false; document.body.classList.add('scn-one'); renderOne(); page.scrollTop=0; }
+  function showList(){ inOne=false; document.body.classList.remove('scn-one'); render(); page.scrollTop=0; }
+  function start(levers){ var WI=window.WHATIF; if(!WI) return; WI.state.cmp=false; WI.setLevers(levers); showOne(); }
+  body.addEventListener('input', function(e){ var inp=e.target; if(!inp.matches || !inp.matches('.so-lever input')) return; var k=inp.closest('.so-lever').dataset.k; var o={}; o[k]=+inp.value; window.WHATIF.setLevers(o); fillResult(); });
+  var nameTouched=false;
+  body.addEventListener('input', function(e){ if(e.target.classList && e.target.classList.contains('so-name')){ nameTouched=true; window.WHATIF.state.title=e.target.value.trim(); } });
+  body.addEventListener('click', function(e){ var b=e.target.closest('[data-so]'); if(!b) return; var WI=window.WHATIF; var act=b.dataset.so;
+    if(act==='back'||act==='close'){ if(!WI.state.solid && WI.state.open){ WI.discard(); } else if(WI.state.solid){ WI.discard(); } showList(); }
+    if(act==='discard'){ WI.discard(); showList(); }
+    if(act==='keep'){ var nm=body.querySelector('.so-name').value; WI.keepAs(nm); WI.discard(); showList(); }
+    if(act==='plan'){ if(WI.state.solid){ WI.makePlan(); } else { WI.applyNow(); } showList(); }
+    if(act==='compare'){ showList(); }
+  });
+  document.addEventListener('whatif:paint', function(){ if(!document.body.classList.contains('scn-open')) return; var WI=window.WHATIF; if(WI.state.open && !inOne){ showOne(); } else if(inOne && WI.state.open){ fillResult(); } });
+  function open(){ render(); document.body.classList.add('scn-open'); page.scrollTop=0;
+    setTimeout(function(){ if(!window.__bai) return; if(window.__bai.isOpen()) window.__bai.rehost(); else window.__bai.open();
+      setTimeout(function(){ window.__bai.context('Describe a change and I will open it as a scenario. Keep the ones worth keeping.', ['What if we retire at 63?','What if we spend $500 less a month?','What if we claim Social Security at 67?','What if markets are poor early on?']); }, 150); }, 200); }
+  function close(){ inOne=false; document.body.classList.remove('scn-open','scn-one'); if(window.__bai){ if(window.__bai.isOpen()) window.__bai.close(); if(window.__bai.resetChips) window.__bai.resetChips(); } }
+  body.addEventListener('click', function(e){
+    if(e.target.closest('.scn-back')){ close(); return; }
+    var st=e.target.closest('.scn-start'); if(st){ var sdef=STARTERS[+st.dataset.i]; if(sdef.ai){ if(window.__bai){ if(!window.__bai.isOpen()) window.__bai.open(); var ta=document.querySelector('.bai-ask textarea, .bai-ask input'); if(ta){ ta.focus(); } } return; } var b=window.WHATIF&&WHATIF.base(); if(!b) return; start(sdef.set(b)); return; }
+    var row=e.target.closest('.scn-row'); if(!row) return; var id=row.dataset.id; var it=WHATIF.list().filter(function(x){ return x.id===id; })[0]; if(!it) return;
+    if(e.target.closest('.pick')){ var n=Object.keys(picked).filter(function(k){ return picked[k]; }).length; if(!picked[id] && n>=3) return; picked[id]=!picked[id]; render(); return; }
+    var act=e.target.closest('[data-act]'); if(!act) return;
+    if(act.dataset.act==='open'){ WHATIF.activate(it,false); showOne(); }
+    if(act.dataset.act==='plan'){ WHATIF.activate(it,false); WHATIF.makePlan(); render(); }
+    if(act.dataset.act==='del'){ WHATIF.remove(id); render(); }
+  });
+  document.addEventListener('whatif:change', function(){ if(document.body.classList.contains('scn-open')) render(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && document.body.classList.contains('scn-open') && !document.body.classList.contains('whatif-open')) close(); });
+  /* leaving by the top nav closes the page */
+  document.addEventListener('click', function(e){ if(e.target.closest && e.target.closest('.topnav nav.modes a, .topnav .brand')) close(); }, true);
+  window.SCENARIOS={ open:open, close:close, render:render, start:start };
 })();
 </script>
 
@@ -33122,7 +33487,7 @@ body.flow-open #signupPage, body.flow-open #suTrial{ display:none !important; }
     try{ sessionStorage.setItem('gf.inApp','1'); sessionStorage.removeItem('gf.flow'); }catch(e){}
     window.scrollTo(0,0); window.dispatchEvent(new Event('resize'));
   }
-  function endTrial(){ document.body.classList.remove('trial-over'); host.classList.remove('trial-on'); document.body.style.overflow=''; }
+  function endTrial(){ document.body.classList.remove('trial-over'); host.classList.remove('trial-on'); document.body.style.overflow=''; document.dispatchEvent(new Event('trial:end')); }
   FLOW.go=go; FLOW.enter=enter; FLOW.endTrial=endTrial; window.FLOW=FLOW;
   /* in-page links route here; nothing touches location.hash, which the app owns */
   R.addEventListener('click', function(e){
