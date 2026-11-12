@@ -23359,7 +23359,7 @@ function tint(hex, a){
 }
 
 function drawTreemap(){
-  var host = document.getElementById('tmap');
+  var host = (arguments[0] && arguments[0].nodeType) ? arguments[0] : document.getElementById('tmap');
   if(!host) return;
   var W = host.clientWidth, H = host.clientHeight;
   if(!W || !H) return;
@@ -23390,7 +23390,7 @@ function drawTreemap(){
       host.appendChild(el);
     });
   });
-  var lg = document.getElementById('tlegend');
+  var lg = (arguments[1] && arguments[1].nodeType) ? arguments[1] : document.getElementById('tlegend'); window.__drawTreemap = drawTreemap;
   lg.innerHTML = GROUPS.slice().sort(function(a,b){ return b.v - a.v; }).map(function(g){
     return '<span class="tleg"><i style="background:' + g.color + '"></i>' + g.name + ' <b>' + money(g.v) + '</b></span>';
   }).join('');
@@ -30544,6 +30544,13 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
 .bai-chips button{ text-align:left; font:inherit; font-size:13.5px; font-weight:500; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:14px; padding:9px 12px; cursor:pointer; line-height:1.3; }
 .bai-chips button:hover{ border-color:var(--ink); }
 .bai-chips[hidden]{ display:none; }
+/* the suggestions wait for the greeting, then rise out of the ask box */
+.bai-chips.pre button{ opacity:0; transform:translateY(28px); }
+.bai-chips.rise button{ transition:opacity .35s ease, transform .5s cubic-bezier(.2,.7,.2,1); }
+.bai-chips.rise button:nth-child(1){ transition-delay:.18s; }
+.bai-chips.rise button:nth-child(2){ transition-delay:.09s; }
+.bai-chips.rise button:nth-child(3){ transition-delay:0s; }
+@media (prefers-reduced-motion:reduce){ .bai-chips.pre button{ opacity:1; transform:none; } .bai-chips.rise button{ transition:none; } }
 .bai-ask{ position:relative; display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; align-items:center; gap:10px 8px; margin:0 0 4px; padding:14px 14px 12px 18px; border:0; border-radius:24px; background:#F5FDFF; }
 .bai-ask::before{ content:''; position:absolute; inset:0; border-radius:inherit; padding:1.5px; pointer-events:none;
   background:conic-gradient(from var(--ask-ang), #70B0FF, #DCEEFF, #3F86F0, #70B0FF, #70B0FF);
@@ -30606,6 +30613,9 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
       if(i<parts.length) setTimeout(tick,14); else { setTimeout(function(){ node.innerHTML=html; },500); done&&done(); }
     })();
   }
+  function hideChips(){ chips.classList.remove('rise'); chips.classList.add('pre'); }
+  function showChips(){ chips.hidden=false; if(!chips.classList.contains('pre')) return; chips.getBoundingClientRect(); chips.classList.add('rise'); requestAnimationFrame(function(){ chips.classList.remove('pre'); }); setTimeout(function(){ chips.classList.remove('rise'); }, 900); }
+  function greet(node){ hideChips(); typeInto(node, GREET, function(){ setTimeout(showChips, 120); }); }
   function add(cls,html){ var d=document.createElement('div'); d.className='bai-msg'+(cls?' '+cls:''); d.innerHTML=html; thread.appendChild(d); scroll(); return d; }
   var g=add('','');
   function ask(q){
@@ -30634,7 +30644,7 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
     if(h!==host){ if(railHost){ railHost.classList.remove('bai-host'); } host=h; h.appendChild(el);
       if(h!==homeCol){ railHost=h; h.classList.add('bai-host'); if(getComputedStyle(h).position==='static') h.style.position='relative'; } else railHost=null; }
     document.body.classList.add('bai-open');
-    if(!greeted){ greeted=true; setTimeout(function(){ typeInto(g,GREET); },300); }
+    if(!greeted){ greeted=true; hideChips(); setTimeout(function(){ greet(g); },300); }
     settle();
     if(q) setTimeout(function(){ ask(q); },450); else setTimeout(function(){ input.focus({preventScroll:true}); },350);
   }
@@ -30651,7 +30661,7 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
 
   el.querySelector('.x').addEventListener('click',close);
   /* left rail: a new chat clears the thread; picking a recent conversation highlights it */
-  el.querySelector('.bai-new').addEventListener('click',function(){ if(busy) return; thread.innerHTML=''; g=add('',''); typeInto(g,GREET); chips.hidden=false; el.querySelectorAll('.bai-recent li').forEach(function(li){ li.classList.remove('on'); }); el.querySelector('.bai-recent li').classList.add('on'); });
+  el.querySelector('.bai-new').addEventListener('click',function(){ if(busy) return; thread.innerHTML=''; g=add('',''); greet(g); chips.hidden=false; el.querySelectorAll('.bai-recent li').forEach(function(li){ li.classList.remove('on'); }); el.querySelector('.bai-recent li').classList.add('on'); });
   el.querySelector('.bai-recent').addEventListener('click',function(e){ var li=e.target.closest('li'); if(!li) return; el.querySelectorAll('.bai-recent li').forEach(function(x){ x.classList.remove('on'); }); li.classList.add('on'); li.classList.remove('attn'); var d=li.querySelector('.dot'); if(d) d.remove(); });
   /* right panel: a prompt goes straight into the conversation */
   el.querySelector('.bai-aside').addEventListener('click',function(e){ var li=e.target.closest('li[data-q]'); var go=e.target.closest('.go'); var q=li?li.dataset.q:(go?el.querySelector('.bai-aside li.active').dataset.q:null); if(!q) return; if(li){ el.querySelectorAll('.bai-aside li').forEach(function(x){ x.classList.remove('active'); x.querySelector('.box').innerHTML=''; }); li.classList.add('active'); li.querySelector('.box').innerHTML='<i></i>'; } ask(q); });
@@ -30696,12 +30706,12 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
     e.preventDefault(); e.stopPropagation(); var v=inp.value; inp.value=''; open(v.trim()||null);
   },true);
   /* Home always has Boldin AI beside the plan: on load, and every time Home is chosen */
-  function homeAI(delay){ setTimeout(function(){ if(isHome() && (!isOpen() || host!==homeCol) && !document.body.classList.contains('flow-open') && !document.body.classList.contains('trial-over')){ document.body.classList.add('bai-still'); var fresh=!busy && thread.children.length<=1; open(); if(fresh && greeted){ thread.innerHTML=''; g=add('',''); setTimeout(function(){ typeInto(g,GREET); },200); } } setTimeout(function(){ document.body.classList.remove('bai-still'); }, 400); }, delay); }
+  function homeAI(delay){ setTimeout(function(){ if(isHome() && (!isOpen() || host!==homeCol) && !document.body.classList.contains('flow-open') && !document.body.classList.contains('trial-over')){ document.body.classList.add('bai-still'); var fresh=!busy && thread.children.length<=1; open(); if(fresh && greeted){ thread.innerHTML=''; g=add('',''); hideChips(); setTimeout(function(){ greet(g); },200); } } setTimeout(function(){ document.body.classList.remove('bai-still'); }, 400); }, delay); }
   homeAI(700);
   document.addEventListener('click', function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a, .topnav .brand, .topnav a[href="#home"], [data-view="home"], [data-hm-go="home"]'); if(!a) return; var toHome=(a.dataset.view==='home') || /^\s*home\s*$/i.test(a.textContent||'') || a.classList.contains('brand') || (a.getAttribute('href')||'')==='#home'; if(toHome) homeAI(420); }, true);
   window.addEventListener('boldin:view', function(){ homeAI(420); });
   document.addEventListener('trial:end', function(){ homeAI(300); });
-  window.__bai={ active:function(){ return !!findHost(); }, open:open, close:close, isOpen:isOpen, toggle:function(){ if(isOpen()) close(); else open(); }, ask:function(q){ if(!isOpen()) open(q); else ask(q); }, say:function(html){ var d=add('',''); typeInto(d, html, function(){}); return d; }, context:function(html, list){ thread.innerHTML=''; var d=add('',''); typeInto(d, html, function(){}); if(list){ chips.innerHTML=list.map(function(c){ return '<button type="button" data-q="'+c.replace(/"/g,'&quot;')+'">'+c+'</button>'; }).join(''); chips.hidden=false; } }, resetChips:function(){ chips.innerHTML=CHIPS.map(function(c){ return '<button type="button" data-q="'+c.replace(/"/g,'&quot;')+'">'+c+'</button>'; }).join(''); }, rehost:function(){ var h=findHost(); if(h && h!==host){ open(); } } };
+  window.__bai={ active:function(){ return !!findHost(); }, open:open, close:close, isOpen:isOpen, toggle:function(){ if(isOpen()) close(); else open(); }, ask:function(q){ if(!isOpen()) open(q); else ask(q); }, say:function(html){ var d=add('',''); typeInto(d, html, function(){}); return d; }, context:function(html, list){ thread.innerHTML=''; var d=add('',''); if(list){ chips.innerHTML=list.map(function(c){ return '<button type="button" data-q="'+c.replace(/"/g,'&quot;')+'">'+c+'</button>'; }).join(''); hideChips(); chips.hidden=false; } typeInto(d, html, function(){ if(list) setTimeout(showChips, 120); }); }, resetChips:function(){ chips.innerHTML=CHIPS.map(function(c){ return '<button type="button" data-q="'+c.replace(/"/g,'&quot;')+'">'+c+'</button>'; }).join(''); }, rehost:function(){ var h=findHost(); if(h && h!==host){ open(); } } };
   window.__homeAI=window.__bai;
 
   /* the star in the top nav, right of the vault */
@@ -30984,6 +30994,49 @@ body.bai-open .hm-page .hm-live .lv-vid{ width:280px; }
   if(!build()){ var tries=0, t=setInterval(function(){ if(build() || ++tries>80) clearInterval(t); }, 250); }
 })();
 </script>
+<!-- ===== My Money: the net worth panel is the Home treemap, same renderer, same data ===== -->
+<style>
+.ut-panel[data-ut-panel="worth"] .mm-map{ padding:2px 0 0; }
+.ut-panel[data-ut-panel="worth"] .mm-map .money-total{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin:0 0 4px; }
+.ut-panel[data-ut-panel="worth"] .mm-map .money-total .big{ font-size:30px; font-weight:700; letter-spacing:-0.6px; line-height:1; }
+.ut-panel[data-ut-panel="worth"] .mm-map .money-total .chip{ background:none; padding:0; border:0; font-weight:600; color:var(--green-cta); font-size:14px; }
+.ut-panel[data-ut-panel="worth"] .mm-map .tmap-wrap{ position:relative; width:100%; height:262px; margin-top:var(--s-4); }
+.ut-panel[data-ut-panel="worth"] .mm-map .tmap{ position:absolute; inset:0; }
+.ut-panel[data-ut-panel="worth"] .mm-map .tlegend{ display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:12px; font-size:12.5px; }
+.ut-panel[data-ut-panel="worth"] .mm-map .tleg i{ width:10px; height:10px; border-radius:2px; display:inline-block; }
+.ut-panel[data-ut-panel="worth"] .mm-map .tleg b{ color:var(--ink); font-weight:600; }
+.mm-map .tnode{ position:absolute; border-radius:8px; overflow:hidden; padding:10px 11px; cursor:pointer; transition:filter .15s ease; }
+.mm-map .tnode:hover{ filter:brightness(1.08); }
+.mm-map .tnode .tn{ display:block; font-size:12.5px; font-weight:600; color:#fff; line-height:1.25; }
+.mm-map .tnode .tv{ display:block; font-size:15px; font-weight:700; color:#fff; margin-top:2px; }
+.mm-map .tnode.sm{ padding:7px 8px; }
+.mm-map .tnode.sm .tn{ font-size:11px; }
+.mm-map .tnode.sm .tv{ font-size:12.5px; margin-top:1px; }
+.mm-map .tnode.tiny .tv{ display:none; }
+.mm-map .tnode.row{ display:flex; align-items:baseline; gap:8px; }
+.mm-map .tnode.row .tv{ margin-top:0; }
+.mm-map .tlegend{ gap:8px 13px; margin-top:var(--s-4); padding-top:var(--s-4); border-top:1px solid var(--hairline); }
+.mm-map .tleg{ display:inline-flex; align-items:center; gap:6px; color:var(--text-secondary); white-space:nowrap; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var panel=document.querySelector('.ut-panel[data-ut-panel="worth"]'); if(!panel) return;
+  var built=false, host, lg;
+  function build(){
+    if(built) return; built=true;
+    panel.innerHTML='<div class="mm-map"><div class="money-total"><span class="big">$620,000</span><span class="chip up">&#9650; $18.4k this quarter</span></div><div class="tmap-wrap"><div class="tmap"></div></div><div class="tlegend"></div></div>';
+    host=panel.querySelector('.tmap'); lg=panel.querySelector('.tlegend');
+  }
+  function draw(){ if(!window.__drawTreemap) return; build(); if(!host.clientWidth) return; window.__drawTreemap(host, lg); }
+  function visible(){ return panel.offsetParent && document.body.dataset.view==='today'; }
+  function tryDraw(){ if(visible()) draw(); }
+  var tries=0, t=setInterval(function(){ if(window.__drawTreemap){ clearInterval(t); build(); tryDraw(); } else if(++tries>80) clearInterval(t); }, 200);
+  new MutationObserver(function(){ setTimeout(tryDraw, 60); setTimeout(tryDraw, 450); }).observe(document.body, { attributes:true, attributeFilter:['data-view','class'] });
+  document.addEventListener('click', function(e){ if(e.target.closest && e.target.closest('.ut-tg[data-ut="worth"]')) setTimeout(tryDraw, 80); }, true);
+  var rz; window.addEventListener('resize', function(){ clearTimeout(rz); rz=setTimeout(tryDraw, 120); });
+})();
+</script>
 <!-- ===== CUSTOMIZE HOME: a Customize button, a modal with grabbers + toggles, and grabbers on the cards themselves. Home only. ===== -->
 <style>
 .hm-page .welcome{ display:flex !important; align-items:center; justify-content:space-between; gap:16px; }
@@ -31016,7 +31069,8 @@ body.hm-dragging{ user-select:none; cursor:grabbing; }
 /* the AI column stays put while the page scrolls; the ask box sits at the bottom of the window */
 .hm-page .bai-col{ align-self:stretch; margin-bottom:-160px; padding-bottom:0; }
 .hm-page .bai-col .bai, body.bai-open .hm-page .bai-col .bai{ position:sticky; inset:auto; top:var(--nav-h, 73px); height:calc(100vh - var(--nav-h, 73px)); max-height:calc(100vh - var(--nav-h, 73px)); width:360px; display:flex; flex-direction:column; box-sizing:border-box; padding-bottom:48px; }
-.hm-page .bai-col .bai.is-full, .hm-page .bai-col .bai.is-moving{ position:fixed; }
+body.bai-open .hm-page .bai-col .bai.is-full, body .hm-page .bai-col .bai.is-full{ position:fixed; display:grid; inset:var(--nav-h, 73px) 0 0 0; top:var(--nav-h, 73px); width:auto; height:auto; max-height:none; padding-bottom:0; }
+body.bai-open .hm-page .bai-col .bai.is-moving, body .hm-page .bai-col .bai.is-moving{ position:fixed; height:auto; max-height:none; }
 /* modal */
 .hc-modal{ position:fixed; inset:0; z-index:95; display:none; align-items:center; justify-content:center; background:rgba(16,24,44,.28); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
 body.hc-open .hc-modal{ display:flex; }
@@ -31742,6 +31796,11 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
 /* ---- compare: a sheet that folds down from the band ---- */
 .wi-sheet{ margin:8px var(--s-8) 0; background:#fff; border:1px solid var(--hairline); border-radius:16px; overflow:hidden; max-height:0; opacity:0; transition:max-height .42s cubic-bezier(.2,.7,.2,1), opacity .25s ease; }
 .wi-band.cmp .wi-sheet{ max-height:520px; opacity:1; }
+/* the page dims under the open compare sheet */
+.wi-scrim{ position:fixed; inset:73px 0 0 0; z-index:66; background:rgba(16,24,44,.42); opacity:0; pointer-events:none; transition:opacity .3s ease; }
+body.whatif-cmp .wi-scrim{ opacity:1; pointer-events:auto; }
+body.whatif-cmp .wi-band{ z-index:67; }
+body.whatif-cmp .dock{ z-index:60; }
 .wi-sheet-in{ padding:18px 22px 20px; display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:28px; align-items:start; }
 .wi-tbl{ width:100%; border-collapse:collapse; font-size:15px; }
 .wi-tbl th{ text-align:left; font-size:13px; font-weight:600; color:var(--text-secondary); padding:0 0 10px; border-bottom:1px solid var(--hairline); }
@@ -31893,7 +31952,7 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
     document.body.classList.toggle('whatif-solid', !!W.solid);
     band.classList.toggle('on', W.open);
     band.classList.toggle('solid', !!W.solid);
-    band.classList.toggle('cmp', W.cmp);
+    band.classList.toggle('cmp', W.cmp); document.body.classList.toggle('whatif-cmp', !!(W.open && W.cmp));
     if(!W.open) return;
     if(W.solid){ $tag.textContent=W.solid.letter; $name.textContent=W.solid.name; $keep.hidden=true; $plan.hidden=false; $x.setAttribute('aria-label','Close'); }
     else { $tag.textContent='What-if'; if($name.getAttribute('contenteditable')!=='true') $name.textContent=autoName(); $keep.hidden=false; $plan.hidden=true; $x.setAttribute('aria-label','Discard'); }
@@ -31982,6 +32041,9 @@ body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opac
 
   /* ---------- wiring ---------- */
   $cmp.addEventListener('click', function(){ W.cmp=!W.cmp; paint(); });
+  var scrim=document.createElement('div'); scrim.className='wi-scrim'; document.body.appendChild(scrim);
+  scrim.addEventListener('click', function(){ if(W.cmp){ W.cmp=false; paint(); } });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && W.open && W.cmp){ W.cmp=false; paint(); } });
   $keep.addEventListener('click', function(){ if($name.getAttribute('contenteditable')==='true'){ $name.blur(); } else keep(); });
   $plan.addEventListener('click', makePlan);
   $x.addEventListener('click', function(){ if(W.solid){ discard(); } else { var n=count(); discard(); if(n) say('Discarded. Your plan is untouched.'); } });
