@@ -30928,7 +30928,7 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   /* the headline leaves the chart and opens the page, with the first move and Boldin AI one tap away */
   var det=document.getElementById('oliDetail'); if(det) oli.appendChild(det);
   var head=document.createElement('div'); head.className='os-page-head';
-  var oh=oli.querySelector('.oli-head'); if(oh){ head.appendChild(oh); var sub=oh.querySelector('.snap-sub'); if(sub) sub.textContent='Marshall, this is the same life, funded better. Three moves get you there, and the first one closes at 63.'; }
+  var oh=oli.querySelector('.oli-head'); if(oh){ head.appendChild(oh); var sub=oh.querySelector('.snap-sub'); if(sub) sub.textContent='Same life, funded better. Three moves, or let AI do it for you.'; }
   head.insertAdjacentHTML('beforeend','<div class="os-cta"><button type="button" class="pri">Start the first move</button><button type="button" class="sec"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg>Ask what to do first</button></div>');
   center.insertBefore(head, center.firstChild);
   head.querySelector('.pri').addEventListener('click',function(){ var a=document.querySelector('#oliDetail .oli-dact'); if(a){ a.click(); return; } big.scrollIntoView({behavior:'smooth',block:'start'}); });
@@ -31028,7 +31028,7 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   (function(){
     var head=document.querySelector('.os-page-head'); if(!head) return;
     var hl=head.querySelector('.oli-head'); var row=document.createElement('div'); row.className='os-headrow'; head.insertBefore(row, head.firstChild); if(hl) row.appendChild(hl);
-    document.body.insertAdjacentHTML('beforeend','<div class="os-view" role="tablist"><button type="button" data-v="1">Dashboard</button><button type="button" data-v="2">Rails</button><button type="button" data-v="3">Rails + AI</button></div>');
+    document.body.insertAdjacentHTML('beforeend','<div class="os-view" role="tablist"><button type="button" data-v="1">Dashboard</button><button type="button" data-v="4">Dashboard + AI</button><button type="button" data-v="2">Rails</button><button type="button" data-v="3">Rails + AI</button></div>');
     var side=document.querySelector('.opt-index > .side'), nav=side && side.querySelector('.onav');
     if(nav && !nav.querySelector('[data-opt="fire"]')){ nav.insertAdjacentHTML('afterbegin','<div class="onav-item" data-opt="fire">Financial Independence</div>'); }
     if(nav && !nav.querySelector('[data-opt="ssx"]')){ var ssl=nav.querySelector('[data-opt="ss"]'); if(ssl) ssl.insertAdjacentHTML('afterend','<div class="onav-item" data-opt="ssx">Social Security Explorer</div>'); }
@@ -31036,13 +31036,13 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
     var fireIt=nav && nav.querySelector('[data-opt="fire"]'); if(fireIt) fireIt.addEventListener('click', function(){ var c=document.querySelector('.opt-grid [data-opt="fire-card-link"]'); if(c) c.click(); });
     var ssx=nav && nav.querySelector('[data-opt="ssx"]'); if(ssx) ssx.addEventListener('click', function(){ var c=document.querySelector('.opt-grid [data-opt="ss"]'); if(c) c.click(); });
     function set(v, user){ document.body.classList.toggle('opt-v2', v==='2'||v==='3'); document.body.dataset.optView=v; document.querySelectorAll('.os-view button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); }); try{ localStorage.setItem('boldin.optView', v); }catch(e){}
-      if(v==='3' && window.__bai && !window.__bai.isOpen()) setTimeout(function(){ window.__bai.open(); }, user?120:600);
-      if(v!=='3' && user && window.__bai && window.__bai.isOpen()) window.__bai.close(); }
+      if((v==='3'||v==='4') && window.__bai && !window.__bai.isOpen()) setTimeout(function(){ window.__bai.open(); }, user?120:600);
+      if(v!=='3' && v!=='4' && user && window.__bai && window.__bai.isOpen()) window.__bai.close(); }
     document.querySelectorAll('.os-view button').forEach(function(b){ b.addEventListener('click', function(){ set(b.dataset.v, true); }); });
     var v='1'; try{ v=localStorage.getItem('boldin.optView')||'1'; }catch(e){}
     set(v, false);
     /* entering Optimize in Rails mode brings the AI with it */
-    document.addEventListener('click', function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a'); if(a && /optimize/i.test(a.textContent) && document.body.dataset.optView==='3') setTimeout(function(){ if(window.__bai && !window.__bai.isOpen()) window.__bai.open(); }, 500); }, true);
+    document.addEventListener('click', function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a'); if(a && /optimize/i.test(a.textContent) && /^[34]$/.test(document.body.dataset.optView)) setTimeout(function(){ if(window.__bai && !window.__bai.isOpen()) window.__bai.open(); }, 500); }, true);
   })();
   /* the opportunities go somewhere: each row is a door to its section */
   (function(){
