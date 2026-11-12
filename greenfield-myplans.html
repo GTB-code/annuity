@@ -3607,7 +3607,7 @@ body.mpanel-open{ overflow:hidden; }
     <!-- Plan Score widget -->
     <!-- ===== Today, in one picture: single-card infographic with toggles ===== -->
     <div class="today-hero">
-      <h2 class="pf-hl"><span class="nw">Marshall, Your money is <span class="pf-em">working</span></span> <span class="nw">for you</span></h2>
+      <h2 class="pf-hl"><span class="nw">Your money is <span class="pf-em">working</span></span> <span class="nw">for you today</span></h2>
       <p class="pf-sub">Linked accounts plus your inputs give you a full picture of your money today</p>
     </div>
     <section class="uber-today" id="uberToday">
@@ -31169,7 +31169,6 @@ body.hc-open .hc-modal{ display:flex; }
     /* lift the two cards out of their dropzones so the grid can place them */
     ['#s-money','#s-plans'].forEach(function(sel){ var e=grid.querySelector(sel); if(e && e.parentNode!==grid) grid.insertBefore(e, bai||null); });
     var w=document.querySelector('.hm-page .welcome');
-    if(w){ var h2=w.querySelector('h2'); if(h2) h2.textContent='Your money is working for you today'; }
     if(w && !w.querySelector('.hm-customize')){ var b=document.createElement('button'); b.type='button'; b.className='hm-customize'; b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Customize'; b.addEventListener('click', open); w.appendChild(b); }
     dressCards(); layout(); return true;
   }
@@ -32504,12 +32503,16 @@ body[data-view="plan"] #sideNav li[data-key="expenses"]{ display:none !important
 body.fb-open .layout.page[data-page="plan"] > .center > #fbPage{ display:block !important; }
 body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:none !important; }
 #fbPage .inv-sub{ max-width:none; }
-#fbPage .fb-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin:0 0 18px; }
+#fbPage .fb-top{ display:flex; align-items:center; justify-content:space-between; gap:24px; margin:0; }
+#fbPage .fb-top .inv-title{ margin:0; }
+#fbPage .fb-sub{ margin:6px 0 10px; }
+#fbPage .inv-sub a{ color:var(--green-cta); font-weight:600; cursor:pointer; white-space:nowrap; }
+#fbPage .inv-sub a:hover{ text-decoration:underline; text-underline-offset:3px; }
 #fbPage .fb-note{ font-size:14.5px; color:var(--text-secondary); margin:0 0 22px; padding:12px 14px; border:1px solid var(--hairline); border-radius:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 #fbPage .fb-note b{ color:var(--ink); font-weight:600; }
 #fbPage .fb-note a{ color:var(--green-cta); font-weight:600; cursor:pointer; margin-left:auto; white-space:nowrap; }
 #fbPage .fb-note a:hover{ text-decoration:underline; text-underline-offset:3px; }
-#fbPage .fb-power{ flex:0 0 auto; font:inherit; font-size:14px; font-weight:600; height:40px; padding:0 16px; border-radius:999px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:8px; margin-top:6px; }
+#fbPage .fb-power{ flex:0 0 auto; margin-top:0; font:inherit; font-size:14px; font-weight:600; height:40px; padding:0 16px; border-radius:999px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:8px; margin-top:6px; }
 #fbPage .fb-power:hover{ background:#F6F7F8; }
 #fbPage .fb-power svg{ width:14px; height:14px; color:var(--green-cta); }
 #fbPage .bucket{ margin-top:var(--s-6); }
@@ -32603,8 +32606,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   var host=document.createElement('div'); host.id='fbPage';
   function build(){
     var src=document.getElementById('assetsBody'); if(!src) return false;
-    var h='<div class="fb-top"><div><h1 class="inv-title">Future <em>Balances</em></h1><p class="inv-sub">Your My Money accounts, with the rate each one grows at.</p></div><button type="button" class="fb-power" data-fb-power>'+BOLT+'Power mode</button></div>';
-    h+='<div class="fb-note"><span>Balances live in <b>My Money</b>. Here you set only the rates of return.</span><a data-fb-edit>Edit balances in My Money &rsaquo;</a></div>';
+    var h='<div class="fb-top"><h1 class="inv-title">Future <em>Balances</em></h1><button type="button" class="fb-power" data-fb-power>'+BOLT+'Power mode</button></div><p class="inv-sub fb-sub">The rate each account grows at. Balances live in <a data-fb-edit>My Money &rsaquo;</a></p>';
     var n=0;
     src.querySelectorAll('.bucket').forEach(function(b){
       var lab=(b.querySelector('.bucket-label')||{}).textContent||''; var rows=[].slice.call(b.querySelectorAll('.acct')).filter(function(a){ return !a.closest('.edit-card'); });
