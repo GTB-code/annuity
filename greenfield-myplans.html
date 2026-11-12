@@ -31908,6 +31908,9 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
 body.msum-open .layout.page[data-page="plan"] > .center > #sumToday{ display:block; }
 body.msum-open .layout.page[data-page="plan"] > .center > :not(#sumToday){ display:none; }
 #sumToday .inv-top{ margin-bottom:var(--s-6); }
+#sumToday .inv-title{ font-weight:400; }
+#sumToday .inv-title em{ font-style:normal; font-weight:400; }
+#sumToday .inv-sub{ max-width:none; }
 .sm-hero{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:24px; align-items:end; padding:0 0 22px; border-bottom:1px solid var(--hairline); margin-bottom:24px; }
 .sm-hero .k{ font-size:13px; font-weight:600; color:var(--text-secondary); }
 .sm-hero .n{ font-size:52px; font-weight:600; letter-spacing:-0.03em; line-height:1; margin:6px 0 8px; }
@@ -31970,7 +31973,7 @@ body.msum-open .layout.page[data-page="plan"] > .center > :not(#sumToday){ displ
   /* ---- the page ---- */
   var host=document.createElement('div'); host.id='sumToday';
   function render(){
-    var h='<div class="inv-top"><div><h1 class="inv-title">Your money, <em>today</em></h1><p class="inv-sub">Everything you own, what came in and went out this month, and how it is invested. One page.</p></div></div>';
+    var h='<div class="inv-top"><div><h1 class="inv-title">Your money, <em>today</em></h1><p class="inv-sub">What you own, this month, and how it is invested.</p></div></div>';
     h+='<div class="sm-hero"><div><div class="k">Net worth today</div><div class="n">'+usd(NW)+'</div><div class="d"><b>&#9650; '+usd(CHG)+'</b> this quarter &middot; '+ACCTS.length+' accounts, linked and live</div></div><div class="sm-spark">'+spark()+'</div></div>';
     h+='<div class="sm-grid">';
     /* where it sits */
