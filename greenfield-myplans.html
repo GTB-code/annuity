@@ -31144,6 +31144,76 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
   document.addEventListener('click', function(){ setTimeout(build, 300); }, true);
 })();
 </script>
+<style id="planControllersCSS">
+/* ---- Retirement age and longevity live in Life Events, in the same rows and the same green editor as every event ---- */
+#eventsBody .pc-bucket .row-editor[hidden]{ display:none !important; }
+#eventsBody .pc-bucket .pc-row[hidden]{ display:none !important; }
+#eventsBody .pc-editor .plan-range, #eventsBody .pc-editor [data-pe-range], #eventsBody .pc-editor .ps-range{ display:none !important; }
+#eventsBody .pc-bucket .acct .amt small{ display:block; }
+#eventsBody .pc-bucket .pce-two{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+</style>
+<script id="planControllersJS">
+(function(){
+  'use strict';
+  var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var P=[
+    { id:'m', first:'Marshall', born:1965, bmonth:0, retAge:63, retMonth:11, life:92, row:/Marshall retires/ },
+    { id:'l', first:'Lily', born:1967, bmonth:8, retAge:65, retMonth:5, life:92, row:/Lily retires/ }
+  ];
+  function retYear(p){ return p.born+p.retAge; }
+  function lifeYear(p){ return p.born+p.life; }
+  function rowHTML(p){ return '<div class="acct row-clickable pc-row" data-pc="'+p.id+'" role="button" tabindex="0"><div><div class="nm">'+p.first+' retires at '+p.retAge+', plans to '+p.life+'</div><div class="ty">'+MONTHS[p.retMonth]+' '+retYear(p)+' &middot; money lasts to '+lifeYear(p)+'<span class="acct-planned-tag ">Plan controls</span></div></div><div class="amt">'+p.retAge+' &rarr; '+p.life+'<small>retire &rarr; plan to</small></div></div>'; }
+  function sel(cls, opts, cur){ return '<div class="field pe-choice"><label>'+cls[0]+'</label><div class="val"><select class="vselect '+cls[1]+'">'+opts.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===cur?' selected':'')+'>'+o[1]+'</option>'; }).join('')+'</select><span class="car">\u25BE</span></div></div>'; }
+  function edHTML(p){
+    var ages=[]; for(var a=50;a<=80;a++) ages.push([a, 'Age '+a]);
+    var lives=[]; for(var l=75;l<=105;l++) lives.push([l, 'Age '+l]);
+    var months=MONTHS.map(function(m,i){ return [i,m]; });
+    return '<div class="row-editor pc-editor" data-pc="'+p.id+'" hidden><div class="edit-card"><div class="ecTitle"><div class="ec-head"><span class="ecTitleText">'+p.first+'\u2019s retirement and longevity</span><span class="ec-sub">Plan controls</span></div><span class="ec-amt pc-amt">'+p.retAge+' &rarr; '+p.life+'</span><div class="ec-actions"><button class="ec-toggle" type="button" aria-label="Collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button></div></div>'+
+      '<div class="ec-body">'+
+        '<div class="pe-two">'+sel(['Retirement age','pce-age'], ages, p.retAge)+sel(['Month','pce-month'], months, p.retMonth)+'</div>'+
+        '<div class="pe-two">'+sel(['Plan to age','pce-life'], lives, p.life)+'<div class="field"><label>Born</label><div class="val"><span><span class="vtext" style="color:var(--text-secondary)">'+MONTHS[p.bmonth]+' '+p.born+'</span></span></div></div></div>'+
+        '<div class="pe-effect pce-effect"></div>'+
+        '<div class="edit-actions"><button class="btn-save" type="button" disabled>Save</button></div>'+
+      '</div></div></div>';
+  }
+  function effect(p, a, m, l){ return p.first+' retires in <b>'+MONTHS[m]+' '+(p.born+a)+'</b>, at '+a+'. The plan carries the money to <b>'+(p.born+l)+'</b>, age '+l+'.'; }
+  function build(){
+    var body=document.getElementById('eventsBody'); if(!body || body.querySelector('.pc-bucket')) return !!body;
+    var old=body.querySelector('.pc-wrap'); if(old) old.remove();
+    var bk=document.createElement('div'); bk.className='bucket bucket-head-foot pc-bucket';
+    bk.innerHTML=P.map(function(p){ return rowHTML(p)+edHTML(p); }).join('');
+    var first=body.querySelector('.bucket'); if(first) body.insertBefore(bk, first); else body.appendChild(bk);
+    bk.addEventListener('click', function(e){
+      var row=e.target.closest('.pc-row'); if(row){ e.preventDefault(); e.stopPropagation(); toggle(row.dataset.pc); return; }
+      var ed=e.target.closest('.pc-editor'); if(!ed) return;
+      if(e.target.closest('.ec-toggle')){ e.preventDefault(); e.stopPropagation(); toggle(ed.dataset.pc, false); return; }
+      if(e.target.closest('.btn-save')){ e.preventDefault(); e.stopPropagation(); save(ed.dataset.pc); return; }
+    }, true);
+    bk.addEventListener('change', function(e){ var ed=e.target.closest('.pc-editor'); if(!ed) return; refresh(ed); ed.querySelector('.btn-save').disabled=false; });
+    bk.addEventListener('keydown', function(e){ var row=e.target.closest('.pc-row'); if(row && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); toggle(row.dataset.pc); } });
+    return true;
+  }
+  function P_(id){ return P.filter(function(x){ return x.id===id; })[0]; }
+  function refresh(ed){ var p=P_(ed.dataset.pc); var a=+ed.querySelector('.pce-age').value, m=+ed.querySelector('.pce-month').value, l=+ed.querySelector('.pce-life').value; ed.querySelector('.pce-effect').innerHTML=effect(p,a,m,l); ed.querySelector('.pc-amt').innerHTML=a+' &rarr; '+l; }
+  function toggle(id, force){
+    var body=document.getElementById('eventsBody'); var row=body.querySelector('.pc-row[data-pc="'+id+'"]'), ed=body.querySelector('.pc-editor[data-pc="'+id+'"]');
+    var open = force===undefined ? ed.hidden : force;
+    if(open){ body.querySelectorAll('.pc-editor').forEach(function(x){ x.hidden=true; }); body.querySelectorAll('.pc-row').forEach(function(x){ x.hidden=false; }); refresh(ed); ed.hidden=false; row.hidden=true; }
+    else { ed.hidden=true; row.hidden=false; }
+  }
+  function save(id){
+    var p=P_(id); var body=document.getElementById('eventsBody'); var ed=body.querySelector('.pc-editor[data-pc="'+id+'"]');
+    p.retAge=+ed.querySelector('.pce-age').value; p.retMonth=+ed.querySelector('.pce-month').value; p.life=+ed.querySelector('.pce-life').value;
+    var row=body.querySelector('.pc-row[data-pc="'+id+'"]'); row.outerHTML=rowHTML(p);
+    ed.querySelector('.btn-save').disabled=true; toggle(id,false);
+    /* the matching life event follows */
+    [].slice.call(body.querySelectorAll('.acct:not(.pc-row)')).forEach(function(r){ var t=r.querySelector('.nm'); if(!t || !p.row.test(t.textContent)) return; var ty=r.querySelector('.ty'); if(ty){ var tag=ty.querySelector('.acct-planned-tag'); ty.textContent=MONTHS[p.retMonth]+' '+retYear(p)+' \u00b7 age '+p.retAge; if(tag) ty.appendChild(tag); } });
+    if(p.id==='m'){ var inp=document.getElementById('st_ret'); if(inp && window.STRESS){ inp.value=Math.max(+inp.min, Math.min(+inp.max, p.retAge+4)); } }
+  }
+  if(!build()){ var tries=0, t=setInterval(function(){ if(build() || ++tries>80) clearInterval(t); }, 250); }
+  document.addEventListener('click', function(){ setTimeout(build, 350); }, true);
+})();
+</script>
 <style id="whatifCSS">
 /* ======================================================================
    What-if: one plan, many shadows.
@@ -31851,7 +31921,7 @@ body.msum-open .layout.page[data-page="plan"] > .center > :not(#sumToday){ displ
 .sm-card.wide{ grid-column:1 / -1; }
 .sm-card .h{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
 .sm-card .h .t{ font-size:17px; font-weight:600; }
-.sm-card .h .s{ font-size:13.5px; color:var(--text-secondary); white-space:nowrap; }
+
 .sm-card .big{ font-size:30px; font-weight:600; letter-spacing:-0.02em; line-height:1.1; }
 .sm-card .big small{ font-size:14px; font-weight:500; color:var(--text-secondary); margin-left:8px; letter-spacing:0; }
 .sm-bar{ display:flex; gap:3px; height:12px; border-radius:999px; overflow:hidden; }
@@ -31900,29 +31970,29 @@ body.msum-open .layout.page[data-page="plan"] > .center > :not(#sumToday){ displ
   /* ---- the page ---- */
   var host=document.createElement('div'); host.id='sumToday';
   function render(){
-    var h='<div class="inv-top"><div><div class="inv-eyebrow">My Money &middot; Summary</div><h1 class="inv-title">Your money, <em>today</em></h1><p class="inv-sub">Everything you own, what came in and went out this month, and how it is invested. One page.</p></div></div>';
+    var h='<div class="inv-top"><div><h1 class="inv-title">Your money, <em>today</em></h1><p class="inv-sub">Everything you own, what came in and went out this month, and how it is invested. One page.</p></div></div>';
     h+='<div class="sm-hero"><div><div class="k">Net worth today</div><div class="n">'+usd(NW)+'</div><div class="d"><b>&#9650; '+usd(CHG)+'</b> this quarter &middot; '+ACCTS.length+' accounts, linked and live</div></div><div class="sm-spark">'+spark()+'</div></div>';
     h+='<div class="sm-grid">';
     /* where it sits */
-    h+='<div class="sm-card"><div class="h"><span class="t">Where it sits</span><span class="s">by tax treatment</span></div>'+
+    h+='<div class="sm-card"><div class="h"><span class="t">Where it sits</span></div>'+
       '<div class="sm-bar">'+BY.map(function(b){ return '<i style="flex:'+b[1]+';background:'+b[2]+'"></i>'; }).join('')+'</div>'+
       '<div class="sm-rows">'+BY.map(function(b){ return '<div class="sm-row"><i style="background:'+b[2]+'"></i><span class="n">'+b[0]+'</span><span class="v">'+usd(b[1])+'</span><span class="p">'+Math.round(b[1]/NW*100)+'%</span></div>'; }).join('')+'</div>'+
       '<button type="button" class="sm-link" data-sum-go="networth">See every account '+GO+'</button></div>';
     /* this month */
     var pct=Math.min(100, SPEND/INC*100), room=SAFE-SPEND;
-    h+='<div class="sm-card"><div class="h"><span class="t">This month</span><span class="s">November</span></div>'+
+    h+='<div class="sm-card"><div class="h"><span class="t">This month</span></div>'+
       '<div class="sm-flow"><div><div class="k">Came in</div><div class="n">'+usd(INC)+'</div><div class="track"><i style="width:100%;background:#0E3A44"></i></div></div><div><div class="k">Went out</div><div class="n">'+usd(SPEND)+'</div><div class="track"><i style="width:'+pct.toFixed(0)+'%;background:#1D9E75"></i></div></div></div>'+
       '<div class="sm-room">You spent '+usd(SPEND)+' against a safe line of '+usd(SAFE)+' &mdash; <b>'+usd(room)+' of room</b>.</div>'+
       '<button type="button" class="sm-link" data-sum-go="budget">Open the budgeter '+GO+'</button></div>';
     /* invested */
-    h+='<div class="sm-card"><div class="h"><span class="t">How it is invested</span><span class="s">$534,000 with holdings</span></div>'+
+    h+='<div class="sm-card"><div class="h"><span class="t">How it is invested</span></div>'+
       '<div class="big">62 / 38<small>equities / fixed income &amp; cash</small></div>'+
       '<div class="sm-bar">'+MIX.map(function(m){ return '<i style="flex:'+m[1]+';background:'+m[2]+'"></i>'; }).join('')+'</div>'+
       '<div class="sm-rows">'+MIX.map(function(m){ return '<div class="sm-row"><i style="background:'+m[2]+'"></i><span class="n">'+m[0]+'</span><span class="v">'+m[1]+'%</span><span class="p"></span></div>'; }).join('')+'</div>'+
       '<div class="sm-room">2 points above your Moderate target of 60 / 40.</div>'+
       '<button type="button" class="sm-link" data-sum-go="invest">See your investments '+GO+'</button></div>';
     /* accounts */
-    h+='<div class="sm-card"><div class="h"><span class="t">Linked accounts</span><span class="s">updated this morning</span></div>'+
+    h+='<div class="sm-card"><div class="h"><span class="t">Linked accounts</span></div>'+
       '<div class="sm-rows">'+ACCTS.map(function(a){ var c=BY.filter(function(b){ return b[0]===a[2]; })[0]; return '<div class="sm-row"><i style="background:'+(c?c[2]:'#999')+'"></i><span class="n">'+a[0]+'</span><span class="v">'+(a[1]<0?'\u2212'+usd(-a[1]):usd(a[1]))+'</span><span class="live">Live</span></div>'; }).join('')+'</div>'+
       '<button type="button" class="sm-link" data-sum-go="connect">Link another account '+GO+'</button></div>';
     h+='</div>';
