@@ -30696,7 +30696,7 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
     e.preventDefault(); e.stopPropagation(); var v=inp.value; inp.value=''; open(v.trim()||null);
   },true);
   /* Home always has Boldin AI beside the plan: on load, and every time Home is chosen */
-  function homeAI(delay){ setTimeout(function(){ if(isHome() && (!isOpen() || host!==homeCol) && !document.body.classList.contains('flow-open') && !document.body.classList.contains('trial-over')){ document.body.classList.add('bai-still'); open(); } setTimeout(function(){ document.body.classList.remove('bai-still'); }, 400); }, delay); }
+  function homeAI(delay){ setTimeout(function(){ if(isHome() && (!isOpen() || host!==homeCol) && !document.body.classList.contains('flow-open') && !document.body.classList.contains('trial-over')){ document.body.classList.add('bai-still'); var fresh=!busy && thread.children.length<=1; open(); if(fresh && greeted){ thread.innerHTML=''; g=add('',''); setTimeout(function(){ typeInto(g,GREET); },200); } } setTimeout(function(){ document.body.classList.remove('bai-still'); }, 400); }, delay); }
   homeAI(700);
   document.addEventListener('click', function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a, .topnav .brand, .topnav a[href="#home"], [data-view="home"], [data-hm-go="home"]'); if(!a) return; var toHome=(a.dataset.view==='home') || /^\s*home\s*$/i.test(a.textContent||'') || a.classList.contains('brand') || (a.getAttribute('href')||'')==='#home'; if(toHome) homeAI(420); }, true);
   window.addEventListener('boldin:view', function(){ homeAI(420); });
@@ -31157,6 +31157,10 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
 /* ---- Retirement age and longevity live in Life Events, in the same rows and the same green editor as every event ---- */
 #eventsBody .pc-bucket .row-editor[hidden]{ display:none !important; }
 #eventsBody .pc-bucket .pc-row[hidden]{ display:none !important; }
+#eventsBody .pc-row{ cursor:pointer; transition:background var(--dur-fast); }
+#eventsBody .pc-row:hover{ background:#FAFAFA; }
+#eventsBody .pc-editor{ overflow:hidden; }
+#eventsBody .pc-editor .edit-card{ margin:0; }
 #eventsBody .pc-editor .plan-range, #eventsBody .pc-editor [data-pe-range], #eventsBody .pc-editor .ps-range{ display:none !important; }
 #eventsBody .pc-bucket .acct .amt small{ display:block; }
 #eventsBody .pc-bucket .pce-two{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -31171,13 +31175,13 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   ];
   function retYear(p){ return p.born+p.retAge; }
   function lifeYear(p){ return p.born+p.life; }
-  function rowHTML(p){ return '<div class="acct row-clickable pc-row" data-pc="'+p.id+'" role="button" tabindex="0"><div><div class="nm">'+p.first+' retires at '+p.retAge+', plans to '+p.life+'</div><div class="ty">'+MONTHS[p.retMonth]+' '+retYear(p)+' &middot; money lasts to '+lifeYear(p)+'<span class="acct-planned-tag ">Plan controls</span></div></div><div class="amt">'+p.retAge+' &rarr; '+p.life+'<small>retire &rarr; plan to</small></div></div>'; }
+  function rowHTML(p){ return '<div class="acct pc-row" data-pc="'+p.id+'" role="button" tabindex="0"><div><div class="nm">'+p.first+' retires at '+p.retAge+', plans to '+p.life+'</div><div class="ty">'+MONTHS[p.retMonth]+' '+retYear(p)+' &middot; money lasts to '+lifeYear(p)+'<span class="acct-planned-tag ">Plan controls</span></div></div><div class="amt">'+p.retAge+' &rarr; '+p.life+'<small>retire &rarr; plan to</small></div></div>'; }
   function sel(cls, opts, cur){ return '<div class="field pe-choice"><label>'+cls[0]+'</label><div class="val"><select class="vselect '+cls[1]+'">'+opts.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===cur?' selected':'')+'>'+o[1]+'</option>'; }).join('')+'</select><span class="car">\u25BE</span></div></div>'; }
   function edHTML(p){
     var ages=[]; for(var a=50;a<=80;a++) ages.push([a, 'Age '+a]);
     var lives=[]; for(var l=75;l<=105;l++) lives.push([l, 'Age '+l]);
     var months=MONTHS.map(function(m,i){ return [i,m]; });
-    return '<div class="row-editor pc-editor" data-pc="'+p.id+'" hidden><div class="edit-card"><div class="ecTitle"><div class="ec-head"><span class="ecTitleText">'+p.first+'\u2019s retirement and longevity</span><span class="ec-sub">Plan controls</span></div><span class="ec-amt pc-amt">'+p.retAge+' &rarr; '+p.life+'</span><div class="ec-actions"><button class="ec-toggle" type="button" aria-label="Collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button></div></div>'+
+    return '<div class="pc-editor" data-pc="'+p.id+'" hidden><div class="edit-card"><div class="ecTitle"><div class="ec-head"><span class="ecTitleText">'+p.first+'\u2019s retirement and longevity</span><span class="ec-sub">Plan controls</span></div><span class="ec-amt pc-amt">'+p.retAge+' &rarr; '+p.life+'</span><div class="ec-actions"><button class="ec-toggle" type="button" aria-label="Collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button></div></div>'+
       '<div class="ec-body">'+
         '<div class="pe-two">'+sel(['Retirement age','pce-age'], ages, p.retAge)+sel(['Month','pce-month'], months, p.retMonth)+'</div>'+
         '<div class="pe-two">'+sel(['Plan to age','pce-life'], lives, p.life)+'<div class="field"><label>Born</label><div class="val"><span><span class="vtext" style="color:var(--text-secondary)">'+MONTHS[p.bmonth]+' '+p.born+'</span></span></div></div></div>'+
@@ -31198,6 +31202,7 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
       if(e.target.closest('.ec-toggle')){ e.preventDefault(); e.stopPropagation(); toggle(ed.dataset.pc, false); return; }
       if(e.target.closest('.btn-save')){ e.preventDefault(); e.stopPropagation(); save(ed.dataset.pc); return; }
     }, true);
+    body.addEventListener('click', function(e){ var r=e.target.closest('.acct'); if(r && !r.classList.contains('pc-row') && !e.target.closest('.pc-editor')) body.querySelectorAll('.pc-editor:not([hidden])').forEach(function(x){ toggle(x.dataset.pc,false); }); }, true);
     bk.addEventListener('change', function(e){ var ed=e.target.closest('.pc-editor'); if(!ed) return; refresh(ed); ed.querySelector('.btn-save').disabled=false; });
     bk.addEventListener('keydown', function(e){ var row=e.target.closest('.pc-row'); if(row && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); toggle(row.dataset.pc); } });
     return true;
@@ -31206,12 +31211,14 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   function refresh(ed){ var p=P_(ed.dataset.pc); var a=+ed.querySelector('.pce-age').value, m=+ed.querySelector('.pce-month').value, l=+ed.querySelector('.pce-life').value; ed.querySelector('.pce-effect').innerHTML=effect(p,a,m,l); ed.querySelector('.pc-amt').innerHTML=a+' &rarr; '+l; }
   function toggle(id, force){
     var body=document.getElementById('eventsBody'); var row=body.querySelector('.pc-row[data-pc="'+id+'"]'), ed=body.querySelector('.pc-editor[data-pc="'+id+'"]');
+    if(!row) return;
+    if(!ed){ row.insertAdjacentHTML('afterend', edHTML(P_(id))); ed=body.querySelector('.pc-editor[data-pc="'+id+'"]'); }
     var open = force===undefined ? ed.hidden : force;
     if(open){ body.querySelectorAll('.pc-editor').forEach(function(x){ x.hidden=true; }); body.querySelectorAll('.pc-row').forEach(function(x){ x.hidden=false; }); refresh(ed); ed.hidden=false; row.hidden=true; }
     else { ed.hidden=true; row.hidden=false; }
   }
   function save(id){
-    var p=P_(id); var body=document.getElementById('eventsBody'); var ed=body.querySelector('.pc-editor[data-pc="'+id+'"]');
+    var p=P_(id); var body=document.getElementById('eventsBody'); var ed=body.querySelector('.pc-editor[data-pc="'+id+'"]'); if(!ed) return;
     p.retAge=+ed.querySelector('.pce-age').value; p.retMonth=+ed.querySelector('.pce-month').value; p.life=+ed.querySelector('.pce-life').value;
     var row=body.querySelector('.pc-row[data-pc="'+id+'"]'); row.outerHTML=rowHTML(p);
     ed.querySelector('.btn-save').disabled=true; toggle(id,false);
@@ -31807,7 +31814,7 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
     var h='<div class="scn">';
     h+='<button type="button" class="scn-back">'+BACK+'My plan</button>';
     h+='<h1>One <em>plan</em>. Any number of <b>scenarios</b>.</h1>';
-    h+='<p class="lede">Your plan, with a few changes, in pencil.</p>';
+    h+='<p class="lede">Your plan, with a few changes, in pencil. Or ask Boldin AI to build one for you.</p>';
     h+='<div class="scn-lesson">'+
       '<div class="scn-tile">'+lessonSVG('plan')+'<div><div class="t">Your plan</div><p>One plan, in ink. Every number comes from it.</p></div></div>'+
       '<div class="scn-tile">'+lessonSVG('scn')+'<div><div class="t">A scenario</div><p>A branch, in pencil. Keep it or let it go.</p></div></div>'+
