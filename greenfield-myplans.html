@@ -31497,7 +31497,7 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
     var ssx=nav && nav.querySelector('[data-opt="ssx"]'); if(ssx) ssx.addEventListener('click', function(){ var c=document.querySelector('.opt-grid [data-opt="ss"]'); if(c) c.click(); });
     function set(v, user){ document.body.classList.toggle('opt-v2', v==='2'||v==='3'); document.body.dataset.optView=v; document.querySelectorAll('.os-view button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); }); try{ localStorage.setItem('boldin.optView', v); }catch(e){}
       if((v==='3'||v==='4') && window.__bai && !window.__bai.isOpen()) setTimeout(function(){ window.__bai.open(); }, user?120:600);
-      if(v!=='3' && v!=='4' && user && window.__bai && window.__bai.isOpen()) window.__bai.close(); }
+      }
     document.querySelectorAll('.os-view button').forEach(function(b){ b.addEventListener('click', function(){ set(b.dataset.v, true); }); });
     var v='1'; try{ v=localStorage.getItem('boldin.optView')||'1'; }catch(e){}
     set(v, false);
@@ -31519,13 +31519,17 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
       it.addEventListener('click', go); it.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
     });
   })();
-  /* every section opens with Boldin AI beside it */
+  /* every Optimize page opens with Boldin AI beside it, however it was reached */
+  var SEC=/\b(fire-page|stress-open|alo-open|bud-open|soc-open|tax-open|wdr-open)\b/;
+  function onOptimize(){ var b=document.body; return b.dataset.view==='optimize' || SEC.test(b.className); }
+  var pend=null;
+  function ensure(){ clearTimeout(pend); pend=setTimeout(function(){ if(onOptimize() && !document.body.classList.contains('flow-open') && !document.body.classList.contains('scn-open') && window.__bai && !window.__bai.isOpen()) window.__bai.open(); }, 380); }
+  new MutationObserver(ensure).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
   document.addEventListener('click', function(e){
     var card=e.target.closest && e.target.closest('.opt-grid [data-opt], .opt-grid #optHero, .onav-item[data-opt]');
-    if(card){ setTimeout(function(){ if(window.__bai && !window.__bai.isOpen()) window.__bai.open(); }, 380); return; }
-    var back=e.target.closest && e.target.closest('[data-stress-back], .os-head .bud-back, .fire-head .bud-back');
-    if(back && window.__bai && window.__bai.isOpen()){ window.__bai.close(); }
+    if(card){ ensure(); return; }
   }, true);
+  ensure();
 })();
 </script>
 <style id="lifeEventPresetsCSS">
