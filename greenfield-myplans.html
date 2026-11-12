@@ -30895,8 +30895,8 @@ body.bai-open:not(.fire-page) .opt-index .opt-grid{ column-count:2; }
 /* its category list was a rail filter, not a set of tabs */
 .layout.page.bud-layout.on > .center > .os-tabs{ display:none; }
 body.bai-open .layout.page.sub-layout.on, body.bai-open .layout.page.alo-layout.on, body.bai-open .layout.page.bud-layout.on, body.bai-open.fire-page .layout.page.opt-index.on{ grid-template-columns:minmax(0,1fr) 360px; }
-body.bai-open .layout.page.on > .rail.bai-host{ display:block; grid-column:2; }
-body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
+body.bai-open .layout.page.sub-layout.on > .rail.bai-host, body.bai-open .layout.page.alo-layout.on > .rail.bai-host, body.bai-open .layout.page.bud-layout.on > .rail.bai-host, body.bai-open.fire-page .layout.page.opt-index.on > .rail.bai-host{ display:block; grid-column:2; }
+body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai-open .layout.page.alo-layout.on > .rail.bai-host > :not(.bai), body.bai-open .layout.page.bud-layout.on > .rail.bai-host > :not(.bai), body.bai-open.fire-page .layout.page.opt-index.on > .rail.bai-host > :not(.bai){ display:none; }
 .bud-top .bud-back-tbl{ display:none !important; }
 .os-head{ display:flex; align-items:center; margin:0 0 22px; }
 .os-head .bud-back{ margin:0; font-size:15px; }
