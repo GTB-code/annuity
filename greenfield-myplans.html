@@ -21144,7 +21144,7 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
   function paint(cur, shocked){
     cur.conf=conf(cur); shocked.conf=conf(shocked);
     var svg=document.getElementById('stChart'); if(!svg) return;
-    var W=660,H=300,L=58,R=W-12,T=16,B=H-28;
+    var W=1300,H=440,L=58,R=W-12,T=16,B=H-28; svg.setAttribute('viewBox','0 0 '+W+' '+H);
     var hi=Math.max.apply(null, baseRun.rows.concat(cur.rows).map(function(r){ return r.bal; }))*1.10;
     var n=cur.rows.length;
     var X=function(i){ return L+(R-L)*(i/(n-1)); };
@@ -21297,7 +21297,7 @@ body.stress-open .layout.page.opt-index.on{ display:none; }
     }
   });
   window.addEventListener('boldin:view', close);
-  window.STRESS={open:open, close:close, reset:reset, run:run};
+  window.STRESS={open:open, close:close, reset:reset, run:run, S:S, BASE:BASE, conf:conf, render:render, get base(){ return baseRun; }, rebase:function(){ Object.keys(S).forEach(function(k){ BASE[k]=S[k]; }); baseRun=run(BASE,false); baseRun.conf=conf(baseRun); HIST=[]; var h=document.getElementById('stHist'); if(h) h.innerHTML=''; render(null); }};
 })();
 </script>
 <!-- ===================== END Stress test ===================== -->
@@ -29591,6 +29591,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     else { row.dataset.ev=e.id; row.innerHTML=rowHTML(e); if(row.parentNode && row.parentNode.dataset.chap!==e.chap){ row.remove(); addRow(e, true); } }
     paintMiles(true); paintSpend(); rollups();
   }
+  window.__peSpawn=function(c,o){ return spawn(c,o); };
   function spawn(chap, opts){
     var sec=document.getElementById('events-block'); var bk=sec.querySelector('.bucket[data-chap="'+chap+'"]');
     $$('.row-editor', sec).forEach(function(x){ var r=x.previousElementSibling; closeEditor(x, (r && r.classList.contains('acct'))?r:null); });
@@ -29602,6 +29603,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     /* a new event starts in the chapter it was added to */
     var vt=ed.querySelector('[data-pe-f="when"] .vtext'); if(vt){ vt.textContent=e.yr; vt.dispatchEvent(new Event('input')); }
     openEditor(row, ed, opts);
+    return ed;
   }
 
   /* ---------- 4. the section accordion, mirroring the product's ---------- */
@@ -29850,14 +29852,14 @@ body.pm-open .dock{ display:none !important; }
 @keyframes pmIn{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
 @media (prefers-reduced-motion:reduce){ #powerMode{ animation:none } }
 #powerMode *{ box-sizing:border-box; }
-.pm-top{ flex:none; height:56px; border-bottom:1px solid var(--hairline); display:flex; align-items:center; justify-content:space-between; padding:0 max(32px, calc(50% - 643px)); }
-.pm-id{ display:flex; align-items:center; gap:12px; font-size:15px; color:var(--text-secondary); }
+.pm-titlerow{ display:flex; align-items:center; gap:14px; margin:0 0 6px; }
+.pm-titlerow .pm-x{ margin-left:auto; }
 .pm-badge{ display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; border-radius:var(--r-pill); background:var(--eggshell); color:var(--green-cta); font-weight:600; font-size:13px; }
 .pm-x{ display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px 0 12px; border-radius:var(--r-pill); border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); font:inherit; font-size:14px; font-weight:600; cursor:pointer; }
 .pm-x:hover{ background:#F6F7F8; }
 .pm-scroll{ flex:1; overflow:auto; }
-.pm-wrap{ max-width:1350px; margin:0 auto; padding:40px 32px 96px; }
-.pm-title{ font-size:34px; line-height:1.15; font-weight:400; letter-spacing:0; margin:0 0 6px; }
+.pm-wrap{ max-width:1350px; margin:0 auto; padding:28px 32px 96px; }
+.pm-title{ font-size:34px; line-height:1.15; font-weight:400; letter-spacing:0; margin:0; }
 .pm-sub{ font-size:16px; color:var(--text-secondary); margin:0 0 28px; }
 .pm-controls{ display:flex; align-items:center; flex-wrap:wrap; gap:16px 28px; margin-bottom:20px; }
 .pm-seg{ display:inline-flex; padding:3px; border:1px solid var(--hairline-strong); border-radius:var(--r-pill); background:#fff; }
@@ -29907,6 +29909,7 @@ body.pm-open .dock{ display:none !important; }
 .pm-tbl th:first-child, .pm-tbl td:first-child{ text-align:left; }
 .pm-tbl td{ text-align:right; padding:12px 18px; border-bottom:1px solid var(--hairline); white-space:nowrap; }
 .pm-tbl tr:last-child td{ border-bottom:0; }
+.pm-tbl tbody tr:nth-child(even) td, .pm-tbl tbody tr:nth-child(even) td.yr{ background:#FAFAFB; }
 .pm-tbl td:first-child{ font-weight:500; }
 .pm-tbl tr.sec td{ background:#FAFAFB; font-weight:600; color:var(--text-secondary); font-size:13.5px; }
 .pm-tbl tr.tot td{ font-weight:600; border-top:1px solid var(--hairline-strong); }
@@ -29917,7 +29920,7 @@ body.pm-open .dock{ display:none !important; }
 .pm-tbl .dot{ display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:10px; }
 .pm-tbl .neg{ color:#B3391B; }
 .pm-tbl-scroll{ max-height:560px; overflow:auto; }
-@media (max-width:760px){ .pm-wrap{ padding:28px 16px 72px; } .pm-title{ font-size:26px; } .pm-ai{ padding:14px 16px; flex-direction:column; gap:8px; } .pm-top{ padding:0 16px; } }
+@media (max-width:760px){ .pm-wrap{ padding:28px 16px 72px; } .pm-title{ font-size:26px; } .pm-ai{ padding:14px 16px; flex-direction:column; gap:8px; } }
 </style>
 
 <script id="powerModeJS">
@@ -29936,10 +29939,10 @@ body.pm-open .dock{ display:none !important; }
     root=document.createElement('div'); root.id='powerMode'; root.hidden=true;
     root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Power mode');
     root.innerHTML=
-      '<header class="pm-top"><div class="pm-id"><span class="pm-badge">'+BOLT+'Power mode</span><span id="pmCrumb"></span></div>'+
-      '<button type="button" class="pm-x" id="pmX"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Exit</button></header>'+
       '<div class="pm-scroll" id="pmScroll"><div class="pm-wrap">'+
-        '<h1 class="pm-title" id="pmTitle"></h1><p class="pm-sub" id="pmSub"></p>'+
+        '<div class="pm-titlerow"><h1 class="pm-title" id="pmTitle"></h1><span class="pm-badge">'+BOLT+'Power mode</span>'+
+        '<button type="button" class="pm-x" id="pmX"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Exit</button></div>'+
+        '<p class="pm-sub" id="pmSub"></p>'+
         '<div class="pm-controls" id="pmControls"></div>'+
         '<div class="pm-chart" id="pmChart"></div><div class="pm-legend" id="pmLegend"></div>'+
         '<section class="pm-ai" aria-live="polite"><span class="ic">'+SPARK+'</span><div><p class="lab">Boldin AI</p><p class="tx" id="pmTx"></p><div class="fu" id="pmFu"></div></div></section>'+
@@ -29968,7 +29971,6 @@ body.pm-open .dock{ display:none !important; }
     st={key:key,spec:spec,view:spec.views[0].id,year:0,unit:'year',data:spec.data(D)};
     if(spec.init) spec.init(st);
     root.hidden=false; document.body.classList.add('pm-open');
-    root.querySelector('#pmCrumb').textContent=spec.crumb;
     
     refresh(true,false,true);
     root.querySelector('#pmScroll').scrollTop=0;
@@ -30287,7 +30289,6 @@ body.pm-open .dock{ display:none !important; }
         +seg('Chart type','view',[['bar','Bar'],['area','Area']])
         +seg('Dollars','unit',[['today','Today’s dollars'],['future','Future dollars']])
         +seg('Compare','cmp',[['none','None'],['debts','Debts'],['income','Income'],['expenses','Expenses'],['home','Home and real estate']])
-        +seg('Timeframe','span',[['retire','Until retirement · '+RETIRE],['ten','Next 10 years'],['all','Until end of plan']])
         +'<button type="button" class="pm-dl" data-pm-act="download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>Download data</button>'
         +'</div>';
     },
@@ -30351,15 +30352,10 @@ body.pm-open .dock{ display:none !important; }
       var rows=s.data.rows, R=this.range(s), first=rows[0], end=rows[rows.length-1];
       var V=function(q){ return infl(s,q.total,q.i); }, M$=function(v){ return '<b>'+usd(v)+'</b>'; };
       var peak=rows.reduce(function(a,b){ return V(b)>V(a)?b:a; },rows[0]);
-      var t='Your savings start at '+M$(V(first))+' across '+ACCTS.length+' accounts, with '+Math.round(first.bk.def/first.total*100)+'% in tax-deferred accounts. ';
-      t+='They keep growing past retirement in <b>'+RETIRE+'</b>, because Lily’s paycheck runs to 2032 and the Roth conversions move money rather than spend it, and peak at '+M$(V(peak))+' in <b>'+peak.y+'</b>';
-      t+=(peak.y<end.y?', then ease to '+M$(V(end))+' by '+end.y+'. ':'. ');
-      t+='By then tax-free accounts hold '+Math.round(end.bk.roth/end.total*100)+'% of the total, up from '+Math.round(first.bk.roth/first.total*100)+'% today. ';
-      if(s.cmp!=='none'){ var c=CMP[s.cmp], a=R[0], b=R[R.length-1]; t+=c.lab+' runs from '+M$(infl(s,c.f(a.y),a.i))+' to '+M$(infl(s,c.f(b.y),b.i))+' over the same years. '; }
-      if(s.unit==='future') t+='Future dollars include '+(INFL*100).toFixed(1)+'% a year of inflation, so later years look larger than they will feel. ';
-      if(s.span==='retire') t+='Showing the years up to Marshall’s retirement in '+RETIRE+'.';
-      else if(s.span==='ten') t+='Showing the next ten years.';
-      else t+='The chart runs to the end of the plan in '+end.y+', when Marshall is '+end.age+'.';
+      var t='Savings start at '+M$(V(first))+' across '+ACCTS.length+' accounts and peak at '+M$(V(peak))+' in <b>'+peak.y+'</b>'+(peak.y<end.y?', easing to '+M$(V(end))+' by '+end.y+'. ':'. ');
+      t+='Tax-free accounts grow from '+Math.round(first.bk.roth/first.total*100)+'% of the total to '+Math.round(end.bk.roth/end.total*100)+'% as conversions move money out of tax-deferred.';
+      if(s.cmp!=='none'){ var c=CMP[s.cmp], a=R[0], b=R[R.length-1]; t+=' '+c.lab+' runs from '+M$(infl(s,c.f(a.y),a.i))+' to '+M$(infl(s,c.f(b.y),b.i))+'.'; }
+      if(s.unit==='future') t+=' Future dollars include '+(INFL*100).toFixed(1)+'% a year of inflation.';
       return t;
     },
     follow:function(){ return ['Which account should I draw from first?','How would a Roth conversion change this picture?','What happens if the market drops 30% in 2029?']; },
@@ -30613,7 +30609,7 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
     for(var i=0;i<rails.length;i++){ if(rails[i].offsetParent!==null && rails[i].getBoundingClientRect().width>0) return rails[i]; }
     return null;
   }
-  function findHost(){ if(isHome()) return homeCol; return visibleRail(); }
+  function findHost(){ if(isHome()) return homeCol; var r=visibleRail(); if(r) return r; var lays=[].slice.call(document.querySelectorAll('.layout.page.on')).filter(function(l){ return getComputedStyle(l).display!=='none'; }); for(var i=0;i<lays.length;i++){ var rr=lays[i].querySelector(':scope > .rail'); if(rr) return rr; } var opt=document.querySelector('.layout.page.opt-index.on'); return opt && !document.body.classList.contains('fire-page') ? opt.querySelector(':scope > .rail') : null; }
   function settle(){ var t0=performance.now(); (function f(){ window.dispatchEvent(new Event('resize')); if(performance.now()-t0<560) requestAnimationFrame(f); })(); }
 
   function open(q){
@@ -30696,6 +30692,714 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
       if(window.__bai.active()){ window.__bai.toggle(); return; }
       var ai=window.__railAI; if(!ai) return; if(ai.isOpen && ai.isOpen()) ai.collapse(); else ai.expand(); });
   }
+})();
+</script>
+
+<!-- ===================== Optimize: a full-width dashboard =====================
+     No left or right rail on the index. The hero and "Your big opportunities" share the top row; every tool
+     that used to be a rail link is a card. Each card opens its section, which keeps its own layout for now. -->
+<style id="optimizeDashCSS">
+/* ---- the index: one column at the full frame; the Financial Independence page keeps its rail ---- */
+body:not(.fire-page) .layout.page.opt-index{ grid-template-columns:minmax(0,1fr); }
+body:not(.fire-page) .opt-index > .side{ display:none; }
+body:not(.fire-page) .opt-index > .rail{ display:none; }
+body:not(.fire-page) .opt-index > .center{ grid-column:1; }
+/* Boldin AI still gets its rail: the index grows a 360px column while it is open */
+body.bai-open:not(.fire-page) .layout.page.opt-index{ grid-template-columns:minmax(0,1fr) 360px; }
+body.bai-open:not(.fire-page) .opt-index > .rail.bai-host{ display:block; grid-column:2; }
+/* with the AI open the top row stacks so the dashboard keeps its proportions */
+body.bai-open:not(.fire-page) .opt-index .opt-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+body:not(.fire-page) .opt-index > .rail.bai-host > :not(.bai){ display:none; }
+
+/* ---- the page opens with a word to Marshall and the first move; the chart is a card in the grid ---- */
+body:not(.fire-page) .opt-index .center{ display:flex; flex-direction:column; gap:var(--s-6); }
+.os-page-head{ display:flex; flex-direction:column; align-items:flex-start; gap:16px; padding:4px 0 6px; }
+.os-page-head .oli-head{ max-width:none; margin:0 !important; padding:0 !important; }
+.os-page-head .oli-h{ font-size:34px; line-height:1.15; }
+.os-page-head .snap-sub{ margin:6px 0 0 !important; }
+.os-page-head .os-cta{ display:none; gap:10px; flex-wrap:wrap; }
+.os-page-head .os-cta .pri{ height:44px; padding:0 18px; border-radius:var(--r-pill); border:0; background:var(--green-cta); color:#fff; font:inherit; font-size:15px; font-weight:600; cursor:pointer; }
+.os-page-head .os-cta .pri:hover{ background:#0B6440; }
+.os-page-head .os-cta .sec{ height:44px; padding:0 16px; border-radius:var(--r-pill); border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); font:inherit; font-size:15px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+.os-page-head .os-cta .sec:hover{ background:#F6F7F8; }
+.os-page-head .os-cta .sec svg{ width:15px; height:15px; color:var(--green-cta); }
+.opt-index .opt-grid > .oli{ min-width:0; border:1px solid var(--hairline); border-radius:18px; padding:var(--s-6); display:flex; flex-direction:column; gap:12px; }
+.opt-index .opt-grid > .oli .oli-eyebrow{ font-size:18px; font-weight:600; color:var(--ink); }
+.opt-index .opt-grid > .oli .oli-eyesub{ font-size:15px; color:var(--text-secondary); line-height:1.5; margin-top:-6px; }
+.opt-index .opt-grid > .oli > svg{ max-height:230px; }
+.opt-index .opt-grid > .oli > .oli-legend{ margin:0 0 8px; justify-content:flex-start; }
+.opt-index .oli > #oliDetail > .cf-inline{ margin-top:14px; }
+/* one chart only: the move reads as text + a button, not a second graph */
+.opt-index .opt-grid > .oli > #oliDetail > svg.card-mini{ display:none !important; }
+.opt-index .opt-grid > .oli > #oliDetail{ gap:8px; }
+.opt-index .opt-grid > .oli > #oliDetail .oli-dt{ display:block; font-size:17px; font-weight:600; color:var(--ink); }
+.opt-index .opt-grid > .oli > #oliDetail .oli-dimpact .v{ font-size:22px; }
+.opt-index .opt-grid > .oli > #oliDetail .oli-dact{ margin-top:14px; padding:0 20px; height:44px; border-radius:var(--r-pill); background:var(--green-cta); color:#fff; font-size:15px; gap:8px; }
+.opt-index .opt-grid > .oli > #oliDetail .oli-dact:hover{ text-decoration:none; background:#0B6440; }
+.opt-index .opt-grid > .oli > #oliDetail .oli-dact.cf-open{ display:none; }
+
+.opt-index .oli > #oliDetail > .cf-inline .cf-stage{ height:auto; min-height:300px; }
+.opt-index .opt-grid > .oli > #oliDetail{ margin-top:auto; border:0; border-top:1px solid var(--hairline); border-radius:0; padding:18px 0 0; min-height:0; }
+.opt-index .opt-grid > .oli > #oliDetail > svg{ max-height:80px; }
+/* status on every card: what it needs from Marshall right now */
+.os-status{ position:static; order:-1; align-self:flex-start; margin-bottom:2px; font-size:12.5px; font-weight:600; border-radius:999px; padding:4px 10px; background:#F0F1F4; color:var(--text-secondary); white-space:nowrap; }
+.os-status.good{ background:#E7F7F0; color:var(--green-cta); }
+.os-status.warn{ background:#FFF3DA; color:#8A6D00; }
+.os-status.act{ background:#FDE9E3; color:#B3391B; }
+.opt-index .opt-card .opt-card-t, .opt-index #optHero .opt-budget-t{ padding-right:0; }
+/* the hero's detail (the move behind a selected dot) sits inside the hero, compact */
+body:not(.fire-page) .opt-index .oli > #oliDetail > svg{ width:100%; height:auto; }
+body:not(.fire-page) .opt-index .oli > #oliDetail .oli-dact svg{ width:12px; height:12px; }
+body:not(.fire-page) .opt-index .oli > #oliDetail .opt-card-t{ font-size:16px; }
+
+
+/* ---- the cards: two across, same shape as Home's cards; the opportunities are one of them ---- */
+.opt-index .opt-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s-6); }
+.opt-index .opt-grid > #optBig{ grid-column:auto; }
+.opt-index #optBig .optw-sec, .opt-index #optBig .optw-item.done{ display:none; }
+.opt-index #optBig .optw-head{ padding-right:0; flex-direction:column-reverse; align-items:flex-start; gap:8px; }
+.opt-index #optBig .optw-chip{ font-size:12.5px; padding:4px 10px; }
+.opt-index #optBig .optw-head .opt-card-t{ white-space:nowrap; }
+.opt-index #optBig .optw-item{ flex-wrap:wrap; align-items:flex-start; row-gap:4px; }
+.opt-index #optBig .optw-txt{ flex:1 1 0; min-width:0; }
+.opt-index #optBig .optw-val{ flex-basis:100%; margin-left:38px; padding-left:0; text-align:left; font-size:16px; }
+.opt-index #optBig .optw-val small{ display:inline; margin-left:6px; }
+.opt-index .opt-card-t .od-new{ display:none; }
+@media (max-width:1100px){ .opt-index .opt-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); } .opt-index .opt-grid > #optBig{ grid-column:auto; }
+.opt-index #optBig .optw-sec, .opt-index #optBig .optw-item.done{ display:none; }
+.opt-index #optBig .optw-item{ flex-wrap:wrap; align-items:flex-start; row-gap:4px; }
+.opt-index #optBig .optw-txt{ flex:1 1 0; min-width:0; }
+.opt-index #optBig .optw-val{ flex-basis:100%; margin-left:38px; padding-left:0; text-align:left; font-size:16px; }
+.opt-index #optBig .optw-val small{ display:inline; margin-left:6px; }
+.opt-index .opt-card-t .od-new{ display:none; } }
+.opt-index .opt-grid{ align-items:start; }
+.opt-index .opt-grid > .opt-card, .opt-index .opt-grid > #optHero{ align-self:start; }
+/* masonry: cards pack upward under shorter neighbours */
+body:not(.fire-page) .opt-index .opt-grid{ display:block; column-count:3; column-gap:var(--s-6); }
+.opt-index .opt-grid > *{ break-inside:avoid; -webkit-column-break-inside:avoid; margin:0 0 var(--s-6); width:100%; box-sizing:border-box; }
+body.bai-open:not(.fire-page) .opt-index .opt-grid{ column-count:2; }
+@media (max-width:1100px){ .opt-index .opt-grid{ column-count:2; } }
+@media (max-width:720px){ .opt-index .opt-grid{ column-count:1; } }
+.opt-index .opt-card .opt-card-t, .opt-index #optHero .opt-budget-t, .opt-index .opt-grid > .oli .oli-eyebrow{ font-size:22px; letter-spacing:-0.01em; line-height:1.2; }
+.opt-index #optBig .optw-head .opt-card-t{ font-size:22px; }
+.opt-index .opt-grid > .opt-card:not(.opt-wide) > .opt-card-sub, .opt-index .opt-grid > .oli .oli-eyesub{ margin-top:-2px; }
+.opt-index .opt-card-go{ margin-top:20px; }
+.opt-index .opt-grid > .fire-card{ grid-column:1 / -1; }
+@media (max-width:720px){ .opt-index .opt-grid{ grid-template-columns:minmax(0,1fr); } }
+.opt-index .opt-card{ position:relative; min-height:0; }
+.opt-index .opt-card .card-mini{ width:100%; height:auto; margin:6px 0 2px; }
+.opt-index .opt-card-num, .opt-index #optHero .opt-budget-num{ display:none; }
+.opt-index .opt-card .card-mini{ margin:10px 0 0; }
+.opt-index .opt-card-go{ margin-top:auto; align-self:flex-start; padding:0 20px; height:44px; border-radius:var(--r-pill); background:var(--green-cta); color:#fff; font-size:15px; font-weight:600; gap:8px; }
+.opt-index .opt-card-go svg{ color:#fff; }
+.opt-index .opt-card:hover .opt-card-go{ background:#0B6440; }
+.opt-index .opt-grid > .opt-card:not(.opt-wide){ display:flex; flex-direction:column; gap:10px; }
+.opt-index .opt-grid > .opt-card:not(.opt-wide) > .card-mini{ margin-bottom:18px; }
+.opt-index #optHero .card-mini{ width:100%; max-width:420px; margin:10px 0 18px; }
+/* the former hero becomes a plain card */
+.opt-index #optHero{ display:flex; flex-direction:column; gap:10px; min-height:0; padding:var(--s-6); cursor:pointer; }
+.opt-index #optHero > div:first-child{ display:contents; }
+.opt-index #optHero .opt-budget-t{ font-size:22px; line-height:1.2; font-weight:600; letter-spacing:-0.005em; color:var(--ink); }
+.opt-index #optHero .opt-budget-s{ font-size:15px; color:var(--text-secondary); line-height:1.5; }
+.opt-index #optHero .opt-budget-num{ margin-top:auto; }
+.opt-index #optHero .opt-budget-amt{ font-size:26px; font-weight:600; color:var(--ink); }
+.opt-index #optHero .opt-budget-lbl{ font-size:13.5px; color:var(--text-secondary); }
+/* badges on a card title */
+.opt-card-t .od-new{ display:inline-block; margin-left:8px; vertical-align:2px; font-size:11px; font-weight:600; color:var(--green-cta); background:var(--eggshell); border-radius:999px; padding:2px 8px; }
+.opt-card-t .od-alert{ display:inline-block; margin-left:8px; vertical-align:2px; min-width:18px; height:18px; line-height:18px; text-align:center; font-size:11px; font-weight:600; color:#fff; background:#B3391B; border-radius:999px; padding:0 5px; }
+.opt-card-t .od-ext{ display:inline-block; margin-left:6px; vertical-align:-1px; width:12px; height:12px; color:var(--text-secondary); }
+/* progress bar visual */
+.od-bar{ height:10px; border-radius:6px; background:#EEF0F3; overflow:hidden; margin:14px 0 6px; }
+.od-bar i{ display:block; height:100%; border-radius:6px; background:var(--green-cta); transform-origin:left; animation:odGrow .8s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes odGrow{ from{ transform:scaleX(0) } }
+.od-bar-cap{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-secondary); }
+
+/* ---- the sections: full width. The rail's contents move to the top of the page: back link, title, tabs ---- */
+.layout.page.sub-layout.on, .layout.page.alo-layout.on, .layout.page.bud-layout.on, body.fire-page .layout.page.opt-index.on{ grid-template-columns:minmax(0,1fr); }
+.layout.page.sub-layout.on > .side, .layout.page.alo-layout.on > .side, .layout.page.bud-layout.on > .side, body.fire-page .opt-index > .side{ display:none; }
+.layout.page.sub-layout.on > .rail, .layout.page.alo-layout.on > .rail, .layout.page.bud-layout.on > .rail, body.fire-page .opt-index > .rail{ display:none; }
+.layout.page.sub-layout.on > .center, .layout.page.alo-layout.on > .center, .layout.page.bud-layout.on > .center, body.fire-page .opt-index > .center{ grid-column:1; max-width:none; }
+body.bai-open .layout.page.sub-layout.on, body.bai-open .layout.page.alo-layout.on, body.bai-open .layout.page.bud-layout.on, body.bai-open.fire-page .layout.page.opt-index.on{ grid-template-columns:minmax(0,1fr) 360px; }
+body.bai-open .layout.page.on > .rail.bai-host{ display:block; grid-column:2; }
+body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
+.bud-top .bud-back-tbl{ display:none !important; }
+.os-head{ display:flex; align-items:center; margin:0 0 22px; }
+.os-head .bud-back{ margin:0; font-size:15px; }
+.os-head h1{ display:none; }
+.fire-card .os-tabs{ display:none; }
+.fire-card > .snap-sub{ display:none; }
+.fire-card > .snap-headline{ margin-top:0; }
+.os-tabs{ display:flex; flex-wrap:wrap; gap:6px; list-style:none; margin:4px 0 12px; padding:0; }
+/* at the full width, charts keep a readable size: capped in height, centred */
+.layout.page.sub-layout.on > .center svg[viewBox], .layout.page.alo-layout.on > .center svg[viewBox]{ max-height:340px; max-width:880px; }
+.layout.page.sub-layout.on > .center #stChart{ width:100%; max-width:none; max-height:none; height:auto; display:block; }
+.layout.page.sub-layout.on > .center #stChart{ aspect-ratio:1300/440; }
+.os-tabs li{ font-size:14px; font-weight:500; color:var(--text-secondary); padding:7px 14px; border-radius:999px; border:1px solid var(--hairline-strong); cursor:pointer; background:#fff; }
+.os-tabs li:hover{ color:var(--ink); }
+.os-tabs li.active{ background:var(--eggshell); border-color:var(--eggshell); color:var(--green-cta); font-weight:600; }
+.os-side-card{ border:1px solid var(--hairline); border-radius:18px; padding:var(--s-6); display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px 28px; align-items:end; }
+.os-side-card .fl-row{ min-width:0; }
+.os-side-card > .st-lab{ grid-column:1 / -1; margin:0 !important; font-size:18px; font-weight:600; color:var(--ink); }
+.os-side-card > a, .os-side-card > .st-link{ grid-column:1 / -1; }
+.ret-card-link[data-ask="What should I stress test next?"]{ display:none !important; }
+</style>
+<script id="optimizeDashJS">
+(function(){
+  'use strict';
+  var idx=document.querySelector('.layout.page.opt-index'); if(!idx) return;
+  var center=idx.querySelector('.center'), grid=idx.querySelector('.opt-grid'), big=document.getElementById('optBig'), oli=document.getElementById('oli');
+  if(!center||!grid||!big||!oli) return;
+  var GO='<svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  /* the headline leaves the chart and opens the page, with the first move and Boldin AI one tap away */
+  var det=document.getElementById('oliDetail'); if(det) oli.appendChild(det);
+  var head=document.createElement('div'); head.className='os-page-head';
+  var oh=oli.querySelector('.oli-head'); if(oh){ head.appendChild(oh); var sub=oh.querySelector('.snap-sub'); if(sub) sub.textContent='Marshall, this is the same life, funded better. Three moves get you there, and the first one closes at 63.'; }
+  head.insertAdjacentHTML('beforeend','<div class="os-cta"><button type="button" class="pri">Start the first move</button><button type="button" class="sec"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg>Ask what to do first</button></div>');
+  center.insertBefore(head, center.firstChild);
+  head.querySelector('.pri').addEventListener('click',function(){ var a=document.querySelector('#oliDetail .oli-dact'); if(a){ a.click(); return; } big.scrollIntoView({behavior:'smooth',block:'start'}); });
+  /* the contribution question opens inside the card, not in a modal */
+  document.addEventListener('click',function(e){ var a=e.target.closest && e.target.closest('#oliDetail .oli-dact[data-act="contrib"]'); if(!a || !window.CONTRIB || !CONTRIB.openInline) return; e.stopPropagation(); e.preventDefault();
+    var det=document.getElementById('oliDetail'); var wrap=det.querySelector(':scope > .cf-inline'); if(!wrap){ wrap=document.createElement('div'); wrap.className='cf-inline'; wrap.hidden=true; det.appendChild(wrap); }
+    if(!wrap.hidden) return; a.classList.add('cf-inline-link'); CONTRIB.openInline(wrap, a); }, true);
+  head.querySelector('.sec').addEventListener('click',function(){ if(window.__bai) window.__bai.open('Which of the three moves should I make first?'); });
+  /* the chart becomes the first card, beside the opportunities */
+  oli.insertAdjacentHTML('afterbegin','<div class="oli-eyebrow">Between the lines</div><div class="oli-eyesub">Your plan as it stands, and the same plan with every move made.</div>');
+  grid.insertBefore(oli, grid.firstChild);
+  grid.insertBefore(big, oli.nextSibling);
+  function card(opt, html){ var d=document.createElement('div'); d.className='opt-card'; d.dataset.opt=opt; d.innerHTML=html; return d; }
+
+  /* Financial Independence: opens the FI page through its rail item */
+  var fi=card('fire-card-link',
+    '<div class="opt-card-t">Financial Independence<span class="od-new">New</span></div>'+
+    '<div class="opt-card-sub">Marshall, you are two thirds of the way to <b>$1.7M</b>. At this pace, work becomes optional in <b>February 2031</b>, five years from now.</div>'+
+    '<div class="od-bar"><i style="width:67%"></i></div><div class="od-bar-cap"><span>$1.14M today</span><span>$1.7M</span></div>'+
+    '<div class="opt-card-num"><div class="opt-card-amt">67% there</div><div class="opt-card-cap">crossing February 1, 2031, a Saturday</div></div>'+
+    '<span class="opt-card-go">See your number '+GO+'</span>');
+  fi.addEventListener('click',function(){ var it=document.querySelector('.onav-item[data-opt="fire"]'); if(it) it.click(); });
+
+  /* Stress Test: the page listens for any [data-opt="stress"] */
+  var st=card('stress',
+    '<div class="opt-card-t">Stress Test</div>'+
+    '<div class="opt-card-sub">Retire at 63 with Social Security at 70 and your plan still holds to <b>92</b>. Pull a lever to see what each change costs; nothing is saved until you say so.</div>'+
+    '<svg class="card-mini" viewBox="0 0 240 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 34 C 60 30, 120 22, 226 6" fill="none" stroke="#2F7FB5" stroke-width="2.4" stroke-linecap="round"/><path d="M6 34 C 50 36, 90 34, 130 30 S 200 22, 226 18" fill="none" stroke="#D88A3A" stroke-width="2.4" stroke-linecap="round"/><circle cx="226" cy="6" r="4" fill="#2F7FB5" stroke="#fff" stroke-width="1.6"/></svg>'+
+    '<div class="opt-card-num"><div class="opt-card-amt">92</div><div class="opt-card-cap">still funded to, at 87% confidence</div></div>'+
+    '<span class="opt-card-go">Pull a lever '+GO+'</span>');
+
+  /* Social Security Explorer: claiming ages side by side; opens the Social Security page */
+  var bars=''; for(var i=0;i<9;i++){ var x=8+i*25, h1=14+i*2.2, h2=16+i*2.8; bars+='<rect x="'+x+'" y="'+(40-h1)+'" width="9" height="'+h1+'" rx="2" fill="#0D3F4A"/><rect x="'+(x+11)+'" y="'+(40-h2)+'" width="9" height="'+h2+'" rx="2" fill="#E8743B"/>'; }
+  var sx=card('ss',
+    '<div class="opt-card-t">Social Security Explorer</div>'+
+    '<div class="opt-card-sub">Marshall: <b>$1,720</b> a month at 62, <b>$2,480</b> at 70. Lily: <b>$1,310</b> at 62, <b>$1,890</b> at 70. See what each age adds up to over both your lifetimes.</div>'+
+    '<svg class="card-mini" viewBox="0 0 240 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+bars+'</svg>'+
+    '<div class="opt-card-num"><div class="opt-card-amt">$2,480</div><div class="opt-card-cap">a month at 70 · $1,720 at 62</div></div>'+
+    '<span class="opt-card-go">Start '+GO+'</span>');
+
+  /* order: FI, Stress Test, Asset Allocation, Detailed Budgeter, Social Security, Explorer, Tax Planning, Withdrawal Strategy */
+  var hero=document.getElementById('optHero'); if(hero) hero.classList.add('opt-card');
+  grid.insertBefore(fi, big.nextSibling);
+  grid.insertBefore(st, fi.nextSibling);
+  var ss=grid.querySelector('.opt-card[data-opt="ss"]'); if(ss) grid.insertBefore(sx, ss.nextSibling); else grid.appendChild(sx);
+  /* every card speaks to Marshall and Lily with their own numbers */
+  var COPY={
+    alloc:'Your 60/40 target has drifted <b>8 points</b> toward stocks since June. One click moves <b>$38,000</b> back where your plan wants it.',
+    budget:'You and Lily spend <b>$6,323</b> a month, <b>$2,077</b> under your safe line. See where the room is, and what it could fund.',
+    ss:'Waiting to 70 adds <b>$760</b> a month to your check, for life. Lily’s own benefit starts in 2034; the survivor math favors the larger one.',
+    tax:'Between retiring in 2028 and required distributions at 75, you have six low-bracket Decembers. Converting <b>$40,000</b> in each keeps <b>$61,000</b> yours.',
+    withdraw:'Taxable first, then tax-deferred, Roth last. With guardrails on, that order pays you <b>$380</b> more a month without shortening the plan.'
+  };
+  Object.keys(COPY).forEach(function(k){ var el=grid.querySelector((k==='alloc'?'#optHero .opt-budget-s':'.opt-card[data-opt="'+k+'"] .opt-card-sub')); if(el) el.innerHTML=COPY[k]; });
+  var bigSub=big.querySelector('.opt-card-sub'); if(bigSub) bigSub.textContent='Marshall, two moves are already behind you. Three to go, in order: the catch-up first, the Roth conversion in December, then Social Security at 70.';
+  /* a status on every card */
+  var STATUS={'fire-card-link':['good','On track'],stress:['good','87% confidence'],alloc:['warn','Drifted 8 pts'],budget:['good','$2,077 of room'],ss:['act','1 action'],ssx:['','Not started'],tax:['warn','First rung Dec 31'],withdraw:['warn','Guardrails off']};
+  function stat(el,k){ if(!el||el.querySelector('.os-status')) return; var st=STATUS[k]; el.insertAdjacentHTML('afterbegin','<span class="os-status '+st[0]+'">'+st[1]+'</span>'); }
+  stat(fi,'fire-card-link'); stat(st,'stress'); stat(hero,'alloc'); stat(sx,'ssx');
+  ['budget','ss','tax','withdraw'].forEach(function(k){ stat(grid.querySelector('.opt-card[data-opt="'+k+'"]'),k); });
+  /* the Social Security card carries the "1 action needed" mark from the old rail */
+  /* Detailed Budgeter lives in Planner (Classic) on staging; mark it as leaving */
+  var bud=grid.querySelector('.opt-card[data-opt="budget"] .opt-card-t'); if(bud && !bud.querySelector('.od-ext')) bud.insertAdjacentHTML('beforeend','<svg class="od-ext" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+})();
+
+/* ---- the sections go full width: each page's rail contents move into the top of its main column ---- */
+(function(){
+  function lift(layout, side){
+    var center=layout.querySelector(':scope > .center'); if(!center || !side || side.dataset.lifted) return; side.dataset.lifted='1';
+    var back=side.querySelector('.bud-back'), h1=side.querySelector('h1'), nav=side.querySelector('ul, .subnav');
+    var head=document.createElement('div'); head.className='os-head';
+    if(back) head.appendChild(back); if(h1) head.appendChild(h1);
+    center.insertBefore(head, center.firstChild);
+    if(nav){ nav.classList.add('os-tabs'); center.insertBefore(nav, head.nextSibling); }
+    var rest=[].slice.call(side.children).filter(function(c){ return c!==head && !c.classList.contains('os-tabs'); });
+    if(rest.length){ var card=document.createElement('div'); card.className='os-side-card'; rest.forEach(function(c){ card.appendChild(c); }); center.insertBefore(card, (nav&&nav.parentNode===center)?nav.nextSibling:head.nextSibling); }
+  }
+  document.querySelectorAll('.layout.page.sub-layout, .layout.page.alo-layout, .layout.page.bud-layout').forEach(function(l){ lift(l, l.querySelector(':scope > .side')); });
+  /* Financial Independence builds its rail later; lift it once it exists */
+  var opt=document.querySelector('.layout.page.opt-index');
+  function liftFire(){ var fs=opt && opt.querySelector('.fire-side'); if(!fs) return false; var center=opt.querySelector(':scope > .center'), card=document.getElementById('fireCard'); if(!card) return false;
+    if(fs.dataset.lifted) return true; fs.dataset.lifted='1'; var head=document.createElement('div'); head.className='os-head fire-head'; var b=fs.querySelector('.bud-back'), h=fs.querySelector('h1'), nav=fs.querySelector('ul'); if(b) head.appendChild(b); if(h) head.appendChild(h); card.insertBefore(head, card.firstChild); if(nav){ nav.classList.add('os-tabs'); card.insertBefore(nav, head.nextSibling); } return true; }
+  if(!liftFire()){ var tries=0, t=setInterval(function(){ if(liftFire() || ++tries>40) clearInterval(t); }, 250); }
+  /* every section opens with Boldin AI beside it */
+  document.addEventListener('click', function(e){
+    var card=e.target.closest && e.target.closest('.opt-grid [data-opt], .opt-grid #optHero, .onav-item[data-opt]');
+    if(card){ setTimeout(function(){ if(window.__bai && !window.__bai.isOpen()) window.__bai.open(); }, 380); return; }
+    var back=e.target.closest && e.target.closest('[data-stress-back], .os-head .bud-back, .fire-head .bud-back');
+    if(back && window.__bai && window.__bai.isOpen()){ window.__bai.close(); }
+  }, true);
+})();
+</script>
+<style id="lifeEventPresetsCSS">
+/* ---- Life events: three starters, so nobody stalls on "what do I add next?" ---- */
+.pe-starters{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; margin:4px 0 22px; }
+.pe-starter{ display:flex; flex-direction:column; gap:10px; padding:18px 18px 16px; border:1px solid var(--hairline); border-radius:16px; background:#fff; text-align:left; font:inherit; color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+.pe-starter:hover{ border-color:var(--hairline-strong); background:#FAFBFB; }
+.pe-starter .ic{ width:38px; height:38px; border-radius:12px; display:grid; place-items:center; background:var(--eggshell); color:var(--green-cta); }
+.pe-starter .ic svg{ width:20px; height:20px; }
+.pe-starter .t{ font-size:16px; font-weight:600; line-height:1.25; }
+.pe-starter .s{ font-size:13.5px; color:var(--text-secondary); line-height:1.45; }
+.pe-starter .go{ margin-top:auto; display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:600; color:var(--green-cta); }
+.pe-starter .go svg{ width:12px; height:12px; }
+.pe-starters-add{ margin:-6px 0 26px; }
+.pe-starters-lab{ font-size:13px; font-weight:600; color:var(--text-secondary); margin:0 0 10px; }
+@media (max-width:900px){ .pe-starters{ grid-template-columns:minmax(0,1fr); } }
+</style>
+<script id="lifeEventPresetsJS">
+(function(){
+  'use strict';
+  var GO='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var IC={
+    shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/><path d="M12 9v6M9 12h6"/></svg>',
+    roof:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
+    beach:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M4 16c3-2 5-2 8 0s5 2 8 0"/><circle cx="17" cy="6" r="2.5"/><path d="M4 12l5-6 5 6"/></svg>'
+  };
+  var PRESETS=[
+    { id:'ins', ic:IC.shield, t:'Switching off your employer’s insurance', s:'Health coverage on your own until Medicare at 65.', chap:'next', type:'Something else', nm:'Health insurance on our own', who:'Both', change:'Spending rises', yr:2028, until:'Until 2030', amt:'1,400' },
+    { id:'roof', ic:IC.roof, t:'Plan for a new roof every 10 years', s:'A one-time cost that comes back; the plan sets it aside.', chap:'bridge', type:'Something else', nm:'New roof', who:'Both', change:'A one-time cost', yr:2029, until:'For 10 years', amt:'18,000' },
+    { id:'vac', ic:IC.beach, t:'Buy a vacation home', s:'The down payment now, and the carrying cost after.', chap:'bridge', type:'Buy a second home', nm:'Buy a vacation home', who:'Both', change:'A one-time cost', yr:2031, until:'Once', amt:'120,000' }
+  ];
+  function setText(vt, val){ if(!vt) return; vt.textContent=val; vt.classList.remove('is-placeholder'); var f=vt.closest('.field'); if(f) f.classList.remove('is-empty'); vt.dispatchEvent(new Event('input',{bubbles:true})); }
+  function setSel(ed, key, val){ var sel=ed.querySelector('select[data-pe="'+key+'"]'); if(!sel) return; sel.value=val; sel.dispatchEvent(new Event('change',{bubbles:true})); }
+  function start(p){
+    if(!window.__peSpawn) return;
+    var ed=window.__peSpawn(p.chap, {top:false}); if(!ed) return;
+    setSel(ed,'type',p.type);
+    setText(ed.querySelector('.field:not(.pe-choice) .vtext'), p.nm);
+    setSel(ed,'who',p.who); setSel(ed,'kind',p.change); setSel(ed,'until',p.until);
+    setText(ed.querySelector('[data-pe-f="when"] .vtext'), String(p.yr));
+    var amtF=[].slice.call(ed.querySelectorAll('.field')).filter(function(x){ var l=x.querySelector('label'); return l && /By how much|Amount/.test(l.textContent); })[0];
+    if(amtF) setText(amtF.querySelector('.vtext'), p.amt);
+    var save=ed.querySelector('.btn-save'); if(save) save.disabled=false;
+    setTimeout(function(){ var y=ed.getBoundingClientRect().top+window.scrollY-140; window.scrollTo({top:Math.max(0,y), behavior:'smooth'}); }, 80);
+  }
+  function build(){
+    var body=document.getElementById('eventsBody'); if(!body || body.querySelector('.pe-starters')) return !!body;
+    var wrap=document.createElement('div'); wrap.className='pe-starters-wrap';
+    wrap.innerHTML='<div class="pe-starters">'+PRESETS.map(function(p){
+      return '<button type="button" class="pe-starter" data-preset="'+p.id+'"><span class="ic">'+p.ic+'</span><span class="t">'+p.t+'</span><span class="s">'+p.s+'</span><span class="go">Add this '+GO+'</span></button>';
+    }).join('')+'</div>';
+    body.insertBefore(wrap, body.firstChild);
+    var hb=document.querySelector('#events-block .acc-head .cx-actions'); if(hb){ hb.classList.add('pe-starters-add'); wrap.appendChild(hb); }
+    wrap.addEventListener('click', function(e){ var b=e.target.closest('.pe-starter'); if(!b) return; e.preventDefault(); e.stopPropagation(); var p=PRESETS.filter(function(x){ return x.id===b.dataset.preset; })[0]; if(p) start(p); });
+    return true;
+  }
+  if(!build()){ var tries=0, t=setInterval(function(){ if(build() || ++tries>80) clearInterval(t); }, 250); }
+  document.addEventListener('click', function(){ setTimeout(build, 300); }, true);
+})();
+</script>
+<style id="whatifCSS">
+/* ======================================================================
+   What-if: one plan, many shadows.
+   A scenario is a delta on the plan. Ephemeral by default (dashed, tinted),
+   solid once kept (ink, a row in the plan selector).
+   ====================================================================== */
+.wi-band{ position:fixed; top:73px; left:0; transform:translateY(-8px); width:100%; z-index:58; opacity:0; pointer-events:none; transition:opacity .28s ease, transform .36s cubic-bezier(.2,.7,.2,1); }
+.wi-band.on{ opacity:1; transform:translateY(0); pointer-events:auto; }
+.wi-in{ margin:0 var(--s-8); background:#fff; border:1px dashed var(--hairline-strong); border-radius:14px; display:flex; align-items:center; gap:12px; min-height:50px; padding:6px 8px 6px 14px; transition:border-color .25s ease, background .25s ease; }
+.wi-band.solid .wi-in{ border-style:solid; border-color:var(--hairline); }
+.wi-tag{ flex:0 0 auto; font-size:12px; font-weight:600; letter-spacing:.01em; padding:3px 9px; border-radius:999px; border:1px dashed var(--ink); color:var(--ink); line-height:1.3; }
+.wi-band.solid .wi-tag{ border:0; background:var(--green-cta); color:#fff; }
+.wi-name{ font-size:15px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:300px; outline:none; border-radius:6px; padding:2px 4px; margin-left:-4px; }
+.wi-name[contenteditable="true"]{ background:#F3F6F5; box-shadow:0 0 0 2px var(--green-cta); min-width:140px; }
+.wi-chips{ display:flex; align-items:center; gap:6px; flex:1 1 auto; min-width:0; overflow:hidden; }
+.wi-chip{ flex:0 0 auto; display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--text-secondary); padding:4px 10px; border-radius:999px; background:#F6F7F8; white-space:nowrap; animation:wiChip .32s cubic-bezier(.2,.7,.2,1) both; }
+.wi-chip b{ color:var(--ink); font-weight:600; }
+.wi-chip .arr{ color:#9AA0AE; }
+.wi-chip .to{ color:var(--ink); font-weight:600; }
+.wi-chip.wi-chip-move{ background:#EEF8F3; }
+@keyframes wiChip{ from{ opacity:0; transform:translateY(4px) } to{ opacity:1; transform:none } }
+.wi-acts{ display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+.wi-btn{ font:inherit; font-size:14px; font-weight:600; height:36px; padding:0 14px; border-radius:999px; border:1px solid transparent; background:none; color:var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background .15s ease, border-color .15s ease; }
+.wi-btn:hover{ background:#F6F7F8; }
+.wi-btn.pri{ background:var(--green-cta); color:#fff; }
+.wi-btn.pri:hover{ background:#0B6440; }
+.wi-btn.ghost{ color:var(--text-secondary); }
+.wi-btn.is-on{ background:var(--ink); color:#fff; }
+.wi-btn svg{ width:14px; height:14px; }
+.wi-btn[hidden]{ display:none; }
+.wi-x{ width:36px; height:36px; border-radius:999px; border:0; background:none; color:var(--text-secondary); cursor:pointer; display:grid; place-items:center; }
+.wi-x:hover{ background:#F6F7F8; color:var(--ink); }
+.wi-x svg{ width:16px; height:16px; }
+/* the page moves down to make room */
+body.whatif-open .layout.page.on, body.whatif-open .hm-page.on{ margin-top:60px !important; }
+body.whatif-open .layout.page.on.opt-index, body.whatif-open .layout.page.on.sub-layout, body.whatif-open .layout.page.on.alo-layout, body.whatif-open .layout.page.on.bud-layout{ margin-top:60px !important; }
+body.whatif-open #powerMode{ top:133px; }
+body.whatif-open .layout.page.on > .side, body.whatif-open .layout.page.on > .rail{ top:156px; }
+body.whatif-open .ps-wrap{ top:133px; }
+body.whatif-open .layout.page.on > .side{ max-height:calc(100vh - 156px); }
+body.whatif-open:not(.whatif-solid) .wi-shadowed{ text-decoration:underline dashed var(--hairline-strong); text-underline-offset:5px; text-decoration-thickness:1.5px; }
+/* ephemeral drawing: the scenario line is sketched, not inked */
+body.whatif-open:not(.whatif-solid) #stChart .st-line[stroke="#4A99C4"]{ stroke-dasharray:10 7; }
+body.whatif-open:not(.whatif-solid) #stChart path[fill^="rgba(74,153,196"]{ opacity:.55; }
+
+/* ---- compare: a sheet that folds down from the band ---- */
+.wi-sheet{ margin:8px var(--s-8) 0; background:#fff; border:1px solid var(--hairline); border-radius:16px; overflow:hidden; max-height:0; opacity:0; transition:max-height .42s cubic-bezier(.2,.7,.2,1), opacity .25s ease; }
+.wi-band.cmp .wi-sheet{ max-height:520px; opacity:1; }
+.wi-sheet-in{ padding:18px 22px 20px; display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:28px; align-items:start; }
+.wi-tbl{ width:100%; border-collapse:collapse; font-size:15px; }
+.wi-tbl th{ text-align:left; font-size:13px; font-weight:600; color:var(--text-secondary); padding:0 0 10px; border-bottom:1px solid var(--hairline); }
+.wi-tbl th.r, .wi-tbl td.r{ text-align:right; }
+.wi-tbl th.what{ color:var(--ink); }
+.wi-tbl th.what i{ display:inline-block; width:18px; border-top:2px dashed #4A99C4; vertical-align:middle; margin-right:8px; }
+.wi-band.solid .wi-tbl th.what i{ border-top-style:solid; }
+.wi-tbl th.plan i{ display:inline-block; width:18px; border-top:2px dashed #9AA0AE; vertical-align:middle; margin-right:8px; }
+.wi-tbl td{ padding:9px 0; border-bottom:1px solid var(--hairline); color:var(--ink); }
+.wi-tbl tr:last-child td{ border-bottom:0; }
+.wi-tbl td.lab{ color:var(--text-secondary); }
+.wi-tbl td.what{ font-weight:600; }
+.wi-tbl td.d{ text-align:right; font-size:13.5px; font-weight:600; width:90px; color:var(--text-secondary); }
+.wi-tbl td.d.pos{ color:var(--green-cta); }
+.wi-tbl td.d.neg{ color:#B4452B; }
+.wi-read{ border-left:1px solid var(--hairline); padding-left:24px; }
+.wi-read .t{ font-size:13px; font-weight:600; color:var(--text-secondary); margin:0 0 10px; }
+.wi-read p{ margin:0 0 10px; font-size:15px; line-height:1.5; color:var(--ink); }
+.wi-read p b{ font-weight:600; }
+.wi-read .tip{ color:var(--text-secondary); font-size:13.5px; }
+
+/* ---- the plan selector: kept scenarios live under My Financial Plan ---- */
+.plan-row.wi-row .plan-box{ border-radius:999px; }
+.plan-row.wi-row .wi-letter{ display:none; }
+.plan-select[data-wi-n]:not([data-wi-n="0"]) .plan-row[data-plan="b"]{ display:none; }
+.plan-row.wi-row .plan-row-label{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* ---- a quiet toast ---- */
+.wi-toast{ position:fixed; left:50%; bottom:120px; transform:translateX(-50%) translateY(8px); background:var(--ink); color:#fff; font-size:14px; font-weight:600; padding:10px 16px; border-radius:999px; z-index:80; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1); }
+.wi-toast.on{ opacity:1; transform:translateX(-50%) translateY(0); }
+@media (max-width:900px){ .wi-sheet-in{ grid-template-columns:minmax(0,1fr); } .wi-read{ border-left:0; padding-left:0; } .wi-chips{ display:none; } }
+</style>
+<script id="whatifJS">
+(function(){
+  'use strict';
+  var ST=null;
+  function st(){ if(!ST && window.STRESS && window.STRESS.S) ST=window.STRESS; return ST; }
+  var KEYS={ret:'Retire', ss:'Social Security', spend:'Spending', life:'Lifestyle', ret_r:'Returns'};
+  var LIFE=['Frugal','Comfortable','Generous'], RET_R=['Conservative','Balanced','Aggressive'];
+  function fmt(k,v){ if(k==='spend') return '$'+Math.round(v).toLocaleString('en-US')+'/mo'; if(k==='life') return LIFE[v]; if(k==='ret_r') return RET_R[v]; return 'at '+v; }
+  function big(n){ return Math.abs(n)>=1e6 ? ('$'+(n/1e6).toFixed(2)+'M') : ('$'+Math.round(n/1e3)+'K'); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* ---------- state ---------- */
+  var W={ open:false, solid:null, changes:{}, moves:{}, cmp:false };
+  var SOLID=[]; try{ SOLID=JSON.parse(localStorage.getItem('boldin.whatifs')||'[]')||[]; }catch(e){ SOLID=[]; }
+  function save(){ try{ localStorage.setItem('boldin.whatifs', JSON.stringify(SOLID)); }catch(e){} }
+
+  /* ---------- the band ---------- */
+  var band=document.createElement('div'); band.className='wi-band'; band.setAttribute('role','region'); band.setAttribute('aria-label','What-if scenario');
+  band.innerHTML=
+    '<div class="wi-in">'+
+      '<span class="wi-tag">What-if</span>'+
+      '<span class="wi-name" spellcheck="false"></span>'+
+      '<span class="wi-chips"></span>'+
+      '<span class="wi-acts">'+
+        '<button type="button" class="wi-btn ghost wi-cmpbtn">Compare</button>'+
+        '<button type="button" class="wi-btn pri wi-keepbtn">Keep it</button>'+
+        '<button type="button" class="wi-btn pri wi-planbtn" hidden>Make this my plan</button>'+
+        '<button type="button" class="wi-x" aria-label="Discard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'+
+      '</span>'+
+    '</div>'+
+    '<div class="wi-sheet"><div class="wi-sheet-in"><table class="wi-tbl"></table><div class="wi-read"></div></div></div>';
+  document.body.appendChild(band);
+  var $name=band.querySelector('.wi-name'), $chips=band.querySelector('.wi-chips'), $tag=band.querySelector('.wi-tag'),
+      $cmp=band.querySelector('.wi-cmpbtn'), $keep=band.querySelector('.wi-keepbtn'), $plan=band.querySelector('.wi-planbtn'), $x=band.querySelector('.wi-x'),
+      $tbl=band.querySelector('.wi-tbl'), $read=band.querySelector('.wi-read');
+  var toast=document.createElement('div'); toast.className='wi-toast'; document.body.appendChild(toast); var toastT=null;
+  function say(msg){ toast.textContent=msg; toast.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(function(){ toast.classList.remove('on'); }, 2200); }
+
+  /* ---------- reading the plan vs the shadow ---------- */
+  function metrics(){
+    var s=st(); if(!s) return null;
+    var cur=s.run(s.S,false); cur.conf=s.conf(cur); var b=s.base;
+    var extra=0; Object.keys(W.moves).forEach(function(k){ extra+=W.moves[k].end||0; });
+    return { plan:{ funded:92, conf:b.conf, end:b.end, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend },
+             what:{ funded:cur.out||92, conf:cur.conf, end:cur.end+extra, ret:s.S.ret, ss:s.S.ss, spend:s.S.spend } };
+  }
+  function autoName(){
+    var parts=[]; Object.keys(W.moves).forEach(function(k){ parts.push(W.moves[k].label); });
+    Object.keys(W.changes).forEach(function(k){ var c=W.changes[k]; parts.push(k==='spend'?('Spend '+c.to):(k==='life'||k==='ret_r')?(c.to+' '+KEYS[k].toLowerCase()):(KEYS[k]+' '+c.to)); });
+    return parts.join(' · ') || 'A what-if';
+  }
+  function count(){ return Object.keys(W.changes).length+Object.keys(W.moves).length; }
+
+  /* ---------- painting ---------- */
+  function paintChips(){
+    var h='';
+    Object.keys(W.moves).forEach(function(k){ var m=W.moves[k]; h+='<span class="wi-chip wi-chip-move"><span class="to">'+esc(m.impact)+'</span></span>'; });
+    Object.keys(W.changes).forEach(function(k){ var c=W.changes[k]; h+='<span class="wi-chip"><b>'+KEYS[k]+'</b><span>'+esc(c.from.replace(/^at /,''))+'</span><span class="arr">&rarr;</span><span class="to">'+esc(c.to.replace(/^at /,''))+'</span></span>'; });
+    $chips.innerHTML=h;
+  }
+  function paintSheet(){
+    var m=metrics(); if(!m) return;
+    var nm=W.solid?W.solid.name:autoName();
+    function row(lab, a, b, d, cls){ return '<tr><td class="lab">'+lab+'</td><td class="r">'+a+'</td><td class="r what">'+b+'</td><td class="d '+(cls||'')+'">'+(d||'')+'</td></tr>'; }
+    var dc=m.what.conf-m.plan.conf, de=m.what.end-m.plan.end, df=m.what.funded-m.plan.funded;
+    $tbl.innerHTML='<thead><tr><th></th><th class="r plan"><i></i>Your plan</th><th class="r what"><i></i>'+esc(nm)+'</th><th class="r">Change</th></tr></thead><tbody>'+
+      row('Funded to', 'age '+m.plan.funded, 'age '+m.what.funded, df?((df>0?'+':'')+df+' yrs'):'same', df>0?'pos':df<0?'neg':'')+
+      row('Confidence', m.plan.conf+'%', m.what.conf+'%', dc?((dc>0?'+':'')+dc+' pts'):'same', dc>0?'pos':dc<0?'neg':'')+
+      row('Ending balance', big(m.plan.end), big(m.what.end), Math.abs(de)>=1000?((de>0?'+':'−')+big(Math.abs(de))):'same', de>=1000?'pos':de<=-1000?'neg':'')+
+      row('Retire', 'at '+m.plan.ret, 'at '+m.what.ret, m.what.ret!==m.plan.ret?((m.what.ret-m.plan.ret>0?'+':'')+(m.what.ret-m.plan.ret)+' yrs'):'same')+
+      row('Social Security', 'at '+m.plan.ss, 'at '+m.what.ss, m.what.ss!==m.plan.ss?((m.what.ss-m.plan.ss>0?'+':'')+(m.what.ss-m.plan.ss)+' yrs'):'same')+
+      row('Monthly spending', '$'+m.plan.spend.toLocaleString('en-US'), '$'+m.what.spend.toLocaleString('en-US'), m.what.spend!==m.plan.spend?((m.what.spend-m.plan.spend>0?'+':'−')+'$'+Math.abs(m.what.spend-m.plan.spend).toLocaleString('en-US')):'same')+
+      '</tbody>';
+    $read.innerHTML='<div class="t">In plain words</div>'+lines(m).map(function(l){ return '<p>'+l+'</p>'; }).join('')+
+      '<p class="tip">'+(W.solid?'This scenario is kept. Make it your plan and every page follows.':'Nothing here is saved. Keep it to compare later, or discard it and your plan is untouched.')+'</p>';
+  }
+  function lines(m){
+    var out=[]; var dc=m.what.conf-m.plan.conf, de=m.what.end-m.plan.end;
+    var what=[]; Object.keys(W.changes).forEach(function(k){ var c=W.changes[k]; what.push(k==='ret'?('retire '+c.to):k==='ss'?('Social Security '+c.to):k==='spend'?('spending '+c.to):k==='life'?('a '+c.to.toLowerCase()+' lifestyle'):(c.to.toLowerCase()+' returns')); });
+    Object.keys(W.moves).forEach(function(k){ what.push(W.moves[k].label.toLowerCase()); });
+    var lead=what.length? what.join(', ') : 'this scenario';
+    lead=lead.charAt(0).toUpperCase()+lead.slice(1);
+    if(m.what.funded<m.plan.funded) out.push('<b>'+lead+'</b> runs the money out at <b>'+m.what.funded+'</b> instead of lasting to 92.');
+    else out.push('<b>'+lead+'</b> keeps the plan funded to 92, at <b>'+m.what.conf+'%</b>'+(dc?(' instead of '+m.plan.conf+'%'):'')+'.');
+    if(Math.abs(de)>=1000) out.push('You would end with <b>'+big(m.what.end)+'</b>, '+big(Math.abs(de))+' '+(de>0?'more':'less')+' than your plan as it stands.');
+    if(dc<0 && m.what.ss<m.plan.ss) out.push('Most of that comes from claiming Social Security earlier; every year you wait is a guaranteed raise for life.');
+    else if(dc<0 && m.what.ret<m.plan.ret) out.push('Retiring earlier means more years drawing down and fewer adding in. The levers that recover it are spending and the claiming age.');
+    else if(dc>0) out.push('This is a stronger plan than the one you have. Keep it, and you can make it your plan whenever you are ready.');
+    return out.slice(0,3);
+  }
+  function fit(){ var tn=document.querySelector('.topnav'); if(!tn) return; var r=tn.getBoundingClientRect(); band.style.left=r.left+'px'; band.style.width=r.width+'px'; }
+  window.addEventListener('resize', fit);
+  /* the numbers on other pages follow the shadow, and come back when it goes */
+  var ORIG=new Map();
+  function setTxt(sel, val){ document.querySelectorAll(sel).forEach(function(el){ if(!ORIG.has(el)) ORIG.set(el, el.textContent); el.textContent=val; el.classList.add('wi-shadowed'); }); }
+  function reflect(){
+    if(!W.open){ ORIG.forEach(function(v,el){ el.textContent=v; el.classList.remove('wi-shadowed'); }); ORIG.clear(); document.querySelectorAll('.sbox .meter > i').forEach(function(i){ if(i.dataset.wiW){ i.style.width=i.dataset.wiW; delete i.dataset.wiW; } }); return; }
+    var m=metrics(); if(!m) return;
+    setTxt('.snap-stat[data-key="conf"] .fig', m.what.conf+'%');
+    setTxt('.snap-stat[data-key="conf"] .sub', W.solid?W.solid.letter:'What-if');
+    setTxt('.snap-stat[data-key="depleted"] .fig', m.what.funded<92?String(2026+(m.what.funded-61)):'2099');
+    setTxt('#tlConf', m.what.conf+'%'); setTxt('.sbox .fig', m.what.conf+'%');
+    document.querySelectorAll('.sbox .meter > i').forEach(function(i){ if(!i.dataset.wiW) i.dataset.wiW=i.style.width; i.style.width=m.what.conf+'%'; });
+  }
+  function paint(){
+    fit(); reflect();
+    document.body.classList.toggle('whatif-open', W.open);
+    document.body.classList.toggle('whatif-solid', !!W.solid);
+    band.classList.toggle('on', W.open);
+    band.classList.toggle('solid', !!W.solid);
+    band.classList.toggle('cmp', W.cmp);
+    if(!W.open) return;
+    if(W.solid){ $tag.textContent=W.solid.letter; $name.textContent=W.solid.name; $keep.hidden=true; $plan.hidden=false; $x.setAttribute('aria-label','Close'); }
+    else { $tag.textContent='What-if'; if($name.getAttribute('contenteditable')!=='true') $name.textContent=autoName(); $keep.hidden=false; $plan.hidden=true; $x.setAttribute('aria-label','Discard'); }
+    $cmp.classList.toggle('is-on', W.cmp);
+    paintChips(); if(W.cmp) paintSheet();
+  }
+
+  /* ---------- open / change / discard ---------- */
+  function ensureOpen(){ if(!W.open){ W.open=true; W.cmp=false; } }
+  function syncStress(){
+    var s=st(); if(!s) return;
+    Object.keys(s.BASE).forEach(function(k){ if(s.S[k]!==s.BASE[k]) W.changes[k]={from:fmt(k,s.BASE[k]), to:fmt(k,s.S[k])}; else delete W.changes[k]; });
+    if(W.solid){ paint(); return; }
+    if(count()){ ensureOpen(); } else if(W.open && !Object.keys(W.moves).length){ W.open=false; }
+    paint();
+  }
+  function addMove(label, impact, il){
+    var end=0; var mm=/([+-]?)\$([\d.]+)([KM])/.exec(impact||''); if(mm){ end=parseFloat(mm[2])*(mm[3]==='M'?1e6:1e3)*(mm[1]==='-'?-1:1); if(/tax/i.test(il||'')) end=-end; }
+    W.moves[label]={label:label, impact:(impact||'')+(il?(' '+il):''), end:end}; ensureOpen(); paint();
+  }
+  function discard(){
+    var s=st();
+    W.open=false; W.cmp=false; W.changes={}; W.moves={}; W.solid=null; $name.removeAttribute('contenteditable');
+    if(s){ s.reset(); }
+    document.querySelectorAll('.plan-row.wi-row').forEach(function(r){ r.setAttribute('aria-checked','false'); });
+    document.querySelectorAll('.plan-row[data-plan="financial"]').forEach(function(r){ r.setAttribute('aria-checked','true'); });
+    paint();
+  }
+  /* ---------- keep: name it, then it inks in ---------- */
+  function keep(){
+    if(W.solid) return;
+    $name.setAttribute('contenteditable','true'); $name.textContent=autoName(); $name.focus();
+    var r=document.createRange(); r.selectNodeContents($name); var sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    $keep.textContent='Save';
+    var fired=false; function done(){ if(fired) return; fired=true; $name.removeEventListener('blur', done); $name.removeEventListener('keydown', kd); var nm=($name.textContent||'').trim()||autoName(); $name.removeAttribute('contenteditable'); $keep.textContent='Keep it'; finalize(nm); }
+    function kd(e){ if(e.key==='Enter'){ e.preventDefault(); done(); } if(e.key==='Escape'){ e.preventDefault(); $name.textContent=autoName(); done(); } }
+    $name.addEventListener('blur', done); $name.addEventListener('keydown', kd);
+  }
+  function finalize(name){
+    var s=st(); var vals={}; if(s) Object.keys(s.S).forEach(function(k){ vals[k]=s.S[k]; });
+    var item={ id:'wi'+Date.now().toString(36), name:name, letter:'Plan '+String.fromCharCode(66+SOLID.length), vals:vals, changes:W.changes, moves:W.moves };
+    SOLID.push(item); save(); rail(); activate(item, true);
+    say('Kept as '+item.letter+' — '+item.name);
+  }
+  function activate(item, keepChanges){
+    var s=st();
+    if(!keepChanges && s){ Object.keys(item.vals).forEach(function(k){ s.S[k]=item.vals[k]; var inp=document.getElementById('st_'+k); if(inp){ inp.value=item.vals[k]; } }); document.querySelectorAll('.st-slider').forEach(function(inp){ inp.dispatchEvent(new Event('input')); }); s.render(null); }
+    W.solid=item; W.open=true; W.cmp=false;
+    W.changes={}; W.moves={};
+    if(s) Object.keys(s.BASE).forEach(function(k){ if(item.vals[k]!==s.BASE[k]) W.changes[k]={from:fmt(k,s.BASE[k]), to:fmt(k,item.vals[k])}; });
+    Object.keys(item.moves||{}).forEach(function(k){ W.moves[k]=item.moves[k]; });
+    document.querySelectorAll('.plan-row[data-plan="financial"]').forEach(function(r){ r.setAttribute('aria-checked','false'); });
+    document.querySelectorAll('.plan-row.wi-row').forEach(function(r){ r.setAttribute('aria-checked', r.dataset.wi===item.id?'true':'false'); });
+    paint();
+  }
+  function makePlan(){
+    var s=st(); if(!s || !W.solid) return;
+    var item=W.solid; s.rebase();
+    /* the shadow's numbers become the plan's: write them in ink and forget the originals */
+    reflect(); ORIG.forEach(function(v,el){ el.classList.remove('wi-shadowed'); }); ORIG.clear(); document.querySelectorAll('.sbox .meter > i').forEach(function(i){ delete i.dataset.wiW; });
+    SOLID=SOLID.filter(function(x){ return x.id!==item.id; }); SOLID.forEach(function(x,i){ x.letter='Plan '+String.fromCharCode(66+i); }); save(); rail();
+    W.solid=null; W.open=false; W.cmp=false; W.changes={}; W.moves={};
+    document.querySelectorAll('.plan-row.wi-row').forEach(function(r){ r.setAttribute('aria-checked','false'); });
+    document.querySelectorAll('.plan-row[data-plan="financial"]').forEach(function(r){ r.setAttribute('aria-checked','true'); });
+    paint(); say('“'+item.name+'” is now your plan');
+  }
+
+  /* ---------- the plan selector in the rail ---------- */
+  function rail(){
+    document.querySelectorAll('.plan-select').forEach(function(ps){
+      ps.querySelectorAll('.wi-row').forEach(function(r){ r.remove(); });
+      ps.dataset.wiN=SOLID.length;
+      var after=ps.querySelector('.plan-row[data-plan="financial"]');
+      SOLID.forEach(function(item){
+        var b=document.createElement('button'); b.type='button'; b.className='plan-row wi-row'; b.setAttribute('role','radio'); b.setAttribute('aria-checked', W.solid&&W.solid.id===item.id?'true':'false'); b.dataset.wi=item.id; b.title=item.letter;
+        b.innerHTML='<span class="plan-box" aria-hidden="true"><span></span></span><span class="plan-row-label">'+esc(item.name)+'</span>';
+        b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); activate(item,false); });
+        if(after && after.nextSibling) after.parentNode.insertBefore(b, after.nextSibling); else ps.appendChild(b); after=b;
+      });
+    });
+  }
+  document.addEventListener('click', function(e){ var fin=e.target.closest && e.target.closest('.plan-row[data-plan="financial"]'); if(fin && W.solid){ discard(); } }, true);
+
+  /* ---------- wiring ---------- */
+  $cmp.addEventListener('click', function(){ W.cmp=!W.cmp; paint(); });
+  $keep.addEventListener('click', function(){ if($name.getAttribute('contenteditable')==='true'){ $name.blur(); } else keep(); });
+  $plan.addEventListener('click', makePlan);
+  $x.addEventListener('click', function(){ if(W.solid){ discard(); } else { var n=count(); discard(); if(n) say('Discarded. Your plan is untouched.'); } });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && W.open && !W.cmp && $name.getAttribute('contenteditable')!=='true'){ /* leave Esc to the page */ } });
+
+  /* entry 1: a Stress Test lever */
+  document.addEventListener('change', function(e){ if(e.target.classList && e.target.classList.contains('st-slider')) syncStress(); }, true);
+  var liveT=null; document.addEventListener('input', function(e){ if(e.target.classList && e.target.classList.contains('st-slider') && W.open && W.cmp){ clearTimeout(liveT); liveT=setTimeout(paintSheet, 60); } }, true);
+  /* the page's own Keep / Reset links speak to the same shadow */
+  document.addEventListener('click', function(e){ if(e.target.closest && e.target.closest('[data-stress-keep]')){ e.preventDefault(); e.stopPropagation(); if(!W.open) syncStress(); if(W.open && !W.solid) keep(); } if(e.target.closest && e.target.closest('[data-stress-reset]')){ setTimeout(syncStress, 0); } }, true);
+
+  /* entry 2: a dot on Between the lines */
+  document.addEventListener('click', function(e){ var g=e.target.closest && e.target.closest('#oli .oli-node'); if(!g) return; setTimeout(function(){ var t=document.querySelector('#oliDetail .oli-dt'), imp=document.getElementById('oliImp'); if(!t) return; var label=t.textContent.trim(), impact=imp?imp.textContent.trim():'', il=(document.querySelector('#oliDetail .oli-dimpact .l')||{}).textContent||''; if(!/\$[\d.]+[KM]/.test(impact)) return; if(W.solid) return; W.moves={}; addMove(label, impact, il.trim()); }, 0); });
+
+  /* entry 3: ask Boldin AI "what if…" */
+  var orig=null;
+  function parseQ(q){
+    var out={}, s=q.toLowerCase(); var m;
+    if((m=/retir\w*\s+(?:at|by)\s+(\d{2})/.exec(s))) out.ret=+m[1];
+    if((m=/(?:social security|ss|claim\w*)\s+(?:at|by)\s+(\d{2})/.exec(s))) out.ss=+m[1];
+    if((m=/(?:spend\w*|spending)\s+(?:of\s+)?\$?([\d,]{4,6})/.exec(s))) out.spend=parseInt(m[1].replace(/,/g,''),10);
+    if(/frugal/.test(s)) out.life=0; if(/generous/.test(s)) out.life=2;
+    if(/conservative/.test(s)) out.ret_r=0; if(/aggressive/.test(s)) out.ret_r=2;
+    return out;
+  }
+  function wrapAI(){
+    if(orig || !window.__aiReply) return; orig=window.__aiReply;
+    window.__aiReply=function(q){
+      var s=st(); var p=parseQ(q||'');
+      if(/what if|suppose|imagine|instead/i.test(q||'') && s && Object.keys(p).length){
+        Object.keys(p).forEach(function(k){ var inp=document.getElementById('st_'+k); var v=p[k]; if(inp){ v=Math.max(+inp.min, Math.min(+inp.max, v)); inp.value=v; inp.dispatchEvent(new Event('input')); } s.S[k]=v; });
+        s.render(null); syncStress();
+        var m=metrics(); var l=lines(m).map(function(x){ return x.replace(/<[^>]+>/g,''); });
+        return 'I opened that as a what-if at the top of the page, nothing saved. '+l.join(' ')+' Keep it if you want to come back to it, or discard it and your plan is exactly as it was.';
+      }
+      return orig(q);
+    };
+  }
+  wrapAI(); var wt=setInterval(function(){ wrapAI(); if(orig) clearInterval(wt); }, 500);
+
+  /* the band follows the view: a shadow belongs to the whole app, not one page */
+  window.addEventListener('boldin:view', function(){ setTimeout(paint, 0); });
+  rail();
+  /* straight to the plan, no scenario in between */
+  function applyNow(label){ var s=st(); if(!s) return; if(W.solid){ makePlan(); return; } var nm=autoName(); s.rebase(); reflect(); ORIG.forEach(function(v,el){ el.classList.remove('wi-shadowed'); }); ORIG.clear(); document.querySelectorAll('.sbox .meter > i').forEach(function(i){ delete i.dataset.wiW; }); W.open=false; W.cmp=false; W.changes={}; W.moves={}; paint(); say('Plan updated \u2014 '+nm); }
+  function applyMove(label){ if(W.open && !W.solid && Object.keys(W.moves).length===0 && !count()){ W.open=false; } paint(); say('Plan updated \u2014 '+label); }
+  window.WHATIF={ open:function(){ ensureOpen(); paint(); }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
+})();
+</script>
+<style id="osApplyCSS">
+/* ---- every Optimize section ends the same way: keep it, or make it the plan ---- */
+.os-apply{ margin:36px 0 8px; padding:20px 0 0; border-top:1px solid var(--hairline); display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+.os-apply .txt{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.os-apply .txt b{ font-size:17px; font-weight:600; color:var(--ink); }
+.os-apply .txt span{ font-size:14.5px; color:var(--text-secondary); }
+.os-apply .btns{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.os-apply .btn{ font:inherit; font-size:15px; font-weight:600; height:44px; padding:0 20px; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); transition:background .15s ease, border-color .15s ease, opacity .15s ease; }
+.os-apply .btn:hover{ background:#F6F7F8; }
+.os-apply .btn.pri{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+.os-apply .btn.pri:hover{ background:#0B6440; }
+.os-apply .btn[disabled]{ opacity:.45; cursor:default; }
+.os-apply .btn svg{ width:15px; height:15px; }
+.os-apply.is-done .btns{ display:none; }
+.os-apply.is-done .txt b::after{ content:' · Updated'; color:var(--green-cta); }
+.os-status.done{ background:#E7F7F0; color:var(--green-cta); }
+</style>
+<script id="osApplyJS">
+(function(){
+  'use strict';
+  var SEC={
+    stress:  { host:'.layout.page.stress-layout > .center', key:'stress', dynamic:true },
+    soc:     { host:'.layout.page.soc-layout > .center', key:'ss', t:'Claim Social Security at 70, both of you', s:'+$760 a month, for life', move:['Social Security at 70','+$760','a month at 70'] },
+    tax:     { host:'.layout.page.tax-layout > .center', key:'tax', t:'Convert $40,000 a year through 2028', s:'−$61K in lifetime tax', move:['Roth conversions through 2028','-$61K','lifetime tax'] },
+    wdr:     { host:'.layout.page.wdr-layout > .center', key:'withdraw', t:'Turn on the guardrails', s:'Spending flexes with the markets, inside your limits', move:['Guardrails on','',''] },
+    alo:     { host:'.layout.page.alo-layout > .center', key:'alloc', t:'Rebalance to 60/40', s:'Moves $38,000 back where your plan wants it', move:['Rebalance to 60/40','',''] },
+    bud:     { host:'.layout.page.bud-layout > .center', key:'budget', t:'Set the budget at $6,323 a month', s:'$2,077 of room, every month', move:['Budget at $6,323','',''] },
+    fire:    { host:'#fireCard', key:'fire-card-link', t:'Make February 2031 the date', s:'Work becomes optional at 67, five years from now', move:['Financial independence in 2031','',''] }
+  };
+  var CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function build(id){
+    var c=SEC[id], host=document.querySelector(c.host); if(!host || host.querySelector('.os-apply')) return !!host;
+    var el=document.createElement('div'); el.className='os-apply'; el.dataset.sec=id;
+    el.innerHTML='<div class="txt"><b>'+esc(c.t||'')+'</b><span>'+esc(c.s||'')+'</span></div>'+
+      '<div class="btns"><button type="button" class="btn sec">Save as a scenario</button><button type="button" class="btn pri">'+CHECK+'Update my plan</button></div>';
+    var sp=host.querySelector(':scope > [class*="bottom-spacer"], :scope > [class*="spacer"]'); if(sp) host.insertBefore(el, sp); else host.appendChild(el);
+    el.querySelector('.sec').addEventListener('click', function(){ act(id, 'scenario'); });
+    el.querySelector('.pri').addEventListener('click', function(){ act(id, 'plan'); });
+    return true;
+  }
+  function stressText(){
+    var el=document.querySelector('.os-apply[data-sec="stress"]'); if(!el) return;
+    var W=window.WHATIF && WHATIF.state; var s=window.STRESS; var parts=[];
+    if(s && s.S && s.BASE){ var L={ret:'Retire at ', ss:'Social Security at ', spend:'Spend $', life:'', ret_r:''}; var LIFE=['Frugal','Comfortable','Generous'], RR=['Conservative','Balanced','Aggressive'];
+      Object.keys(s.BASE).forEach(function(k){ if(s.S[k]!==s.BASE[k]){ var v=s.S[k]; parts.push(k==='spend'?('Spend $'+v.toLocaleString('en-US')):k==='life'?(LIFE[v]+' lifestyle'):k==='ret_r'?(RR[v]+' returns'):(L[k]+v)); } }); }
+    var has=parts.length>0;
+    el.querySelector('.txt b').textContent= has ? 'Keep these levers' : 'Pull a lever first';
+    el.querySelector('.txt span').textContent= has ? parts.join(' · ') : 'Nothing changes until you choose to keep a scenario.';
+    el.querySelectorAll('.btn').forEach(function(b){ b.disabled=!has; });
+    el.classList.remove('is-done');
+  }
+  function markCard(key){
+    var card=document.querySelector('.opt-grid [data-opt="'+key+'"]') || (key==='fire-card-link' ? document.querySelector('.opt-grid [data-opt="fire-card-link"]') : null);
+    if(!card) return; var st=card.querySelector('.os-status'); if(st){ st.className='os-status done'; st.textContent='Updated'; }
+  }
+  function act(id, how){
+    var c=SEC[id]; var WI=window.WHATIF; if(!WI) return;
+    if(id==='stress'){
+      if(how==='scenario'){ WI.sync(); WI.keep(); }
+      else { WI.sync(); WI.applyNow('Levers'); var el=document.querySelector('.os-apply[data-sec="stress"]'); if(el){ el.querySelector('.txt b').textContent='Your plan, as it now stands'; el.querySelector('.txt span').textContent='The levers you pulled are the plan. Pull again to try something else.'; el.classList.add('is-done'); } markCard('stress'); }
+      return;
+    }
+    if(how==='scenario'){ WI.addMove(c.move[0], c.move[1], c.move[2]); WI.keep(); }
+    else { WI.applyMove(c.move[0]); var el=document.querySelector('.os-apply[data-sec="'+id+'"]'); if(el) el.classList.add('is-done'); markCard(c.key); }
+  }
+  Object.keys(SEC).forEach(build);
+  var tries=0, t=setInterval(function(){ var all=true; Object.keys(SEC).forEach(function(id){ if(!build(id)) all=false; }); if(all || ++tries>60) clearInterval(t); }, 300);
+  document.addEventListener('change', function(e){ if(e.target.classList && e.target.classList.contains('st-slider')) setTimeout(stressText, 0); }, true);
+  document.addEventListener('click', function(e){ if(e.target.closest && (e.target.closest('[data-opt="stress"]') || e.target.closest('[data-stress-reset]'))) setTimeout(stressText, 50); }, true);
+  stressText();
 })();
 </script>
 
