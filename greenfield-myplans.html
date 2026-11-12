@@ -30766,7 +30766,7 @@ body.bai-open .hm-page .hm-next .nm-side{ padding-left:22px; }
   var MOVES=[
     { k:'link', title:'Link your Rollover IRA', why:'Your plan is <b>guessing</b> its balance. Linking it sharpens your retirement date by about two years.', go:'Link it', ai:'Let AI do it', ask:'Link my Rollover IRA for me', gain:2, step:'Link IRA', working:'Linking…' },
     { k:'confirm', title:'Still retiring at 63?', why:'Your plan controls say <b>December 2028</b>. One tap keeps the projection honest.', go:'Yes, still 63', alt:'Change it', gain:1, step:'Confirm age', working:'Saving…' },
-    { k:'roth', title:'Convert $17,800 to Roth before December', why:'You are under the <b>12% bracket</b> this year. The window closes in December.', go:'See the move', ai:'Let AI do it', ask:'Set up my $17,800 Roth conversion', gain:3, step:'Roth window', working:'Opening…' }
+    { k:'roth', title:'Convert $17,800 to Roth before December', why:'You are under the <b>12% bracket</b> this year. The window closes in December.', go:'Make the move', ai:'Let AI do it', ask:'Set up my $17,800 Roth conversion', gain:3, step:'Roth window', working:'Opening…' }
   ];
   var BASE=87, S=load();
   function load(){ try{ var v=JSON.parse(localStorage.getItem(KEY)||'null'); if(v && typeof v.i==='number') return v; }catch(e){} return { i:0, done:[] }; }
@@ -30782,9 +30782,9 @@ body.bai-open .hm-page .hm-next .nm-side{ padding-left:22px; }
       '<div class="nm-steps">'+MOVES.map(function(x){ return '<span class="'+(S.done.indexOf(x.k)>-1?'done':'')+'">'+x.step+'</span>'; }).join('')+'</div></div>';
     var main;
     if(!m){
-      main='<div><div class="nm-eyebrow">Your next move</div><h3 class="nm-title">All caught up.</h3><p class="nm-why">Nothing is waiting on you. The next check-in is <b>January</b>, when your 401(k) limit resets.</p><div class="nm-actions"><span class="nm-done-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Three moves this month</span><button type="button" class="nm-skip" data-nm="reset">Start over</button></div></div>';
+      main='<div><div class="nm-eyebrow">Your next best action</div><h3 class="nm-title">All caught up.</h3><p class="nm-why">Nothing is waiting on you. The next check-in is <b>January</b>, when your 401(k) limit resets.</p><div class="nm-actions"><span class="nm-done-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Three moves this month</span><button type="button" class="nm-skip" data-nm="reset">Start over</button></div></div>';
     } else {
-      main='<div><div class="nm-eyebrow">Your next move <span class="nm-count">'+(left>1?left-1+' more after this':'last one')+'</span></div><h3 class="nm-title">'+m.title+'</h3><p class="nm-why">'+m.why+'</p>'+
+      main='<div><div class="nm-eyebrow">Your next best action'+(left>1?' <span class="nm-count">'+(left-1)+' more after this</span>':'')+'</div><h3 class="nm-title">'+m.title+'</h3><p class="nm-why">'+m.why+'</p>'+
         '<div class="nm-actions"><button type="button" class="nm-go" data-nm="go">'+m.go+'</button>'+
         (m.alt?'<button type="button" class="nm-go alt" data-nm="alt">'+m.alt+'</button>':'')+
         (m.ai?'<button type="button" class="nm-link" data-nm="ai"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>'+m.ai+'</button>':'')+
@@ -30825,7 +30825,7 @@ body.bai-open .hm-page .hm-next .nm-side{ padding-left:22px; }
   }
   function build(){
     var grid=document.querySelector('.hm-page .grid2'); if(!grid || grid.querySelector('.hm-next')) return !!grid;
-    el=document.createElement('section'); el.className='hm-next'; el.setAttribute('aria-label','Your next move');
+    el=document.createElement('section'); el.className='hm-next'; el.setAttribute('aria-label','Your next best action');
     grid.insertBefore(el, grid.firstChild);
     el.addEventListener('click', onClick);
     render(); return true;
@@ -31031,14 +31031,14 @@ body.hc-open .hc-modal{ display:flex; }
 <script>
 (function(){
   'use strict';
-  var KEY='boldin.homeLayout';
+  var KEY='boldin.homeLayout.v2';
   var PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 3h6l-1 7 3 3H7l3-3z"/></svg>';
   var GRIP='<svg viewBox="0 0 6 14" fill="currentColor"><circle cx="1" cy="1" r="1"/><circle cx="5" cy="1" r="1"/><circle cx="1" cy="7" r="1"/><circle cx="5" cy="7" r="1"/><circle cx="1" cy="13" r="1"/><circle cx="5" cy="13" r="1"/></svg>';
   var CARDS=[
-    { k:'live',    sel:'#hm-live', name:'Live class', span:2 },
-    { k:'next',    sel:'.hm-next', name:'Your next move', span:2 },
+    { k:'next',    sel:'.hm-next', name:'Your next best action', span:2 },
     { k:'money',   sel:'#s-money', name:'Net worth today', span:1 },
     { k:'plans',   sel:'#s-plans', name:'My financial journey', span:1 },
+    { k:'live',    sel:'#hm-live', name:'Live class', span:2 },
     { k:'invest',  sel:'#hm-invest', name:'Investments', span:1 },
     { k:'coach',   sel:'#hm-coach', name:'Chat with a coach', span:1 },
     { k:'videos',  sel:'#hm-videos', name:'Boldin videos', span:1 },
