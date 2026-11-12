@@ -30423,6 +30423,11 @@ body.bai-open .hm-page .bai-col .bai{ transform:none; }
 @media (max-width:1180px){ .hm-page .grid2, body.bai-open .hm-page .grid2{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); } .hm-page .bai-col{ display:none; margin-left:0; } body.bai-open .hm-page .bai-col{ display:block; grid-column:1 / -1; min-height:440px; } .hm-page .bai-col .bai{ width:auto; right:0; } }
 @media (max-width:900px){ .hm-page .grid2{ grid-template-columns:1fr; } }
 @media (prefers-reduced-motion:reduce){ .hm-page .grid2, .hm-page .bai-col, .hm-page .bai-col .bai{ transition:none; } }
+/* Home always has the AI column: three columns from the first frame, nothing slides, nothing shifts */
+.hm-page .grid2, body.bai-open .hm-page .grid2{ grid-template-columns:minmax(0,1fr) minmax(0,1fr) 360px !important; transition:none !important; }
+.hm-page .bai-col, body.bai-open .hm-page .bai-col{ margin-left:0 !important; opacity:1 !important; pointer-events:auto !important; transition:none !important; }
+.hm-page .bai-col .bai{ transform:none !important; transition:none !important; animation:none !important; }
+.hm-page .bai .x{ display:none; }
 /* on Home the rail is simply there: the layout does not animate, only the words do */
 body.bai-still .hm-page .grid2, body.bai-still .hm-page .bai-col, body.bai-still .hm-page .bai-col .bai{ transition:none !important; }
 /* the two Home cards at 439px */
@@ -30885,6 +30890,10 @@ body.bai-open:not(.fire-page) .opt-index .opt-grid{ column-count:2; }
 .layout.page.sub-layout.on > .side, .layout.page.alo-layout.on > .side, .layout.page.bud-layout.on > .side, body.fire-page .opt-index > .side{ display:none; }
 .layout.page.sub-layout.on > .rail, .layout.page.alo-layout.on > .rail, .layout.page.bud-layout.on > .rail, body.fire-page .opt-index > .rail{ display:none; }
 .layout.page.sub-layout.on > .center, .layout.page.alo-layout.on > .center, .layout.page.bud-layout.on > .center, body.fire-page .opt-index > .center{ grid-column:1; max-width:none; }
+/* the budgeter's table mode used to spill left over the hidden rail; the center is already full width now */
+.bud-layout.bud-tablemode .bud-top, .bud-layout.bud-tablemode #budTable{ margin-left:0 !important; width:auto !important; max-width:100%; }
+/* its category list was a rail filter, not a set of tabs */
+.layout.page.bud-layout.on > .center > .os-tabs{ display:none; }
 body.bai-open .layout.page.sub-layout.on, body.bai-open .layout.page.alo-layout.on, body.bai-open .layout.page.bud-layout.on, body.bai-open.fire-page .layout.page.opt-index.on{ grid-template-columns:minmax(0,1fr) 360px; }
 body.bai-open .layout.page.on > .rail.bai-host{ display:block; grid-column:2; }
 body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
