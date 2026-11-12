@@ -30679,6 +30679,8 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
     var inp=e.target && e.target.closest && e.target.closest('.dock .askbar input'); if(!inp) return;
     e.preventDefault(); e.stopPropagation(); var v=inp.value; inp.value=''; open(v.trim()||null);
   },true);
+  /* Home opens with Boldin AI already beside the plan */
+  setTimeout(function(){ if(isHome() && !document.body.classList.contains('flow-open') && !document.body.classList.contains('trial-over')) open(); }, 700);
   window.__bai={ active:function(){ return !!findHost(); }, open:open, close:close, isOpen:isOpen, toggle:function(){ if(isOpen()) close(); else open(); }, ask:function(q){ if(!isOpen()) open(q); else ask(q); } };
   window.__homeAI=window.__bai;
 
@@ -30762,6 +30764,12 @@ body:not(.fire-page) .opt-index .oli > #oliDetail .opt-card-t{ font-size:16px; }
 .opt-index #optBig .optw-head .opt-card-t{ white-space:nowrap; }
 .opt-index #optBig .optw-item{ flex-wrap:wrap; align-items:flex-start; row-gap:4px; }
 .opt-index #optBig .optw-txt{ flex:1 1 0; min-width:0; }
+.opt-index #optBig .optw-item.optw-go{ cursor:pointer; position:relative; border-radius:12px; margin:0 -10px; padding-left:10px; padding-right:40px; transition:background .15s ease; }
+.opt-index #optBig .optw-item.optw-go:hover{ background:#F7F9F8; }
+.opt-index #optBig .optw-item.optw-go .optw-arrow{ position:absolute; right:12px; top:50%; width:18px; height:18px; margin-top:-9px; color:var(--green-cta); opacity:0; transform:translateX(-4px); transition:opacity .15s ease, transform .2s ease; }
+.opt-index #optBig .optw-item.optw-go:hover .optw-arrow{ opacity:1; transform:none; }
+.opt-index #optBig .optw-item.optw-go .optw-arrow svg{ width:18px; height:18px; }
+.opt-index #optBig .optw-item.optw-go:hover .optw-txt b{ color:var(--green-cta); }
 .opt-index #optBig .optw-val{ flex-basis:100%; margin-left:38px; padding-left:0; text-align:left; font-size:16px; }
 .opt-index #optBig .optw-val small{ display:inline; margin-left:6px; }
 .opt-index .opt-card-t .od-new{ display:none; }
@@ -30769,6 +30777,12 @@ body:not(.fire-page) .opt-index .oli > #oliDetail .opt-card-t{ font-size:16px; }
 .opt-index #optBig .optw-sec, .opt-index #optBig .optw-item.done{ display:none; }
 .opt-index #optBig .optw-item{ flex-wrap:wrap; align-items:flex-start; row-gap:4px; }
 .opt-index #optBig .optw-txt{ flex:1 1 0; min-width:0; }
+.opt-index #optBig .optw-item.optw-go{ cursor:pointer; position:relative; border-radius:12px; margin:0 -10px; padding-left:10px; padding-right:40px; transition:background .15s ease; }
+.opt-index #optBig .optw-item.optw-go:hover{ background:#F7F9F8; }
+.opt-index #optBig .optw-item.optw-go .optw-arrow{ position:absolute; right:12px; top:50%; width:18px; height:18px; margin-top:-9px; color:var(--green-cta); opacity:0; transform:translateX(-4px); transition:opacity .15s ease, transform .2s ease; }
+.opt-index #optBig .optw-item.optw-go:hover .optw-arrow{ opacity:1; transform:none; }
+.opt-index #optBig .optw-item.optw-go .optw-arrow svg{ width:18px; height:18px; }
+.opt-index #optBig .optw-item.optw-go:hover .optw-txt b{ color:var(--green-cta); }
 .opt-index #optBig .optw-val{ flex-basis:100%; margin-left:38px; padding-left:0; text-align:left; font-size:16px; }
 .opt-index #optBig .optw-val small{ display:inline; margin-left:6px; }
 .opt-index .opt-card-t .od-new{ display:none; } }
@@ -30937,6 +30951,21 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
   function liftFire(){ var fs=opt && opt.querySelector('.fire-side'); if(!fs) return false; var center=opt.querySelector(':scope > .center'), card=document.getElementById('fireCard'); if(!card) return false;
     if(fs.dataset.lifted) return true; fs.dataset.lifted='1'; var head=document.createElement('div'); head.className='os-head fire-head'; var b=fs.querySelector('.bud-back'), h=fs.querySelector('h1'), nav=fs.querySelector('ul'); if(b) head.appendChild(b); if(h) head.appendChild(h); card.insertBefore(head, card.firstChild); if(nav){ nav.classList.add('os-tabs'); card.insertBefore(nav, head.nextSibling); } return true; }
   if(!liftFire()){ var tries=0, t=setInterval(function(){ if(liftFire() || ++tries>40) clearInterval(t); }, 250); }
+  /* the opportunities go somewhere: each row is a door to its section */
+  (function(){
+    var GO={ 'catch-up':'contrib', 'Roth':'tax', 'Social Security':'ss' };
+    document.querySelectorAll('#optBig .optw-item:not(.done)').forEach(function(it){
+      var t=(it.querySelector('.optw-txt b')||{}).textContent||''; var key=Object.keys(GO).filter(function(k){ return t.indexOf(k)>=0; })[0]; if(!key) return;
+      it.classList.add('optw-go'); it.setAttribute('role','link'); it.tabIndex=0; it.dataset.go=GO[key];
+      it.insertAdjacentHTML('beforeend','<span class="optw-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>');
+      function go(){ var g=it.dataset.go;
+        if(g==='contrib'){ var nodes=document.querySelectorAll('#oli .oli-node'); var n=[].slice.call(nodes).filter(function(x){ return /catch/i.test(x.getAttribute('aria-label')||''); })[0]||nodes[0]; if(n) n.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+          setTimeout(function(){ var a=document.querySelector('#oliDetail .oli-dact'); if(a) a.click(); document.getElementById('oli').scrollIntoView({behavior:'smooth', block:'start'}); }, 60); return; }
+        var card=document.querySelector('.opt-grid [data-opt="'+g+'"]'); if(card) card.click();
+      }
+      it.addEventListener('click', go); it.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
+    });
+  })();
   /* every section opens with Boldin AI beside it */
   document.addEventListener('click', function(e){
     var card=e.target.closest && e.target.closest('.opt-grid [data-opt], .opt-grid #optHero, .onav-item[data-opt]');
@@ -30948,7 +30977,19 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
 </script>
 <style id="lifeEventPresetsCSS">
 /* ---- Life events: three starters, so nobody stalls on "what do I add next?" ---- */
-.pe-starters{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; margin:4px 0 22px; }
+.pe-starters-wrap{ position:relative; }
+.pe-starters{ display:flex; gap:14px; margin:4px 0 22px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.pe-starters::-webkit-scrollbar{ display:none; }
+.pe-starters > .pe-starter{ flex:0 0 calc((100% - 28px) / 3); scroll-snap-align:start; min-width:220px; }
+.pe-car-foot{ display:flex; align-items:center; justify-content:space-between; margin:-12px 0 18px; }
+.pe-car-nav{ display:flex; gap:6px; }
+.pe-car-btn{ width:34px; height:34px; border-radius:999px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); display:grid; place-items:center; cursor:pointer; transition:background .15s ease, opacity .15s ease; }
+.pe-car-btn:hover{ background:#F6F7F8; }
+.pe-car-btn[disabled]{ opacity:.35; cursor:default; }
+.pe-car-btn svg{ width:16px; height:16px; }
+.pe-car-dots{ display:flex; gap:6px; align-items:center; }
+.pe-car-dots i{ width:6px; height:6px; border-radius:999px; background:var(--hairline-strong); transition:background .15s ease, width .2s ease; }
+.pe-car-dots i.on{ background:var(--green-cta); width:18px; }
 .pe-starter{ display:flex; flex-direction:column; gap:10px; padding:18px 18px 16px; border:1px solid var(--hairline); border-radius:16px; background:#fff; text-align:left; font:inherit; color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease; }
 .pe-starter:hover{ border-color:var(--hairline-strong); background:#FAFBFB; }
 .pe-starter .ic{ width:38px; height:38px; border-radius:12px; display:grid; place-items:center; background:var(--eggshell); color:var(--green-cta); }
@@ -30959,7 +31000,7 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
 .pe-starter .go svg{ width:12px; height:12px; }
 .pe-starters-add{ margin:-6px 0 26px; }
 .pe-starters-lab{ font-size:13px; font-weight:600; color:var(--text-secondary); margin:0 0 10px; }
-@media (max-width:900px){ .pe-starters{ grid-template-columns:minmax(0,1fr); } }
+@media (max-width:900px){ .pe-starters > .pe-starter{ flex-basis:calc((100% - 14px) / 2); } }
 </style>
 <script id="lifeEventPresetsJS">
 (function(){
@@ -30968,12 +31009,18 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
   var IC={
     shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/><path d="M12 9v6M9 12h6"/></svg>',
     roof:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
+    hand:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14l4-1 5 2h4a2 2 0 010 4h-6l-3-1"/><path d="M8 13V8a2 2 0 014 0v4"/><path d="M12 10V7a2 2 0 014 0v6"/></svg>',
+    box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M3 8v8l9 4 9-4V8"/><path d="M12 12v8"/></svg>',
+    care:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
     beach:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M4 16c3-2 5-2 8 0s5 2 8 0"/><circle cx="17" cy="6" r="2.5"/><path d="M4 12l5-6 5 6"/></svg>'
   };
   var PRESETS=[
     { id:'ins', ic:IC.shield, t:'Switching off your employer’s insurance', s:'Health coverage on your own until Medicare at 65.', chap:'next', type:'Something else', nm:'Health insurance on our own', who:'Both', change:'Spending rises', yr:2028, until:'Until 2030', amt:'1,400' },
     { id:'roof', ic:IC.roof, t:'Plan for a new roof every 10 years', s:'A one-time cost that comes back; the plan sets it aside.', chap:'bridge', type:'Something else', nm:'New roof', who:'Both', change:'A one-time cost', yr:2029, until:'For 10 years', amt:'18,000' },
-    { id:'vac', ic:IC.beach, t:'Buy a vacation home', s:'The down payment now, and the carrying cost after.', chap:'bridge', type:'Buy a second home', nm:'Buy a vacation home', who:'Both', change:'A one-time cost', yr:2031, until:'Once', amt:'120,000' }
+    { id:'vac', ic:IC.beach, t:'Buy a vacation home', s:'The down payment now, and the carrying cost after.', chap:'bridge', type:'Buy a second home', nm:'Buy a vacation home', who:'Both', change:'A one-time cost', yr:2031, until:'Once', amt:'120,000' },
+    { id:'kid', ic:IC.hand, t:'Help a kid with a down payment', s:'A gift now, from money that was going to be theirs anyway.', chap:'bridge', type:'Help a child or a parent', nm:'Down payment gift', who:'Both', change:'A one-time cost', yr:2029, until:'Once', amt:'50,000' },
+    { id:'down', ic:IC.box, t:'Downsize the house', s:'Sell, buy smaller, and bank the difference.', chap:'bridge', type:'Move or downsize', nm:'Downsize the house', who:'Both', change:'Income rises', yr:2035, until:'Once', amt:'250,000' },
+    { id:'care', ic:IC.care, t:'Plan for care later in life', s:'Most people need some. The plan sets money aside for it.', chap:'later', type:'Long-term care', nm:'Care at home', who:'Both', change:'Spending rises', yr:2048, until:'For 5 years', amt:'6,000' }
   ];
   function setText(vt, val){ if(!vt) return; vt.textContent=val; vt.classList.remove('is-placeholder'); var f=vt.closest('.field'); if(f) f.classList.remove('is-empty'); vt.dispatchEvent(new Event('input',{bubbles:true})); }
   function setSel(ed, key, val){ var sel=ed.querySelector('select[data-pe="'+key+'"]'); if(!sel) return; sel.value=val; sel.dispatchEvent(new Event('change',{bubbles:true})); }
@@ -30994,8 +31041,17 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
     var wrap=document.createElement('div'); wrap.className='pe-starters-wrap';
     wrap.innerHTML='<div class="pe-starters">'+PRESETS.map(function(p){
       return '<button type="button" class="pe-starter" data-preset="'+p.id+'"><span class="ic">'+p.ic+'</span><span class="t">'+p.t+'</span><span class="s">'+p.s+'</span><span class="go">Add this '+GO+'</span></button>';
-    }).join('')+'</div>';
+    }).join('')+'</div><div class="pe-car-foot"><div class="pe-car-dots"></div></div>';
+    var L='<svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>', R='<svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    wrap.querySelector('.pe-car-foot').insertAdjacentHTML('beforeend','<div class="pe-car-nav"><button type="button" class="pe-car-btn" data-dir="-1" aria-label="Previous">'+L+'</button><button type="button" class="pe-car-btn" data-dir="1" aria-label="Next">'+R+'</button></div>');
     body.insertBefore(wrap, body.firstChild);
+    var track=wrap.querySelector('.pe-starters'), dots=wrap.querySelector('.pe-car-dots'), pages=Math.ceil(PRESETS.length/3);
+    dots.innerHTML=Array.apply(null,{length:pages}).map(function(){ return '<i></i>'; }).join('');
+    function page(){ return Math.round(track.scrollLeft/track.clientWidth); }
+    function upd(){ var pg=page(); dots.querySelectorAll('i').forEach(function(d,i){ d.classList.toggle('on', i===pg); }); wrap.querySelector('[data-dir="-1"]').disabled=pg<=0; wrap.querySelector('[data-dir="1"]').disabled=pg>=pages-1; }
+    wrap.querySelectorAll('.pe-car-btn').forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); track.scrollBy({left:(+b.dataset.dir)*track.clientWidth, behavior:'smooth'}); }); });
+    dots.addEventListener('click', function(e){ var i=[].indexOf.call(dots.children, e.target); if(i>=0) track.scrollTo({left:i*track.clientWidth, behavior:'smooth'}); });
+    track.addEventListener('scroll', function(){ clearTimeout(track._t); track._t=setTimeout(upd, 80); }); upd();
     var hb=document.querySelector('#events-block .acc-head .cx-actions'); if(hb){ hb.classList.add('pe-starters-add'); wrap.appendChild(hb); }
     wrap.addEventListener('click', function(e){ var b=e.target.closest('.pe-starter'); if(!b) return; e.preventDefault(); e.stopPropagation(); var p=PRESETS.filter(function(x){ return x.id===b.dataset.preset; })[0]; if(p) start(p); });
     return true;
@@ -31010,8 +31066,8 @@ body.bai-open .layout.page.on > .rail.bai-host > :not(.bai){ display:none; }
    A scenario is a delta on the plan. Ephemeral by default (dashed, tinted),
    solid once kept (ink, a row in the plan selector).
    ====================================================================== */
-.wi-band{ position:fixed; top:73px; left:0; transform:translateY(-8px); width:100%; z-index:58; opacity:0; pointer-events:none; transition:opacity .28s ease, transform .36s cubic-bezier(.2,.7,.2,1); }
-.wi-band.on{ opacity:1; transform:translateY(0); pointer-events:auto; }
+.wi-band{ position:fixed; top:73px; left:0; transform:translateY(-8px); width:100%; z-index:58; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .28s ease, transform .36s cubic-bezier(.2,.7,.2,1), visibility 0s .3s; }
+.wi-band.on{ visibility:visible; transition:opacity .28s ease, transform .36s cubic-bezier(.2,.7,.2,1); opacity:1; transform:translateY(0); pointer-events:auto; }
 .wi-in{ margin:0 var(--s-8); background:#fff; border:1px dashed var(--hairline-strong); border-radius:14px; display:flex; align-items:center; gap:12px; min-height:50px; padding:6px 8px 6px 14px; transition:border-color .25s ease, background .25s ease; }
 .wi-band.solid .wi-in{ border-style:solid; border-color:var(--hairline); }
 .wi-tag{ flex:0 0 auto; font-size:12px; font-weight:600; letter-spacing:.01em; padding:3px 9px; border-radius:999px; border:1px dashed var(--ink); color:var(--ink); line-height:1.3; }
