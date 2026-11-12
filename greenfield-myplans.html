@@ -30716,91 +30716,104 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
   }
 })();
 </script>
-<!-- ===== NEXT MOVE: one move at a time, on Home. The plan number moves when you do the thing. ===== -->
+<!-- ===== NEXT BEST ACTION: a thin strip on Home that rotates through the moves. The plan number moves when you do one. ===== -->
 <style>
 .hm-page .grid2 > .hm-next{ grid-column:1 / 3; grid-row:1; }
 .hm-page .grid2 > .dropzone[data-zone="left"]{ grid-column:1; grid-row:2; }
 .hm-page .grid2 > .dropzone[data-zone="right"]{ grid-column:2; grid-row:2; }
 .hm-page .grid2 > .bai-col{ grid-column:3; grid-row:1 / 3; }
 @media (max-width:900px){ .hm-page .grid2 > .hm-next, .hm-page .grid2 > .dropzone[data-zone="left"], .hm-page .grid2 > .dropzone[data-zone="right"], .hm-page .grid2 > .bai-col{ grid-column:auto; grid-row:auto; } }
-.hm-next{ display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:28px; align-items:center; padding:22px 26px; border:1px solid var(--hairline); border-radius:14px; background:#fff; min-width:0; }
-.hm-next .nm-eyebrow{ display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--green-cta); margin-bottom:6px; }
-.hm-next .nm-eyebrow .nm-count{ font-weight:400; color:var(--text-muted); }
-.hm-next .nm-title{ font-size:22px; font-weight:600; line-height:1.2; margin:0 0 6px; color:var(--ink); }
-.hm-next .nm-why{ font-size:15px; line-height:1.45; color:var(--text-secondary); margin:0 0 14px; max-width:560px; }
+.hm-next{ display:flex; align-items:center; gap:16px; padding:14px 18px 14px 28px; border:1px solid var(--hairline); border-radius:14px; background:#fff; min-width:0; min-height:76px; box-sizing:border-box; }
+.hm-next .nm-ic{ flex:none; width:36px; height:36px; border-radius:50%; background:var(--green-cta); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 3px #E3F1EA; margin-left:3px; transition:background .3s ease, box-shadow .3s ease; }
+.hm-next .nm-ic svg{ width:18px; height:18px; transition:transform .4s cubic-bezier(.2,.7,.2,1), opacity .25s ease; }
+.hm-next .nm-ic.warn{ background:#E0A800; box-shadow:0 0 0 3px #FBF1D3; }
+.hm-next .nm-ic.teal{ background:#2CA58D; box-shadow:0 0 0 3px #E3EEF0; }
+.hm-next .nm-txt{ flex:1; min-width:0; }
+.hm-next .nm-txt > *{ transition:opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1); }
+.hm-next.swap .nm-ic svg{ transform:rotate(-90deg) scale(.4); opacity:0; }
+.hm-next.swap .nm-txt > *{ opacity:0; transform:translateY(6px); }
+.hm-next .nm-kicker{ font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:2px; display:flex; align-items:center; gap:8px; }
+.hm-next .nm-kicker .nm-count{ text-transform:none; letter-spacing:0; font-weight:500; }
+.hm-next .nm-title{ font-size:16px; font-weight:600; line-height:1.25; margin:0; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hm-next .nm-why{ font-size:13.5px; line-height:1.35; color:var(--text-secondary); margin:2px 0 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .hm-next .nm-why b{ color:var(--ink); font-weight:600; }
-.hm-next .nm-actions{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
-.hm-next .nm-go{ font:inherit; font-size:15px; font-weight:600; height:40px; padding:0 20px; border:0; border-radius:999px; background:var(--green-cta); color:#fff; cursor:pointer; }
+.hm-next .nm-score{ flex:none; display:flex; flex-direction:column; align-items:flex-end; line-height:1.1; padding:0 14px; border-left:1px solid var(--hairline); border-right:1px solid var(--hairline); }
+.hm-next .nm-score .n{ font-size:20px; font-weight:600; color:var(--ink); }
+.hm-next .nm-score .n small{ font-size:12px; font-weight:500; color:var(--text-muted); margin-left:2px; }
+.hm-next .nm-score .d{ font-size:12px; font-weight:600; color:var(--green-cta); white-space:nowrap; }
+.hm-next .nm-score .d.flash{ animation:nmFlash .6s ease; }
+@keyframes nmFlash{ 0%{ opacity:0; transform:translateY(4px);} 100%{ opacity:1; transform:none;} }
+.hm-next .nm-actions{ flex:none; display:flex; align-items:center; gap:12px; }
+.hm-next .nm-go{ font:inherit; font-size:14px; font-weight:600; height:36px; padding:0 16px; border:0; border-radius:999px; background:var(--green-cta); color:#fff; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; }
+.hm-next .nm-go::after{ content:'\2192'; display:inline-block; transition:transform .2s ease; }
+.hm-next .nm-go:hover::after{ transform:translateX(3px); }
 .hm-next .nm-go:hover{ background:#0B6440; }
 .hm-next .nm-go.alt{ background:#fff; color:var(--ink); border:1px solid var(--hairline-strong); }
+.hm-next .nm-go.alt::after{ content:none; }
 .hm-next .nm-go.alt:hover{ background:#F6F7F8; }
-.hm-next .nm-link{ font:inherit; font-size:15px; font-weight:600; color:var(--green-cta); background:none; border:0; padding:0; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
-.hm-next .nm-skip{ font:inherit; font-size:14px; color:var(--text-muted); background:none; border:0; padding:0; cursor:pointer; margin-left:auto; }
-.hm-next .nm-skip:hover{ color:var(--ink); }
-.hm-next .nm-side{ border-left:1px solid var(--hairline); padding-left:28px; align-self:stretch; display:flex; flex-direction:column; justify-content:center; gap:10px; }
-.hm-next .nm-metric{ display:flex; align-items:baseline; gap:10px; }
-.hm-next .nm-metric .n{ font-size:34px; font-weight:600; letter-spacing:-.01em; color:var(--ink); line-height:1; }
-.hm-next .nm-metric .n small{ font-size:16px; font-weight:500; color:var(--text-secondary); margin-left:2px; }
-.hm-next .nm-metric .d{ font-size:14px; font-weight:600; color:var(--green-cta); }
-.hm-next .nm-metric .d.flash{ animation:nmFlash .9s ease; }
-@keyframes nmFlash{ 0%{ opacity:0; transform:translateY(4px);} 100%{ opacity:1; transform:none;} }
-.hm-next .nm-label{ font-size:13px; color:var(--text-muted); }
-.hm-next .nm-track{ display:flex; gap:6px; margin-top:4px; }
-.hm-next .nm-track span{ flex:1; height:5px; border-radius:999px; background:#E6E8EB; position:relative; }
-.hm-next .nm-track span.done{ background:var(--green-cta); }
-.hm-next .nm-track span.now{ background:#CFE9DD; }
-.hm-next .nm-track span.now::after{ content:''; position:absolute; left:0; top:0; bottom:0; width:38%; border-radius:999px; background:var(--green-cta); }
-.hm-next .nm-steps{ display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); gap:8px; }
-.hm-next .nm-steps span.done{ color:var(--ink); }
+.hm-next .nm-link{ font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:none; border:0; padding:0; cursor:pointer; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+.hm-next .nm-nav{ flex:none; display:flex; align-items:center; margin-left:6px; }
+.hm-next .nm-nav button{ width:26px; height:26px; border-radius:50%; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+.hm-next .nm-nav button:hover{ background:#F6F7F8; }
+.hm-next .nm-nav button svg{ width:12px; height:12px; }
+.hm-next .nm-dots{ display:flex; gap:4px; padding:0 2px; }
+.hm-next .nm-dots span{ width:5px; height:5px; border-radius:50%; background:#D9DDE3; transition:background .2s ease, width .2s ease; cursor:pointer; }
+.hm-next .nm-dots span.on{ background:var(--green-cta); width:14px; border-radius:3px; }
+.hm-next .nm-dots span.done{ background:#9EDFC2; }
 .hm-next.is-working .nm-go{ opacity:.6; pointer-events:none; }
-.hm-next .nm-done-line{ display:inline-flex; align-items:center; gap:8px; color:var(--green-cta); font-weight:600; font-size:15px; }
-.hm-next .nm-done-line svg{ width:18px; height:18px; }
-body.bai-open .hm-page .hm-next{ grid-template-columns:minmax(0,1fr) 240px; gap:22px; }
-body.bai-open .hm-page .hm-next .nm-side{ padding-left:22px; }
-@media (max-width:1180px){ .hm-page .hm-next{ grid-template-columns:1fr; } .hm-page .hm-next .nm-side{ border-left:0; border-top:1px solid var(--hairline); padding:16px 0 0; } }
+.hm-next .nm-skip{ font:inherit; font-size:13px; color:var(--text-muted); background:none; border:0; padding:0; cursor:pointer; white-space:nowrap; }
+.hm-next .nm-skip:hover{ color:var(--ink); }
+.hm-next .hm-grab{ top:50%; left:7px; transform:translateY(-50%); }
+@media (prefers-reduced-motion:reduce){ .hm-next .nm-txt > *, .hm-next .nm-ic svg{ transition:none; } }
 </style>
 <script>
 (function(){
   'use strict';
-  var KEY='boldin.nextmove';
+  var KEY='boldin.nextmove.v2';
+  var IC={
+    link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.5-1.5"/></svg>',
+    confirm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18M9 15l2 2 4-4"/></svg>',
+    roth:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 8h7a3 3 0 010 6H8a3 3 0 000 6h9"/></svg>',
+    done:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>'
+  };
   var MOVES=[
-    { k:'link', title:'Link your Rollover IRA', why:'Your plan is <b>guessing</b> its balance. Linking it sharpens your retirement date by about two years.', go:'Link it', ai:'Let AI do it', ask:'Link my Rollover IRA for me', gain:2, step:'Link IRA', working:'Linking…' },
-    { k:'confirm', title:'Still retiring at 63?', why:'Your plan controls say <b>December 2028</b>. One tap keeps the projection honest.', go:'Yes, still 63', alt:'Change it', gain:1, step:'Confirm age', working:'Saving…' },
-    { k:'roth', title:'Convert $17,800 to Roth before December', why:'You are under the <b>12% bracket</b> this year. The window closes in December.', go:'Make the move', ai:'Let AI do it', ask:'Set up my $17,800 Roth conversion', gain:3, step:'Roth window', working:'Opening…' }
+    { k:'link', tone:'', title:'Link your Rollover IRA', why:'Your plan is <b>guessing</b> its balance. Linking sharpens your retirement date by about two years.', go:'Link it', ai:'Let AI do it', ask:'Link my Rollover IRA for me', gain:2, working:'Linking…' },
+    { k:'confirm', tone:'teal', title:'Still retiring at 63?', why:'Your plan controls say <b>December 2028</b>. One tap keeps the projection honest.', go:'Yes, still 63', alt:'Change', gain:1, working:'Saving…' },
+    { k:'roth', tone:'warn', title:'Convert $17,800 to Roth before December', why:'You are under the <b>12% bracket</b> this year. The window closes in December.', go:'Make the move', ai:'Let AI do it', ask:'Set up my $17,800 Roth conversion', gain:3, working:'Opening…' }
   ];
-  var BASE=87, S=load();
-  function load(){ try{ var v=JSON.parse(localStorage.getItem(KEY)||'null'); if(v && typeof v.i==='number') return v; }catch(e){} return { i:0, done:[] }; }
+  var BASE=87, S=load(), el, timer, cur=0;
+  function load(){ try{ var v=JSON.parse(localStorage.getItem(KEY)||'null'); if(v && v.done) return v; }catch(e){} return { done:[] }; }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
   function score(){ return BASE + S.done.reduce(function(a,k){ var m=MOVES.filter(function(x){ return x.k===k; })[0]; return a+(m?m.gain:0); }, 0); }
-  function esc(s){ return s; }
-  var el;
+  function queue(){ return MOVES.filter(function(m){ return S.done.indexOf(m.k)<0; }); }
   function render(flash){
     if(!el) return;
-    var m=MOVES[S.i], sc=score(), gained=sc-BASE, left=MOVES.length-S.i;
-    var side='<div class="nm-side"><div class="nm-label">Chance of success</div><div class="nm-metric"><span class="n" data-n>'+sc+'<small>of 100</small></span>'+(gained?'<span class="d'+(flash?' flash':'')+'">+'+gained+' this month</span>':'')+'</div>'+
-      '<div class="nm-track">'+MOVES.map(function(x,i){ return '<span class="'+(S.done.indexOf(x.k)>-1?'done':(i===S.i?'now':''))+'"></span>'; }).join('')+'</div>'+
-      '<div class="nm-steps">'+MOVES.map(function(x){ return '<span class="'+(S.done.indexOf(x.k)>-1?'done':'')+'">'+x.step+'</span>'; }).join('')+'</div></div>';
-    var main;
+    var q=queue(); if(cur>=q.length) cur=0; var m=q[cur], sc=score(), gained=sc-BASE;
+    var dots='<div class="nm-dots" role="tablist">'+MOVES.map(function(x,i){ var d=S.done.indexOf(x.k)>-1; return '<span data-nm="dot" data-i="'+i+'" class="'+(d?'done':(m && x.k===m.k?'on':''))+'"></span>'; }).join('')+'</div>';
+    var nav='<div class="nm-nav">'+dots+'</div>';
     if(!m){
-      main='<div><div class="nm-eyebrow">Your next best action</div><h3 class="nm-title">All caught up.</h3><p class="nm-why">Nothing is waiting on you. The next check-in is <b>January</b>, when your 401(k) limit resets.</p><div class="nm-actions"><span class="nm-done-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Three moves this month</span><button type="button" class="nm-skip" data-nm="reset">Start over</button></div></div>';
+      el.innerHTML='<span class="nm-ic">'+IC.done+'</span><div class="nm-txt"><div class="nm-kicker">Your next best action</div><h3 class="nm-title">All caught up.</h3><p class="nm-why">Nothing is waiting on you. The next check-in is <b>January</b>, when your 401(k) limit resets.</p></div>'+score_+'<div class="nm-actions"><button type="button" class="nm-skip" data-nm="reset">Start over</button></div>'+nav;
     } else {
-      main='<div><div class="nm-eyebrow">Your next best action'+(left>1?' <span class="nm-count">'+(left-1)+' more after this</span>':'')+'</div><h3 class="nm-title">'+m.title+'</h3><p class="nm-why">'+m.why+'</p>'+
+      el.innerHTML='<span class="nm-ic '+m.tone+'">'+IC[m.k]+'</span><div class="nm-txt"><div class="nm-kicker">Your next best action'+(q.length>1?'<span class="nm-count">'+(cur+1)+' of '+q.length+'</span>':'')+'</div><h3 class="nm-title">'+m.title+'</h3><p class="nm-why">'+m.why+'</p></div>'+
         '<div class="nm-actions"><button type="button" class="nm-go" data-nm="go">'+m.go+'</button>'+
-        (m.alt?'<button type="button" class="nm-go alt" data-nm="alt">'+m.alt+'</button>':'')+
-        (m.ai?'<button type="button" class="nm-link" data-nm="ai"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>'+m.ai+'</button>':'')+
-        '<button type="button" class="nm-skip" data-nm="skip">Skip for now</button></div></div>';
+        (m.alt?'<button type="button" class="nm-skip" data-nm="alt">'+m.alt+'</button>':'')+
+        '</div>'+nav;
     }
-    el.innerHTML=main+side;
     el.classList.remove('is-working');
   }
+  function swapTo(idx){
+    var q=queue(); if(q.length<2) return; cur=(idx+q.length)%q.length;
+    el.classList.add('swap'); setTimeout(function(){ render(); el.classList.remove('swap'); }, 260);
+  }
+  function arm(){ clearInterval(timer); timer=setInterval(function(){ if(!el.matches(':hover') && !el.classList.contains('is-working') && document.body.contains(el)) swapTo(cur+1); }, 7000); }
   function countTo(target){
     var n=el.querySelector('[data-n]'); if(!n) return; var from=parseInt(n.textContent,10)||target, t0=performance.now();
     (function tick(now){ var p=Math.min(1,(now-t0)/700), v=Math.round(from+(target-from)*(1-Math.pow(1-p,3))); n.innerHTML=v+'<small>of 100</small>'; if(p<1) requestAnimationFrame(tick); })(t0);
   }
-  function complete(){
-    var m=MOVES[S.i]; if(!m) return;
-    if(S.done.indexOf(m.k)<0) S.done.push(m.k);
-    S.i++; save(); var sc=score(); render(true); countTo(sc);
+  function complete(m){
+    if(S.done.indexOf(m.k)<0) S.done.push(m.k); save();
+    var from=score()-m.gain; el.classList.add('swap');
+    setTimeout(function(){ render(true); el.classList.remove('swap'); arm(); }, 260);
   }
   function working(label){ el.classList.add('is-working'); var g=el.querySelector('[data-nm="go"]'); if(g) g.textContent=label; }
   function goOptimize(key){
@@ -30812,26 +30825,28 @@ body.bai-open .hm-page .hm-next .nm-side{ padding-left:22px; }
     setTimeout(function(){ var li=document.querySelector('#sideNav li[data-key="events"]'); if(li) li.click(); }, 450);
   }
   function onClick(e){
-    var b=e.target.closest('[data-nm]'); if(!b) return; var act=b.dataset.nm, m=MOVES[S.i];
-    if(act==='reset'){ S={ i:0, done:[] }; save(); render(); return; }
-    if(act==='skip'){ S.i++; save(); render(); return; }
+    var b=e.target.closest('[data-nm]'); if(!b) return; var act=b.dataset.nm, m=queue()[cur];
+    if(act==='reset'){ S={ done:[] }; cur=0; save(); render(); arm(); return; }
+    if(act==='dot'){ var q=queue(), idx=q.indexOf(MOVES[+b.dataset.i]); if(idx>-1 && idx!==cur) swapTo(idx); arm(); return; }
+    if(act==='prev'){ swapTo(cur-1); arm(); return; }
+    if(act==='next'){ swapTo(cur+1); arm(); return; }
     if(!m) return;
-    if(act==='ai'){ if(window.__bai) window.__bai.open(m.ask); working(m.working); setTimeout(complete, 1500); return; }
+    if(act==='ai'){ if(window.__bai) window.__bai.open(m.ask); working(m.working); setTimeout(function(){ complete(m); }, 1500); return; }
     if(act==='alt'){ goLifeEvents(); return; }
     if(act==='go'){
-      if(m.k==='roth'){ goOptimize('tax'); S.done.push(m.k); S.i++; save(); render(); return; }
-      working(m.working); setTimeout(complete, m.k==='link'?1200:500);
+      if(m.k==='roth'){ goOptimize('tax'); complete(m); return; }
+      working(m.working); setTimeout(function(){ complete(m); }, m.k==='link'?1200:500);
     }
   }
   function build(){
     var grid=document.querySelector('.hm-page .grid2'); if(!grid || grid.querySelector('.hm-next')) return !!grid;
-    el=document.createElement('section'); el.className='hm-next'; el.setAttribute('aria-label','Your next best action');
+    el=document.createElement('section'); el.className='hm-next'; el.setAttribute('aria-label','Your next best action'); el.setAttribute('aria-live','polite');
     grid.insertBefore(el, grid.firstChild);
     el.addEventListener('click', onClick);
-    render(); return true;
+    render(); arm(); return true;
   }
   if(!build()){ var tries=0, t=setInterval(function(){ if(build() || ++tries>60) clearInterval(t); }, 250); }
-  window.__nextMove={ render:render, reset:function(){ S={i:0,done:[]}; save(); render(); }, state:S };
+  window.__nextMove={ render:render, next:function(){ swapTo(cur+1); }, reset:function(){ S={done:[]}; cur=0; save(); render(); }, state:function(){ return S; } };
 })();
 </script>
 <!-- ===== HOME CARDS from the classic dashboard: live class (pinned), videos, podcast, classes, investments, coach ===== -->
