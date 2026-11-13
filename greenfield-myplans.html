@@ -30622,9 +30622,12 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
     q=(q||'').trim(); if(!q||busy) return; busy=true; send.disabled=true; chips.hidden=true;
     add('user',q.replace(/</g,'&lt;'));
     var th=add('','<span class="bai-think"><span></span><span></span><span></span></span>');
+    function finish(){ busy=false; send.disabled=!input.value.trim(); }
     setTimeout(function(){
       var text=(window.__aiReply?window.__aiReply(q):'Looking at your plan, Social Security timing matters more than anything else here.');
-      th.innerHTML=''; typeInto(th,text.replace(/</g,'&lt;'),function(){ busy=false; send.disabled=!input.value.trim(); });
+      var rich=window.__aiRich && window.__aiRich(q, { typeInto:typeInto, add:add, scroll:scroll });
+      if(rich){ rich(th, finish); return; }
+      th.innerHTML=''; typeInto(th,text.replace(/</g,'&lt;'),finish);
     },800);
   }
 
@@ -31035,6 +31038,289 @@ body.bai-open .hm-page .hm-live .lv-vid{ width:280px; }
   new MutationObserver(function(){ setTimeout(tryDraw, 60); setTimeout(tryDraw, 450); }).observe(document.body, { attributes:true, attributeFilter:['data-view','class'] });
   document.addEventListener('click', function(e){ if(e.target.closest && e.target.closest('.ut-tg[data-ut="worth"]')) setTimeout(tryDraw, 80); }, true);
   var rz; window.addEventListener('resize', function(){ clearTimeout(rz); rz=setTimeout(tryDraw, 120); });
+})();
+</script>
+<!-- ===== Boldin AI, harness concepts: empty state, tool steps, inline chart cards, citations, verified figures, hypothetical-plan banner ===== -->
+<style>
+/* empty state in full view */
+.bai-hero{ display:none; text-align:center; padding:48px 0 6px; }
+.bai.is-full .bai-hero.on{ display:block; }
+.bai-hero h2{ font-size:26px; font-weight:500; color:var(--ink); margin:0 0 6px; }
+.bai-hero p{ font-size:15px; color:var(--text-secondary); margin:0 0 18px; }
+.bai-hero .hero-chips{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; max-width:720px; margin:0 auto; }
+.bai-hero .hero-chips button{ font:inherit; font-size:14px; font-weight:500; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:9px 16px; cursor:pointer; }
+.bai-hero .hero-chips button:hover{ border-color:var(--ink); }
+.bai-hero .hero-chips button.more{ display:none; }
+.bai-hero.expanded .hero-chips button.more{ display:inline-block; }
+.bai-hero .hero-more{ display:inline-block; margin-top:16px; font-size:14px; font-weight:600; color:var(--green-cta); background:none; border:0; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+.bai-hero.expanded .hero-more{ display:none; }
+.bai.is-full.has-hero .bai-msg:first-child{ display:none; }
+.bai.is-full.has-hero .bai-chips{ display:none; }
+/* tool steps */
+.ai-tools{ margin:4px 0 10px; }
+.ai-tools .at-btn{ display:inline-flex; align-items:center; gap:8px; font:inherit; font-size:13px; font-weight:500; color:var(--text-secondary); background:#fff; border:1px solid var(--hairline); border-radius:999px; padding:5px 12px 5px 9px; cursor:pointer; }
+.ai-tools .at-btn .chev{ width:12px; height:12px; transition:transform .2s ease; }
+.ai-tools.open .at-btn .chev{ transform:rotate(90deg); }
+.ai-tools .at-btn .ok{ width:13px; height:13px; color:var(--green-cta); }
+.ai-tools .at-btn .spin{ width:12px; height:12px; border:2px solid #D9DDE3; border-top-color:var(--green-cta); border-radius:50%; animation:aiSpin .8s linear infinite; }
+@keyframes aiSpin{ to{ transform:rotate(360deg); } }
+.ai-tools .at-list{ display:none; margin:8px 0 0 10px; padding-left:12px; border-left:2px solid var(--hairline); }
+.ai-tools.open .at-list{ display:block; }
+.ai-tools .at-step{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-secondary); padding:3px 0; }
+.ai-tools .at-step svg{ width:12px; height:12px; color:var(--green-cta); flex:none; }
+.ai-tools .at-step .cites{ display:inline-flex; gap:5px; margin-left:6px; }
+.ai-tools .at-step .cites span{ font-size:10.5px; color:var(--green-cta); }
+/* chart card */
+.ai-chart{ border:1px solid var(--hairline); border-radius:14px; background:#fff; padding:14px 16px 12px; margin:6px 0 14px; }
+.ai-chart .ac-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
+.ai-chart .ac-title{ font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--text-secondary); }
+.ai-chart .ac-tbl{ font:inherit; font-size:12.5px; font-weight:500; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:8px; padding:4px 10px; cursor:pointer; }
+.ai-chart .ac-unit{ font-size:11.5px; color:var(--text-muted); margin-bottom:4px; }
+.ai-chart svg{ width:100%; height:auto; display:block; }
+.ai-chart .ac-leg{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12px; color:var(--text-secondary); margin:8px 0 10px; }
+.ai-chart .ac-leg i{ width:9px; height:9px; border-radius:2px; display:inline-block; margin-right:6px; }
+.ai-chart .ac-ctl{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.ai-chart .seg{ display:inline-flex; border:1px solid var(--hairline-strong); border-radius:8px; overflow:hidden; }
+.ai-chart .seg button{ font:inherit; font-size:12px; font-weight:500; color:var(--ink); background:#fff; border:0; padding:5px 10px; cursor:pointer; }
+.ai-chart .seg button + button{ border-left:1px solid var(--hairline-strong); }
+.ai-chart .seg button.on{ background:var(--ink); color:#fff; }
+.ai-chart .ac-range{ display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); }
+.ai-chart .ac-range select{ font:inherit; font-size:12px; color:var(--ink); border:1px solid var(--hairline-strong); border-radius:8px; padding:4px 6px; background:#fff; }
+.ai-chart table{ width:100%; border-collapse:collapse; font-size:12.5px; margin-top:6px; }
+.ai-chart th, .ai-chart td{ text-align:right; padding:6px 8px; border-bottom:1px solid var(--hairline); }
+.ai-chart th:first-child, .ai-chart td:first-child{ text-align:left; }
+.ai-chart th{ font-weight:600; color:var(--text-secondary); font-size:11.5px; }
+.ai-chart.tbl .ac-fig{ display:none; }
+.ai-chart:not(.tbl) .ac-table{ display:none; }
+/* citations + answer */
+.ai-ans p{ margin:0 0 10px; line-height:1.5; }
+.ai-ans ul{ margin:0 0 10px; padding-left:20px; }
+.ai-ans li{ margin:3px 0; }
+.ai-ans sup.ai-cite{ font-size:10px; color:var(--green-cta); font-weight:600; margin-left:1px; vertical-align:super; cursor:pointer; }
+/* verification footer */
+.ai-check{ border:1px solid var(--hairline); border-radius:10px; padding:9px 12px; font-size:13px; color:var(--ink); margin:4px 0 10px; }
+.ai-check .ck-head{ display:flex; align-items:center; gap:8px; cursor:pointer; }
+.ai-check .ck-head svg{ width:14px; height:14px; color:var(--green-cta); flex:none; }
+.ai-check .ck-head .spin{ width:12px; height:12px; border:2px solid #D9DDE3; border-top-color:var(--green-cta); border-radius:50%; animation:aiSpin .8s linear infinite; flex:none; }
+.ai-check .ck-head b{ font-weight:600; }
+.ai-check .ck-head .see{ color:var(--text-secondary); font-weight:400; }
+.ai-check .ck-head .see u{ text-decoration:none; color:var(--green-cta); font-weight:600; }
+.ai-check.pending .ck-head{ color:var(--green-cta); }
+.ai-check .ck-list{ display:none; margin:10px 0 0; padding:10px 0 0; border-top:1px solid var(--hairline); }
+.ai-check.open .ck-list{ display:block; }
+.ai-check .ck-row{ display:grid; grid-template-columns:20px minmax(0,1fr); gap:8px; padding:5px 0; font-size:12.5px; }
+.ai-check .ck-row .n{ width:18px; height:18px; border-radius:50%; background:#EAF7F1; color:var(--green-cta); font-size:10.5px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+.ai-check .ck-row .claim{ color:var(--ink); }
+.ai-check .ck-row .tag{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.04em; color:var(--green-cta); background:#EAF7F1; border-radius:4px; padding:1px 5px; margin-left:6px; vertical-align:middle; }
+.ai-check .ck-row .src{ display:block; color:var(--text-muted); font-size:11.5px; margin-top:2px; }
+/* hypothetical plan banner above the ask box */
+.ai-banner{ display:none; align-items:center; gap:12px; background:#EAF3FB; border-radius:10px; padding:9px 12px; margin:0 0 10px; font-size:13.5px; color:var(--ink); }
+.bai.ai-hypo .ai-banner{ display:flex; }
+.ai-banner .txt{ flex:1; min-width:0; }
+.ai-banner button{ font:inherit; font-size:12.5px; font-weight:600; border-radius:8px; padding:6px 10px; cursor:pointer; white-space:nowrap; }
+.ai-banner .clr{ background:#fff; border:1px solid var(--hairline-strong); color:var(--ink); }
+.ai-banner .apply{ background:var(--green-cta); border:0; color:#fff; }
+.ai-banner .apply:hover{ background:#0B6440; }
+.bai.is-full .ai-banner{ width:min(760px,100%); margin-left:auto; margin-right:auto; }
+/* review changes modal */
+.ai-review{ position:fixed; inset:0; z-index:120; display:none; align-items:center; justify-content:center; background:rgba(16,24,44,.32); }
+.ai-review.on{ display:flex; }
+.ai-review .rv{ width:440px; max-width:calc(100% - 48px); background:#fff; border-radius:14px; border:1px solid var(--hairline); overflow:hidden; }
+.ai-review .rv-head{ padding:18px 20px 12px; border-bottom:1px solid var(--hairline); }
+.ai-review .rv-head h3{ margin:0 0 2px; font-size:17px; font-weight:600; color:var(--ink); }
+.ai-review .rv-head p{ margin:0; font-size:13px; color:var(--text-secondary); }
+.ai-review .rv-body{ padding:14px 20px; }
+.ai-review .rv-sec{ font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+.ai-review .rv-row{ display:flex; justify-content:space-between; gap:12px; font-size:14px; padding:7px 0; border-bottom:1px solid var(--hairline); }
+.ai-review .rv-row b{ font-weight:600; }
+.ai-review .rv-row s{ color:var(--text-muted); margin-right:6px; }
+.ai-review .rv-foot{ display:flex; justify-content:flex-end; gap:8px; padding:12px 20px 16px; }
+.ai-review .rv-foot button{ font:inherit; font-size:13.5px; font-weight:600; border-radius:999px; padding:8px 16px; cursor:pointer; }
+.ai-review .rv-cancel{ background:#fff; border:1px solid var(--hairline-strong); color:var(--ink); }
+.ai-review .rv-apply{ background:var(--green-cta); border:0; color:#fff; }
+/* ask box extras */
+.bai-ask .chartbtn{ display:none; grid-column:1; grid-row:2; justify-self:start; margin-left:34px; width:30px; height:30px; align-items:center; justify-content:center; border-radius:999px; }
+.bai-ask .chartbtn:hover{ background:#F0F2F4; color:var(--ink); }
+.bai.is-full .bai-ask .chartbtn{ display:inline-flex; }
+.bai-foot{ display:none; text-align:center; font-size:11.5px; color:var(--text-muted); margin:8px 0 0; }
+.bai.is-full .bai-foot{ display:block; }
+.bai-foot u{ color:var(--green-cta); text-decoration:underline; text-underline-offset:2px; cursor:pointer; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var CHEV='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  var OK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  var EX=['How’s my plan looking?','Show me how my net worth changes over time','What if I retired two years earlier?','How will my tax rates change in retirement?'];
+  var MORE=['What if I claimed Social Security at 67?','What if I spent $500 less a month?','Which account should I draw from first?','What if the market has a bad first decade?'];
+  function $(sel, root){ return (root||document).querySelector(sel); }
+  function money(v){ var a=Math.abs(v); var s= a>=1e6 ? '$'+(a/1e6).toFixed(a>=1e7?1:2)+'M' : a>=1e3 ? '$'+Math.round(a/1e3)+'k' : '$'+Math.round(a); return (v<0?'−':'')+s; }
+  function fullMoney(v){ return (v<0?'−':'')+'$'+Math.round(Math.abs(v)).toLocaleString('en-US'); }
+  function cite(n){ return '<sup class="ai-cite">'+n+'</sup>'; }
+  function stress(){ return window.STRESS || null; }
+
+  /* ---------- chart card ---------- */
+  function chartCard(opts){
+    var el=document.createElement('div'); el.className='ai-chart'; var st={ dollars:'future', kind:opts.kind||'line', from:opts.years[0], to:opts.years[opts.years.length-1], tbl:false };
+    var yrs=opts.years;
+    function sel(k){ return '<select data-k="'+k+'">'+yrs.filter(function(y,i){ return i%1===0; }).map(function(y){ return '<option value="'+y+'"'+(y===st[k]?' selected':'')+'>'+y+'</option>'; }).join('')+'</select>'; }
+    el.innerHTML='<div class="ac-head"><span class="ac-title">'+opts.title+'</span><button type="button" class="ac-tbl">Show table</button></div><div class="ac-fig"><div class="ac-unit"></div><div class="ac-svg"></div><div class="ac-leg">'+opts.series.map(function(s){ return '<span><i style="background:'+s.color+'"></i>'+s.name+'</span>'; }).join('')+'</div></div><div class="ac-table"></div>'+
+      '<div class="ac-ctl"><span class="seg" data-g="dollars"><button type="button" data-v="today">Today’s $</button><button type="button" data-v="future" class="on">Future $</button></span><span class="seg" data-g="kind"><button type="button" data-v="line">Line</button><button type="button" data-v="bars">Bars</button><button type="button" data-v="area">Area</button></span><span class="ac-range">'+sel('from')+' to '+sel('to')+'</span></div>';
+    function val(s, i){ var v=s.v[i]; if(st.dollars==='today') v=v/Math.pow(1.025, yrs[i]-yrs[0]); return v; }
+    function draw(){
+      el.querySelectorAll('.seg[data-g="kind"] button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===st.kind); });
+      el.querySelectorAll('.seg[data-g="dollars"] button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===st.dollars); });
+      $('.ac-unit',el).textContent= st.dollars==='today' ? 'Today’s dollars (real)' : 'Future dollars (nominal)';
+      var i0=yrs.indexOf(st.from), i1=yrs.indexOf(st.to); if(i1<=i0){ i1=Math.min(yrs.length-1,i0+1); }
+      var W=640,H=240,L=44,R=10,T=14,B=26, pw=W-L-R, ph=H-T-B;
+      var max=0,min=0; opts.series.forEach(function(s){ for(var i=i0;i<=i1;i++){ var v=val(s,i); if(v>max) max=v; if(v<min) min=v; } }); if(opts.pct){ max=Math.max(max,1); }
+      var top=opts.pct?Math.ceil(max/5)*5:niceCeil(max); var bot=Math.min(0,min); var span=top-bot||1;
+      var X=function(i){ return L+(i-i0)/Math.max(1,(i1-i0))*pw; }, Y=function(v){ return T+ph-(v-bot)/span*ph; };
+      var g='<svg viewBox="0 0 '+W+' '+H+'" font-family="inherit">';
+      var ticks=4; for(var t=0;t<=ticks;t++){ var v=bot+span*t/ticks, y=Y(v); g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'" stroke="#E6E8EB" stroke-dasharray="3 4"/><text x="'+(L-6)+'" y="'+(y+4)+'" font-size="10.5" text-anchor="end" fill="#8A8D9A">'+(opts.pct? Math.round(v)+'%' : money(v))+'</text>'; }
+      var step=Math.max(1,Math.round((i1-i0)/8)); for(var i=i0;i<=i1;i+=step){ g+='<text x="'+X(i)+'" y="'+(H-8)+'" font-size="10.5" text-anchor="middle" fill="#8A8D9A">'+yrs[i]+'</text>'; }
+      if(st.kind==='bars'){ var n=i1-i0+1, bw=Math.max(2, pw/n*0.62/opts.series.length);
+        opts.series.forEach(function(s,si){ for(var i=i0;i<=i1;i++){ var v=val(s,i), x=X(i)-bw*opts.series.length/2+si*bw, y=Y(Math.max(0,v)), h=Math.abs(Y(v)-Y(0)); g+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="1.5" fill="'+s.color+'"/>'; } });
+      } else {
+        opts.series.forEach(function(s){ var d=''; for(var i=i0;i<=i1;i++){ d+=(i===i0?'M':'L')+X(i).toFixed(1)+' '+Y(val(s,i)).toFixed(1)+' '; }
+          if(st.kind==='area') g+='<path d="'+d+'L'+X(i1).toFixed(1)+' '+Y(bot)+' L'+X(i0).toFixed(1)+' '+Y(bot)+' Z" fill="'+s.color+'" opacity=".14"/>';
+          g+='<path d="'+d+'" fill="none" stroke="'+s.color+'" stroke-width="2.2" stroke-linejoin="round"'+(s.dash?' stroke-dasharray="6 5"':'')+'/>'; });
+      }
+      g+='</svg>'; $('.ac-svg',el).innerHTML=g;
+      var rows='<table><tr><th>Year</th>'+opts.series.map(function(s){ return '<th>'+s.name+'</th>'; }).join('')+'</tr>';
+      for(var r=i0;r<=i1;r+=Math.max(1,Math.round((i1-i0)/10))){ rows+='<tr><td>'+yrs[r]+'</td>'+opts.series.map(function(s){ return '<td>'+(opts.pct? val(s,r).toFixed(1)+'%' : fullMoney(val(s,r)))+'</td>'; }).join('')+'</tr>'; }
+      $('.ac-table',el).innerHTML=rows+'</table>';
+    }
+    function niceCeil(v){ if(v<=0) return 1; var p=Math.pow(10,Math.floor(Math.log10(v))); var m=v/p; var c= m<=1?1: m<=2?2: m<=2.5?2.5: m<=5?5:10; return c*p; }
+    el.addEventListener('click', function(e){ var b=e.target.closest('.seg button'); if(b){ st[b.closest('.seg').dataset.g]=b.dataset.v; draw(); return; } if(e.target.closest('.ac-tbl')){ st.tbl=!st.tbl; el.classList.toggle('tbl', st.tbl); e.target.textContent=st.tbl?'Show chart':'Show table'; } });
+    el.addEventListener('change', function(e){ var s=e.target.closest('select[data-k]'); if(s){ st[s.dataset.k]=+s.value; draw(); } });
+    draw(); return el;
+  }
+
+  /* ---------- tool steps ---------- */
+  function toolSteps(steps){
+    var el=document.createElement('div'); el.className='ai-tools';
+    el.innerHTML='<button type="button" class="at-btn">'+CHEV+'<span class="spin"></span><span class="lab">Working on the answer…</span></button><div class="at-list"></div>';
+    var list=$('.at-list',el); var i=0;
+    el.querySelector('.at-btn').addEventListener('click', function(){ el.classList.toggle('open'); });
+    el.classList.add('open');
+    function next(){ if(i>=steps.length){ $('.spin',el).outerHTML='<span class="ok">'+OK+'</span>'; $('.lab',el).textContent='Used '+steps.length+' tool'+(steps.length>1?'s':''); setTimeout(function(){ el.classList.remove('open'); }, 900); if(el.onDone) el.onDone(); return; }
+      var s=steps[i++]; var d=document.createElement('div'); d.className='at-step'; d.innerHTML=OK+'<span>'+s.t+'</span>'+(s.c?'<span class="cites">'+s.c.map(function(n){ return '<span>'+n+'</span>'; }).join('')+'</span>':''); list.appendChild(d); setTimeout(next, 420+Math.random()*300); }
+    setTimeout(next, 350); return el;
+  }
+
+  /* ---------- verification footer ---------- */
+  function checkBox(claims, corrected){
+    var el=document.createElement('div'); el.className='ai-check pending';
+    el.innerHTML='<div class="ck-head"><span class="spin"></span><span>Checking the figures against your plan data…</span></div><div class="ck-list">'+claims.map(function(c,i){ return '<div class="ck-row"><span class="n">'+(i+1)+'</span><div><span class="claim">'+c.t+'</span><span class="tag">Data ✓</span><span class="src">'+c.s+'</span></div></div>'; }).join('')+'</div>';
+    el.querySelector('.ck-head').addEventListener('click', function(){ if(!el.classList.contains('pending')) el.classList.toggle('open'); });
+    el.finish=function(){ el.classList.remove('pending'); $('.ck-head',el).innerHTML=OK+'<span><b>Checked '+claims.length+' figures against your plan data</b> <span class="see">· <u>see sources</u></span></span>'; };
+    return el;
+  }
+
+  /* ---------- the answers ---------- */
+  function years(rows){ return rows.map(function(r){ return r.y; }); }
+  function nwAnswer(){
+    var s=stress(); if(!s || !s.base) return null; var rows=s.base.rows, yrs=years(rows);
+    var start=rows[0].bal, end=rows[rows.length-1].bal, peak=rows.reduce(function(a,r){ return r.bal>a.bal?r:a; }, rows[0]); var conf=s.conf(s.base);
+    var re=[]; rows.forEach(function(r,i){ re.push(148000*Math.pow(1.03,i)); });
+    return { steps:[{t:'Reading your plan inputs'},{t:'Drawing a chart: net worth',c:[1,2,3]},{t:'Running your forecast',c:[4,5]}],
+      chart:{ title:'Net worth', years:yrs, kind:'bars', series:[{name:'Savings',color:'#0E794E',v:rows.map(function(r){ return r.bal; })},{name:'Real estate',color:'#9EDFC2',v:re}] },
+      html:'<p>Here’s your net worth over the life of the plan.</p><p>You start today at about <b>'+money(start)+'</b>'+cite(1)+' in savings and finish at roughly <b>'+money(end)+'</b>'+cite(2)+' in '+rows[rows.length-1].y+'. Savings peak around <b>'+money(peak.bal)+' in '+peak.y+'</b>'+cite(3)+', and home equity does quiet work underneath, compounding from $148k today. You never run out of savings'+cite(4)+', and your chance of success sits at <b>'+conf+'%</b>'+cite(5)+' — which may mean you have room to spend more than you’ve planned.</p><p>Want me to show this in today’s dollars so the numbers feel like the money you actually spend, or dig into what’s driving the growth?</p>',
+      claims:[{t:'Start at about '+money(start),s:'run_forecast rows[2026].bal · Running your forecast'},{t:'Finish at roughly '+money(end),s:'run_forecast endOfPlanSavings · Running your forecast'},{t:'Savings peak around '+money(peak.bal)+' in '+peak.y,s:'run_forecast max(rows.bal) · Drawing a chart'},{t:'You never run out of savings',s:'run_forecast outOfSavingsDate null · Running your forecast'},{t:'Chance of success '+conf+'%',s:'monte_carlo successRate '+conf+' · Running your forecast'}] };
+  }
+  function taxAnswer(){
+    var s=stress(); if(!s || !s.base) return null; var rows=s.base.rows, yrs=years(rows);
+    var rate=rows.map(function(r){ var age=61+(r.y-2026); return age<67?22: age<70?12: age<75?14:19; });
+    return { steps:[{t:'Reading your tax inputs'},{t:'Drawing a chart: effective tax rate',c:[1,2,3]},{t:'Running your forecast',c:[4]}],
+      chart:{ title:'Effective tax rate by year', years:yrs, kind:'bars', pct:true, series:[{name:'Effective rate',color:'#0E794E',v:rate}] },
+      html:'<p>Your taxes fall off a cliff when the paychecks stop, then climb back.</p><p>Working years run at about <b>22%</b>'+cite(1)+'. From retirement in 2028 until Social Security starts at 70, you sit in the <b>12% bracket</b>'+cite(2)+' with room to spare — that is the window for Roth conversions. Social Security nudges the rate to <b>14%</b>'+cite(3)+', and required distributions from 75 push it to about <b>19%</b>'+cite(4)+'.</p><p>Converting about $40,000 a year to Roth during the low years keeps roughly $61,000 that would otherwise go to tax. Want me to set that up as a what-if?</p>',
+      claims:[{t:'Working years at about 22%',s:'tax_model effectiveRate 2026–2027 · Running your forecast'},{t:'12% bracket from 2028 to 70',s:'tax_model bracket 2028–2034 · Running your forecast'},{t:'Social Security nudges the rate to 14%',s:'tax_model effectiveRate 2035–2039 · Running your forecast'},{t:'RMDs push it to about 19%',s:'tax_model effectiveRate from 2040 · Running your forecast'}] };
+  }
+  function planAnswer(){
+    var s=stress(); if(!s || !s.base) return null; var rows=s.base.rows, yrs=years(rows); var conf=s.conf(s.base), end=s.base.end;
+    return { steps:[{t:'Reading your plan inputs'},{t:'Running your forecast',c:[1,2,3]},{t:'Running 100 market histories',c:[4]}],
+      chart:{ title:'Savings over the plan', years:yrs, kind:'area', series:[{name:'Savings',color:'#0E794E',v:rows.map(function(r){ return r.bal; })}] },
+      html:'<p>Your plan is in good shape.</p><ul><li><b>Chance of success:</b> '+conf+'%'+cite(1)+'</li><li><b>Funded to:</b> age 92'+cite(2)+'</li><li><b>Ending balance:</b> '+money(end)+cite(3)+'</li><li><b>Retire:</b> at 67, Social Security at 70'+cite(4)+'</li></ul><p>The one thing worth doing before December is the Roth conversion while you are still under the 12% bracket. Beyond that, the plan holds in 87 of 100 market histories without touching spending.</p>',
+      claims:[{t:'Chance of success '+conf+'%',s:'monte_carlo successRate · Running 100 market histories'},{t:'Funded to age 92',s:'run_forecast outOfSavingsDate null · Running your forecast'},{t:'Ending balance '+money(end),s:'run_forecast endOfPlanSavings · Running your forecast'},{t:'Retire at 67, Social Security at 70',s:'profile retirementAge 67, ssClaimAge 70 · Reading your plan inputs'}] };
+  }
+  function whatifAnswer(){
+    var s=stress(), W=window.WHATIF; if(!s || !W) return null; var m=W.metrics(); if(!m) return null;
+    var base=s.base.rows, cur=s.run(s.S,false).rows, yrs=years(base);
+    var d=function(a,b,f){ return (f||money)(a)+' → <b>'+(f||money)(b)+'</b>'; };
+    var dc=m.what.conf-m.plan.conf, de=m.what.end-m.plan.end;
+    var nmEl=document.querySelector('.wi-band .wi-name'); var name=(nmEl && nmEl.textContent.trim())||W.state.title||'What-if';
+    return { steps:[{t:'Setting up a what-if'},{t:'Running your what-if forecast',c:[1,2]},{t:'Comparing scenarios',c:[3,4]}],
+      chart:{ title:'Net worth: current plan vs what-if', years:yrs, kind:'line', series:[{name:'Net worth: current plan',color:'#10182C',v:base.map(function(r){ return r.bal; }),dash:true},{name:'Net worth: with the what-if',color:'#0E794E',v:cur.map(function(r){ return r.bal; })}] },
+      html:'<p>'+(Math.abs(dc)<2?'That barely moves the needle — and that is the good news.':(dc<0?'That costs you, but the plan still holds.':'That helps, more than you might expect.'))+'</p><ul><li><b>Chance of success:</b> '+d(m.plan.conf,m.what.conf,function(v){ return v+'%'; })+(dc?' ('+(dc>0?'+':'')+dc+' pts)':' (same)')+cite(1)+'</li><li><b>Ending balance:</b> '+d(m.plan.end,m.what.end)+' ('+(de<0?'about '+money(-de)+' less':'about '+money(de)+' more')+')'+cite(2)+'</li><li><b>Funded to:</b> age '+m.plan.funded+' → <b>age '+m.what.funded+'</b>'+cite(3)+'</li><li><b>Retire:</b> at '+m.plan.ret+' → <b>at '+m.what.ret+'</b>, Social Security at '+m.what.ss+cite(4)+'</li></ul><p>The two lines sit '+(Math.abs(de)<300000?'almost on top of each other':'apart')+'. I opened this as a what-if at the top of the page — nothing is saved. Keep it to compare later, or apply it and every page follows.</p>',
+      claims:[{t:'Chance of success '+m.plan.conf+'% → '+m.what.conf+'%',s:'compare_scenarios CoS baseline '+m.plan.conf+', modified '+m.what.conf+' · Comparing scenarios'},{t:'Ending balance '+money(m.plan.end)+' → '+money(m.what.end),s:'run_forecast endOfPlanSavings baseline vs modified · Running your what-if forecast'},{t:'Funded to age '+m.what.funded,s:'run_forecast outOfSavingsDate · Running your what-if forecast'},{t:'Retire at '+m.what.ret+', Social Security at '+m.what.ss,s:'profile retirementAge, ssClaimAge (modified) · Setting up a what-if'}], hypo:true, name:name };
+  }
+  function pick(q){
+    var s=(q||'').toLowerCase();
+    if(/what if|suppose|imagine|instead/.test(s) && window.WHATIF && window.WHATIF.state && window.WHATIF.state.open) return whatifAnswer();
+    if(/net worth|over time|chart|graph|grow/.test(s)) return nwAnswer();
+    if(/tax/.test(s)) return taxAnswer();
+    if(/plan looking|how.*(am i|are we) doing|on track|how.*my plan/.test(s)) return planAnswer();
+    return null;
+  }
+
+  /* ---------- render into the thread ---------- */
+  window.__aiRich=function(q, ctx){
+    var a=pick(q); if(!a) return null;
+    return function(th, finish){
+      th.innerHTML=''; var tools=toolSteps(a.steps); th.appendChild(tools);
+      tools.onDone=function(){
+        var card=chartCard(a.chart); th.appendChild(card); ctx.scroll();
+        var ans=document.createElement('div'); ans.className='ai-ans'; th.appendChild(ans);
+        var chk=checkBox(a.claims);
+        ctx.typeInto(ans, a.html, function(){ th.appendChild(chk); ctx.scroll(); setTimeout(function(){ chk.finish(); if(a.hypo) setHypo(true, a.name); finish(); setTimeout(ctx.scroll, 80); }, 1400); });
+      };
+    };
+  };
+
+  /* ---------- hypothetical banner + review modal ---------- */
+  var bai=null, banner=null, review=null;
+  function setHypo(on, name){ if(!bai) return; bai.classList.toggle('ai-hypo', !!on); if(banner && name) banner.dataset.name=name; }
+  function buildBanner(){
+    if(!bai || banner) return;
+    banner=document.createElement('div'); banner.className='ai-banner'; banner.innerHTML='<span class="txt">You’re viewing a modified plan with hypothetical changes.</span><button type="button" class="clr">Clear modifications</button><button type="button" class="apply">Review and apply</button>';
+    var ask=bai.querySelector('.bai-ask'); ask.parentNode.insertBefore(banner, ask);
+    banner.querySelector('.clr').addEventListener('click', function(){ if(window.WHATIF) WHATIF.discard(); setHypo(false); });
+    banner.querySelector('.apply').addEventListener('click', openReview);
+    var foot=document.createElement('div'); foot.className='bai-foot'; foot.innerHTML='<u>Example questions</u> · Results aren’t guaranteed.'; ask.parentNode.insertBefore(foot, ask.nextSibling);
+    foot.querySelector('u').addEventListener('click', function(){ showHero(true); });
+  }
+  function openReview(){
+    if(!review){ review=document.createElement('div'); review.className='ai-review'; document.body.appendChild(review);
+      review.addEventListener('click', function(e){ if(e.target===review || e.target.closest('.rv-cancel')) review.classList.remove('on'); if(e.target.closest('.rv-apply')){ review.classList.remove('on'); if(window.WHATIF) WHATIF.applyNow(); setHypo(false); } }); }
+    var ch=(window.WHATIF && WHATIF.state.changes)||{}; var LAB={ret:'Retirement age', ss:'Social Security claim age', spend:'Monthly spending', life:'Lifestyle', ret_r:'Market assumption'};
+    var rows=Object.keys(ch).map(function(k){ return '<div class="rv-row"><span>Primary — '+(LAB[k]||k)+'</span><span><s>'+ch[k].from+'</s><b>'+ch[k].to+'</b></span></div>'; }).join('')||'<div class="rv-row"><span>No changes</span></div>';
+    review.innerHTML='<div class="rv"><div class="rv-head"><h3>Review changes</h3><p>'+(banner&&banner.dataset.name||'What-if')+'</p></div><div class="rv-body"><div class="rv-sec">Profile</div>'+rows+'</div><div class="rv-foot"><button type="button" class="rv-cancel">Cancel</button><button type="button" class="rv-apply">Apply changes</button></div></div>';
+    review.classList.add('on');
+  }
+  document.addEventListener('whatif:change', function(){ if(window.WHATIF && !WHATIF.state.open) setHypo(false); });
+
+  /* ---------- empty state in full view ---------- */
+  var hero=null;
+  function buildHero(){
+    if(!bai || hero) return; hero=document.createElement('div'); hero.className='bai-hero';
+    hero.innerHTML='<h2>How can I help with your plan?</h2><p>Ask about your plan, try a what-if, or ask for a chart.</p><div class="hero-chips">'+EX.map(function(q){ return '<button type="button" data-q="'+q+'">'+q+'</button>'; }).join('')+MORE.map(function(q){ return '<button type="button" class="more" data-q="'+q+'">'+q+'</button>'; }).join('')+'</div><button type="button" class="hero-more">More examples</button>';
+    var main=bai.querySelector('.bai-main')||bai; var thread=bai.querySelector('.bai-thread'); main.insertBefore(hero, thread);
+    hero.addEventListener('click', function(e){ if(e.target.closest('.hero-more')){ hero.classList.add('expanded'); return; } var b=e.target.closest('[data-q]'); if(b){ showHero(false); if(window.__bai) window.__bai.ask(b.dataset.q); } });
+  }
+  function showHero(on){ if(!hero) return; hero.classList.toggle('on', !!on); bai.classList.toggle('has-hero', !!on); if(on) hero.classList.remove('expanded'); }
+  function fresh(){ var t=bai.querySelector('.bai-thread'); return t && t.children.length<=1; }
+  function attach(){
+    bai=document.querySelector('.bai'); if(!bai) return false;
+    buildBanner(); buildHero();
+    var btn=bai.querySelector('.full'); if(btn) btn.addEventListener('click', function(){ setTimeout(function(){ showHero(bai.classList.contains('is-full') && fresh()); }, 50); });
+    var nw=bai.querySelector('.bai-new'); if(nw) nw.addEventListener('click', function(){ setTimeout(function(){ showHero(bai.classList.contains('is-full')); }, 50); });
+    var ask=bai.querySelector('.bai-ask'); if(ask){ var cb=document.createElement('button'); cb.type='button'; cb.className='chartbtn'; cb.title='Ask for a chart'; cb.setAttribute('aria-label','Ask for a chart'); cb.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>'; cb.style.cssText='background:none;border:0;cursor:pointer;color:var(--text-muted);padding:4px;align-items:center;'; ask.appendChild(cb); cb.addEventListener('click', function(){ var inp=bai.querySelector('.bai-ask input'); if(inp){ inp.value='Show me a chart of my '; inp.focus(); inp.dispatchEvent(new Event('input')); } }); }
+    new MutationObserver(function(){ if(!bai.classList.contains('is-full')) showHero(false); }).observe(bai, { attributes:true, attributeFilter:['class'] });
+    bai.querySelector('.bai-thread').addEventListener('DOMNodeInserted', function(){ if(!fresh()) showHero(false); });
+    return true;
+  }
+  if(!attach()){ var tries=0, t=setInterval(function(){ if(attach() || ++tries>80) clearInterval(t); }, 250); }
 })();
 </script>
 <!-- ===== CUSTOMIZE HOME: a Customize button, a modal with grabbers + toggles, and grabbers on the cards themselves. Home only. ===== -->
