@@ -8176,14 +8176,14 @@ document.addEventListener('click', function(e){
     if(_scrollRAF){ cancelAnimationFrame(_scrollRAF); _scrollRAF=0; }
     targetY=Math.max(0, targetY);
     if(reduce){ window.scrollTo(0, targetY); if(onDone) onDone(); return; }
-    const startY=window.scrollY, dist=targetY-startY, t0=performance.now(), D=dur||420, ease=t=>1-Math.pow(1-t,3);
+    const startY=window.scrollY, dist=targetY-startY, t0=performance.now(), D=window.__navFast?200:(dur||420), ease=t=>1-Math.pow(1-t,3);
     (function step(now){ const p=Math.min(1,(now-t0)/D); window.scrollTo(0, startY+dist*ease(p)); if(p<1){ _scrollRAF=requestAnimationFrame(step); } else { _scrollRAF=0; if(onDone) onDone(); } })(t0);
   }
   function scrollToSection(sec){
     const psWrap=document.querySelector('.ps-wrap');
     const ps = psWrap && psWrap.querySelector('.ps');
     const psH = ps ? ps.getBoundingClientRect().height : (psWrap ? psWrap.getBoundingClientRect().height : 90);
-    const offset = psH + 20;                           // pinned widget (top:0) + small breathing room
+    const offset = psH + 20 + (window.__navFast ? 40 : 0);
     const spacer = ensureBottomSpacer();
     spacer.style.height='0px';                         // reset before measuring true scroll height
     const desired = sec.getBoundingClientRect().top + window.scrollY - offset;
@@ -8952,17 +8952,18 @@ document.addEventListener('click', function(e){
       const li=key && nav.querySelector('li[data-key="'+key+'"]');
       if(li) li.classList.add('active');
     }
+    document.body.classList.add('nav-fast');                 // the other sections fold away instantly
+    for(const k in accordions){ if(accordions[k]!==acc && accordions[k].collapse) accordions[k].collapse(); }   // hide where you were
     acc.expand();
-    if(_rail) _rail.unpin();                                 // release any pinned change-effect so this section's context shows
-    _forcePin=true; armPinGuard(reduce ? 500 : 1400); applyNavPin();   // wipe the top nav and keep it wiped through the jump (even when the section sits at the very top)
-    scrollToSection(acc.el);                                 // bring the section near the top and pin the widget
+    document.querySelectorAll('.acc-body').forEach(b=>{ (b.getAnimations ? b.getAnimations() : []).forEach(a=>{ try{ a.finish(); }catch(e){} }); });   // settle heights now, so the jump is measured right
+    if(_rail) _rail.unpin();
+    _forcePin=true; armPinGuard(reduce ? 500 : 900); applyNavPin();
     setTimeout(()=>{
-      if(token!==_navToken) return;                          // a newer jump started; abandon this one
-      const row=openFirstEditor(acc.el);                     // open the first field box
-      const ed=(row && row.nextElementSibling && row.nextElementSibling.classList.contains('row-editor')) ? row.nextElementSibling : null;
-      applyNavPin();
-      if(ed) setTimeout(()=>{ if(token!==_navToken) return; scrollEditorUnderWidget(ed); applyNavPin(); armPinGuard(reduce ? 300 : 800); }, reduce ? 0 : 300);  // land the editor in the same spot for every section
-    }, reduce ? 0 : 420);   // after the section settles
+      if(token!==_navToken) return;
+      acc.el.classList.remove('sec-arrive'); void acc.el.offsetWidth; acc.el.classList.add('sec-arrive');   // the section itself eases up a touch
+      window.__navFast=true; scrollToSection(acc.el); window.__navFast=false;
+      setTimeout(()=>{ document.body.classList.remove('nav-fast'); if(token===_navToken) applyNavPin(); }, 260);
+    }, 60);
   }
 
   // swap the center + right columns between the editable sections and the Snapshot (Plan) view
@@ -29622,16 +29623,22 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     }
     head.addEventListener('click', function(){ set(!collapsed); });
     acc._expand=function(){ if(collapsed) set(false); };
+    acc._collapse=function(){ if(!collapsed) set(true); };
   }
   function jumpTo(acc, key, top){
     if(!acc) return;
     var nav=document.getElementById('sideNav');
     if(nav){ nav.querySelectorAll('li').forEach(function(x){ x.classList.remove('active'); }); var li=nav.querySelector('li[data-key="'+key+'"]'); if(li) li.classList.add('active'); }
     if(!document.body.classList.contains('lens-snapshot')){ var pill=$('#snapshotView .snap-pill[data-lens="snapshot"]'); if(pill) pill.click(); }
+    /* hide where you were: every other open section folds away at once */
+    var center=acc.parentElement; if(center) [].slice.call(center.querySelectorAll(':scope > .acc')).forEach(function(o){ if(o===acc) return; if(o._collapse) o._collapse(); else { var hb=o.querySelector('.btn-collapse'); if(hb && hb.getAttribute('aria-expanded')==='true') o.querySelector('.acc-head').click(); } });
     if(acc._expand) acc._expand(); else { var b=acc.querySelector('.btn-collapse'); if(b && b.getAttribute('aria-expanded')==='false') acc.querySelector('.acc-head').click(); }
-    var ps=$('.ps-wrap .ps'); var off=(ps?ps.getBoundingClientRect().height:0)+24;
+    document.querySelectorAll('.acc-body').forEach(function(bd){ (bd.getAnimations?bd.getAnimations():[]).forEach(function(an){ try{ an.finish(); }catch(e){} }); });
+    acc.classList.remove('sec-arrive'); void acc.offsetWidth; acc.classList.add('sec-arrive');
+    var ps=$('.ps-wrap .ps'); var off=(ps?ps.getBoundingClientRect().height:0)+24+40;
     var y=(top||acc).getBoundingClientRect().top+window.scrollY-off;
-    window.scrollTo({ top:Math.max(0,y), behavior:reduce?'auto':'smooth' });
+    var y0=window.scrollY, t0=performance.now(), D=reduce?0:200; y=Math.max(0,y);
+    (function step(now){ var pr=D?Math.min(1,(now-t0)/D):1; window.scrollTo(0, y0+(y-y0)*(1-Math.pow(1-pr,3))); if(pr<1) requestAnimationFrame(step); })(t0);
   }
   /* scroll-spy for the one section the product's own spy does not know */
   (function(){
@@ -30997,6 +31004,11 @@ body.bai-open .hm-page .hm-live .lv-vid{ width:280px; }
 </script>
 <!-- ===== My Money: the net worth panel is the Home treemap, same renderer, same data ===== -->
 <style>
+body.nav-fast .acc-body, body.nav-fast .acc{ transition:none !important; }
+/* arriving at a section from the left rail: a short rise, nothing else moves */
+.center > .acc.sec-arrive > .acc-body{ animation:secArrive .32s cubic-bezier(.2,.7,.2,1); }
+@keyframes secArrive{ 0%{ opacity:0; transform:translateY(14px); } 100%{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .center > .acc.sec-arrive > .acc-body{ animation:none; } }
 /* sections on My Money and My Plans read as separate chapters: a rule and real air between them */
 .layout.page[data-page="today"] > .center > .acc + .acc, .layout.page[data-page="plan"] > .center > .acc + .acc{ margin-top:32px; padding-top:40px; border-top:1px solid var(--hairline-strong); }
 .layout.page[data-page="today"] > .center > .acc, .layout.page[data-page="plan"] > .center > .acc{ scroll-margin-top:96px; }
@@ -31412,9 +31424,9 @@ body.bai-open .hm-page .hm-live .lv-vid{ width:280px; }
 <style>
 .hm-page .welcome{ display:flex !important; align-items:center; justify-content:space-between; gap:16px; }
 .hm-page .welcome h2{ margin:0; }
-.hm-customize{ font:inherit; font-size:15px; font-weight:600; height:38px; padding:0 14px; border:1px solid var(--hairline-strong); border-radius:10px; background:#fff; color:var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:8px; margin-left:auto; }
+.hm-customize{ font:inherit; font-size:15px; font-weight:600; height:38px; width:38px; padding:0; justify-content:center; border:1px solid var(--hairline-strong); border-radius:10px; background:#fff; color:var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:8px; margin-left:auto; }
 .hm-customize:hover{ background:#F6F7F8; }
-.hm-customize svg{ width:16px; height:16px; }
+.hm-customize svg{ width:18px; height:18px; }
 body.bai-open .hm-page .welcome{ margin-right:calc(360px + 24px); }
 @media (max-width:1180px){ body.bai-open .hm-page .welcome{ margin-right:0; } }
 /* the grid is now laid out by the layout model */
@@ -31594,7 +31606,7 @@ body.hc-open .hc-modal{ display:flex; }
     /* lift the two cards out of their dropzones so the grid can place them */
     ['#s-money','#s-plans'].forEach(function(sel){ var e=grid.querySelector(sel); if(e && e.parentNode!==grid) grid.insertBefore(e, bai||null); });
     var w=document.querySelector('.hm-page .welcome');
-    if(w && !w.querySelector('.hm-customize')){ var b=document.createElement('button'); b.type='button'; b.className='hm-customize'; b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Customize'; b.addEventListener('click', open); w.appendChild(b); }
+    if(w && !w.querySelector('.hm-customize')){ var b=document.createElement('button'); b.type='button'; b.className='hm-customize'; b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>'; b.setAttribute('aria-label','Customize Home'); b.title='Customize'; b.addEventListener('click', open); w.appendChild(b); }
     dressCards(); layout(); return true;
   }
   if(!build()){ var tries=0, t=setInterval(function(){ if(build() || ++tries>80) clearInterval(t); }, 250); }
@@ -32981,7 +32993,8 @@ body.scn-open.bai-open #scnPage .scn-rail{ display:block; }
 .scn-starters > .scn-start{ flex:0 0 300px; scroll-snap-align:start; }
 .scn-car-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
 .scn-car-head > div{ min-width:0; }
-.scn-car-nav{ display:flex; align-items:center; gap:8px; flex:none; padding-bottom:14px; }
+.scn-car-nav{ display:flex; align-items:center; gap:8px; flex:none; padding-bottom:16px; }
+.scn-car-head{ align-items:center; }
 .scn-car-nav button{ width:32px; height:32px; border-radius:50%; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
 .scn-car-nav button:hover{ background:#F6F7F8; }
 .scn-car-nav button:disabled{ opacity:.35; cursor:default; }
@@ -33152,7 +33165,7 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
       '<div class="scn-tile">'+lessonSVG('scn')+'<div><div class="t">A scenario</div><p>A branch, in pencil.</p></div></div>'+
       '<div class="scn-tile">'+lessonSVG('cmp')+'<div><div class="t">Compare, then choose</div><p>Side by side. Pick the better one.</p></div></div>'+
     '</div>';
-    h+='<div class="scn-car-head"><div><h2>Start one</h2><p class="h2sub">Each of these opens a scenario at the top of the page. Keep it, or let it go.</p></div><div class="scn-car-nav"><button type="button" data-car="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><span class="dots"></span><button type="button" data-car="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div></div><div class="scn-starters">'+STARTERS.map(function(s,i){ return '<button type="button" class="scn-start'+(s.ai?' ai':'')+'" data-i="'+i+'"><span class="t">'+esc(s.t)+'</span><span class="s">'+esc(s.s)+'</span><span class="go">'+(s.ai?'Ask':'Try it')+' '+ARROW+'</span></button>'; }).join('')+'</div>';
+    h+='<div class="scn-car-head"><div><h2>Start one</h2></div><div class="scn-car-nav"><button type="button" data-car="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><span class="dots"></span><button type="button" data-car="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div></div><div class="scn-starters">'+STARTERS.map(function(s,i){ return '<button type="button" class="scn-start'+(s.ai?' ai':'')+'" data-i="'+i+'"><span class="t">'+esc(s.t)+'</span><span class="s">'+esc(s.s)+'</span><span class="go">'+(s.ai?'Ask':'Try it')+' '+ARROW+'</span></button>'; }).join('')+'</div>';
     if(list.length){ h+='<h2>Your scenarios</h2><p class="h2sub">Tick up to three to compare them with your plan below.</p>'; h+='<div class="scn-list">'+list.map(function(it,i){ var on=picked[it.id]!==false && i<3; picked[it.id]=on; var col=COLORS[i%3]; var ch=[]; Object.keys(it.moves||{}).forEach(function(k){ ch.push(it.moves[k].label); }); Object.keys(it.changes||{}).forEach(function(k){ var c=it.changes[k]; ch.push(({ret:'Retire',ss:'Social Security',spend:'Spend',life:'Lifestyle',ret_r:'Returns'})[k]+' '+String(c.to).replace(/^at /,'at ')); });
       return '<div class="scn-row'+(on?' on':'')+'" data-id="'+it.id+'"><button type="button" class="pick" aria-label="Compare"><i style="background:'+col+'"></i></button><div><div class="nm"><span class="tag">'+esc(it.letter)+'</span>'+esc(it.name)+'</div><div class="ch">'+esc(ch.join(' · ')||'No changes')+'</div></div><div class="acts"><button type="button" data-act="open">Open</button><button type="button" class="pri" data-act="plan">Make this my plan</button><span class="more"><button type="button" class="kebab" data-act="menu" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button><span class="menu"><button type="button" data-act="rename">Rename</button><button type="button" data-act="del">Remove</button></span></span></div></div>'; }).join('')+'</div>'; }
     /* compare */
@@ -33385,7 +33398,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > #fbPage{ display:block !
 body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:none !important; }
 #fbPage .inv-sub{ max-width:none; }
 #fbPage .fb-top{ display:flex; align-items:center; justify-content:space-between; gap:24px; margin:0; }
-#fbPage .fb-top .inv-title{ margin:0; }
+#fbPage .fb-top .inv-title{ margin:0; font-size:34px; font-weight:400 !important; font-style:normal !important; letter-spacing:0; }
 #fbPage .fb-sub{ margin:6px 0 10px; }
 #fbPage .inv-sub a{ color:var(--green-cta); font-weight:600; cursor:pointer; white-space:nowrap; }
 #fbPage .inv-sub a:hover{ text-decoration:underline; text-underline-offset:3px; }
@@ -33487,7 +33500,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   var host=document.createElement('div'); host.id='fbPage';
   function build(){
     var src=document.getElementById('assetsBody'); if(!src) return false;
-    var h='<div class="fb-top"><h1 class="inv-title">Future <em>Balances</em></h1><button type="button" class="fb-power" data-fb-power>'+BOLT+'Power mode</button></div><p class="inv-sub fb-sub">The rate each account grows at. Balances live in <a data-fb-edit>My Money &rsaquo;</a></p>';
+    var h='<div class="fb-top"><h1 class="inv-title">Future Balances</h1><button type="button" class="fb-power" data-fb-power>'+BOLT+'Power mode</button></div><p class="inv-sub fb-sub">The rate each account grows at. Balances live in <a data-fb-edit>My Money &rsaquo;</a></p>';
     var n=0;
     src.querySelectorAll('.bucket').forEach(function(b){
       var lab=(b.querySelector('.bucket-label')||{}).textContent||''; var rows=[].slice.call(b.querySelectorAll('.acct')).filter(function(a){ return !a.closest('.edit-card'); });
