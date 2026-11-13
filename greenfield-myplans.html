@@ -31621,6 +31621,104 @@ body.hc-open .hc-modal{ display:flex; }
   window.__homeCustomize={ open:open, close:close, layout:layout, state:function(){ return L; }, register:register, unregister:unregister, cards:function(){ return CARDS.slice(); } };
 })();
 </script>
+<!-- ===== XS roadmap items folded into the existing editors: account types incl. TSP, cost basis, bonus income, passive tax treatment, past SS start date, budgeter download ===== -->
+<style>
+.field.xs-req .vtext{ color:#B3261E; }
+.field.xs-req label::after{ content:' · Required'; color:#B3261E; font-weight:600; }
+.field.xs-hint{ display:block; }
+.field.xs-hint .hint{ display:block; font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+.xs-since{ display:none; }
+.xs-since.on{ display:flex; }
+.xs-since .val{ display:flex; gap:8px; }
+.xs-since select{ font:inherit; font-size:15px; color:var(--ink); border:1px solid var(--hairline-strong); border-radius:10px; padding:8px 10px; background:#fff; }
+.qhead .bud-dl, .bud-dl{ display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:600; color:var(--green-cta) !important; cursor:pointer; margin:10px 0 0; background:none; border:0; padding:0; font-family:inherit; }
+.bud-dl:hover{ text-decoration:underline; text-underline-offset:3px; }
+.bud-dl svg{ width:14px; height:14px; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var TYPES=['Checking','Savings','Money market','CD','Brokerage (taxable)','401(k)','Roth 401(k)','403(b)','457(b)','TSP','Roth TSP','Traditional IRA','Rollover IRA','Roth IRA','SEP IRA','SIMPLE IRA','HSA','529 plan','Annuity','Other'];
+  var TAXABLE=/brokerage|taxable|investment/i;
+  function field(label, inner, extra){ var d=document.createElement('div'); d.className='field'+(extra?' '+extra:''); d.innerHTML='<label>'+label+'</label><div class="val">'+inner+'</div>'; return d; }
+  function fieldByLabel(ed, txt){ return [].slice.call(ed.querySelectorAll('.field')).filter(function(f){ var l=f.querySelector('label'); return l && l.textContent.trim().replace(/ · Required$/,'')===txt; })[0]; }
+  function after(ref, node){ if(ref && ref.parentNode) ref.parentNode.insertBefore(node, ref.nextSibling); }
+  function sel(opts, cur, cls){ return '<select class="vselect '+(cls||'')+'">'+opts.map(function(o){ return '<option'+(o===cur?' selected':'')+'>'+o+'</option>'; }).join('')+'</select>'; }
+
+  /* 1 · account type is a real list, with TSP and Roth TSP; taxable accounts must carry a cost basis */
+  function dressAccount(ed){
+    var typeF=fieldByLabel(ed,'Account type'); var title=(ed.querySelector('.ecTitleText')||{}).textContent||''; var sub=(ed.querySelector('.ec-sub')||{}).textContent||'';
+    if(typeF && !typeF.dataset.xs){ typeF.dataset.xs='1'; var vt=typeF.querySelector('.vtext'); var cur=vt && !vt.classList.contains('is-placeholder') ? vt.textContent.trim() : '';
+      var match=TYPES.filter(function(t){ return cur && t.toLowerCase().indexOf(cur.toLowerCase())===0; })[0]||cur;
+      typeF.querySelector('.val').innerHTML=sel([''].concat(TYPES), match, 'xs-type'); typeF.classList.remove('is-empty'); var s=typeF.querySelector('select'); s.options[0].textContent='Choose a type'; if(!match) s.selectedIndex=0;
+      s.addEventListener('change', function(){ costBasis(ed, TAXABLE.test(s.value)); var save=ed.querySelector('.btn-save'); if(save) save.disabled=false; });
+    }
+    if(TAXABLE.test(sub) || (typeF && TAXABLE.test((typeF.querySelector('select')||{}).value||''))) costBasis(ed, true);
+  }
+  function costBasis(ed, on){
+    var f=fieldByLabel(ed,'Cost basis');
+    if(!on){ if(f) f.remove(); return; }
+    if(f) return;
+    var bal=fieldByLabel(ed,'Current balance')||fieldByLabel(ed,'Balance'); if(!bal) return;
+    f=field('Cost basis','<span class="vtext is-placeholder" contenteditable="true">e.g. $12,000</span>','is-empty xs-req xs-hint'); f.insertAdjacentHTML('beforeend','<span class="hint">What you paid in. Needed to tax the gains correctly.</span>');
+    after(bal, f);
+    var vt=f.querySelector('.vtext');
+    vt.addEventListener('focus', function(){ if(vt.classList.contains('is-placeholder')){ vt.textContent=''; vt.classList.remove('is-placeholder'); } });
+    vt.addEventListener('input', function(){ var ok=/\d/.test(vt.textContent); f.classList.toggle('xs-req', !ok); f.classList.toggle('is-empty', !ok); });
+    vt.addEventListener('blur', function(){ if(!vt.textContent.trim()){ vt.textContent='e.g. $12,000'; vt.classList.add('is-placeholder'); f.classList.add('xs-req','is-empty'); } });
+    var save=ed.querySelector('.btn-save'); if(save){ save.addEventListener('click', function(e){ if(f.classList.contains('xs-req')){ e.preventDefault(); e.stopImmediatePropagation(); vt.focus(); } }, true); }
+  }
+
+  /* 2 · employment income gets an annual bonus that can repeat; 3 · other income gets a tax treatment */
+  function dressIncome(ed){
+    var sub=((ed.querySelector('.ec-sub')||{}).textContent||'').trim(); var amt=fieldByLabel(ed,'Pre-tax income')||fieldByLabel(ed,'Monthly amount')||fieldByLabel(ed,'Amount'); if(!amt) return;
+    if(/employment|salary|job/i.test(sub)){
+      if(fieldByLabel(ed,'Annual bonus')) return;
+      var b=field('Annual bonus','<span class="vtext is-placeholder" contenteditable="true">e.g. $8,000</span>','is-empty'); after(amt,b);
+      var r=field('Bonus repeats', sel(['Every year','One time only','Every year, until retirement'],'Every year')); after(b,r);
+      var vt=b.querySelector('.vtext'); vt.addEventListener('focus', function(){ if(vt.classList.contains('is-placeholder')){ vt.textContent=''; vt.classList.remove('is-placeholder'); b.classList.remove('is-empty'); } });
+    } else if(!/social security/i.test(sub)){
+      if(fieldByLabel(ed,'Tax treatment')) return;
+      var cur=/pension|annuity/i.test(sub)?'Ordinary income':/rental|passive|royalt/i.test(sub)?'Ordinary income (passive)':'Ordinary income';
+      var t=field('Tax treatment', sel(['Ordinary income','Ordinary income (passive)','Qualified dividends','Long-term capital gains','Tax-free','Not taxed (return of capital)'], cur)); after(amt,t);
+    }
+  }
+
+  /* 4 · Social Security: already claiming, with a past month and year */
+  function dressSS(ed){
+    var nm=(ed.querySelector('.ecTitleText')||{}).textContent||''; if(!/social security/i.test(nm)) return; if(fieldByLabel(ed,'Already claiming?')) return;
+    var when=fieldByLabel(ed,'When'); if(!when) return;
+    var a=field('Already claiming?', sel(['No, not yet','Yes, since…'],'No, not yet','xs-already')); after(when,a);
+    var months=['January','February','March','April','May','June','July','August','September','October','November','December']; var ys=[]; for(var y=2026;y>=2018;y--) ys.push(String(y));
+    var s=field('Since', sel(months,'April','xs-m')+sel(ys,'2024','xs-y'),'xs-since'); after(a,s);
+    a.querySelector('select').addEventListener('change', function(e){ var on=/yes/i.test(e.target.value); s.classList.toggle('on', on); when.style.display=on?'none':''; var v=when.querySelector('.vtext, .val > span'); });
+  }
+
+  /* 5 · the budgeter can be downloaded */
+  function dressBudget(){
+    var h=[].slice.call(document.querySelectorAll('h2.pf-hl')).filter(function(x){ return /Where your money comes from/.test(x.textContent) && x.offsetParent; })[0]; if(!h || h.parentNode.querySelector('.bud-dl')) return;
+    var b=document.createElement('button'); b.type='button'; b.className='bud-dl'; b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>Download detailed budgeter';
+    var sub=h.nextElementSibling; (sub && /p|div/i.test(sub.tagName) ? sub : h).insertAdjacentElement('afterend', b);
+    b.addEventListener('click', function(){ b.textContent='Preparing your budgeter…'; setTimeout(function(){ b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Saved as boldin-budget-2026.xlsx'; }, 1200); });
+  }
+
+  function sweep(){
+    document.querySelectorAll('.acc .edit-card').forEach(function(ed){ if(!ed.offsetParent) return;
+      var title=(ed.querySelector('.ecTitleText')||{}).textContent||'';
+      if(ed.dataset.xsDone===title) return; var sec=ed.closest('.acc'); var secTitle=sec?((sec.querySelector('h2')||{}).textContent||''):'';
+      try{
+        if(/assets/i.test(secTitle) || /add account/i.test(title)) dressAccount(ed);
+        if(/income/i.test(secTitle)) dressIncome(ed);
+        if(/life events/i.test(secTitle)) dressSS(ed);
+      }catch(e){}
+      ed.dataset.xsDone=title;
+    });
+    try{ dressBudget(); }catch(e){}
+  }
+  new MutationObserver(function(){ clearTimeout(sweep._t); sweep._t=setTimeout(sweep, 60); }).observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class','hidden'] });
+  sweep(); setInterval(function(){ try{ dressBudget(); }catch(e){} }, 800);
+})();
+</script>
 <!-- ===== WATCH: the one widget. Say what you want to keep an eye on; AI makes it a card that stays alive. ===== -->
 <style>
 /* mini starter strip */
