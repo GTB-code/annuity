@@ -32975,10 +32975,23 @@ body.scn-open.bai-open #scnPage .scn-rail{ display:block; }
 .scn-tile p{ margin:0; font-size:13.5px; line-height:1.45; color:var(--text-secondary); }
 
 /* --- starters --- */
-.scn-starters{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }
-body.bai-open .scn-starters, body.bai-open .scn-faq{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+/* starters: one row, scroll sideways */
+.scn-starters{ display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:2px 2px 6px; margin:0 -2px; }
+.scn-starters::-webkit-scrollbar{ display:none; }
+.scn-starters > .scn-start{ flex:0 0 300px; scroll-snap-align:start; }
+.scn-car-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
+.scn-car-head > div{ min-width:0; }
+.scn-car-nav{ display:flex; align-items:center; gap:8px; flex:none; padding-bottom:14px; }
+.scn-car-nav button{ width:32px; height:32px; border-radius:50%; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+.scn-car-nav button:hover{ background:#F6F7F8; }
+.scn-car-nav button:disabled{ opacity:.35; cursor:default; }
+.scn-car-nav button svg{ width:14px; height:14px; }
+.scn-car-nav .dots{ display:flex; gap:5px; padding:0 4px; }
+.scn-car-nav .dots span{ width:5px; height:5px; border-radius:50%; background:#D9DDE3; transition:background .2s ease, width .2s ease; }
+.scn-car-nav .dots span.on{ background:var(--green-cta); width:14px; border-radius:3px; }
+body.bai-open .scn-faq{ grid-template-columns:repeat(2, minmax(0,1fr)); }
 body.bai-open .scn-cmp{ grid-template-columns:minmax(0,1fr); }
-.scn-start{ display:flex; flex-direction:column; gap:8px; padding:18px 18px 16px; border:1px solid var(--hairline); border-radius:16px; background:#fff; text-align:left; font:inherit; color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+.scn-start{ display:flex; flex-direction:column; gap:6px; padding:16px 18px 14px; border:1px solid var(--hairline); border-radius:16px; background:#fff; text-align:left; font:inherit; color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease; }
 .scn-start:hover{ border-color:var(--hairline-strong); background:#FAFBFB; }
 .scn-start .t{ font-size:16px; font-weight:600; }
 .scn-start .s{ font-size:13.5px; color:var(--text-secondary); line-height:1.45; }
@@ -33002,7 +33015,13 @@ body.bai-open .scn-cmp{ grid-template-columns:minmax(0,1fr); }
 .scn-row .acts button:hover{ background:#F6F7F8; }
 .scn-row .acts button.pri{ background:var(--green-cta); color:#fff; }
 .scn-row .acts button.pri:hover{ background:#0B6440; }
-.scn-row .acts button.ghost{ color:var(--text-secondary); }
+.scn-row .acts .more{ position:relative; display:inline-flex; }
+.scn-row .acts .kebab{ width:34px; padding:0; display:inline-flex; align-items:center; justify-content:center; color:var(--text-secondary); }
+.scn-row .acts .kebab svg{ width:18px; height:18px; }
+.scn-row .acts .menu{ display:none; position:absolute; top:40px; right:0; z-index:6; background:#fff; border:1px solid var(--hairline-strong); border-radius:10px; padding:6px; min-width:150px; flex-direction:column; }
+.scn-row .acts .more.open .menu{ display:flex; }
+.scn-row .acts .menu button{ height:auto; padding:8px 10px; border-radius:6px; text-align:left; font-weight:500; }
+.scn-row .acts .menu button[data-act="del"]{ color:#B3261E; }
 .scn-empty{ border:1px dashed var(--hairline-strong); border-radius:16px; padding:22px; font-size:15px; color:var(--text-secondary); line-height:1.5; }
 .scn-empty b{ color:var(--ink); font-weight:600; }
 
@@ -33085,12 +33104,12 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
   var picked={};
 
   var STARTERS=[
+    { t:'Ask Boldin AI', s:'Say it in words: “what if Lily works until 66 and we sell the house at 75?”', ai:true },
     { t:'Retire two years earlier', s:'The question most people ask first. See what it costs, and what covers it.', set:function(b){ return {ret:b.ret-2}; } },
     { t:'Claim Social Security early', s:'At 67 instead of 70. See what the hurry costs, in your own numbers.', set:function(b){ return {ss:b.ss>=70?67:70}; } },
     { t:'Spend $500 less a month', s:'Small, permanent, and it compounds. Usually the quiet hero of a plan.', set:function(b){ return {spend:b.spend-500}; } },
     { t:'A more generous life', s:'The opposite question: how much more could you spend and still be fine?', set:function(b){ return {life:2}; } },
-    { t:'Cautious markets', s:'Dial returns down to conservative and see whether the plan still holds.', set:function(b){ return {ret_r:0}; } },
-    { t:'Ask Boldin AI', s:'Say it in words: “what if Lily works until 66 and we sell the house at 75?”', ai:true }
+    { t:'Cautious markets', s:'Dial returns down to conservative and see whether the plan still holds.', set:function(b){ return {ret_r:0}; } }
   ];
 
   function lessonSVG(kind){
@@ -33112,6 +33131,16 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
     return out+'</svg>';
   }
 
+  function wireCar(){
+    var tr=document.querySelector('#scnPage .scn-starters'), nav=document.querySelector('#scnPage .scn-car-nav'); if(!tr || !nav) return;
+    var dots=nav.querySelector('.dots'), prev=nav.querySelector('[data-car="prev"]'), next=nav.querySelector('[data-car="next"]');
+    function pages(){ return Math.max(1, Math.ceil(tr.scrollWidth/tr.clientWidth)); }
+    function cur(){ return Math.round(tr.scrollLeft/tr.clientWidth); }
+    function paint(){ var n=pages(), c=cur(); dots.innerHTML=''; for(var i=0;i<n;i++){ var d=document.createElement('span'); if(i===c) d.className='on'; dots.appendChild(d); } prev.disabled=c<=0; next.disabled=c>=n-1; }
+    prev.addEventListener('click', function(){ tr.scrollBy({ left:-tr.clientWidth, behavior:'smooth' }); });
+    next.addEventListener('click', function(){ tr.scrollBy({ left:tr.clientWidth, behavior:'smooth' }); });
+    tr.addEventListener('scroll', function(){ clearTimeout(tr._t); tr._t=setTimeout(paint, 80); }); window.addEventListener('resize', paint); paint();
+  }
   function render(){
     var WI=window.WHATIF; var list=WI?WI.list():[]; var plan=WI?WI.planMetrics():null; var base=WI?WI.base():null;
     var h='<div class="scn">';
@@ -33119,13 +33148,13 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
     h+='<h1>One <em>plan</em>. Any number of <b>scenarios</b>.</h1>';
     h+='<p class="lede">Your plan, with a few changes, in pencil. Or ask Boldin AI to build one for you.</p>';
     h+='<div class="scn-lesson">'+
-      '<div class="scn-tile">'+lessonSVG('plan')+'<div><div class="t">Your plan</div><p>One plan, in ink. Every number comes from it.</p></div></div>'+
-      '<div class="scn-tile">'+lessonSVG('scn')+'<div><div class="t">A scenario</div><p>A branch, in pencil. Keep it or let it go.</p></div></div>'+
-      '<div class="scn-tile">'+lessonSVG('cmp')+'<div><div class="t">Compare, then choose</div><p>Side by side. Make the better one your plan.</p></div></div>'+
+      '<div class="scn-tile">'+lessonSVG('plan')+'<div><div class="t">Your plan</div><p>One plan, in ink.</p></div></div>'+
+      '<div class="scn-tile">'+lessonSVG('scn')+'<div><div class="t">A scenario</div><p>A branch, in pencil.</p></div></div>'+
+      '<div class="scn-tile">'+lessonSVG('cmp')+'<div><div class="t">Compare, then choose</div><p>Side by side. Pick the better one.</p></div></div>'+
     '</div>';
-    h+='<h2>Start one</h2><p class="h2sub">Each of these opens a scenario at the top of the page. Keep it, or let it go.</p><div class="scn-starters">'+STARTERS.map(function(s,i){ return '<button type="button" class="scn-start'+(s.ai?' ai':'')+'" data-i="'+i+'"><span class="t">'+esc(s.t)+'</span><span class="s">'+esc(s.s)+'</span><span class="go">'+(s.ai?'Ask':'Try it')+' '+ARROW+'</span></button>'; }).join('')+'</div>';
+    h+='<div class="scn-car-head"><div><h2>Start one</h2><p class="h2sub">Each of these opens a scenario at the top of the page. Keep it, or let it go.</p></div><div class="scn-car-nav"><button type="button" data-car="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><span class="dots"></span><button type="button" data-car="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div></div><div class="scn-starters">'+STARTERS.map(function(s,i){ return '<button type="button" class="scn-start'+(s.ai?' ai':'')+'" data-i="'+i+'"><span class="t">'+esc(s.t)+'</span><span class="s">'+esc(s.s)+'</span><span class="go">'+(s.ai?'Ask':'Try it')+' '+ARROW+'</span></button>'; }).join('')+'</div>';
     if(list.length){ h+='<h2>Your scenarios</h2><p class="h2sub">Tick up to three to compare them with your plan below.</p>'; h+='<div class="scn-list">'+list.map(function(it,i){ var on=picked[it.id]!==false && i<3; picked[it.id]=on; var col=COLORS[i%3]; var ch=[]; Object.keys(it.moves||{}).forEach(function(k){ ch.push(it.moves[k].label); }); Object.keys(it.changes||{}).forEach(function(k){ var c=it.changes[k]; ch.push(({ret:'Retire',ss:'Social Security',spend:'Spend',life:'Lifestyle',ret_r:'Returns'})[k]+' '+String(c.to).replace(/^at /,'at ')); });
-      return '<div class="scn-row'+(on?' on':'')+'" data-id="'+it.id+'"><button type="button" class="pick" aria-label="Compare"><i style="background:'+col+'"></i></button><div><div class="nm"><span class="tag">'+esc(it.letter)+'</span>'+esc(it.name)+'</div><div class="ch">'+esc(ch.join(' · ')||'No changes')+'</div></div><div class="acts"><button type="button" data-act="open">Open</button><button type="button" class="pri" data-act="plan">Make this my plan</button><button type="button" class="ghost" data-act="del">Remove</button></div></div>'; }).join('')+'</div>'; }
+      return '<div class="scn-row'+(on?' on':'')+'" data-id="'+it.id+'"><button type="button" class="pick" aria-label="Compare"><i style="background:'+col+'"></i></button><div><div class="nm"><span class="tag">'+esc(it.letter)+'</span>'+esc(it.name)+'</div><div class="ch">'+esc(ch.join(' · ')||'No changes')+'</div></div><div class="acts"><button type="button" data-act="open">Open</button><button type="button" class="pri" data-act="plan">Make this my plan</button><span class="more"><button type="button" class="kebab" data-act="menu" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button><span class="menu"><button type="button" data-act="rename">Rename</button><button type="button" data-act="del">Remove</button></span></span></div></div>'; }).join('')+'</div>'; }
     /* compare */
     if(plan && base && list.length){
       var series=[{name:'Your plan', color:'#0F172A', rows:plan.rows, plan:true, m:plan}];
@@ -33147,7 +33176,7 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
       '<div><div class="q">What does “Make this my plan” do?</div><div class="a">It replaces your plan with the scenario. The Stress Test baseline, Home and My Plans all follow. There is no undo, but you can always make another scenario from the new plan.</div></div>'+
       '<div><div class="q">Where do Optimize’s moves fit?</div><div class="a">Every Optimize section ends with the same two choices: save it as a scenario, or update your plan. Scenarios are how you try a move before you commit to it.</div></div>'+
     '</div></div>';
-    body.innerHTML=h;
+    body.innerHTML=h; wireCar();
   }
 
   var said=false;
@@ -33160,6 +33189,7 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
     {k:'ret_r', l:'Investment return', min:0, max:2, step:1, f:function(v){ return ['Conservative','Balanced','Aggressive'][v]; }}
   ];
   var inOne=false;
+  function oneContext(){ if(!window.__bai || !window.__bai.context) return; var nm=(document.querySelector('.wi-band .wi-name')||{}).textContent||'this scenario'; window.__bai.context('<b>'+nm.trim()+'</b> is open in pencil. Tell me what to change and I will adjust it, or ask what it means.', ONE_CHIPS); }
   function renderOne(){
     var WI=window.WHATIF; var S=WI.levers(), B=WI.base(); if(!S||!B) return; var W=WI.state; var solid=W.solid;
     var name=solid?solid.name:(W.title||autoNameOf(W));
@@ -33186,7 +33216,7 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
     var nmEl=body.querySelector('.so-name'); if(nmEl && !nameTouched && !WI.state.solid){ nmEl.value=autoNameOf(WI.state); }
     body.querySelectorAll('.so-lever').forEach(function(el){ var k=el.dataset.k; var L=LEV.filter(function(x){ return x.k===k; })[0]; el.classList.toggle('changed', S[k]!==B[k]); el.querySelector('.val').textContent=L.f(S[k]); var inp=el.querySelector('input'); if(document.activeElement!==inp) inp.value=S[k]; });
   }
-  function showOne(){ inOne=true; nameTouched=false; document.body.classList.add('scn-one'); renderOne(); page.scrollTop=0; }
+  function showOne(){ inOne=true; nameTouched=false; document.body.classList.add('scn-one'); renderOne(); page.scrollTop=0; setTimeout(oneContext, 250); }
   function showList(){ inOne=false; document.body.classList.remove('scn-one'); render(); page.scrollTop=0; }
   function start(levers){ var WI=window.WHATIF; if(!WI) return; WI.state.cmp=false; WI.setLevers(levers); showOne(); }
   body.addEventListener('input', function(e){ var inp=e.target; if(!inp.matches || !inp.matches('.so-lever input')) return; var k=inp.closest('.so-lever').dataset.k; var o={}; o[k]=+inp.value; window.WHATIF.setLevers(o); fillResult(); });
@@ -33200,6 +33230,11 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
     if(act==='compare'){ showList(); }
   });
   document.addEventListener('whatif:paint', function(){ if(!document.body.classList.contains('scn-open')) return; var WI=window.WHATIF; if(WI.state.open && !inOne){ showOne(); } else if(inOne && WI.state.open){ fillResult(); } });
+  /* the AI's suggestions on this page are always about scenarios, whatever reset them */
+  var LIST_CHIPS=['What if we retire at 63?','What if we spend $500 less a month?','What if we claim Social Security at 67?','What if markets are poor early on?'];
+  var ONE_CHIPS=['Compare this with my plan','What does this do to my taxes?','Make it retire a year later instead','Should I keep this scenario?'];
+  function scnChips(){ var ch=document.querySelector('.bai .bai-chips'); if(!ch || !document.body.classList.contains('scn-open')) return; var want=inOne?ONE_CHIPS:LIST_CHIPS; var have=[].slice.call(ch.querySelectorAll('button')).map(function(b){ return b.textContent.trim(); }); if(have.join('|')===want.join('|')) return; ch.innerHTML=want.map(function(c){ return '<button type="button" data-q="'+c.replace(/"/g,'&quot;')+'">'+c+'</button>'; }).join(''); }
+  new MutationObserver(function(){ clearTimeout(scnChips._t); scnChips._t=setTimeout(scnChips, 30); }).observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class','hidden'] });
   function open(){ render(); document.body.classList.add('scn-open'); page.scrollTop=0;
     setTimeout(function(){ if(!window.__bai) return; if(window.__bai.isOpen()) window.__bai.rehost(); else window.__bai.open();
       setTimeout(function(){ window.__bai.context('Describe a change and I will open it as a scenario. Keep the ones worth keeping.', ['What if we retire at 63?','What if we spend $500 less a month?','What if we claim Social Security at 67?','What if markets are poor early on?']); }, 150); }, 200); }
@@ -33210,10 +33245,13 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
     var row=e.target.closest('.scn-row'); if(!row) return; var id=row.dataset.id; var it=WHATIF.list().filter(function(x){ return x.id===id; })[0]; if(!it) return;
     if(e.target.closest('.pick')){ var n=Object.keys(picked).filter(function(k){ return picked[k]; }).length; if(!picked[id] && n>=3) return; picked[id]=!picked[id]; render(); return; }
     var act=e.target.closest('[data-act]'); if(!act) return;
+    if(act.dataset.act==='menu'){ var m=act.closest('.more'); var was=m.classList.contains('open'); body.querySelectorAll('.scn-row .more.open').forEach(function(x){ x.classList.remove('open'); }); m.classList.toggle('open', !was); return; }
+    if(act.dataset.act==='rename'){ var nn=prompt('Rename scenario', it.name); if(nn && nn.trim()){ it.name=nn.trim(); render(); } return; }
     if(act.dataset.act==='open'){ WHATIF.activate(it,false); showOne(); }
     if(act.dataset.act==='plan'){ WHATIF.activate(it,false); WHATIF.makePlan(); render(); }
     if(act.dataset.act==='del'){ WHATIF.remove(id); render(); }
   });
+  document.addEventListener('click', function(e){ if(!e.target.closest('.scn-row .more')) document.querySelectorAll('.scn-row .more.open').forEach(function(x){ x.classList.remove('open'); }); });
   document.addEventListener('whatif:change', function(){ if(document.body.classList.contains('scn-open')) render(); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && document.body.classList.contains('scn-open') && !document.body.classList.contains('whatif-open')) close(); });
   /* leaving by the top nav closes the page */
