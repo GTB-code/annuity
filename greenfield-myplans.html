@@ -33566,8 +33566,16 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
 #fbPage .fb-sel.req{ border-color:#B3261E; box-shadow:0 0 0 3px #F5D5D3; }
 #fbPage .fb-req{ color:#B3261E; font-size:14px; margin:6px 0 0; }
 #fbPage .fb-three{ display:none; grid-template-columns:1fr; gap:14px; }
-#fbPage .fb-period.custom .fb-three{ display:grid; }
+#fbPage .fb-period.custom .fb-three, #fbPage .fb-period.optpess .fb-three{ display:grid; }
 #fbPage .fb-three > div:not(.fb-avgf){ display:none; }
+#fbPage .fb-period.optpess .fb-three{ grid-template-columns:1fr 1fr 1fr; }
+#fbPage .fb-pp{ display:none; }
+#fbPage .fb-period.planpath .fb-pp{ display:block; }
+#fbPage .fb-ppnote{ margin:8px 0 0; font-size:13.5px; color:var(--text-secondary); line-height:1.45; }
+#fbPage .fb-period.optpess .fb-three > div{ display:block; }
+#fbPage .fb-lab-a{ display:none; }
+#fbPage .fb-period.optpess .fb-lab-a{ display:inline; }
+#fbPage .fb-period.optpess .fb-lab-r{ display:none; }
 #fbPage .fb-three .fb-lab{ color:var(--text-secondary); font-weight:400; }
 #fbPage .fb-pct{ position:relative; }
 #fbPage .fb-pct .fb-in{ padding-right:30px; }
@@ -33598,20 +33606,25 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   var center=plan.querySelector(':scope > .center'); if(!center) return;
   var BOLT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>';
   var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>';
-  var PRESETS=[['Checking',0.5,0.5],['Savings',2,2],['Bonds',4,5],['Balanced',6,10],['Stocks & bonds',7,12],['Stocks',8,15],['Real estate',3,6],['Custom',null,null]];
+  var PRESETS=[['Aggressive',10.25,17.5,'rec','Aggressive 90/10 \u00b7 10.25%'],['Moderately Aggressive',8.8,14,'rec','Moderately aggressive 70/30 \u00b7 8.8%'],['Moderate',8.08,11,'rec','Moderate 60/40 \u00b7 8.08%'],['Moderately Conservative',6.64,8.5,'rec','Moderately conservative 40/60 \u00b7 6.64%'],['Conservative',5.92,6.5,'rec','Conservative 30/70 \u00b7 5.92%'],['Checking',0,0,'cash'],['Savings',2,1,'cash'],['PlanPath lifecycle',8.8,14,'pp','Lifecycle path \u00b7 eases down as you age'],['PlanPath rising',8.8,14,'pp','Rising path \u00b7 grows as you age'],['Custom',null,null,'own'],['Optimistic/Pessimistic rates',null,null,'own']];
+  var GROUPS=[['rec','Historical rates'],['cash',''],['pp','PlanPath \u00b7 changes over time'],['own','Input your own rate']];
+  var PROFILES=['Aggressive','Moderately aggressive','Moderate','Moderately conservative','Conservative']; var MY_PROFILE='Moderately aggressive';
+  function ppHTML(cur){ return '<div class="fb-pp"><div class="fb-field"><div class="fb-lab">Risk profile</div><select class="fb-sel fb-profile">'+PROFILES.map(function(x){ return '<option'+(x===(cur||MY_PROFILE)?' selected':'')+'>'+x+(x===MY_PROFILE?' \u00b7 your risk profile':'')+'</option>'; }).join('')+'</select></div><p class="fb-ppnote">Priced by asset class. The rate changes over time with the path, so a single number is a starting point.</p></div>'; }
   /* a sensible rate by account type; the member changes it here, nowhere else */
   function defaults(nm, ty){
     var t=(ty||'').toLowerCase(), n=(nm||'').toLowerCase();
     if(/checking/.test(t)) return 'Checking';
     if(/savings|money market|cash/.test(t)) return 'Savings';
-    if(/hsa/.test(n+t)) return 'Balanced';
-    if(/roth/.test(n+t)) return 'Stocks';
-    if(/401|403|457|tsp|ira|rollover/.test(n+t)) return 'Stocks & bonds';
-    if(/brokerage|investment|taxable/.test(t)) return 'Stocks & bonds';
-    if(/home|real estate|property/.test(n+t)) return 'Real estate';
-    return 'Balanced';
+    if(/hsa/.test(n+t)) return 'Moderate';
+    if(/roth/.test(n+t)) return 'Moderately Aggressive';
+    if(/401|403|457|tsp|ira|rollover/.test(n+t)) return 'Moderate';
+    if(/brokerage|investment|taxable/.test(t)) return 'Moderate';
+    if(/home|real estate|property/.test(n+t)) return 'Moderately Conservative';
+    return 'Moderate';
   }
-  function preset(name){ return PRESETS.filter(function(p){ return p[0]===name; })[0]||PRESETS[3]; }
+  var LEGACY={'Bonds':'Conservative','Balanced':'Moderately Conservative','Stocks & bonds':'Moderate','Stocks':'Moderately Aggressive','Real estate':'Moderately Conservative'};
+  function preset(name){ name=LEGACY[name]||name; return PRESETS.filter(function(p){ return p[0]===name; })[0]||PRESETS[2]; }
+  function presetOpts(cur){ return GROUPS.map(function(g){ var o=PRESETS.filter(function(p){ return p[3]===g[0]; }).map(function(p){ return '<option value="'+p[0]+'"'+(p[0]===cur?' selected':'')+'>'+(p[4]||(p[0]+(p[1]!=null?' '+p[1]+'%':'')))+'</option>'; }).join(''); return g[1]?'<optgroup label="'+g[1]+'">'+o+'</optgroup>':'<optgroup label="\u2014">'+o+'</optgroup>'; }).join(''); }
   var DATA={};
   /* moments in the plan a rate can start or end on; years are Marshall's age minus 61 from 2026 */
   var ANCH=[['now','Now','2026'],['ret_m','Marshall retires','2028'],['medicare','Medicare begins','2030'],['ret_l','Lily retires','2032'],['ss_m','Social Security starts','2035'],['rmd','Required withdrawals','2038'],['age75','Age 75','2040'],['age80','Age 80','2045'],['age85','Age 85','2050'],['end','End of plan','2057']];
@@ -33622,11 +33635,11 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
     var pr=preset(per.preset), avg=per.avg!=null?per.avg:pr[1], sd=per.sd!=null?per.sd:pr[2];
     var pess=per.pess!=null?per.pess:Math.round((avg-avg*0.2)*10)/10, opt=per.opt!=null?per.opt:Math.round((avg+avg*0.2)*10)/10;
     var start=per.start||'now', end=per.end||'end';
-    return '<div class="fb-period'+(pr[0]==='Custom'?' custom':'')+'" data-i="'+i+'">'+
+    return '<div class="fb-period'+(pr[0]==='Custom'?' custom':'')+(/Optimistic/.test(pr[0])?' optpess':'')+(/PlanPath/.test(pr[0])?' planpath':'')+'" data-i="'+i+'">'+
       (n>1?'<div class="fb-ptitle"><span>Period '+(i+1)+'</span>'+(i>0?'<button type="button" class="fb-del" aria-label="Remove this period">'+TRASH+'</button>':'')+'</div>':'')+
       '<div class="fb-two"><div class="fb-field"><div class="fb-lab">Starts</div>'+anchSel('fb-start', start, 'end')+'</div><div class="fb-field"><div class="fb-lab">Ends</div>'+anchSel('fb-end', end, 'now')+'</div></div>'+
-      '<div class="fb-field"><div class="fb-lab">Rate of return</div><select class="fb-sel fb-preset">'+PRESETS.map(function(p){ return '<option value="'+p[0]+'"'+(p[0]===pr[0]?' selected':'')+'>'+p[0]+(p[1]!=null?' \u00b7 '+p[1]+'%':'')+'</option>'; }).join('')+'</select></div>'+
-      '<div class="fb-three"><div><div class="fb-lab">Pessimistic</div><div class="fb-pct"><input class="fb-in fb-pess" type="number" step="0.1" value="'+pess+'"></div></div><div class="fb-avgf"><div class="fb-lab">Rate</div><div class="fb-pct"><input class="fb-in fb-avg" type="number" step="0.1" value="'+avg+'"></div></div><div><div class="fb-lab">Optimistic</div><div class="fb-pct"><input class="fb-in fb-opt" type="number" step="0.1" value="'+opt+'"></div></div></div>'+
+      '<div class="fb-field"><div class="fb-lab">Rate of return</div><select class="fb-sel fb-preset">'+presetOpts(pr[0])+'</select></div>'+ppHTML(per.profile)+
+      '<div class="fb-three"><div><div class="fb-lab">Pessimistic</div><div class="fb-pct"><input class="fb-in fb-pess" type="number" step="0.1" value="'+pess+'"></div></div><div class="fb-avgf"><div class="fb-lab"><span class="fb-lab-r">Rate</span><span class="fb-lab-a">Average</span></div><div class="fb-pct"><input class="fb-in fb-avg" type="number" step="0.1" value="'+avg+'"></div></div><div><div class="fb-lab">Optimistic</div><div class="fb-pct"><input class="fb-in fb-opt" type="number" step="0.1" value="'+opt+'"></div></div></div>'+
       '<div class="fb-sd">Standard deviation<b class="fb-sdv">'+sd+'%</b></div>'+(i===0?'<button type="button" class="fb-how">How rates work</button>':'')+'</div>';
   }
   /* a strip of the plan, 2026 to the end: one block per period, taller and deeper green the higher the rate */
@@ -33653,7 +33666,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   }
   function summary(d){
     var parts=d.periods.map(function(p){ var pr=preset(p.preset), avg=p.avg!=null?p.avg:pr[1]; return '<b>'+avg+'%</b>'; });
-    if(d.periods.length===1){ var p0=d.periods[0], pr0=preset(p0.preset); return (pr0[0]==='Custom'?'Custom':pr0[0])+' \u00b7 '+(p0.avg!=null?p0.avg:pr0[1])+'%<small>'+(p0.sd!=null?p0.sd:pr0[2])+'% sd</small>'; }
+    if(d.periods.length===1){ var p0=d.periods[0], pr0=preset(p0.preset); return (/Optimistic/.test(pr0[0])?(p0.pess!=null?p0.pess:'')+'\u2013'+(p0.opt!=null?p0.opt:'')+'% \u00b7 avg':/PlanPath/.test(pr0[0])?pr0[0].replace('PlanPath ','PlanPath \u00b7 ')+' \u00b7 from':pr0[0])+' \u00b7 '+(p0.avg!=null?p0.avg:pr0[1])+'%<small>'+(p0.sd!=null?p0.sd:pr0[2])+'% sd</small>'; }
     var chain=d.periods.map(function(p,i){ var pr=preset(p.preset), avg=p.avg!=null?p.avg:pr[1]; var at=i===0?'':' <i>at '+((anch(p.start||'now')||[])[1]||'').toLowerCase().replace('marshall retires','retirement').replace('social security starts','social security')+'</i>'; return avg+'%'+at; });
     return '<span class="fb-chain">'+chain.join(' \u2192 ')+'</span>';
   }
@@ -33684,7 +33697,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   document.addEventListener('click', function(e){ if(!document.body.classList.contains('fb-open')) return; if(e.target.closest('#fbPage, li[data-key="assets"]')) return; if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-view], .plan-row')) close(); }, true);
   function openEd(row){ var id=row.dataset.acct; closeEds(); row.classList.add('open'); row.insertAdjacentHTML('afterend', edHTML(id)); row.hidden=true; }
   function closeEds(){ host.querySelectorAll('.fb-ed').forEach(function(x){ x.remove(); }); host.querySelectorAll('.fb-row.open').forEach(function(x){ x.classList.remove('open'); x.hidden=false; }); }
-  function readEd(ed){ var id=ed.dataset.acct, periods=[]; ed.querySelectorAll('.fb-period').forEach(function(p,i){ periods.push({ start:p.querySelector('.fb-start').value, end:p.querySelector('.fb-end').value, preset:p.querySelector('.fb-preset').value, pess:+p.querySelector('.fb-pess').value, avg:+p.querySelector('.fb-avg').value, opt:+p.querySelector('.fb-opt').value, sd:parseFloat(p.querySelector('.fb-sdv').textContent) }); }); return { id:id, periods:periods }; }
+  function readEd(ed){ var id=ed.dataset.acct, periods=[]; ed.querySelectorAll('.fb-period').forEach(function(p,i){ periods.push({ start:p.querySelector('.fb-start').value, end:p.querySelector('.fb-end').value, preset:p.querySelector('.fb-preset').value, profile:(p.querySelector('.fb-profile')||{}).value, pess:+p.querySelector('.fb-pess').value, avg:+p.querySelector('.fb-avg').value, opt:+p.querySelector('.fb-opt').value, sd:parseFloat(p.querySelector('.fb-sdv').textContent) }); }); return { id:id, periods:periods }; }
   host.addEventListener('click', function(e){
     var row=e.target.closest('.fb-row'); if(row){ if(row.classList.contains('open')) closeEds(); else openEd(row); return; }
     var ed=e.target.closest('.fb-ed'); if(!ed) return;
@@ -33700,7 +33713,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   function refreshViz(ed){ var h=ed.querySelector('.fb-vizhost'); if(h) h.innerHTML=vizHTML(readEd(ed).periods); }
   host.addEventListener('change', function(e){
     var ed=e.target.closest('.fb-ed'); if(!ed) return; var per=e.target.closest('.fb-period'); if(!per) return; setTimeout(function(){ refreshViz(ed); }, 0);
-    if(e.target.classList.contains('fb-preset')){ var pr=preset(e.target.value); per.classList.toggle('custom', pr[0]==='Custom'); if(pr[0]==='Custom'){ setTimeout(function(){ var ai=per.querySelector('.fb-avg'); if(ai){ ai.focus(); ai.select(); } }, 0); } if(pr[1]!=null){ per.querySelector('.fb-avg').value=pr[1]; per.querySelector('.fb-pess').value=Math.round(pr[1]*0.8*10)/10; per.querySelector('.fb-opt').value=Math.round(pr[1]*1.2*10)/10; per.querySelector('.fb-sdv').textContent=pr[2]+'%'; } }
+    if(e.target.classList.contains('fb-preset')){ var pr=preset(e.target.value); per.classList.toggle('custom', pr[0]==='Custom'); per.classList.toggle('optpess', /Optimistic/.test(pr[0])); per.classList.toggle('planpath', /PlanPath/.test(pr[0])); if(pr[0]==='Custom'||/Optimistic/.test(pr[0])){ setTimeout(function(){ var ai=per.querySelector('.fb-avg'); if(ai){ ai.focus(); ai.select(); } }, 0); } if(pr[1]!=null){ per.querySelector('.fb-avg').value=pr[1]; per.querySelector('.fb-pess').value=Math.round(pr[1]*0.8*10)/10; per.querySelector('.fb-opt').value=Math.round(pr[1]*1.2*10)/10; per.querySelector('.fb-sdv').textContent=pr[2]+'%'; } }
     if(e.target.classList.contains('fb-end')){ var nx=per.nextElementSibling; if(nx && nx.classList.contains('fb-period')){ var ns2=nx.querySelector('.fb-start'); if(ns2) ns2.value=e.target.value; } var msg=per.querySelector('.fb-req'); if(msg) msg.remove(); e.target.classList.remove('req'); }
     if(e.target.classList.contains('fb-start')){ var pv=per.previousElementSibling; if(pv && pv.classList.contains('fb-period')){ var pe=pv.querySelector('.fb-end'); if(pe) pe.value=e.target.value; } }
   });
