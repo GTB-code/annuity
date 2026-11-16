@@ -33570,6 +33570,31 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
 #fbPage .fb-three > div:not(.fb-avgf){ display:none; }
 #fbPage .fb-period.optpess .fb-three{ grid-template-columns:1fr 1fr 1fr; }
 #fbPage .fb-pp{ display:none; }
+.bai .fr-card{ margin:0 0 14px; padding:12px 12px 6px; border:1px solid var(--hairline); border-radius:14px; background:#fff; }
+.bai .fr-t{ display:flex; justify-content:space-between; align-items:baseline; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+.bai .fr-t span:last-child{ font-weight:400; color:var(--text-muted); font-size:12px; }
+.bai .fr-svg{ width:100%; height:auto; display:block; overflow:visible; }
+.bai .fr-ax{ font-size:10.5px; fill:var(--text-muted); }
+.bai .fr-badge circle{ fill:#0E794E; } .bai .fr-badge text{ font-size:9.5px; font-weight:700; fill:#fff; } .bai .fr-badge{ opacity:0; animation:frFadeIn .4s ease forwards; }
+.bai .fr-legend{ margin:6px 0 4px; display:grid; gap:4px; }
+.bai .fr-li{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-secondary); opacity:0; animation:frFadeIn .4s ease forwards; }
+.bai .fr-n{ width:16px; height:16px; border-radius:50%; background:#0E794E; color:#fff; font-size:10px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex:0 0 16px; }
+.bai .fr-ev{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bai .fr-r{ font-weight:600; color:var(--ink); }
+.bai .fr-line{ fill:none; stroke:#0E794E; stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; stroke-dasharray:900; stroke-dashoffset:900; animation:frDraw 1.4s cubic-bezier(.2,.7,.2,1) forwards; }
+.bai .fr-area{ fill:#0E794E; opacity:0; animation:frFade .6s ease 1s forwards; }
+.bai .fr-dot{ fill:#fff; stroke:#0E794E; stroke-width:2.5; opacity:0; animation:frPop .4s cubic-bezier(.2,.7,.2,1) forwards; transform-box:fill-box; transform-origin:center; }
+.bai .fr-rate{ font-size:12px; font-weight:600; fill:var(--ink); opacity:0; animation:frFadeIn .4s ease forwards; }
+@keyframes frDraw{ to{ stroke-dashoffset:0; } }
+@keyframes frFade{ to{ opacity:.08; } }
+@keyframes frPop{ from{ opacity:0; transform:scale(.4); } to{ opacity:1; transform:scale(1); } }
+@keyframes frFadeIn{ to{ opacity:1; } }
+#fbPage .fb-add.nudge{ animation:fbNudge 2.2s ease-in-out 1.6s 3; }
+@keyframes fbNudge{ 0%,100%{ box-shadow:0 0 0 0 rgba(14,121,78,0); } 40%{ box-shadow:0 0 0 6px rgba(14,121,78,.18); } }
+#fbPage .fb-period.fb-new{ animation:fbNew .9s ease; }
+@keyframes fbNew{ from{ background:rgba(14,121,78,.10); } to{ background:transparent; } }
+@media (prefers-reduced-motion:reduce){ .bai .fr-line,.bai .fr-area,.bai .fr-dot,.bai .fr-rate,.bai .fr-badge,.bai .fr-li{ animation:none; stroke-dashoffset:0; opacity:1; } .bai .fr-area{ opacity:.08; } #fbPage .fb-add.nudge{ animation:none; } }
+
 #fbPage .fb-period.planpath .fb-pp{ display:block; }
 #fbPage .fb-ppnote{ margin:8px 0 0; font-size:13.5px; color:var(--text-secondary); line-height:1.45; }
 #fbPage .fb-period.optpess .fb-three > div{ display:block; }
@@ -33662,7 +33687,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   }
   function edHTML(id){
     var d=DATA[id];
-    return '<div class="fb-ed" data-acct="'+id+'"><div class="edit-card"><div class="ecTitle"><div class="ec-head"><span class="ecTitleText">'+(d.nm||'Account')+'</span><span class="ec-sub">'+summary(d).replace(/<small>/g,' \u00b7 ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()+'</span></div><a class="fb-editbal" data-fb-edit>Edit balance &rsaquo;</a></div><div class="ec-body">'+d.periods.map(function(p,i){ return periodHTML(p,i,d.periods.length); }).join('')+'<button type="button" class="fb-add">+ Add a rate change</button><div class="fb-vizhost">'+vizHTML(d.periods)+'</div><div class="edit-actions"><button type="button" class="btn-cancel">Cancel</button><button type="button" class="btn-save">Save</button></div></div></div></div>';
+    return '<div class="fb-ed" data-acct="'+id+'"><div class="edit-card"><div class="ecTitle"><div class="ec-head"><span class="ecTitleText">'+(d.nm||'Account')+'</span><span class="ec-sub">'+summary(d).replace(/<small>/g,' \u00b7 ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()+'</span></div><a class="fb-editbal" data-fb-edit>Edit balance &rsaquo;</a></div><div class="ec-body">'+d.periods.map(function(p,i){ return periodHTML(p,i,d.periods.length); }).join('')+'<button type="button" class="fb-add">+ Add a rate change</button><div class="edit-actions"><button type="button" class="btn-cancel">Cancel</button><button type="button" class="btn-save">Save</button></div></div></div></div>';
   }
   function summary(d){
     var parts=d.periods.map(function(p){ var pr=preset(p.preset), avg=p.avg!=null?p.avg:pr[1]; return '<b>'+avg+'%</b>'; });
@@ -33694,23 +33719,64 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   function close(){ if(!document.body.classList.contains('fb-open')) return; document.body.classList.remove('fb-open'); mark(false); }
   window.__futureBal={open:open, close:close, isOpen:function(){ return document.body.classList.contains('fb-open'); }};
   var holding=false; new MutationObserver(function(){ if(holding || !document.body.classList.contains('fb-open')) return; var nav=document.getElementById('sideNav'); var stray=nav && nav.querySelector('li.active:not([data-key="assets"])'); if(!stray) return; holding=true; mark(true); holding=false; }).observe(document.getElementById('sideNav')||document.body,{subtree:true, attributes:true, attributeFilter:['class']});
-  document.addEventListener('click', function(e){ if(!document.body.classList.contains('fb-open')) return; if(e.target.closest('#fbPage, li[data-key="assets"]')) return; if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-view], .plan-row')) close(); }, true);
-  function openEd(row){ var id=row.dataset.acct; closeEds(); row.classList.add('open'); row.insertAdjacentHTML('afterend', edHTML(id)); row.hidden=true; }
-  function closeEds(){ host.querySelectorAll('.fb-ed').forEach(function(x){ x.remove(); }); host.querySelectorAll('.fb-row.open').forEach(function(x){ x.classList.remove('open'); x.hidden=false; }); }
+  document.addEventListener('click', function(e){ if(!document.body.classList.contains('fb-open')) return; if(e.target.closest('#fbPage, li[data-key="assets"], .bai, .bai-col, .ai-btn')) return; if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-view], .plan-row')) close(); }, true);
+  function openEd(row){ var id=row.dataset.acct; closeEds(); row.classList.add('open'); row.insertAdjacentHTML('afterend', edHTML(id)); row.hidden=true; RAIL.show(id); }
+  function closeEds(){ var had=host.querySelector('.fb-ed'); host.querySelectorAll('.fb-ed').forEach(function(x){ x.remove(); }); host.querySelectorAll('.fb-row.open').forEach(function(x){ x.classList.remove('open'); x.hidden=false; }); if(had) RAIL.hide(); }
   function readEd(ed){ var id=ed.dataset.acct, periods=[]; ed.querySelectorAll('.fb-period').forEach(function(p,i){ periods.push({ start:p.querySelector('.fb-start').value, end:p.querySelector('.fb-end').value, preset:p.querySelector('.fb-preset').value, profile:(p.querySelector('.fb-profile')||{}).value, pess:+p.querySelector('.fb-pess').value, avg:+p.querySelector('.fb-avg').value, opt:+p.querySelector('.fb-opt').value, sd:parseFloat(p.querySelector('.fb-sdv').textContent) }); }); return { id:id, periods:periods }; }
   host.addEventListener('click', function(e){
     var row=e.target.closest('.fb-row'); if(row){ if(row.classList.contains('open')) closeEds(); else openEd(row); return; }
     var ed=e.target.closest('.fb-ed'); if(!ed) return;
     if(e.target.closest('.btn-cancel')){ closeEds(); return; }
-    if(e.target.closest('.btn-save')){ var r=readEd(ed); var bad=r.periods.some(function(p){ return anchYear(p.end)<=anchYear(p.start); }); if(bad){ ed.querySelectorAll('.fb-period').forEach(function(p){ var st=p.querySelector('.fb-start'), en=p.querySelector('.fb-end'); var isBad=anchYear(en.value)<=anchYear(st.value); en.classList.toggle('req', isBad); var msg=p.querySelector('.fb-req'); if(isBad && !msg) en.insertAdjacentHTML('afterend','<p class="fb-req">Ends must come after it starts</p>'); if(!isBad && msg) msg.remove(); }); return; } DATA[r.id]={ periods:r.periods, changed:true }; var rw=host.querySelector('.fb-row[data-acct="'+r.id+'"] .fb-rate'); if(rw){ rw.innerHTML=summary(DATA[r.id]); rw.classList.add('changed'); } closeEds(); return; }
+    if(e.target.closest('.btn-save')){ var r=readEd(ed); var bad=r.periods.some(function(p){ return anchYear(p.end)<=anchYear(p.start); }); if(bad){ ed.querySelectorAll('.fb-period').forEach(function(p){ var st=p.querySelector('.fb-start'), en=p.querySelector('.fb-end'); var isBad=anchYear(en.value)<=anchYear(st.value); en.classList.toggle('req', isBad); var msg=p.querySelector('.fb-req'); if(isBad && !msg) en.insertAdjacentHTML('afterend','<p class="fb-req">Ends must come after it starts</p>'); if(!isBad && msg) msg.remove(); }); return; } DATA[r.id]=Object.assign({}, DATA[r.id], { periods:r.periods, changed:true }); var rw=host.querySelector('.fb-row[data-acct="'+r.id+'"] .fb-rate'); if(rw){ rw.innerHTML=summary(DATA[r.id]); rw.classList.add('changed'); } closeEds(); return; }
     if(e.target.closest('.fb-add')){ var r2=readEd(ed); var keys=ANCH.map(function(a){ return a[0]; }); var last=r2.periods[r2.periods.length-1];
       var si=keys.indexOf(last.start||'now'), ei=keys.indexOf(last.end||'end');
       if(ei>=keys.length-1 || ei<=si){ ei=Math.min(keys.length-2, si+2); last.end=keys[ei]; }   /* the last period gives up its tail so the new one has room */
-      r2.periods.push({ start:keys[ei], end:'end', preset:last.preset, avg:last.avg, pess:last.pess, opt:last.opt, sd:last.sd }); DATA[r2.id]={ periods:r2.periods, changed:DATA[r2.id]&&DATA[r2.id].changed }; var row2=host.querySelector('.fb-row[data-acct="'+r2.id+'"]'); closeEds(); openEd(row2); return; }
-    if(e.target.closest('.fb-del')){ var per=e.target.closest('.fb-period'), r3=readEd(ed); r3.periods.splice(+per.dataset.i,1); DATA[r3.id]={ periods:r3.periods, changed:DATA[r3.id]&&DATA[r3.id].changed }; var row3=host.querySelector('.fb-row[data-acct="'+r3.id+'"]'); closeEds(); openEd(row3); return; }
+      r2.periods.push({ start:keys[ei], end:'end', preset:last.preset, avg:last.avg, pess:last.pess, opt:last.opt, sd:last.sd }); DATA[r2.id]=Object.assign({}, DATA[r2.id], { periods:r2.periods, changed:DATA[r2.id]&&DATA[r2.id].changed }); var row2=host.querySelector('.fb-row[data-acct="'+r2.id+'"]'); closeEds(); openEd(row2); return; }
+    if(e.target.closest('.fb-del')){ var per=e.target.closest('.fb-period'), r3=readEd(ed); r3.periods.splice(+per.dataset.i,1); DATA[r3.id]=Object.assign({}, DATA[r3.id], { periods:r3.periods, changed:DATA[r3.id]&&DATA[r3.id].changed }); var row3=host.querySelector('.fb-row[data-acct="'+r3.id+'"]'); closeEds(); openEd(row3); return; }
     if(e.target.closest('.fb-how')){ if(window.__bai) window.__bai.open('How do rates of return work in my plan?'); return; }
   });
-  function refreshViz(ed){ var h=ed.querySelector('.fb-vizhost'); if(h) h.innerHTML=vizHTML(readEd(ed).periods); }
+  function refreshViz(ed){ RAIL.chart(readEd(ed).periods); }
+  /* ---- right rail: the rate path as a line that draws itself, plus a nudge to add more periods ---- */
+  var RAIL=(function(){
+    var cur=null;
+    function rateOf(p){ var pr=preset(p.preset); return p.avg!=null&&!isNaN(p.avg)?p.avg:pr[1]; }
+    function lineSVG(periods){
+      var Y0=2026, Y1=2057, W=320, H=150, L=34, R=10, T=20, B=22, pw=W-L-R, ph=H-T-B;
+      var rates=periods.map(rateOf); var max=Math.max(Math.ceil(Math.max.apply(null,rates.concat([2]))/2)*2, 4), min=0;
+      var X=function(y){ return L+(y-Y0)/(Y1-Y0)*pw; }, Y=function(r){ return T+ph-(r-min)/(max-min)*ph; };
+      var d='', pts=[];
+      periods.forEach(function(p,i){ var a=anchYear(p.start||'now')||Y0, b=anchYear(p.end||'end')||Y1; if(b<=a) b=a+1; var r=rates[i]; d+=(i===0?'M':'L')+X(a).toFixed(1)+' '+Y(r).toFixed(1)+' L'+X(b).toFixed(1)+' '+Y(r).toFixed(1)+' '; pts.push({x:X(a),y:Y(r),r:r,i:i,yr:a,an:anch(p.start||'now')}); });
+      var g='<svg viewBox="0 0 '+W+' '+H+'" class="fr-svg">';
+      [0,max/2,max].forEach(function(v){ g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#E6E8EB"/><text x="'+(L-6)+'" y="'+(Y(v)+4)+'" text-anchor="end" class="fr-ax">'+v+'%</text>'; });
+      g+='<path class="fr-area" d="'+d+'L'+X(Y1).toFixed(1)+' '+Y(0)+' L'+X(Y0).toFixed(1)+' '+Y(0)+' Z"/>';
+      g+='<path class="fr-line" d="'+d+'"/>';
+      pts.forEach(function(q){ var dl=(0.9+q.i*0.25)+'s'; if(q.i>0) g+='<line x1="'+q.x+'" x2="'+q.x+'" y1="'+T+'" y2="'+(T+ph)+'" stroke="#0E794E" stroke-dasharray="2 3" opacity=".5"/>'; g+='<circle class="fr-dot" cx="'+q.x+'" cy="'+q.y+'" r="4" style="animation-delay:'+dl+'"/>'; if(pts.length>1){ var bx=Math.min(Math.max(q.x, L+8), W-R-8); g+='<g class="fr-badge" style="animation-delay:'+dl+'"><circle cx="'+bx+'" cy="'+(T-6)+'" r="7"/><text x="'+bx+'" y="'+(T-2.5)+'" text-anchor="middle">'+(q.i+1)+'</text></g>'; } });
+      g+='<text x="'+L+'" y="'+(H-8)+'" class="fr-ax">'+Y0+'</text><text x="'+(W-R)+'" y="'+(H-8)+'" text-anchor="end" class="fr-ax">'+Y1+'</text>';
+      g+='</svg>';
+      g+='<div class="fr-legend">'+pts.map(function(q){ var dl=(0.9+q.i*0.25)+'s'; return '<div class="fr-li" style="animation-delay:'+dl+'">'+(pts.length>1?'<span class="fr-n">'+(q.i+1)+'</span>':'')+'<span class="fr-ev">'+(q.i===0?'Now':(q.an?q.an[1]:''))+' \u00b7 '+q.yr+'</span><span class="fr-r">'+q.r+'%</span></div>'; }).join('')+'</div>';
+      return g;
+    }
+    function nudge(periods){
+      var n=periods.length, r0=rateOf(periods[0]);
+      if(n===1) return { text:'Right now this account grows at <b>'+r0+'% every year to 2057</b>. Real retirements rarely look like that. Most members ease the rate down once the paychecks stop. Try adding a change.', chips:['Ease the rate down when Marshall retires','Go conservative at Medicare','Keep one rate'] };
+      var last=periods[n-1], rl=rateOf(last), an=anch(last.start)||['','',''];
+      if(n===2) return { text:'Two periods now. The rate steps from <b>'+r0+'%</b> to <b>'+rl+'%</b> at '+(an[1]||'')+'. One more change would let the later years look different again.', chips:['Add a change at age 75','Add a change when RMDs start','Why do rates change over time?'] };
+      return { text:n+' periods. This is starting to look like a real retirement: <b>'+periods.map(rateOf).join('% → ')+'%</b> over the plan. Save when it feels right.', chips:['Show me how this changes my plan','Compare with one flat rate','Reset to one rate'] };
+    }
+    function show(id){ cur=id; var d=DATA[id]; if(!window.__bai) return; if(!window.__bai.isOpen()) window.__bai.open(); var ng=nudge(d.periods);
+      setTimeout(function(){ var th=document.querySelector('.bai .bai-thread'); if(!th) return; window.__bai.context(ng.text, ng.chips); var card=document.createElement('div'); card.className='fr-card'; card.innerHTML='<div class="fr-t"><span>'+(d.nm||'Account')+'</span><span>rate over the plan</span></div><div class="fr-body">'+lineSVG(d.periods)+'</div>'; th.insertBefore(card, th.firstChild); pulseAdd(d.periods.length===1); }, 80); }
+    function chart(periods){ var card=document.querySelector('.bai .fr-card'); if(!card) return; var bd=card.querySelector('.fr-body'); if(bd) bd.innerHTML=lineSVG(periods); }
+    function hide(){ cur=null; pulseAdd(false); var card=document.querySelector('.bai .fr-card'); if(card) card.remove(); if(window.__bai && window.__bai.resetChips) window.__bai.resetChips(); }
+    function pulseAdd(on){ var b=host.querySelector('.fb-add'); if(b) b.classList.toggle('nudge', !!on); }
+    function reopen(r){ DATA[r.id]=Object.assign({}, DATA[r.id], { periods:r.periods, changed:DATA[r.id]&&DATA[r.id].changed }); var row=host.querySelector('.fb-row[data-acct="'+r.id+'"]'); closeEds(); openEd(row); }
+    function addPeriod(anchorKey, presetName){ var ed=host.querySelector('.fb-ed'); if(!ed) return; var r=readEd(ed); var keys=ANCH.map(function(a){ return a[0]; }); var ai=keys.indexOf(anchorKey); var last=r.periods[r.periods.length-1]; var si=keys.indexOf(last.start||'now'); if(ai<=si) ai=si+1; if(ai>=keys.length-1) ai=keys.length-2; last.end=keys[ai]; var pr=preset(presetName); r.periods.push({ start:keys[ai], end:'end', preset:pr[0], avg:pr[1], pess:Math.round(pr[1]*0.8*10)/10, opt:Math.round(pr[1]*1.2*10)/10, sd:pr[2] }); reopen(r); var pe=host.querySelectorAll('.fb-period'); var np=pe[pe.length-1]; if(np){ np.classList.add('fb-new'); np.scrollIntoView({ block:'nearest', behavior:'smooth' }); } }
+    document.addEventListener('click', function(e){ if(!cur) return; var b=e.target.closest('.bai-chips [data-q]'); if(!b) return; var q=b.dataset.q; var act=null;
+      if(/when Marshall retires/i.test(q)) act=['ret_m','Moderately Conservative']; else if(/at Medicare/i.test(q)) act=['medicare','Conservative']; else if(/age 75/i.test(q)) act=['age75','Conservative']; else if(/RMDs start/i.test(q)) act=['rmd','Moderately Conservative'];
+      else if(/Keep one rate|Reset to one rate/i.test(q)){ e.stopPropagation(); e.preventDefault(); var ed=host.querySelector('.fb-ed'); if(ed){ var r=readEd(ed); r.periods=[Object.assign({}, r.periods[0], { start:'now', end:'end' })]; reopen(r); } return; }
+      if(!act) return; e.stopPropagation(); e.preventDefault(); addPeriod(act[0], act[1]); }, true);
+    return { show:show, hide:hide, chart:chart };
+  })();
+
   host.addEventListener('change', function(e){
     var ed=e.target.closest('.fb-ed'); if(!ed) return; var per=e.target.closest('.fb-period'); if(!per) return; setTimeout(function(){ refreshViz(ed); }, 0);
     if(e.target.classList.contains('fb-preset')){ var pr=preset(e.target.value); per.classList.toggle('custom', pr[0]==='Custom'); per.classList.toggle('optpess', /Optimistic/.test(pr[0])); per.classList.toggle('planpath', /PlanPath/.test(pr[0])); if(pr[0]==='Custom'||/Optimistic/.test(pr[0])){ setTimeout(function(){ var ai=per.querySelector('.fb-avg'); if(ai){ ai.focus(); ai.select(); } }, 0); } if(pr[1]!=null){ per.querySelector('.fb-avg').value=pr[1]; per.querySelector('.fb-pess').value=Math.round(pr[1]*0.8*10)/10; per.querySelector('.fb-opt').value=Math.round(pr[1]*1.2*10)/10; per.querySelector('.fb-sdv').textContent=pr[2]+'%'; } }
