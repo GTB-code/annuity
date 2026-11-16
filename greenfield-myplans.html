@@ -29863,6 +29863,21 @@ body.pm-open .dock{ display:none !important; }
 #powerMode *{ box-sizing:border-box; }
 .pm-titlerow{ display:flex; align-items:center; gap:14px; margin:0 0 6px; }
 .pm-note{ font-size:13.5px; color:var(--text-secondary); margin:-4px 0 14px; }
+.pmr{ display:flex; flex-direction:column; }
+.pmr-row{ display:grid; grid-template-columns:240px 1fr; gap:20px; padding:16px 0; border-bottom:1px solid var(--hairline); align-items:start; border-radius:10px; }
+.pmr-row.flash{ background:#F1F8F4; }
+.pmr-nm{ display:flex; gap:10px; align-items:flex-start; } .pmr-nm i{ width:10px; height:10px; border-radius:3px; margin-top:6px; flex:0 0 10px; }
+.pmr-nm b{ display:block; font-size:15px; font-weight:600; color:var(--ink); } .pmr-nm small{ display:block; font-size:13px; color:var(--text-secondary); margin-top:2px; }
+.pmr-periods{ display:flex; flex-direction:column; gap:8px; align-items:flex-start; }
+.pmr-per{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:6px 8px; border-radius:10px; }
+.pmr-per.flash{ animation:pmrFlash .9s ease; } @keyframes pmrFlash{ from{ background:rgba(14,121,78,.12); } to{ background:transparent; } }
+.pmr-n{ width:18px; height:18px; border-radius:50%; background:#0E794E; color:#fff; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
+.pmr-to{ font-size:13px; color:var(--text-muted); }
+.pmr-sel{ font:inherit; font-size:14px; color:var(--ink); border:1px solid var(--hairline-strong); border-radius:10px; padding:8px 30px 8px 10px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310182C' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center/14px; appearance:none; -webkit-appearance:none; }
+.pmr-pct{ display:none; align-items:center; gap:4px; } .pmr-pct.on{ display:inline-flex; }
+.pmr-pct input{ width:64px; font:inherit; font-size:14px; padding:8px 10px; border:1px solid var(--hairline-strong); border-radius:10px; color:var(--ink); } .pmr-pct span{ font-size:14px; color:var(--text-secondary); }
+.pmr-x{ background:none; border:0; font-size:20px; line-height:1; color:var(--text-muted); cursor:pointer; padding:4px 6px; border-radius:8px; } .pmr-x:hover{ color:#B3261E; background:#FBEDEB; }
+.pmr-add{ margin:4px 0 0 8px; font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:none; border:1px solid var(--hairline-strong); border-radius:999px; padding:8px 14px; cursor:pointer; } .pmr-add:hover{ background:#F1F8F4; border-color:#0E794E; }
 .pm-note b{ font-weight:600; color:var(--ink); }
 .pm-note a{ color:var(--green-cta); font-weight:600; cursor:pointer; margin-left:6px; }
 .pm-note a:hover{ text-decoration:underline; text-underline-offset:3px; }
@@ -30225,7 +30240,7 @@ body.pm-open .dock{ display:none !important; }
   function usd(v){ return '$'+Math.round(v).toLocaleString('en-US'); }
   function fmt(s,v){ return s.unit==='month' ? usd(v/12)+'/mo' : usd(v); }
 
-  PM.open=open; PM.close=close; PM.register=function(k,sp){ SPECS[k]=sp; }; PM.helpers={tip:tip,svgEl:svgEl,esc:esc,usd:usd}; window.PowerMode=PM;
+  PM.open=open; PM.close=close; PM.refresh=function(retype){ if(root && !root.hidden) refresh(!!retype,true); }; PM.register=function(k,sp){ SPECS[k]=sp; }; PM.helpers={tip:tip,svgEl:svgEl,esc:esc,usd:usd}; window.PowerMode=PM;
   /* My Plans > Assets opens as its own Power mode page: the balance sheet stays folded away in My Plans */
   document.addEventListener('click',function(e){
     var li=e.target.closest('#sideNav li[data-key="assets"]'); if(!li || document.body.dataset.view!=='plan') return;
@@ -30279,11 +30294,59 @@ body.pm-open .dock{ display:none !important; }
   function infl(s,v,i){ return s.unit==='future' ? v*Math.pow(1+INFL,i) : v; }
   function fmtK(v){ return v>=1e6 ? '$'+(Math.round(v/1e5)/10).toFixed(1).replace(/\.0$/,'')+'M' : v>=1000 ? '$'+Math.round(v/1000)+'k' : '$'+Math.round(v); }
 
+  /* ---- Rates view: every account's rate over the plan, editable right here ---- */
+  var RATES=(function(){
+    var PAL=['#0E794E','#2E6FD8','#E0A800','#B0532D','#6B4FBB','#1B9AAA','#8A6D00','#C2185B','#4F7A28','#5C6B7A'];
+    function fb(){ return window.__futureBal && window.__futureBal.rates ? window.__futureBal.rates() : null; }
+    function list(){ var r=fb(); if(!r) return []; return Object.keys(r.data).map(function(k,i){ return { id:k, d:r.data[k], c:PAL[i%PAL.length] }; }); }
+    function chart(s,host,w){
+      var r=fb(); if(!r) return; var L=list(); var Ht=Math.round(Math.min(440,Math.max(320,w*.3))), ML=56, MR=16, MT=28, MB=34, iw=w-ML-MR, ih=Ht-MT-MB, Y0=2026, Y1=2057;
+      var maxR=2; L.forEach(function(a){ a.d.periods.forEach(function(p){ maxR=Math.max(maxR, r.rateOf(p)); }); }); var top=Math.ceil(maxR/2)*2+2;
+      var svg=svgEl('svg',{viewBox:'0 0 '+w+' '+Ht,role:'img','aria-label':'Rate of return by account over the plan'},host), t=H.tip(host);
+      function X(y){ return ML+iw*(y-Y0)/(Y1-Y0); } function Y(v){ return MT+ih*(1-v/top); }
+      for(var g=0; g<=top; g+=2){ svgEl('line',{x1:ML,x2:w-MR,y1:Y(g),y2:Y(g),stroke:'rgba(16,24,44,.08)'},svg); var gl=svgEl('text',{x:ML-10,y:Y(g)+4,'text-anchor':'end','font-size':12.5,fill:'#7A7D8C'},svg); gl.textContent=g+'%'; }
+      [2026,2032,2038,2044,2050,2057].forEach(function(y){ var xl=svgEl('text',{x:X(y),y:Ht-10,'text-anchor':'middle','font-size':12.5,fill:'#7A7D8C'},svg); xl.textContent=y; });
+      var rx=X(RETIRE); svgEl('line',{x1:rx,x2:rx,y1:MT-4,y2:MT+ih,stroke:'rgba(16,24,44,.28)','stroke-dasharray':'3 4'},svg); var pt=svgEl('text',{x:rx,y:16,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'#8A6D00'},svg); pt.textContent='Retire · '+RETIRE;
+      L.forEach(function(a,ai){ var d=''; a.d.periods.forEach(function(p,i){ var y0=r.anchYear(p.start||'now')||Y0, y1=r.anchYear(p.end||'end')||Y1, v=r.rateOf(p); d+=(i?'L':'M')+X(y0).toFixed(1)+' '+Y(v).toFixed(1)+' L'+X(y1).toFixed(1)+' '+Y(v).toFixed(1)+' '; });
+        svgEl('path',{d:d,fill:'none',stroke:'#fff','stroke-width':5,'stroke-linejoin':'round'},svg);
+        var ln=svgEl('path',{d:d,fill:'none',stroke:a.c,'stroke-width':2.25,'stroke-linejoin':'round','stroke-linecap':'round',style:'cursor:pointer'},svg);
+        var hit=svgEl('path',{d:d,fill:'none',stroke:'transparent','stroke-width':14},svg);
+        hit.addEventListener('pointermove',function(ev){ t.show('<b>'+esc(a.d.nm||'Account')+'</b><br>'+a.d.periods.map(function(p){ return r.rateOf(p)+'% from '+(r.anchYear(p.start||'now')||Y0)+' to '+(r.anchYear(p.end||'end')||Y1); }).join('<br>'),ev); });
+        hit.addEventListener('pointerleave',function(){ t.hide(); });
+        hit.addEventListener('click',function(){ var row=document.getElementById("powerMode").querySelector('.pmr-row[data-acct="'+a.id+'"]'); if(row){ row.scrollIntoView({block:'center',behavior:'smooth'}); row.classList.add('flash'); setTimeout(function(){ row.classList.remove('flash'); },900); } });
+      });
+    }
+    function legend(){ return list().map(function(a){ return '<span><i style="background:'+a.c+'"></i>'+esc(a.d.nm||'Account')+'</span>'; }).join(''); }
+    function table(){
+      var r=fb(); if(!r) return ''; var keys=r.anch.map(function(x){ return x[0]; });
+      function sel(cls,cur,opts){ return '<select class="pmr-sel '+cls+'">'+opts.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===cur?' selected':'')+'>'+esc(o[1])+'</option>'; }).join('')+'</select>'; }
+      var anchOpts=r.anch.map(function(x){ return [x[0], x[1]+' · '+x[2]]; }); var preOpts=r.presets.filter(function(p){ return p[1]!=null; }).map(function(p){ return [p[0], (p[4]||p[0]+' '+p[1]+'%').replace(' · ',' ')]; }).concat([['Custom','Custom']]);
+      var h='<div class="pmr">';
+      list().forEach(function(a){ var d=a.d, n=d.periods.length;
+        h+='<div class="pmr-row" data-acct="'+a.id+'"><div class="pmr-nm"><i style="background:'+a.c+'"></i><div><b>'+esc(d.nm||'Account')+'</b><small>'+esc(d.ty||'')+'</small></div></div><div class="pmr-periods">';
+        d.periods.forEach(function(p,i){ var pr=r.preset(p.preset), custom=pr[0]==='Custom'||(p.avg!=null&&pr[1]!=null&&+p.avg!==+pr[1]);
+          h+='<div class="pmr-per" data-i="'+i+'">'+(n>1?'<span class="pmr-n">'+(i+1)+'</span>':'')+sel('pmr-start',p.start||'now',anchOpts.filter(function(o){ return o[0]!=='end'; }))+'<span class="pmr-to">to</span>'+sel('pmr-end',p.end||'end',anchOpts.filter(function(o){ return o[0]!=='now'; }))+sel('pmr-preset',custom?'Custom':pr[0],preOpts)+'<span class="pmr-pct'+(custom?' on':'')+'"><input class="pmr-avg" type="number" step="0.1" value="'+(custom?(p.avg!=null?p.avg:''):'')+'" placeholder="rate"><span>%</span></span>'+(n>1?'<button type="button" class="pmr-x" aria-label="Remove this period">&times;</button>':'')+'</div>'; });
+        h+='<button type="button" class="pmr-add">+ Add a rate change</button></div></div>'; });
+      return h+'</div>';
+    }
+    function explain(){ var r=fb(); if(!r) return ''; var L=list(), multi=L.filter(function(a){ return a.d.periods.length>1; }).length; return 'Each line is one account\u2019s rate of return over the plan. '+(multi?('<b>'+multi+' of '+L.length+'</b> accounts change rate at least once. '):('Every account grows at <b>one flat rate</b> for 31 years. ')) +'Edit any period below, or add a change at retirement, Medicare or when withdrawals begin, and the lines redraw.'; }
+    /* edits write straight back to Future Rates */
+    document.addEventListener('change', function(e){ var per=e.target.closest('.pmr-per'); if(!per) return; var row=per.closest('.pmr-row'), r=fb(); if(!r) return; var id=row.dataset.acct, i=+per.dataset.i, ps=r.data[id].periods.map(function(p){ return Object.assign({}, p); }), p=ps[i];
+      if(e.target.classList.contains('pmr-start')){ p.start=e.target.value; if(i>0) ps[i-1].end=p.start; }
+      if(e.target.classList.contains('pmr-end')){ p.end=e.target.value; if(i<ps.length-1) ps[i+1].start=p.end; }
+      if(e.target.classList.contains('pmr-preset')){ var pr=r.preset(e.target.value); p.preset=pr[0]; if(pr[1]!=null){ p.avg=pr[1]; p.sd=pr[2]; } else { var pct=per.querySelector('.pmr-pct'); pct.classList.add('on'); var inp=pct.querySelector('input'); inp.focus(); return; } }
+      if(e.target.classList.contains('pmr-avg')){ p.preset='Custom'; p.avg=parseFloat(e.target.value)||0; }
+      r.set(id, ps); PM.refresh(true); });
+    document.addEventListener('click', function(e){ var add=e.target.closest('.pmr-add'), x=e.target.closest('.pmr-x'); if(!add && !x) return; var r=fb(); if(!r) return; var row=e.target.closest('.pmr-row'), id=row.dataset.acct;
+      if(add){ r.add(id); PM.refresh(true); setTimeout(function(){ var pe=document.getElementById("powerMode").querySelectorAll('.pmr-row[data-acct="'+id+'"] .pmr-per'); var np=pe[pe.length-1]; if(np){ np.classList.add('flash'); np.querySelector('.pmr-preset').focus({preventScroll:true}); } },0); }
+      else { r.remove(id, +e.target.closest('.pmr-per').dataset.i); PM.refresh(true); } });
+    return { chart:chart, legend:legend, table:table, explain:explain, count:function(){ return list().length; } };
+  })();
   PM.register('assets',{
     crumb:'Future Events · Assets',
     title:'Future Rates',
     titleFor:function(){ return 'Future Rates'; },
-    views:[{id:'bar',label:'Bar'},{id:'area',label:'Area'}],
+    views:[{id:'bar',label:'Bar'},{id:'area',label:'Area'},{id:'rates',label:'Rates'}],
     init:function(s){ s.unit='today'; s.cmp='none'; s.span='all'; },
     data:function(){
       var tot0={}; ACCTS.forEach(function(a){ tot0[a.b]=(tot0[a.b]||0)+a.v; });
@@ -30298,19 +30361,21 @@ body.pm-open .dock{ display:none !important; }
       return {rows:rows,retire:RETIRE,label:function(i){ return rows[i].y; }};
     },
     range:function(s){ var rows=s.data.rows; if(s.span==='retire') return rows.filter(function(q){ return q.y<=RETIRE; }); if(s.span==='ten') return rows.slice(0,11); return rows; },
-    sub:function(s){ var R=this.range(s); return ACCTS.length+' accounts, '+R[0].y+' to '+R[R.length-1].y+', in '+(s.unit==='future'?'future':'today’s')+' dollars'+(s.cmp!=='none'?', compared with '+CMP[s.cmp].lab.toLowerCase():'')+'.'; },
-    tableTitle:function(){ return 'Future Rates table'; },
+    sub:function(s){ if(s.view==='rates'){ var L=RATES.count(); return L+' accounts, 2026 to 2057. One line per account, one step per rate change.'; } var R=this.range(s); return ACCTS.length+' accounts, '+R[0].y+' to '+R[R.length-1].y+', in '+(s.unit==='future'?'future':'today’s')+' dollars'+(s.cmp!=='none'?', compared with '+CMP[s.cmp].lab.toLowerCase():'')+'.'; },
+    tableTitle:function(s){ return s.view==='rates'?'Edit rates by period':'Future Rates table'; },
     note:function(){ return 'Today\u2019s balances come from <b>My Money</b>, so there is nothing to type twice. <a data-pm-edit-accounts>Edit accounts in My Money &rsaquo;</a>'; },
     controls:function(s){
       function seg(name,key,opts){ return '<div class="pm-opt"><span>'+name+'</span><div class="pm-seg" role="group" aria-label="'+name+'">'+opts.map(function(o){ return '<button type="button" data-pm-set="'+key+'='+o[0]+'" aria-pressed="'+(s[key]===o[0])+'">'+o[1]+'</button>'; }).join('')+'</div></div>'; }
+      if(s.view==='rates') return '<div class="pm-bar">'+seg('Chart type','view',[['bar','Bar'],['area','Area'],['rates','Rates']])+'<span class="pm-opt" style="color:var(--text-secondary);font-size:13.5px">Edit any period below. Changes save to Future Rates as you go.</span></div>';
       return '<div class="pm-bar">'
-        +seg('Chart type','view',[['bar','Bar'],['area','Area']])
+        +seg('Chart type','view',[['bar','Bar'],['area','Area'],['rates','Rates']])
         +seg('Dollars','unit',[['today','Today’s dollars'],['future','Future dollars']])
         +seg('Compare','cmp',[['none','None'],['debts','Debts'],['income','Income'],['expenses','Expenses'],['home','Home and real estate']])
         +'<button type="button" class="pm-dl" data-pm-act="download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>Download data</button>'
         +'</div>';
     },
     chart:function(s,host,w){
+      if(s.view==='rates') return RATES.chart(s,host,w);
       var R=this.range(s), n=R.length, C={grid:'rgba(16,24,44,.08)',axis:'rgba(16,24,44,.28)',t3:'#7A7D8C',ink:'#10182C'}, t=H.tip(host);
       var Ht=Math.round(Math.min(520,Math.max(380,w*.34))), ML=70, MR=16, MT=28, MB=34, iw=w-ML-MR, ih=Ht-MT-MB;
       var cmp=s.cmp!=='none'?CMP[s.cmp]:null;
@@ -30353,12 +30418,14 @@ body.pm-open .dock{ display:none !important; }
       });
     },
     legend:function(s){
+      if(s.view==='rates') return RATES.legend();
       var out='', last='';
       ACCTS.forEach(function(a){ if(a.b!==last){ out+=(last?'<span class="brk"></span>':'')+'<span class="grp">'+BUCKET[a.b]+'</span>'; last=a.b; } out+='<span><i style="background:'+a.c+'"></i>'+esc(a.nm)+'</span>'; });
       if(s.cmp!=='none') out+='<span class="brk"></span><span><i style="background:#10182C;height:2px;border-radius:0"></i>'+CMP[s.cmp].lab+'</span>';
       return out;
     },
     table:function(s){
+      if(s.view==='rates') return RATES.table();
       var R=this.range(s), cmp=s.cmp!=='none'?CMP[s.cmp]:null;
       var h='<div class="pm-tbl-scroll"><table class="pm-tbl"><thead><tr><th class="yr">Year</th><th>Age</th>';
       ACCTS.forEach(function(a){ h+='<th><span class="dot" style="background:'+a.c+'"></span>'+esc(a.nm)+'</th>'; });
@@ -30367,6 +30434,7 @@ body.pm-open .dock{ display:none !important; }
       return h+'</tbody></table></div>';
     },
     explain:function(s){
+      if(s.view==='rates') return RATES.explain();
       var rows=s.data.rows, R=this.range(s), first=rows[0], end=rows[rows.length-1];
       var V=function(q){ return infl(s,q.total,q.i); }, M$=function(v){ return '<b>'+usd(v)+'</b>'; };
       var peak=rows.reduce(function(a,b){ return V(b)>V(a)?b:a; },rows[0]);
@@ -30376,7 +30444,7 @@ body.pm-open .dock{ display:none !important; }
       if(s.unit==='future') t+=' Future dollars include '+(INFL*100).toFixed(1)+'% a year of inflation.';
       return t;
     },
-    follow:function(){ return ['Which account should I draw from first?','How would a Roth conversion change this picture?','What happens if the market drops 30% in 2029?']; },
+    follow:function(s){ if(s.view==='rates') return ['Ease every retirement account down at retirement','What rate should a 401(k) use after 70?','How much does 1% of return change my plan?']; return ['Which account should I draw from first?','How would a Roth conversion change this picture?','What happens if the market drops 30% in 2029?']; },
     act:function(name,s){
       if(name!=='download') return;
       var R=this.range(s), cmp=s.cmp!=='none'?CMP[s.cmp]:null;
@@ -33570,6 +33638,17 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
 #fbPage .fb-three > div:not(.fb-avgf){ display:none; }
 #fbPage .fb-period.optpess .fb-three{ grid-template-columns:1fr 1fr 1fr; }
 #fbPage .fb-pp{ display:none; }
+#futrates-block .fbs-list{ display:flex; flex-direction:column; }
+#futrates-block .fbs-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; padding:14px 0; background:none; border:0; border-bottom:1px solid var(--hairline); text-align:left; font:inherit; color:var(--ink); cursor:pointer; }
+#futrates-block .fbs-row:hover .fbs-rate{ border-color:var(--ink); }
+#futrates-block .fbs-nm{ font-size:16px; font-weight:600; display:flex; flex-direction:column; gap:2px; min-width:0; }
+#futrates-block .fbs-nm small{ font-size:13.5px; font-weight:400; color:var(--text-secondary); }
+#futrates-block .fbs-rate{ flex:0 0 auto; max-width:46%; font-size:14.5px; padding:9px 14px; border:1px solid var(--hairline-strong); border-radius:12px; color:var(--ink); line-height:1.35; }
+#futrates-block .fbs-rate small{ color:var(--text-secondary); margin-left:8px; } #futrates-block .fbs-rate i{ font-style:normal; color:var(--text-secondary); }
+#futrates-block .fbs-rate.changed{ border-color:#0E794E; background:#F1F8F4; }
+#futrates-block .fbs-open{ display:inline-block; margin-top:16px; font-weight:600; color:var(--green-cta); cursor:pointer; }
+#futrates-block.collapsed .acc-body{ display:none; } #futrates-block.collapsed .btn-collapse svg{ transform:rotate(180deg); }
+body.fb-open #futrates-block{ display:none !important; }
 .bai .fr-card{ margin:0 0 14px; padding:12px 12px 6px; border:1px solid var(--hairline); border-radius:14px; background:#fff; }
 .bai .fr-t{ display:flex; justify-content:space-between; align-items:baseline; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:6px; }
 .bai .fr-t span:last-child{ font-weight:400; color:var(--text-muted); font-size:12px; }
@@ -33715,9 +33794,39 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
   }
   center.appendChild(host);
   function mark(on){ var nav=document.getElementById('sideNav'); if(!nav) return; nav.querySelectorAll('li.active').forEach(function(li){ li.classList.remove('active'); }); if(on){ var li=nav.querySelector('li[data-key="assets"]'); if(li) li.classList.add('active'); } }
-  function open(){ build(); if(window.__invToday&&window.__invToday.close) window.__invToday.close(); if(window.__moneySummary&&window.__moneySummary.close) window.__moneySummary.close(); document.body.classList.remove('xp-open'); document.body.classList.add('fb-open'); mark(true); window.scrollTo({top:0, behavior:'smooth'}); }
-  function close(){ if(!document.body.classList.contains('fb-open')) return; document.body.classList.remove('fb-open'); mark(false); }
-  window.__futureBal={open:open, close:close, isOpen:function(){ return document.body.classList.contains('fb-open'); }};
+  function open(){ build(); if(window.__invToday&&window.__invToday.close) window.__invToday.close(); if(window.__moneySummary&&window.__moneySummary.close) window.__moneySummary.close(); document.body.classList.remove('xp-open'); document.body.classList.add('fb-open'); mark(true); window.scrollTo({top:0, behavior:'smooth'}); INTRO.show(); }
+  function close(){ if(!document.body.classList.contains('fb-open')) return; document.body.classList.remove('fb-open'); mark(false); INTRO.hide(); SECTION.sync(); }
+  /* ---- rail intro when the page opens ---- */
+  var INTRO=(function(){
+    var on=false;
+    var TEXT='<b>Future Rates</b> is where you tell the plan how each account grows. One rate is a fine start. Real plans change it — easing down when retirement begins, at Medicare, or once withdrawals start. Pick an account and add a period.';
+    var CHIPS=['Ease my retirement accounts down at retirement','What rate should a 401(k) use?','How do rates change my plan?'];
+    function show(){ on=true; if(!window.__bai) return; var tries=0; setTimeout(function go(){ if(!on) return; if(!window.__bai.isOpen()) window.__bai.open(); if(!window.__bai.isOpen()){ if(++tries<8) return setTimeout(go, 150); return; } setTimeout(function(){ if(on && !host.querySelector('.fb-ed')) window.__bai.context(TEXT, CHIPS); }, 80); }, 260); }
+    function hide(){ on=false; if(window.__bai && window.__bai.resetChips) window.__bai.resetChips(); }
+    function easeAll(){ var n=0; Object.keys(DATA).forEach(function(k){ var d=DATA[k]; if(!/401|403|457|tsp|ira|rollover|roth/i.test((d.nm||'')+' '+(d.ty||''))) return; var p0=d.periods[0]; var pr=preset('Moderately Conservative'); d.periods=[Object.assign({}, p0, { start:'now', end:'ret_m' }), { start:'ret_m', end:'end', preset:pr[0], avg:pr[1], pess:Math.round(pr[1]*0.8*10)/10, opt:Math.round(pr[1]*1.2*10)/10, sd:pr[2] }]; d.changed=true; n++; var rw=host.querySelector('.fb-row[data-acct="'+k+'"] .fb-rate'); if(rw){ rw.innerHTML=summary(d); rw.classList.add('changed'); } });
+      if(window.__bai) window.__bai.say(n+' retirement account'+(n===1?'':'s')+' now ease'+(n===1?'s':'')+' to <b>6.64%</b> when Marshall retires in 2028. Open any of them to fine-tune the years.'); SECTION.sync(); var ch=document.querySelector('.bai .bai-chips'); if(ch){ var b=ch.querySelector('[data-q*="Ease my retirement"]'); if(b){ b.dataset.q='Go conservative at Medicare for every account'; b.textContent='Go conservative at Medicare for every account'; } } }
+    document.addEventListener('click', function(e){ if(!on) return; var b=e.target.closest('.bai-chips [data-q]'); if(!b) return; if(/Ease my retirement accounts/i.test(b.dataset.q)){ e.stopPropagation(); e.preventDefault(); easeAll(); } }, true);
+    return { show:show, hide:hide, isOn:function(){ return on; } };
+  })();
+  /* ---- a Future Rates section on the plan page itself, after Life Events ---- */
+  var SECTION=(function(){
+    var sec=null;
+    function rows(){ if(!host.children.length) build(); var ks=Object.keys(DATA); return ks.map(function(k){ var d=DATA[k]; return '<button type="button" class="fbs-row" data-acct="'+k+'"><span class="fbs-nm">'+(d.nm||'Account')+'<small>'+(d.ty||'')+'</small></span><span class="fbs-rate'+(d.changed?' changed':'')+'">'+summary(d)+'</span></button>'; }).join(''); }
+    function ensure(){ var le=document.getElementById('events-block'); if(!le || sec) return; sec=document.createElement('div'); sec.className='acc'; sec.id='futrates-block';
+      sec.innerHTML='<div class="acc-head"><div><h2>Future Rates</h2><div class="sub">The rate each account grows at, and when it changes</div></div><div class="assets-actions"><button class="btn-collapse" aria-label="Collapse" aria-expanded="true"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"></path></svg></button></div></div><div class="acc-body"><div class="fbs-list"></div><a class="fbs-open" data-fb-open>Open Future Rates &rsaquo;</a></div>';
+      le.insertAdjacentElement('afterend', sec); sync();
+      sec.addEventListener('click', function(e){ var r=e.target.closest('.fbs-row'); if(r){ open(); setTimeout(function(){ var row=host.querySelector('.fb-row[data-acct="'+r.dataset.acct+'"]'); if(row){ openEd(row); row.nextElementSibling.scrollIntoView({ block:'center', behavior:'smooth' }); } }, 60); return; } if(e.target.closest('[data-fb-open]')) open(); if(e.target.closest('.btn-collapse')){ var c=sec.classList.toggle('collapsed'); e.target.closest('.btn-collapse').setAttribute('aria-expanded', !c); } });
+    }
+    function sync(){ if(!sec) return; var l=sec.querySelector('.fbs-list'); if(l) l.innerHTML=rows(); }
+    new MutationObserver(function(){ clearTimeout(ensure._t); ensure._t=setTimeout(ensure, 120); }).observe(document.body, { childList:true, subtree:true }); ensure();
+    [0,300,1000,2500].forEach(function(t){ setTimeout(ensure, t); }); window.addEventListener('load', ensure); return { sync:sync };
+  })();
+  window.__futureBal={open:open, close:close, isOpen:function(){ return document.body.classList.contains('fb-open'); },
+    /* for Power mode: read and write the same rate data */
+    rates:function(){ if(!host.children.length) build(); return { anch:ANCH, presets:PRESETS, data:DATA, preset:preset, anchYear:anchYear, summary:summary, rateOf:function(p){ var pr=preset(p.preset); return p.avg!=null&&!isNaN(p.avg)&&p.avg!==0?p.avg:(pr[1]!=null?pr[1]:p.avg||0); },
+      set:function(id, periods){ DATA[id]=Object.assign({}, DATA[id], { periods:periods, changed:true }); var rw=host.querySelector('.fb-row[data-acct="'+id+'"] .fb-rate'); if(rw){ rw.innerHTML=summary(DATA[id]); rw.classList.add('changed'); } SECTION.sync(); },
+      add:function(id, anchorKey, presetName){ var d=DATA[id]; var keys=ANCH.map(function(a){ return a[0]; }); var last=d.periods[d.periods.length-1]; var si=keys.indexOf(last.start||'now'); var ai=anchorKey?keys.indexOf(anchorKey):Math.min(keys.length-2, si+2); if(ai<=si) ai=si+1; if(ai>=keys.length-1) ai=keys.length-2; var ps=d.periods.map(function(p){ return Object.assign({}, p); }); ps[ps.length-1].end=keys[ai]; var pr=preset(presetName||'Moderately Conservative'); ps.push({ start:keys[ai], end:'end', preset:pr[0], avg:pr[1], pess:Math.round(pr[1]*0.8*10)/10, opt:Math.round(pr[1]*1.2*10)/10, sd:pr[2] }); this.set(id, ps); },
+      remove:function(id, i){ var d=DATA[id]; var ps=d.periods.map(function(p){ return Object.assign({}, p); }); if(ps.length<2) return; ps.splice(i,1); for(var k=1;k<ps.length;k++) ps[k].start=ps[k-1].end; ps[0].start='now'; ps[ps.length-1].end='end'; this.set(id, ps); } }; }};
   var holding=false; new MutationObserver(function(){ if(holding || !document.body.classList.contains('fb-open')) return; var nav=document.getElementById('sideNav'); var stray=nav && nav.querySelector('li.active:not([data-key="assets"])'); if(!stray) return; holding=true; mark(true); holding=false; }).observe(document.getElementById('sideNav')||document.body,{subtree:true, attributes:true, attributeFilter:['class']});
   document.addEventListener('click', function(e){ if(!document.body.classList.contains('fb-open')) return; if(e.target.closest('#fbPage, li[data-key="assets"], .bai, .bai-col, .ai-btn')) return; if(e.target.closest('#sideNav li, .side-top, .snap-pill, .topnav a, [data-view], .plan-row')) close(); }, true);
   function openEd(row){ var id=row.dataset.acct; closeEds(); row.classList.add('open'); row.insertAdjacentHTML('afterend', edHTML(id)); row.hidden=true; RAIL.show(id); }
@@ -33727,7 +33836,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
     var row=e.target.closest('.fb-row'); if(row){ if(row.classList.contains('open')) closeEds(); else openEd(row); return; }
     var ed=e.target.closest('.fb-ed'); if(!ed) return;
     if(e.target.closest('.btn-cancel')){ closeEds(); return; }
-    if(e.target.closest('.btn-save')){ var r=readEd(ed); var bad=r.periods.some(function(p){ return anchYear(p.end)<=anchYear(p.start); }); if(bad){ ed.querySelectorAll('.fb-period').forEach(function(p){ var st=p.querySelector('.fb-start'), en=p.querySelector('.fb-end'); var isBad=anchYear(en.value)<=anchYear(st.value); en.classList.toggle('req', isBad); var msg=p.querySelector('.fb-req'); if(isBad && !msg) en.insertAdjacentHTML('afterend','<p class="fb-req">Ends must come after it starts</p>'); if(!isBad && msg) msg.remove(); }); return; } DATA[r.id]=Object.assign({}, DATA[r.id], { periods:r.periods, changed:true }); var rw=host.querySelector('.fb-row[data-acct="'+r.id+'"] .fb-rate'); if(rw){ rw.innerHTML=summary(DATA[r.id]); rw.classList.add('changed'); } closeEds(); return; }
+    if(e.target.closest('.btn-save')){ var r=readEd(ed); var bad=r.periods.some(function(p){ return anchYear(p.end)<=anchYear(p.start); }); if(bad){ ed.querySelectorAll('.fb-period').forEach(function(p){ var st=p.querySelector('.fb-start'), en=p.querySelector('.fb-end'); var isBad=anchYear(en.value)<=anchYear(st.value); en.classList.toggle('req', isBad); var msg=p.querySelector('.fb-req'); if(isBad && !msg) en.insertAdjacentHTML('afterend','<p class="fb-req">Ends must come after it starts</p>'); if(!isBad && msg) msg.remove(); }); return; } DATA[r.id]=Object.assign({}, DATA[r.id], { periods:r.periods, changed:true }); var rw=host.querySelector('.fb-row[data-acct="'+r.id+'"] .fb-rate'); SECTION.sync(); if(rw){ rw.innerHTML=summary(DATA[r.id]); rw.classList.add('changed'); } closeEds(); return; }
     if(e.target.closest('.fb-add')){ var r2=readEd(ed); var keys=ANCH.map(function(a){ return a[0]; }); var last=r2.periods[r2.periods.length-1];
       var si=keys.indexOf(last.start||'now'), ei=keys.indexOf(last.end||'end');
       if(ei>=keys.length-1 || ei<=si){ ei=Math.min(keys.length-2, si+2); last.end=keys[ei]; }   /* the last period gives up its tail so the new one has room */
@@ -33766,7 +33875,7 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
     function show(id){ cur=id; var d=DATA[id]; if(!window.__bai) return; if(!window.__bai.isOpen()) window.__bai.open(); var ng=nudge(d.periods);
       setTimeout(function(){ var th=document.querySelector('.bai .bai-thread'); if(!th) return; window.__bai.context(ng.text, ng.chips); var card=document.createElement('div'); card.className='fr-card'; card.innerHTML='<div class="fr-t"><span>'+(d.nm||'Account')+'</span><span>rate over the plan</span></div><div class="fr-body">'+lineSVG(d.periods)+'</div>'; th.insertBefore(card, th.firstChild); pulseAdd(d.periods.length===1); }, 80); }
     function chart(periods){ var card=document.querySelector('.bai .fr-card'); if(!card) return; var bd=card.querySelector('.fr-body'); if(bd) bd.innerHTML=lineSVG(periods); }
-    function hide(){ cur=null; pulseAdd(false); var card=document.querySelector('.bai .fr-card'); if(card) card.remove(); if(window.__bai && window.__bai.resetChips) window.__bai.resetChips(); }
+    function hide(){ cur=null; pulseAdd(false); var card=document.querySelector('.bai .fr-card'); if(card) card.remove(); if(window.__bai && window.__bai.resetChips) window.__bai.resetChips(); if(INTRO.isOn() && document.body.classList.contains('fb-open')) INTRO.show(); }
     function pulseAdd(on){ var b=host.querySelector('.fb-add'); if(b) b.classList.toggle('nudge', !!on); }
     function reopen(r){ DATA[r.id]=Object.assign({}, DATA[r.id], { periods:r.periods, changed:DATA[r.id]&&DATA[r.id].changed }); var row=host.querySelector('.fb-row[data-acct="'+r.id+'"]'); closeEds(); openEd(row); }
     function addPeriod(anchorKey, presetName){ var ed=host.querySelector('.fb-ed'); if(!ed) return; var r=readEd(ed); var keys=ANCH.map(function(a){ return a[0]; }); var ai=keys.indexOf(anchorKey); var last=r.periods[r.periods.length-1]; var si=keys.indexOf(last.start||'now'); if(ai<=si) ai=si+1; if(ai>=keys.length-1) ai=keys.length-2; last.end=keys[ai]; var pr=preset(presetName); r.periods.push({ start:keys[ai], end:'end', preset:pr[0], avg:pr[1], pess:Math.round(pr[1]*0.8*10)/10, opt:Math.round(pr[1]*1.2*10)/10, sd:pr[2] }); reopen(r); var pe=host.querySelectorAll('.fb-period'); var np=pe[pe.length-1]; if(np){ np.classList.add('fb-new'); np.scrollIntoView({ block:'nearest', behavior:'smooth' }); } }
