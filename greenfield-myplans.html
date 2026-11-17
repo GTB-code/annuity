@@ -29717,7 +29717,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
   function foldSpend(){
     var ev=document.getElementById('eventsBody'), sp=$('.pe-spend'); if(!ev || !sp) return;
     var sec=ev.querySelector('.pe-spend-sec');
-    if(!sec){ sec=document.createElement('div'); sec.className='pe-spend-sec pe-only'; sec.innerHTML='<div class="pe-spend-head"><div class="t">What life costs, year by year</div><div class="s">Monthly spending in today\u2019s dollars, with your life events played forward. Tap a label to open that event.</div></div>'; }
+    if(!sec){ sec=document.createElement('div'); sec.className='pe-spend-sec pe-only'; sec.innerHTML='<div class="pe-spend-head"><div class="t">What life costs, year by year</div><div class="s">Monthly spending, in today\u2019s dollars. Tap a label to open the event.</div></div>'; }
     if(sp.parentNode!==sec) sec.appendChild(sp);
     sp.classList.remove('pe-only');
     var tray=ev.querySelector('.pe-ideas.is-lead');
@@ -32622,14 +32622,113 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
 </script>
 <style id="lifeEventPresetsCSS">
 /* ---- Life events: ideas to add, kept visibly apart from the events that are already in the plan ---- */
-.pe-ideas.is-lead{ margin:4px 0 26px; }
-.pe-ideas{ margin:28px 0 8px; padding:26px 28px 26px; border:1.5px dashed var(--hairline-strong); border-radius:16px; background:#FAFBFB; }
+.pe-ideas.is-lead{ margin:4px 0 44px; }
+.pe-ideas{ margin:28px 0 24px; padding:26px 28px 26px; border:1.5px dashed var(--hairline-strong); border-radius:16px; background:#FAFBFB; }
 .pe-ideas-head{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
 .pe-ideas-eyebrow{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--text-secondary); letter-spacing:0; margin:0 0 4px; }
 .pe-ideas-eyebrow svg{ width:13px; height:13px; }
-.pe-ideas-t{ font-size:16px; font-weight:600; color:var(--ink); margin:0; }
+.pe-ideas-t{ font-size:16px; font-weight:600; color:var(--ink); margin:0; white-space:nowrap; }
 .pe-ideas-s{ font-size:14px; line-height:1.5; color:var(--text-secondary); margin:0 0 26px; }
 .pe-chips{ display:flex; flex-wrap:wrap; gap:12px; }
+/* toggle */
+/* cards carousel */
+.pe-car-wrap{ position:relative; }
+.pe-car{ display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:2px 2px 6px; }
+.pe-car::-webkit-scrollbar{ display:none; }
+.pe-card{ position:relative; flex:0 0 200px; scroll-snap-align:start; display:flex; flex-direction:column; align-items:flex-start; gap:5px; padding:0 16px 14px; border:1px dashed var(--hairline-strong); border-radius:16px; background:#fff; font:inherit; text-align:left; color:var(--ink); cursor:pointer; overflow:hidden; transition:border-color .15s ease, background .15s ease, transform .2s ease; }
+.pe-card:hover{ transform:translateY(-2px); }
+.pe-card-art{ display:flex; align-items:center; justify-content:center; width:calc(100% + 32px); margin:0 -16px 10px; height:78px; }
+.pe-card-art svg{ width:34px; height:34px; }
+.pe-card.is-in .pe-card-art{ filter:saturate(0); opacity:.6; }
+.pe-card .pe-card-ic{ position:absolute; top:10px; right:10px; background:#fff; }
+.pe-card:hover{ border-style:solid; border-color:var(--green-cta); background:#F1F8F4; }
+.pe-card.is-in{ border-style:solid; border-color:transparent; background:var(--eggshell); color:var(--text-secondary); cursor:default; }
+.pe-card-ic{ width:26px; height:26px; border-radius:50%; border:1px dashed var(--hairline-strong); display:inline-flex; align-items:center; justify-content:center; color:var(--green-cta); }
+.pe-card-ic svg{ width:13px; height:13px; } .pe-card.is-in .pe-card-ic{ border-style:solid; color:var(--text-muted); }
+.pe-card-t{ font-size:15px; font-weight:600; line-height:1.25; }
+.pe-card-w{ font-size:13px; color:var(--text-secondary); line-height:1.4; }
+.pe-card-a{ margin-top:auto; font-size:13.5px; font-weight:600; color:var(--green-cta); }
+.pe-car-nav{ position:absolute; top:50%; transform:translateY(-50%); width:34px; height:34px; border-radius:50%; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); font-size:20px; line-height:1; cursor:pointer; z-index:2; display:flex; align-items:center; justify-content:center; }
+.pe-car-nav.prev{ left:-17px; } .pe-car-nav.next{ right:-17px; }
+/* timeline: in order, evenly spaced, scrolls sideways */
+.pe-tl{ position:relative; padding:10px 2px 6px; gap:0; }
+.pe-tl-line{ position:absolute; left:0; right:0; top:32px; height:3px; border-radius:2px; background:linear-gradient(90deg, var(--ink) 0, var(--green-cta) 18%, #BFE3D0 100%); }
+.pe-tl-it{ position:relative; flex:0 0 124px; scroll-snap-align:start; display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; background:none; border:0; padding:0; font:inherit; color:var(--ink); cursor:default; }
+.pe-tl-it i{ position:relative; width:44px; height:44px; border-radius:50%; border:3px solid #FAFBFB; box-sizing:border-box; display:flex; align-items:center; justify-content:center; margin-bottom:8px; box-shadow:0 0 0 1px var(--hairline); }
+.pe-tl-it i svg{ width:20px; height:20px; }
+.pe-tl-it i em{ position:absolute; right:-5px; bottom:-5px; width:16px; height:16px; border-radius:50%; background:var(--green-cta); color:#fff; display:flex; align-items:center; justify-content:center; border:2px solid #FAFBFB; }
+.pe-tl-it i em svg{ width:8px; height:8px; }
+.pe-tl-it.now i em{ display:none; }
+.pe-tl-it b{ font-size:13.5px; font-weight:600; line-height:1.25; padding:0 6px; }
+.pe-tl-it small{ font-size:12px; color:var(--text-muted); }
+.pe-tl-it.ghost{ cursor:pointer; color:var(--text-secondary); }
+.pe-tl-it.ghost i{ background:#fff; border:1.5px dashed var(--hairline-strong); box-shadow:none; }
+.pe-tl-it.ghost i em{ background:#fff; color:var(--green-cta); border:1.5px dashed var(--green-cta); }
+.pe-tl-it.ghost:hover i{ border-style:solid; border-color:var(--green-cta); background:#F1F8F4; transform:translateY(-2px); }
+.pe-tl-it i{ transition:transform .2s ease, border-color .15s ease, background .15s ease; }
+.pe-tl-it.ghost b{ font-weight:500; }
+.pe-tl-it.ghost:hover b{ color:var(--green-cta); }
+/* dropdown */
+.pe-var{ display:inline-flex; align-items:center; gap:6px; margin-left:auto; margin-right:12px; font-size:11px; color:var(--text-muted); opacity:.75; }
+.pe-var:hover{ opacity:1; }
+.pe-var-sel{ font:inherit; font-size:11px; color:var(--text-secondary); border:1px solid var(--hairline); border-radius:8px; padding:2px 6px; background:#fff; }
+/* ask */
+.pe-ask-row{ display:flex; gap:10px; }
+.pe-ask-in{ flex:1; font:inherit; font-size:16px; padding:14px 16px; border:1.5px dashed var(--hairline-strong); border-radius:14px; background:#fff; color:var(--ink); }
+.pe-ask-in:focus{ outline:none; border-style:solid; border-color:var(--green-cta); }
+.pe-ask-go{ font:inherit; font-size:15px; font-weight:600; color:#fff; background:var(--green-cta); border:0; border-radius:999px; padding:0 20px; cursor:pointer; }
+.pe-ask-exs{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin-top:14px; font-size:13px; color:var(--text-muted); }
+.pe-ask-ex{ font:inherit; font-size:13px; color:var(--text-secondary); background:none; border:0; padding:0; cursor:pointer; text-decoration:underline dotted; text-underline-offset:3px; }
+.pe-ask-ex:hover{ color:var(--green-cta); }
+/* story */
+.pe-st-p{ font-size:19px; line-height:1.85; color:var(--ink); margin:4px 0 0; }
+.pe-st-lead{ color:var(--text-secondary); }
+.pe-st-c{ display:inline; white-space:nowrap; }
+.pe-st-c .pe-st-tog{ display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; border:1.5px dashed var(--hairline-strong); background:#fff; color:var(--green-cta); vertical-align:-3px; margin-right:5px; padding:0; cursor:pointer; }
+.pe-st-c .pe-st-tog svg{ width:10px; height:10px; }
+.pe-st-c.on .pe-st-tog{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+.pe-st-c:not(.on) .pe-st-t{ color:var(--text-muted); text-decoration:line-through; text-decoration-color:var(--hairline-strong); }
+.pe-st-b{ display:inline-block; padding:0 6px; border-bottom:2px solid var(--green-cta); color:var(--green-cta); font-weight:600; min-width:1.5em; outline:none; border-radius:4px 4px 0 0; }
+.pe-st-b:focus{ background:#F1F8F4; }
+.pe-st-sep{ white-space:normal; }
+.pe-st-foot{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:18px; font-size:13px; color:var(--text-muted); }
+.pe-st-add{ font:inherit; font-size:15px; font-weight:600; color:#fff; background:var(--green-cta); border:0; border-radius:999px; padding:11px 20px; cursor:pointer; white-space:nowrap; }
+.pe-st-add:disabled{ opacity:.4; cursor:default; }
+.pe-toast{ position:fixed; left:50%; bottom:120px; transform:translate(-50%, 10px); background:var(--ink); color:#fff; font-size:14px; font-weight:600; padding:10px 16px; border-radius:999px; opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:200; }
+.pe-toast.on{ opacity:1; transform:translate(-50%, 0); }
+/* rapid fire */
+.pe-deck{ display:flex; flex-direction:column; align-items:center; gap:14px; padding:4px 0 2px; }
+.pe-dk-dots{ display:flex; gap:6px; } .pe-dk-dots i{ width:7px; height:7px; border-radius:50%; background:var(--hairline-strong); } .pe-dk-dots i.done{ background:var(--green-cta); } .pe-dk-dots i.cur{ background:var(--ink); transform:scale(1.3); }
+.pe-dk-stack{ position:relative; width:320px; height:236px; }
+.pe-dk-card{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; padding:22px; border:1px dashed var(--hairline-strong); border-radius:18px; background:#fff; transition:transform .26s cubic-bezier(.2,.7,.2,1), opacity .26s ease; }
+.pe-dk-under{ transform:scale(.94) translateY(12px); opacity:.6; }
+.pe-dk-card.fly-r{ transform:translateX(140px) rotate(8deg); opacity:0; } .pe-dk-card.fly-l{ transform:translateX(-140px) rotate(-8deg); opacity:0; }
+.pe-dk-art{ width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:4px; } .pe-dk-art svg{ width:30px; height:30px; }
+.pe-dk-card b{ font-size:19px; font-weight:600; color:var(--ink); }
+.pe-dk-w{ font-size:14px; color:var(--text-secondary); line-height:1.4; }
+.pe-dk-when{ font-size:12.5px; color:var(--text-muted); margin-top:4px; }
+.pe-dk-end{ position:static; height:236px; width:320px; } .pe-dk-end span{ font-size:14px; color:var(--text-secondary); line-height:1.45; }
+.pe-dk-reset, .pe-dk-no, .pe-dk-yes{ font:inherit; font-size:15px; font-weight:600; border-radius:999px; padding:11px 20px; cursor:pointer; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+.pe-dk-yes{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+.pe-dk-btns{ display:flex; gap:10px; }
+.pe-dk-hint{ font-size:12px; color:var(--text-muted); }
+.pe-dk-added{ display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px; margin-top:6px; font-size:12.5px; color:var(--text-muted); }
+.pe-dk-added .pe-chip{ font-size:13px; padding:5px 11px 5px 9px; }
+/* checklist */
+.pe-cks{ display:flex; flex-direction:column; }
+.pe-ck{ display:grid; grid-template-columns:22px 1fr auto; gap:12px; align-items:center; padding:12px 4px; border-bottom:1px dashed var(--hairline); }
+.pe-ck:last-child{ border-bottom:0; }
+.pe-ck-ic{ width:20px; height:20px; border-radius:50%; border:1.5px dashed var(--hairline-strong); display:flex; align-items:center; justify-content:center; color:#fff; }
+.pe-ck.is-in .pe-ck-ic{ background:var(--green-cta); border-color:var(--green-cta); } .pe-ck-ic svg{ width:11px; height:11px; }
+.pe-ck-t{ font-size:15px; color:var(--ink); }
+.pe-ck.is-in .pe-ck-t, .pe-ck.is-off .pe-ck-t{ color:var(--text-muted); } .pe-ck.is-off .pe-ck-t{ text-decoration:line-through; }
+.pe-ck-act{ display:flex; gap:6px; align-items:center; } .pe-ck-act em{ font-style:normal; font-size:13px; color:var(--text-muted); }
+.pe-ck-yes, .pe-ck-no{ font:inherit; font-size:13.5px; font-weight:600; border-radius:999px; padding:6px 12px; cursor:pointer; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+.pe-ck-yes{ color:var(--green-cta); } .pe-ck-yes:hover{ background:#F1F8F4; border-color:var(--green-cta); } .pe-ck-no{ color:var(--text-secondary); }
+.pe-tl-key{ display:flex; align-items:center; gap:18px; margin-top:18px; font-size:12.5px; color:var(--text-secondary); }
+.pe-tl-key span{ display:inline-flex; align-items:center; gap:6px; }
+.pe-tl-key i{ width:10px; height:10px; border-radius:50%; display:inline-block; } .k-in{ background:var(--green-cta); } .k-ghost{ border:1.5px dashed var(--green-cta); box-sizing:border-box; }
+.pe-tl-key .pe-tl-else{ margin-left:auto; }
 .pe-chip{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px 8px 11px; border:1px dashed var(--hairline-strong); border-radius:999px; background:#fff; font:inherit; font-size:14px; font-weight:500; color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease, transform .15s ease; }
 .pe-chip svg{ width:13px; height:13px; color:var(--green-cta); flex:0 0 13px; }
 .pe-chip:hover{ border-style:solid; border-color:var(--green-cta); background:#F1F8F4; }
@@ -32647,22 +32746,22 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   var SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>';
   /* Nancy's eleven, each one ready to add with a sensible prefill */
   var IDEAS=[
-    { id:'pt',   t:'Go part-time',            type:'Go part-time',            nm:'Go part-time',            who:'Marshall', change:'Income falls',     yr:2027, until:'Until 2028', amt:'3,100', chap:'next' },
-    { id:'ss',   t:'Claim Social Security',   type:'Claim Social Security',   nm:'Claim Social Security',   who:'Marshall', change:'Income rises',     yr:2035, until:'For life',   amt:'3,400', chap:'bridge' },
-    { id:'med',  t:'Start Medicare',          type:'Start Medicare',          nm:'Start Medicare',          who:'Both',     change:'Spending falls',   yr:2030, until:'For life',   amt:'900',   chap:'bridge' },
-    { id:'down', t:'Move or downsize',        type:'Move or downsize',        nm:'Downsize the house',      who:'Both',     change:'Income rises',     yr:2035, until:'Once',       amt:'250,000', chap:'bridge' },
-    { id:'prop', t:'Buy or sell a property',  type:'Buy or sell a property',  nm:'Buy a vacation home',     who:'Both',     change:'A one-time cost',  yr:2031, until:'Once',       amt:'120,000', chap:'bridge' },
-    { id:'loan', t:'Pay off a loan',          type:'Pay off a loan',          nm:'Pay off the mortgage',    who:'Both',     change:'Spending falls',   yr:2033, until:'For life',   amt:'2,200', chap:'bridge' },
-    { id:'trip', t:'Plan a big trip',         type:'Plan a big trip',         nm:'Three months in Portugal', who:'Both',    change:'A one-time cost',  yr:2029, until:'Once',       amt:'24,000', chap:'next' },
-    { id:'kid',  t:'Support family or a charity', type:'Support a family member or charitable organization', nm:'Down payment gift', who:'Both', change:'A one-time cost', yr:2029, until:'Once', amt:'50,000', chap:'bridge' },
-    { id:'inh',  t:'Receive an inheritance',  type:'Receive an inheritance',  nm:'Inheritance',             who:'Lily',     change:'Income rises',     yr:2034, until:'Once',       amt:'180,000', chap:'bridge' },
-    { id:'else', t:'Something else',          type:'Something else',          nm:'',                        who:'Both',     change:'Spending rises',   yr:2029, until:'Once',       amt:'', chap:'next' }
+    { id:'pt', why:'Income eases before it stops.', t:'Go part-time',            type:'Go part-time',            nm:'Go part-time',            who:'Marshall', change:'Income falls',     yr:2027, until:'Until 2028', amt:'3,100', chap:'next' },
+    { id:'ss', why:'A check for life. Timing is the lever.', t:'Claim Social Security',   type:'Claim Social Security',   nm:'Claim Social Security',   who:'Marshall', change:'Income rises',     yr:2035, until:'For life',   amt:'3,400', chap:'bridge' },
+    { id:'med', why:'Health costs change shape at 65.', t:'Start Medicare',          type:'Start Medicare',          nm:'Start Medicare',          who:'Both',     change:'Spending falls',   yr:2030, until:'For life',   amt:'900',   chap:'bridge' },
+    { id:'down', why:'Equity becomes spending money.', t:'Move or downsize',        type:'Move or downsize',        nm:'Downsize the house',      who:'Both',     change:'Income rises',     yr:2035, until:'Once',       amt:'250,000', chap:'bridge' },
+    { id:'prop', why:'A big one-time move, in or out.', t:'Buy or sell a property',  type:'Buy or sell a property',  nm:'Buy a vacation home',     who:'Both',     change:'A one-time cost',  yr:2031, until:'Once',       amt:'120,000', chap:'bridge' },
+    { id:'loan', why:'A monthly cost disappears.', t:'Pay off a loan',          type:'Pay off a loan',          nm:'Pay off the mortgage',    who:'Both',     change:'Spending falls',   yr:2033, until:'For life',   amt:'2,200', chap:'bridge' },
+    { id:'trip', why:'Spend it while you can enjoy it.', t:'Plan a big trip',         type:'Plan a big trip',         nm:'Three months in Portugal', who:'Both',    change:'A one-time cost',  yr:2029, until:'Once',       amt:'24,000', chap:'next' },
+    { id:'kid', why:'Give with the plan still intact.', t:'Support family or a charity', type:'Support a family member or charitable organization', nm:'Down payment gift', who:'Both', change:'A one-time cost', yr:2029, until:'Once', amt:'50,000', chap:'bridge' },
+    { id:'inh', why:'Money arriving, not leaving.', t:'Receive an inheritance',  type:'Receive an inheritance',  nm:'Inheritance',             who:'Lily',     change:'Income rises',     yr:2034, until:'Once',       amt:'180,000', chap:'bridge' },
+    { id:'else', why:'Anything with a year and an amount.', t:'Something else',          type:'Something else',          nm:'',                        who:'Both',     change:'Spending rises',   yr:2029, until:'Once',       amt:'', chap:'next' }
   ];
   function setText(vt, val){ if(!vt) return; vt.textContent=val; vt.classList.remove('is-placeholder'); var f=vt.closest('.field'); if(f) f.classList.remove('is-empty'); vt.dispatchEvent(new Event('input',{bubbles:true})); }
   function setSel(ed, key, val){ var sel=ed.querySelector('select[data-pe="'+key+'"]'); if(!sel) return; sel.value=val; sel.dispatchEvent(new Event('change',{bubbles:true})); }
-  function start(p){
-    if(!window.__peSpawn) return;
-    var ed=window.__peSpawn(p.chap, {top:false}); if(!ed) return;
+  function start(p, quiet){
+    if(!window.__peSpawn) return null;
+    var ed=window.__peSpawn(p.chap, {top:false}); if(!ed) return null;
     setSel(ed,'type',p.type);
     if(p.nm) setText(ed.querySelector('.field:not(.pe-choice) .vtext'), p.nm);
     setSel(ed,'who',p.who); setSel(ed,'kind',p.change); setSel(ed,'until',p.until);
@@ -32670,31 +32769,104 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
     var amtF=[].slice.call(ed.querySelectorAll('.field')).filter(function(x){ var l=x.querySelector('label'); return l && /By how much|Amount/.test(l.textContent); })[0];
     if(amtF && p.amt) setText(amtF.querySelector('.vtext'), p.amt);
     var save=ed.querySelector('.btn-save'); if(save) save.disabled=!p.nm;
-    setTimeout(function(){ var y=ed.getBoundingClientRect().top+window.scrollY-140; window.scrollTo({top:Math.max(0,y), behavior:'smooth'}); }, 80);
+    if(!quiet) setTimeout(function(){ var y=ed.getBoundingClientRect().top+window.scrollY-140; window.scrollTo({top:Math.max(0,y), behavior:'smooth'}); }, 80);
+    return ed;
   }
+  /* add straight to the plan, no editor to close: for the planner who wants ten in a row */
+  function quickSave(p){ var q=Object.assign({}, p); if(!q.nm) q.nm=q.t; var ed=start(q, true); if(!ed) return false; var save=ed.querySelector('.btn-save'); if(save){ save.disabled=false; save.click(); } try{ localStorage.setItem(KEY, String(userEvents()+1)); }catch(x){} return true; }
+  function toast(msg){ var t=document.querySelector('.pe-toast'); if(!t){ t=document.createElement('div'); t.className='pe-toast'; document.body.appendChild(t); } t.textContent=msg; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('on'); }, 1800); }
   /* an idea that is already in the plan reads as done, not as a suggestion */
   function inPlan(p){ var body=document.getElementById('eventsBody'); if(!body) return false; var rows=[].slice.call(body.querySelectorAll('.acct, .row, .pc-row')).map(function(r){ return (r.textContent||'').toLowerCase(); }).join(' | '); var k={ pt:/part-time/, ss:/social security/, med:/medicare/, down:/downsize/, prop:/vacation home|second home|sell the|buy a/, loan:/pay off|mortgage/, trip:/trip|portugal/, kid:/down payment|gift|charit/, inh:/inherit/ }[p.id]; return !!(k && k.test(rows)); }
   /* how many events this person has added themselves; the seeded plan does not count, so the first visit always leads with the intro */
   var KEY='boldin.lifeevents.added';
   function userEvents(){ try{ return +localStorage.getItem(KEY)||0; }catch(e){ return 0; } }
   document.addEventListener('click', function(e){ var b=e.target.closest('#eventsBody .edit-card .btn-save'); if(!b || b.disabled) return; var ed=b.closest('.edit-card'); if(!/Add a life event/.test((ed.querySelector('.ecTitleText')||{}).textContent||'')) return; try{ localStorage.setItem(KEY, String(userEvents()+1)); }catch(x){} setTimeout(build, 400); }, true);
+  /* three ways to show the same ideas: chips, a card carousel, and a timeline. The toggle is for the prototype. */
+  var VKEY='boldin.lifeevents.tray', VARS=[['chips','Chips'],['cards','Cards'],['timeline','Timeline'],['ask','Ask'],['checklist','Checklist'],['story','Story'],['deck','Rapid fire']];
+  function variant(){ try{ return localStorage.getItem(VKEY)||'chips'; }catch(e){ return 'chips'; } }
+  function chipsHTML(){ return '<div class="pe-chips">'+IDEAS.map(function(p){ var done=inPlan(p); return '<button type="button" class="pe-chip'+(done?' is-in':'')+'" data-idea="'+p.id+'"'+(done?' aria-disabled="true" title="Already in your plan"':'')+'>'+(done?CHECK:PLUS)+p.t+'</button>'; }).join('')+'</div>'; }
+  var ART={
+    pt:['#E8F1FB','#2E6FD8','<path d="M4 12h16M4 7h10M4 17h7"/>'],
+    ss:['#FFF4DB','#B8860B','<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'],
+    med:['#FBE9EC','#C2185B','<path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="4"/>'],
+    down:['#EAF6EF','#0E794E','<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'],
+    prop:['#EDEAF8','#6B4FBB','<rect x="3" y="9" width="18" height="11" rx="2"/><path d="M7 9V6a5 5 0 0110 0v3"/><path d="M12 13v3"/>'],
+    loan:['#EAF6EF','#0E794E','<path d="M20 6L9 17l-5-5"/><circle cx="12" cy="12" r="10"/>'],
+    trip:['#E6F4F7','#1B9AAA','<path d="M2 12l20-8-6 18-3-8-11-2z"/>'],
+    kid:['#FBEDE6','#B0532D','<path d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z"/>'],
+    inh:['#FFF4DB','#B8860B','<path d="M12 3v18M7 8l5-5 5 5"/><path d="M5 21h14"/>'],
+    else:['#F1F2F4','#5B6170','<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>']
+  };
+  function art(id){ var a=ART[id]||ART.else; return '<span class="pe-card-art" style="background:'+a[0]+';color:'+a[1]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+a[2]+'</svg></span>'; }
+  function cardsHTML(){ var cards=IDEAS.slice().sort(function(a,b){ return (inPlan(a)?1:0)-(inPlan(b)?1:0); }).map(function(p){ var done=inPlan(p); return '<button type="button" class="pe-card'+(done?' is-in':'')+'" data-idea="'+p.id+'"'+(done?' aria-disabled="true"':'')+'>'+art(p.id)+'<span class="pe-card-ic">'+(done?CHECK:PLUS)+'</span><span class="pe-card-t">'+p.t+'</span><span class="pe-card-w">'+(done?'Already in your plan':p.why)+'</span><span class="pe-card-a">'+(done?'':'Add \u203a')+'</span></button>'; }).join('');
+    return '<div class="pe-car-wrap"><button type="button" class="pe-car-nav prev" aria-label="Previous">\u2039</button><div class="pe-car">'+cards+'</div><button type="button" class="pe-car-nav next" aria-label="Next">\u203a</button></div>'; }
+  var PLAN_DOTS=[['Retire',2028],['Medicare',2030],['Social Security',2035],['Mortgage paid',2046]];
+  function timelineHTML(){
+    var items=PLAN_DOTS.map(function(d){ return { t:d[0], yr:d[1], in:true }; }).concat(IDEAS.filter(function(p){ return !inPlan(p) && p.id!=='else'; }).map(function(p){ return { t:p.t, yr:p.yr, id:p.id }; }));
+    items.sort(function(a,b){ return a.yr-b.yr || (a.in?-1:1); });
+    var PLAN_ART={ 'Retire':'pt', 'Medicare':'med', 'Social Security':'ss', 'Mortgage paid':'loan' };
+    function age(y){ return 'age '+(y-1965); }
+    var cells=[{ t:'Today', yr:2026, in:true, now:true }].concat(items).map(function(it){ var a=ART[it.in?(PLAN_ART[it.t]||'else'):it.id]||ART.else; return it.in
+      ? '<div class="pe-tl-it in'+(it.now?' now':'')+'"><i style="background:'+(it.now?'var(--ink)':a[0])+';color:'+(it.now?'#fff':a[1])+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(it.now?'<circle cx="12" cy="12" r="3"/>':a[2])+'</svg><em>'+CHECK+'</em></i><b>'+it.t+'</b><small>'+it.yr+' \u00b7 '+age(it.yr)+'</small></div>'
+      : '<button type="button" class="pe-tl-it ghost" data-idea="'+it.id+'"><i style="color:'+a[1]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+a[2]+'</svg><em>'+PLUS+'</em></i><b>'+it.t+'</b><small>'+it.yr+'? \u00b7 '+age(it.yr)+'</small></button>'; }).join('');
+    return '<div class="pe-car-wrap"><button type="button" class="pe-car-nav prev" aria-label="Earlier">\u2039</button><div class="pe-car pe-tl"><div class="pe-tl-line"></div>'+cells+'</div><button type="button" class="pe-car-nav next" aria-label="Later">\u203a</button></div><div class="pe-tl-key"><span><i class="k-in"></i>In your plan</span><span><i class="k-ghost"></i>Tap to add, in the year you expect it</span><button type="button" class="pe-chip pe-tl-else" data-idea="else">'+PLUS+'Something else</button></div>'; }
+  /* Ask: say it in a sentence, we file it */
+  var ASK_MAP=[['pt',/part.?time|cut back|fewer hours|consult/i],['ss',/social security|\bss\b/i],['med',/medicare/i],['down',/downsiz|move|condo|smaller/i],['prop',/buy|sell|house|home|property|cabin|lake/i],['loan',/loan|mortgage|pay ?off|debt/i],['trip',/trip|travel|cruise|tour|portugal|italy|japan/i],['kid',/kid|child|daughter|son|grand|wedding|tuition|gift|charit|donat|help/i],['inh',/inherit|estate|windfall/i]];
+  function askGo(text){ text=(text||'').trim(); if(!text) return; var id='else'; for(var i=0;i<ASK_MAP.length;i++){ if(ASK_MAP[i][1].test(text)){ id=ASK_MAP[i][0]; break; } } var base=IDEAS.filter(function(x){ return x.id===id; })[0]||IDEAS[IDEAS.length-1]; var p=Object.assign({}, base); var m=text.match(/\b(20[2-5]\d)\b/); var rel=text.match(/in (\d{1,2}) years?/i); if(m) p.yr=+m[1]; else if(rel) p.yr=2026+(+rel[1]); var amt=text.match(/\$\s?([\d,]+)(k)?/i); if(amt) p.amt=amt[2]?String(+amt[1].replace(/,/g,'')*1000):amt[1]; p.nm=text.replace(/\s+/g,' ').replace(/^(we|i)('ll| will| want to| plan to| would like to)?\s*/i,'').replace(/\.$/,''); p.nm=p.nm.charAt(0).toUpperCase()+p.nm.slice(1); if(p.nm.length>48) p.nm=p.nm.slice(0,48); start(p); }
+  function askHTML(){ return '<div class="pe-ask"><div class="pe-ask-row"><input class="pe-ask-in" type="text" placeholder="Say it the way you\u2019d tell a friend\u2026" aria-label="What is coming up?"><button type="button" class="pe-ask-go">Add it</button></div><div class="pe-ask-exs"><span>Try</span><button type="button" class="pe-ask-ex">\u201cWe\u2019ll sell the lake house around 2032\u201d</button><button type="button" class="pe-ask-ex">\u201cI want to go part-time in 2 years\u201d</button><button type="button" class="pe-ask-ex">\u201cHelp Maya with a $40k down payment in 2029\u201d</button></div></div>'; }
+  /* Checklist: yes or no, one line at a time */
+  var DISMISSED={};
+  var STATEMENTS={ pt:'I\u2019ll ease into part-time before I fully stop.', ss:'Social Security will start at some point.', med:'Medicare starts at 65.', down:'We\u2019ll move or downsize at some point.', prop:'We might buy or sell a property.', loan:'A loan or the mortgage gets paid off along the way.', trip:'There\u2019s a big trip we want to take.', kid:'We\u2019ll help family, or give to a cause.', inh:'I expect to receive an inheritance.', 'else':'Something else is coming that costs or brings money.' };
+  function checklistHTML(){ return '<div class="pe-cks">'+IDEAS.map(function(p){ var done=inPlan(p), off=!!DISMISSED[p.id]; return '<div class="pe-ck'+(done?' is-in':'')+(off?' is-off':'')+'" data-idea="'+p.id+'"><span class="pe-ck-ic">'+(done?CHECK:'')+'</span><span class="pe-ck-t">'+STATEMENTS[p.id]+'</span><span class="pe-ck-act">'+(done?'<em>In your plan</em>':off?'<em>Not for us</em>':'<button type="button" class="pe-ck-yes" data-idea="'+p.id+'">Yes, add it</button><button type="button" class="pe-ck-no">No</button>')+'</span></div>'; }).join('')+'</div>'; }
+  /* Story: the next thirty years as one paragraph you edit, then add all at once */
+  var STORY={ pt:['go part-time in ','yr'], trip:['take a big trip in ','yr',' for about $','amt'], down:['downsize the house around ','yr'], prop:['buy a vacation home in ','yr'], loan:['pay off the mortgage by ','yr'], kid:['give family a $','amt',' hand in ','yr'], inh:['come into an inheritance around ','yr'] };
+  var STORY_ON={};
+  function storyHTML(){ var ids=Object.keys(STORY).filter(function(id){ var p=IDEAS.filter(function(x){ return x.id===id; })[0]; return p && !inPlan(p); }); ids.forEach(function(id){ if(!(id in STORY_ON)) STORY_ON[id]=true; });
+    var clauses=ids.map(function(id,i){ var p=IDEAS.filter(function(x){ return x.id===id; })[0], tpl=STORY[id], on=STORY_ON[id]; var inner=''; for(var k=0;k<tpl.length;k++){ var part=tpl[k]; if(part==='yr') inner+='<span class="pe-st-b" contenteditable="true" data-f="yr" spellcheck="false">'+p.yr+'</span>'; else if(part==='amt') inner+='<span class="pe-st-b" contenteditable="true" data-f="amt" spellcheck="false">'+p.amt+'</span>'; else inner+=part; }
+      return '<span class="pe-st-c'+(on?' on':'')+'" data-idea="'+id+'"><button type="button" class="pe-st-tog" aria-pressed="'+on+'" title="'+(on?'Leave this one out':'Put it back')+'">'+(on?CHECK:PLUS)+'</button><span class="pe-st-t">'+inner+'</span></span>'; });
+    var n=ids.filter(function(id){ return STORY_ON[id]; }).length;
+    return '<div class="pe-story"><p class="pe-st-p"><span class="pe-st-lead">Over the next thirty years, we\u2019ll </span>'+clauses.join('<span class="pe-st-sep">, </span>')+'<span class="pe-st-lead">.</span></p><div class="pe-st-foot"><span>Tap a year or amount to change it. Untick what isn\u2019t you.</span><button type="button" class="pe-st-add"'+(n?'':' disabled')+'>Add all '+n+' to my plan</button></div></div>'; }
+  function storyAdd(box){ var ids=[].slice.call(box.querySelectorAll('.pe-st-c.on')); var n=0; ids.forEach(function(c){ var p=Object.assign({}, IDEAS.filter(function(x){ return x.id===c.dataset.idea; })[0]); c.querySelectorAll('.pe-st-b').forEach(function(b){ var v=b.textContent.replace(/[^\d]/g,''); if(b.dataset.f==='yr' && v.length===4) p.yr=+v; if(b.dataset.f==='amt' && v) p.amt=(+v).toLocaleString('en-US'); }); if(quickSave(p)) n++; }); toast(n+' life event'+(n===1?'':'s')+' added'); box.querySelector('.pe-ideas-body').dataset.sig=''; setTimeout(build, 500); }
+  /* Rapid fire: one idea at a time, yes or no, as fast as you like */
+  var DECK={ i:0, added:[], passed:[] };
+  function deckList(){ return IDEAS.filter(function(p){ return p.id!=='else' && !inPlan(p) && DECK.added.indexOf(p.id)<0 && DECK.passed.indexOf(p.id)<0; }); }
+  function deckHTML(){ var left=deckList(), p=left[0], total=IDEAS.filter(function(x){ return x.id!=='else' && !inPlan(x); }).length, done=total-left.length;
+    var dots='<div class="pe-dk-dots">'+Array.apply(null,{length:total}).map(function(_,i){ return '<i class="'+(i<done?'done':i===done?'cur':'')+'"></i>'; }).join('')+'</div>';
+    var added=DECK.added.length?'<div class="pe-dk-added"><span>Added</span>'+DECK.added.map(function(id){ var x=IDEAS.filter(function(q){ return q.id===id; })[0]; return '<span class="pe-chip is-in">'+CHECK+x.t+'</span>'; }).join('')+'</div>':'';
+    if(!p) return '<div class="pe-deck"><div class="pe-dk-card pe-dk-end"><b>That\u2019s the deck.</b><span>'+(DECK.added.length?DECK.added.length+' added to your plan. Open any of them below to set the year and amount.':'Nothing for now. Your plan is yours.')+'</span><button type="button" class="pe-dk-reset">Start over</button></div>'+added+'</div>';
+    var a=ART[p.id]||ART.else; var next=left[1];
+    return '<div class="pe-deck">'+dots+'<div class="pe-dk-stack">'+(next?'<div class="pe-dk-card pe-dk-under"></div>':'')+'<div class="pe-dk-card" data-idea="'+p.id+'"><span class="pe-dk-art" style="background:'+a[0]+';color:'+a[1]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+a[2]+'</svg></span><b>'+p.t+'</b><span class="pe-dk-w">'+p.why+'</span><span class="pe-dk-when">Pencilled in for '+p.yr+(p.amt?' \u00b7 $'+p.amt:'')+'</span></div></div><div class="pe-dk-btns"><button type="button" class="pe-dk-no">Not us</button><button type="button" class="pe-dk-yes">Yes, that\u2019s coming</button></div><div class="pe-dk-hint">\u2190 no &nbsp;\u00b7&nbsp; yes \u2192</div>'+added+'</div>'; }
+  function deckAct(box, yes){ var card=box.querySelector('.pe-dk-card[data-idea]'); if(!card) return; var id=card.dataset.idea; card.classList.add(yes?'fly-r':'fly-l'); setTimeout(function(){ if(yes){ var p=IDEAS.filter(function(x){ return x.id===id; })[0]; if(quickSave(p)) DECK.added.push(id); else DECK.passed.push(id); } else DECK.passed.push(id); box.querySelector('.pe-ideas-body').dataset.sig=''; build(); }, 260); }
+  function bodyHTML(){ var v=variant(); return v==='cards'?cardsHTML():v==='timeline'?timelineHTML():v==='ask'?askHTML():v==='checklist'?checklistHTML():v==='story'?storyHTML():v==='deck'?deckHTML():chipsHTML(); }
   function build(){
     var body=document.getElementById('eventsBody'); if(!body) return false;
     var box=body.querySelector('.pe-ideas');
     if(!box){
       box=document.createElement('div'); box.className='pe-ideas';
       box.innerHTML=''
-        +'<div class="pe-ideas-head"><h3 class="pe-ideas-t pe-ideas-q">What’s coming up for you?</h3></div><p class="pe-ideas-s"><span class="pe-lead-only">New: life events are the moments that change your money. </span>Tap one to add it, and the plan plays it forward through every year.</p><div class="pe-chips"></div>';
+        +'<div class="pe-ideas-head"><h3 class="pe-ideas-t pe-ideas-q">What’s coming up for you?</h3><label class="pe-var"><span>Layout</span><select class="pe-var-sel" aria-label="Layout">'+VARS.map(function(v){ return '<option value="'+v[0]+'">'+v[1]+'</option>'; }).join('')+'</select></label></div><p class="pe-ideas-s"><span class="pe-lead-only">New: life events are the moments that change your money. </span>Tap one to add it, and the plan plays it forward through every year.</p><div class="pe-ideas-body"></div>';
       body.insertBefore(box, body.firstChild);
       var hb=document.querySelector('#events-block .acc-head .cx-actions'); if(hb){ hb.classList.add('pe-starters-add'); box.querySelector('.pe-ideas-head').appendChild(hb); }
-      box.addEventListener('click', function(e){ var b=e.target.closest('.pe-chip'); if(!b || b.classList.contains('is-in')) return; e.preventDefault(); e.stopPropagation(); var p=IDEAS.filter(function(x){ return x.id===b.dataset.idea; })[0]; if(p) start(p); });
+      box.addEventListener('click', function(e){
+        if(e.target.closest('.pe-var')){ e.stopPropagation(); return; }
+        var ab=e.target.closest('.pe-ask-go'); if(ab){ e.preventDefault(); e.stopPropagation(); askGo(box.querySelector('.pe-ask-in').value); return; }
+        var ex=e.target.closest('.pe-ask-ex'); if(ex){ e.preventDefault(); e.stopPropagation(); var inp=box.querySelector('.pe-ask-in'); inp.value=ex.textContent.replace(/[\u201c\u201d"]/g,''); inp.focus(); return; }
+        var st=e.target.closest('.pe-st-tog'); if(st){ e.preventDefault(); e.stopPropagation(); var c=st.closest('.pe-st-c'); STORY_ON[c.dataset.idea]=!STORY_ON[c.dataset.idea]; box.querySelector('.pe-ideas-body').dataset.sig=''; build(); return; }
+        if(e.target.closest('.pe-st-b')){ e.stopPropagation(); return; }
+        var sa=e.target.closest('.pe-st-add'); if(sa){ e.preventDefault(); e.stopPropagation(); storyAdd(box); return; }
+        var dy=e.target.closest('.pe-dk-yes'), dn=e.target.closest('.pe-dk-no'), dr=e.target.closest('.pe-dk-reset'); if(dy||dn){ e.preventDefault(); e.stopPropagation(); deckAct(box, !!dy); return; } if(dr){ e.preventDefault(); e.stopPropagation(); DECK={ i:0, added:[], passed:[] }; box.querySelector('.pe-ideas-body').dataset.sig=''; build(); return; }
+        var no=e.target.closest('.pe-ck-no'); if(no){ e.preventDefault(); e.stopPropagation(); DISMISSED[no.closest('.pe-ck').dataset.idea]=true; box.querySelector('.pe-ideas-body').dataset.sig=''; build(); return; }
+        var nv=e.target.closest('.pe-car-nav'); if(nv){ e.preventDefault(); e.stopPropagation(); var car=box.querySelector('.pe-car'); car.scrollBy({ left:(nv.classList.contains('next')?1:-1)*(car.clientWidth-80), behavior:'smooth' }); return; }
+        var b=e.target.closest('[data-idea]'); if(!b || b.classList.contains('is-in')) return; e.preventDefault(); e.stopPropagation(); var p=IDEAS.filter(function(x){ return x.id===b.dataset.idea; })[0]; if(p) start(p); });
     }
     /* first-time experience: the tray leads until the plan has a few real events, then it steps aside */
     var early=userEvents()<3, lead=box===body.firstElementChild;
     if(early && !lead) body.insertBefore(box, body.firstChild); else if(!early && box!==body.lastElementChild) body.appendChild(box);
     box.classList.toggle('is-lead', early);
-    var chips=box.querySelector('.pe-chips'); var html=IDEAS.map(function(p){ var done=inPlan(p); return '<button type="button" class="pe-chip'+(done?' is-in':'')+'" data-idea="'+p.id+'"'+(done?' aria-disabled="true" title="Already in your plan"':'')+'>'+(done?CHECK:PLUS)+p.t+'</button>'; }).join('');
-    if(chips.dataset.sig!==html){ chips.dataset.sig=html; chips.innerHTML=html; }
+    var v=variant(); box.dataset.var=v; var sel=box.querySelector('.pe-var-sel'); if(sel && sel.value!==v) sel.value=v;
+    if(!box.dataset.varWired){ box.dataset.varWired='1'; sel.addEventListener('change', function(){ try{ localStorage.setItem(VKEY, sel.value); }catch(x){} box.querySelector('.pe-ideas-body').dataset.sig=''; build(); }); box.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target.classList.contains('pe-ask-in')){ e.preventDefault(); askGo(e.target.value); } if(e.target.classList.contains('pe-st-b')){ if(e.key==='Enter'){ e.preventDefault(); e.target.blur(); } return; } if(box.dataset.var==='deck' && (e.key==='ArrowRight'||e.key==='ArrowLeft') && !e.target.closest('input,select,[contenteditable]')){ e.preventDefault(); deckAct(box, e.key==='ArrowRight'); } }); box.tabIndex=-1; }
+    var holder=box.querySelector('.pe-ideas-body'); var html=bodyHTML();
+    if(holder.dataset.sig!==html){ holder.dataset.sig=html; holder.innerHTML=html; }
     return true;
   }
   if(!build()){ var tries=0, t=setInterval(function(){ if(build() || ++tries>80) clearInterval(t); }, 250); }
