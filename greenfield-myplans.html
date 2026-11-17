@@ -5877,7 +5877,7 @@ body.mpanel-open{ overflow:hidden; }
   <main class="center">
         <div class="oli" id="oli">
       <div class="oli-head">
-        <h2 class="snap-headline oli-h"><em class="yrs">Between</em> the lines: <b class="amt" id="oliTotal">$412,000</b>.</h2>
+        <h2 class="snap-headline oli-h"><em class="yrs">Optimize</em> for <b class="amt" id="oliTotal">$412,000</b> more.</h2>
         <p class="pf-sub snap-sub">This is the same life, funded better. Boldin shows you every move to get there.</p>
       </div>
       <svg id="oliSvg" viewBox="0 0 640 215" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif"></svg>
@@ -32606,7 +32606,12 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   var SEC=/\b(fire-page|stress-open|alo-open|bud-open|soc-open|tax-open|wdr-open)\b/;
   function onOptimize(){ var b=document.body; return b.dataset.view==='optimize' || SEC.test(b.className); }
   var pend=null;
-  function ensure(){ clearTimeout(pend); pend=setTimeout(function(){ if(onOptimize() && !document.body.classList.contains('flow-open') && !document.body.classList.contains('scn-open') && window.__bai && !window.__bai.isOpen()) window.__bai.open(); }, 380); }
+  /* the rail talks about optimizing while you are here, and nothing else */
+  var OPT_TEXT='This is where the plan gets better without your life changing. Three moves are on the table: <b>super catch-up contributions</b>, <b>Roth conversions</b>, and <b>Social Security at 70</b>. Together they are worth about <b>$412,000</b> over the plan. Start with the biggest, or let me run all three as a what-if.';
+  var OPT_CHIPS=['Which move pays off the most?','Try all three as a what-if','What happens if I do nothing?'];
+  var briefed=false;
+  function brief(){ if(briefed || !window.__bai || !window.__bai.isOpen()) return; briefed=true; setTimeout(function(){ if(onOptimize()) window.__bai.context(OPT_TEXT, OPT_CHIPS); }, 120); }
+  function ensure(){ clearTimeout(pend); pend=setTimeout(function(){ if(!onOptimize()){ briefed=false; return; } if(document.body.classList.contains('flow-open') || document.body.classList.contains('scn-open') || !window.__bai) return; if(!window.__bai.isOpen()) window.__bai.open(); brief(); }, 380); }
   new MutationObserver(ensure).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
   document.addEventListener('click', function(e){
     var card=e.target.closest && e.target.closest('.opt-grid [data-opt], .opt-grid #optHero, .onav-item[data-opt]');
