@@ -29173,8 +29173,8 @@ body[data-view="plan"] #sideNav.in-shut li[data-key="events"]{ display:none; }
 body[data-view="plan"] #events-block{ display:block; }
 /* Life events and My financial journey are one thing: the chart's dots are the events, the rows
    underneath are their list. The section loses its own header and sits flush under the chart. */
-body.plan-view.lens-snapshot[data-view="plan"] #snapshotView{ margin-bottom:var(--s-8); }
-body.plan-view.lens-snapshot[data-view="plan"] [data-page="plan"] .center > #events-block{ padding-top:0; border-top:0; }
+body.plan-view.lens-snapshot[data-view="plan"] #snapshotView{ margin-bottom:4px; }
+body.plan-view.lens-snapshot[data-view="plan"] [data-page="plan"] .center > #events-block{ padding-top:8px; border-top:0; margin-top:16px; }
 /* the add lives in the section header, like every other section; nothing sits under the chart */
 body[data-view="plan"] .snap-ultra .snap-route-cta{ display:none; }
 .snap-route-cta a.btn-route[data-pe-add-top]:hover svg{ transform:none; }
@@ -29235,8 +29235,15 @@ body[data-view="plan"] .pe-only{ display:block; }
 /* room to breathe: the header CTA, the chart, the chapters and the first row each get their own air */
 body[data-view="plan"] .acc-head .cx-actions{ margin-top:22px; }
 .acc-body > .pe-spend{ margin:40px 4px 0; }
+body[data-view="plan"] .acc[data-pe-exp]{ display:none !important; }
+.pe-spend-sec{ margin:4px 0 28px; padding:0 0 24px; border-bottom:1px solid var(--hairline); }
+.pe-spend-sec .pe-spend{ margin:12px 4px 0; }
+.pe-spend-head{ display:block; }
+.pe-spend-head .t{ font-size:16px; font-weight:600; color:var(--ink); }
+.pe-spend-head .s{ font-size:13.5px; color:var(--text-secondary); margin-top:3px; }
 .pe-spend + .bucket{ margin-top:40px; }
 .pe-spend-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:24px; }
+.pe-spend-head{ display:block; }
 .pe-spend-head .t{ font-size:16px; font-weight:600; color:var(--ink); }
 .pe-spend-head .s{ font-size:13px; color:var(--text-secondary); }
 .pe-spend svg{ width:100%; height:auto; display:block; overflow:visible; }
@@ -29336,7 +29343,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     { id:'house',    nm:'The mortgage is paid off',          yr:2046, who:'Both',    kind:'spend',  amt:-1120, eff:'The 3.1% loan retires. $905K of value with zero debt against it.', until:'For life', chap:'later' }
   ];
   var CHAPTERS=[ ['next','Before retirement','2026 – 2028'], ['bridge','The bridge years','2029 – 2034'], ['later','Social Security and beyond','2035 onward'] ];
-  var EVENT_TYPES=['Retire','Go part-time','Claim Social Security','Start Medicare','Move or downsize','Buy a second home','Sell a property','Pay off a loan','A big trip','Help a child or a parent','Receive an inheritance','Long-term care','Something else'];
+  var EVENT_TYPES=['Retire','Go part-time','Claim Social Security','Start Medicare','Move or downsize','Buy or sell a property','Pay off a loan','Plan a big trip','Support a family member or charitable organization','Receive an inheritance','Something else'];
   var WHO=['Marshall','Lily','Both'];
   var UNTIL=['For life','Once','Until 2030','Until 2047','For 5 years','For 10 years'];
   function whenText(e){ var a=ageIn(e.who, e.yr); return (e.mo?e.mo+' ':'')+e.yr+(a!=null?' · age '+a:''); }
@@ -29382,7 +29389,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     var ex=expensesAcc(); if(!ex) return;
     var sec=document.createElement('div'); sec.className='acc'; sec.id='events-block';
     sec.innerHTML=
-      '<div class="acc-head"><div><h2>Life Events</h2><div class="sub">The moments that reshape your plan</div><div class="cx-actions"><button type="button" class="pc-btn cx-add-asset" data-pe-add-top="1">Add life event</button></div></div>'
+      '<div class="acc-head"><div><h2>Life Events</h2><div class="sub" hidden></div><div class="cx-actions"><button type="button" class="pc-btn cx-add-asset" data-pe-add-top="1">Add life event</button></div></div>'
       +'<div class="assets-actions"><button class="btn-collapse" aria-label="Collapse" aria-expanded="true"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"/></svg></button></div></div>'
       +'<div class="acc-body" id="eventsBody">'
       +  CHAPTERS.map(function(c){
@@ -29706,6 +29713,18 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     var chart=wrap.querySelector('.pe-spend-chart'); if(chart) chart.innerHTML=s;
     $$('.pe-spend text[data-ev]').forEach(function(t){ t.style.cursor='pointer'; t.addEventListener('click', function(){ goEvent(t.dataset.ev); }); });
   }
+  /* the spending line lives in Life Events now; the rest of Future Expenses stays out of My Plans */
+  function foldSpend(){
+    var ev=document.getElementById('eventsBody'), sp=$('.pe-spend'); if(!ev || !sp) return;
+    var sec=ev.querySelector('.pe-spend-sec');
+    if(!sec){ sec=document.createElement('div'); sec.className='pe-spend-sec pe-only'; sec.innerHTML='<div class="pe-spend-head"><div class="t">What life costs, year by year</div><div class="s">Monthly spending in today\u2019s dollars, with your life events played forward. Tap a label to open that event.</div></div>'; }
+    if(sp.parentNode!==sec) sec.appendChild(sp);
+    sp.classList.remove('pe-only');
+    var tray=ev.querySelector('.pe-ideas.is-lead');
+    var want=tray ? tray.nextElementSibling : ev.firstElementChild;
+    if(sec!==want && sec.nextElementSibling!==want) { if(tray) tray.after(sec); else ev.insertBefore(sec, ev.firstElementChild); }
+  }
+  new MutationObserver(function(){ clearTimeout(foldSpend._t); foldSpend._t=setTimeout(foldSpend, 150); }).observe(document.body, { childList:true, subtree:true });
   function hiChap(i, on){ var c=$$('.pe-chap')[i]; if(c) c.classList.toggle('on', on); var g=$$('.pe-spend .step')[i]; if(g) g.classList.toggle('on', on); }
   function goEvent(id){ var r=$('#events-block .acct[data-ev="'+id+'"]'); if(!r) return; var acc=document.getElementById('events-block'); if(acc._expand) acc._expand(); r.scrollIntoView({block:'center', behavior:reduce?'auto':'smooth'}); lit(id,true); setTimeout(function(){ lit(id,false); }, 1600); }
   function expRowHTML(b){
@@ -29720,6 +29739,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     top.innerHTML='<div class="pe-spend-chart"></div>';
     body.insertBefore(top, body.firstChild);
     paintSpend();
+    foldSpend();
     /* today's recurring lines, each with the event that changes it */
     var rec=ex.querySelector('.bucket[data-bucket="recurring"]');
     function place(bucket, row){
@@ -29827,6 +29847,19 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
   window.PE={ events:function(){ return EVENTS; }, base:BASE, go:goEvent };
 })();
 </script>
+
+<style>#events-block .acc-head .sub{ display:none !important; }</style>
+<style>
+/* no stray rule between the last row of a section and the section separator */
+#eventsBody > .bucket:last-of-type > .acct:not(:has(~ .acct)){ border-bottom:0; }
+#futrates-block .fbs-row:last-child{ border-bottom:0; }
+.layout.page[data-page="plan"] #eventsBody{ padding-bottom:8px; }
+</style>
+<style>
+/* Life Events sits directly under the journey chart: no rule, little gap */
+.layout.page[data-page="plan"] > .center > #events-block.acc::before{ display:none; }
+body.plan-view.lens-snapshot[data-view="plan"] [data-page="plan"] .center > #events-block{ margin-top:-28px !important; padding-top:0 !important; }
+</style>
 
 <!-- ===================== Power mode =====================
      Every major Explore card can open full screen: a large chart with its own views, Boldin AI typing out what it
@@ -31132,6 +31165,36 @@ body.plan-focus[data-view="plan"] #snapshotView{ display:none !important; }
   var rz; window.addEventListener('resize', function(){ clearTimeout(rz); rz=setTimeout(tryDraw, 120); });
 })();
 </script>
+<style>
+/* ---- the moment you cross into a new section: more room, the rule draws itself, the title springs up, the rail item nods ---- */
+.layout.page[data-page="today"] > .center > .acc + .acc, .layout.page[data-page="plan"] > .center > .acc + .acc{ margin-top:48px; padding-top:56px; border-top:0; position:relative; }
+.layout.page[data-page="today"] > .center > .acc + .acc::before, .layout.page[data-page="plan"] > .center > .acc + .acc::before{ content:''; position:absolute; left:0; right:0; top:0; height:1px; background:var(--hairline-strong); transform-origin:left center; transform:scaleX(1); }
+.center > .acc.sec-cross::before{ animation:secRule .7s cubic-bezier(.2,.8,.2,1) both; }
+.center > .acc.sec-cross > .acc-head h2{ animation:secSpring .8s cubic-bezier(.2,1.5,.3,1) both; }
+.center > .acc.sec-cross > .acc-head .sub{ animation:secFade .6s ease .12s both; }
+.center > .acc.sec-cross::after{ content:''; position:absolute; left:-18px; top:0; width:1px; height:0; }
+.center > .acc.sec-cross > .acc-head{ position:relative; }
+.center > .acc.sec-cross > .acc-head::before{ content:''; position:absolute; left:-24px; top:6px; width:6px; height:28px; border-radius:3px; background:var(--green-cta); transform-origin:center top; animation:secTick .8s cubic-bezier(.2,1.5,.3,1) both; }
+@keyframes secRule{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+@keyframes secSpring{ from{ opacity:0; transform:translateY(18px); } to{ opacity:1; transform:translateY(0); } }
+@keyframes secFade{ from{ opacity:0; } to{ opacity:1; } }
+@keyframes secTick{ from{ opacity:0; transform:scaleY(0); } 60%{ opacity:1; } to{ opacity:0; transform:scaleY(1); } }
+#sideNav li.nav-nod{ animation:navNod .6s cubic-bezier(.2,1.5,.3,1); }
+@keyframes navNod{ 0%{ transform:translateX(0); } 40%{ transform:translateX(5px); } 100%{ transform:translateX(0); } }
+@media (prefers-reduced-motion:reduce){ .center > .acc.sec-cross::before, .center > .acc.sec-cross > .acc-head h2, .center > .acc.sec-cross > .acc-head .sub, .center > .acc.sec-cross > .acc-head::before, #sideNav li.nav-nod{ animation:none; } .center > .acc.sec-cross > .acc-head::before{ display:none; } }
+</style>
+<script>
+(function(){
+  'use strict';
+  /* fire once each time a section header crosses the reading line, in either direction */
+  var seen=new WeakMap();
+  function nod(acc){ var h2=(acc.querySelector('.acc-head h2')||{}).textContent||''; var li=[].slice.call(document.querySelectorAll('#sideNav li')).filter(function(l){ var t=(l.textContent||'').trim(); return t && (h2.indexOf(t)===0 || t.indexOf(h2)===0); })[0]; if(!li) return; li.classList.remove('nav-nod'); void li.offsetWidth; li.classList.add('nav-nod'); setTimeout(function(){ li.classList.remove('nav-nod'); }, 700); }
+  function cross(acc){ if(!acc.offsetParent || document.body.classList.contains('nav-fast')) return; acc.classList.remove('sec-cross'); void acc.offsetWidth; acc.classList.add('sec-cross'); nod(acc); setTimeout(function(){ acc.classList.remove('sec-cross'); }, 900); }
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ var acc=e.target.closest('.acc'); if(!acc) return; var was=seen.get(acc); if(e.isIntersecting && !was){ seen.set(acc, true); if(seen.has(acc) && acc.dataset.secInit) cross(acc); } else if(!e.isIntersecting && was){ seen.set(acc, false); } acc.dataset.secInit='1'; }); }, { rootMargin:'-120px 0px -60% 0px', threshold:0 });
+  function arm(){ document.querySelectorAll('.layout.page[data-page="today"] > .center > .acc + .acc > .acc-head, .layout.page[data-page="plan"] > .center > .acc + .acc > .acc-head').forEach(function(h){ if(h.dataset.secIo) return; h.dataset.secIo='1'; io.observe(h); }); }
+  arm(); setInterval(arm, 800); window.addEventListener('boldin:view', function(){ setTimeout(arm, 50); });
+})();
+</script>
 <!-- ===== Boldin AI, harness concepts: empty state, tool steps, inline chart cards, citations, verified figures, hypothetical-plan banner ===== -->
 <style>
 /* empty state in full view */
@@ -31438,8 +31501,8 @@ body.plan-focus[data-view="plan"] #snapshotView{ display:none !important; }
 #ratesBody .ra-ed .btn-save{ font:inherit; font-size:14px; font-weight:600; height:38px; padding:0 20px; border-radius:999px; border:0; background:var(--green-cta); color:#fff; cursor:pointer; }
 #ratesBody .ra-ed .btn-save:disabled{ opacity:.5; cursor:default; }
 #rates-block .acc-head .sub .sub-roll, #rates-block .acc-head .sub .sub-roll-dot{ display:none !important; }
-#rates-block .acc-head .sub .ra-how{ display:block; margin-top:4px; font-size:15px; font-weight:600; color:var(--green-cta); cursor:pointer; }
-#rates-block .acc-head .sub .ra-how:hover{ text-decoration:underline; text-underline-offset:3px; }
+#rates-block .ra-how{ display:inline-block; margin-top:18px; font-size:15px; font-weight:600; color:var(--green-cta); cursor:pointer; }
+#rates-block .ra-how:hover{ text-decoration:underline; text-underline-offset:3px; }
 </style>
 <script>
 (function(){
@@ -31469,7 +31532,7 @@ body.plan-focus[data-view="plan"] #snapshotView{ display:none !important; }
     body=document.getElementById('ratesBody'); if(!body) return false; if(body.querySelector('.ra-row')) return true;
     var bk=body.querySelector('.bucket'); if(!bk) return false;
     bk.innerHTML=R.map(rowHTML).join('');
-    var sub=document.querySelector('#rates-block .acc-head .sub'); if(sub && !sub.querySelector('.ra-how')){ var tn=[].slice.call(sub.childNodes).filter(function(n){ return n.nodeType===3 && n.textContent.trim(); })[0]; if(tn) tn.textContent='Inflation and appreciation rates that shape your projections'; var a=document.createElement('span'); a.className='ra-how'; a.textContent='How rate assumptions work'; a.addEventListener('click', function(e){ e.stopPropagation(); if(window.__bai) window.__bai.open('How do rate assumptions work in my plan?'); }); sub.appendChild(a); }
+    var sub=document.querySelector('#rates-block .acc-head .sub'); if(sub && !sub.querySelector('.ra-how')){ var tn=[].slice.call(sub.childNodes).filter(function(n){ return n.nodeType===3 && n.textContent.trim(); })[0]; if(tn) tn.textContent='Inflation and appreciation rates that shape your projections'; var a=document.createElement('span'); a.className='ra-how'; a.textContent='How rate assumptions work'; a.addEventListener('click', function(e){ e.stopPropagation(); if(window.__bai) window.__bai.open('How do rate assumptions work in my plan?'); }); var body=document.querySelector('#rates-block .acc-body'); (body||sub).appendChild(a); }
     bk.addEventListener('click', function(e){
       var row=e.target.closest('.ra-row'); if(row){ e.preventDefault(); e.stopPropagation(); toggle(row.dataset.ra); return; }
       var ed=e.target.closest('.ra-ed'); if(!ed) return;
@@ -32553,51 +32616,42 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
 })();
 </script>
 <style id="lifeEventPresetsCSS">
-/* ---- Life events: three starters, so nobody stalls on "what do I add next?" ---- */
-.pe-starters-wrap{ position:relative; }
-.pe-starters{ display:flex; gap:14px; margin:4px 0 22px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
-.pe-starters::-webkit-scrollbar{ display:none; }
-.pe-starters > .pe-starter{ flex:0 0 calc((100% - 28px) / 3); scroll-snap-align:start; min-width:220px; }
-.pe-car-foot{ display:flex; align-items:center; justify-content:space-between; margin:-12px 0 18px; }
-.pe-car-nav{ display:flex; gap:6px; }
-.pe-car-btn{ width:34px; height:34px; border-radius:999px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); display:grid; place-items:center; cursor:pointer; transition:background .15s ease, opacity .15s ease; }
-.pe-car-btn:hover{ background:#F6F7F8; }
-.pe-car-btn[disabled]{ opacity:.35; cursor:default; }
-.pe-car-btn svg{ width:16px; height:16px; }
-.pe-car-dots{ display:flex; gap:6px; align-items:center; }
-.pe-car-dots i{ width:6px; height:6px; border-radius:999px; background:var(--hairline-strong); transition:background .15s ease, width .2s ease; }
-.pe-car-dots i.on{ background:var(--green-cta); width:18px; }
-.pe-starter{ display:flex; flex-direction:column; gap:10px; padding:18px 18px 16px; border:1px solid var(--hairline); border-radius:16px; background:#fff; text-align:left; font:inherit; color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease; }
-.pe-starter:hover{ border-color:var(--hairline-strong); background:#FAFBFB; }
-.pe-starter .ic{ width:38px; height:38px; border-radius:12px; display:grid; place-items:center; background:var(--eggshell); color:var(--green-cta); }
-.pe-starter .ic svg{ width:20px; height:20px; }
-.pe-starter .t{ font-size:16px; font-weight:600; line-height:1.25; }
-.pe-starter .s{ font-size:13.5px; color:var(--text-secondary); line-height:1.45; }
-.pe-starter .go{ margin-top:auto; display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:600; color:var(--green-cta); }
-.pe-starter .go svg{ width:12px; height:12px; }
-.pe-starters-add{ margin:-6px 0 26px; }
-.pe-starters-lab{ font-size:13px; font-weight:600; color:var(--text-secondary); margin:0 0 10px; }
-@media (max-width:900px){ .pe-starters > .pe-starter{ flex-basis:calc((100% - 14px) / 2); } }
+/* ---- Life events: ideas to add, kept visibly apart from the events that are already in the plan ---- */
+.pe-ideas.is-lead{ margin:4px 0 26px; }
+.pe-ideas{ margin:28px 0 8px; padding:26px 28px 26px; border:1.5px dashed var(--hairline-strong); border-radius:16px; background:#FAFBFB; }
+.pe-ideas-head{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
+.pe-ideas-eyebrow{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--text-secondary); letter-spacing:0; margin:0 0 4px; }
+.pe-ideas-eyebrow svg{ width:13px; height:13px; }
+.pe-ideas-t{ font-size:16px; font-weight:600; color:var(--ink); margin:0; }
+.pe-ideas-s{ font-size:14px; line-height:1.5; color:var(--text-secondary); margin:0 0 26px; }
+.pe-chips{ display:flex; flex-wrap:wrap; gap:12px; }
+.pe-chip{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px 8px 11px; border:1px dashed var(--hairline-strong); border-radius:999px; background:#fff; font:inherit; font-size:14px; font-weight:500; color:var(--ink); cursor:pointer; transition:border-color .15s ease, background .15s ease, transform .15s ease; }
+.pe-chip svg{ width:13px; height:13px; color:var(--green-cta); flex:0 0 13px; }
+.pe-chip:hover{ border-style:solid; border-color:var(--green-cta); background:#F1F8F4; }
+.pe-chip:active{ transform:scale(.98); }
+.pe-chip.is-in{ border-style:solid; border-color:transparent; background:var(--eggshell); color:var(--text-secondary); cursor:default; }
+.pe-chip.is-in svg{ color:var(--text-muted); }
+.pe-ideas .pe-starters-add{ margin:0; flex:0 0 auto; }
+#events-block .acc-head .cx-actions.pe-starters-add{ margin:0; }
 </style>
 <script id="lifeEventPresetsJS">
 (function(){
   'use strict';
-  var GO='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  var IC={
-    shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/><path d="M12 9v6M9 12h6"/></svg>',
-    roof:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
-    hand:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14l4-1 5 2h4a2 2 0 010 4h-6l-3-1"/><path d="M8 13V8a2 2 0 014 0v4"/><path d="M12 10V7a2 2 0 014 0v6"/></svg>',
-    box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M3 8v8l9 4 9-4V8"/><path d="M12 12v8"/></svg>',
-    care:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
-    beach:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M4 16c3-2 5-2 8 0s5 2 8 0"/><circle cx="17" cy="6" r="2.5"/><path d="M4 12l5-6 5 6"/></svg>'
-  };
-  var PRESETS=[
-    { id:'ins', ic:IC.shield, t:'Switching off your employer’s insurance', s:'Health coverage on your own until Medicare at 65.', chap:'next', type:'Something else', nm:'Health insurance on our own', who:'Both', change:'Spending rises', yr:2028, until:'Until 2030', amt:'1,400' },
-    { id:'roof', ic:IC.roof, t:'Plan for a new roof every 10 years', s:'A one-time cost that comes back; the plan sets it aside.', chap:'bridge', type:'Something else', nm:'New roof', who:'Both', change:'A one-time cost', yr:2029, until:'For 10 years', amt:'18,000' },
-    { id:'vac', ic:IC.beach, t:'Buy a vacation home', s:'The down payment now, and the carrying cost after.', chap:'bridge', type:'Buy a second home', nm:'Buy a vacation home', who:'Both', change:'A one-time cost', yr:2031, until:'Once', amt:'120,000' },
-    { id:'kid', ic:IC.hand, t:'Help a kid with a down payment', s:'A gift now, from money that was going to be theirs anyway.', chap:'bridge', type:'Help a child or a parent', nm:'Down payment gift', who:'Both', change:'A one-time cost', yr:2029, until:'Once', amt:'50,000' },
-    { id:'down', ic:IC.box, t:'Downsize the house', s:'Sell, buy smaller, and bank the difference.', chap:'bridge', type:'Move or downsize', nm:'Downsize the house', who:'Both', change:'Income rises', yr:2035, until:'Once', amt:'250,000' },
-    { id:'care', ic:IC.care, t:'Plan for care later in life', s:'Most people need some. The plan sets money aside for it.', chap:'later', type:'Long-term care', nm:'Care at home', who:'Both', change:'Spending rises', yr:2048, until:'For 5 years', amt:'6,000' }
+  var PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+  var CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  var SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>';
+  /* Nancy's eleven, each one ready to add with a sensible prefill */
+  var IDEAS=[
+    { id:'pt',   t:'Go part-time',            type:'Go part-time',            nm:'Go part-time',            who:'Marshall', change:'Income falls',     yr:2027, until:'Until 2028', amt:'3,100', chap:'next' },
+    { id:'ss',   t:'Claim Social Security',   type:'Claim Social Security',   nm:'Claim Social Security',   who:'Marshall', change:'Income rises',     yr:2035, until:'For life',   amt:'3,400', chap:'bridge' },
+    { id:'med',  t:'Start Medicare',          type:'Start Medicare',          nm:'Start Medicare',          who:'Both',     change:'Spending falls',   yr:2030, until:'For life',   amt:'900',   chap:'bridge' },
+    { id:'down', t:'Move or downsize',        type:'Move or downsize',        nm:'Downsize the house',      who:'Both',     change:'Income rises',     yr:2035, until:'Once',       amt:'250,000', chap:'bridge' },
+    { id:'prop', t:'Buy or sell a property',  type:'Buy or sell a property',  nm:'Buy a vacation home',     who:'Both',     change:'A one-time cost',  yr:2031, until:'Once',       amt:'120,000', chap:'bridge' },
+    { id:'loan', t:'Pay off a loan',          type:'Pay off a loan',          nm:'Pay off the mortgage',    who:'Both',     change:'Spending falls',   yr:2033, until:'For life',   amt:'2,200', chap:'bridge' },
+    { id:'trip', t:'Plan a big trip',         type:'Plan a big trip',         nm:'Three months in Portugal', who:'Both',    change:'A one-time cost',  yr:2029, until:'Once',       amt:'24,000', chap:'next' },
+    { id:'kid',  t:'Support family or a charity', type:'Support a family member or charitable organization', nm:'Down payment gift', who:'Both', change:'A one-time cost', yr:2029, until:'Once', amt:'50,000', chap:'bridge' },
+    { id:'inh',  t:'Receive an inheritance',  type:'Receive an inheritance',  nm:'Inheritance',             who:'Lily',     change:'Income rises',     yr:2034, until:'Once',       amt:'180,000', chap:'bridge' },
+    { id:'else', t:'Something else',          type:'Something else',          nm:'',                        who:'Both',     change:'Spending rises',   yr:2029, until:'Once',       amt:'', chap:'next' }
   ];
   function setText(vt, val){ if(!vt) return; vt.textContent=val; vt.classList.remove('is-placeholder'); var f=vt.closest('.field'); if(f) f.classList.remove('is-empty'); vt.dispatchEvent(new Event('input',{bubbles:true})); }
   function setSel(ed, key, val){ var sel=ed.querySelector('select[data-pe="'+key+'"]'); if(!sel) return; sel.value=val; sel.dispatchEvent(new Event('change',{bubbles:true})); }
@@ -32605,36 +32659,42 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
     if(!window.__peSpawn) return;
     var ed=window.__peSpawn(p.chap, {top:false}); if(!ed) return;
     setSel(ed,'type',p.type);
-    setText(ed.querySelector('.field:not(.pe-choice) .vtext'), p.nm);
+    if(p.nm) setText(ed.querySelector('.field:not(.pe-choice) .vtext'), p.nm);
     setSel(ed,'who',p.who); setSel(ed,'kind',p.change); setSel(ed,'until',p.until);
     setText(ed.querySelector('[data-pe-f="when"] .vtext'), String(p.yr));
     var amtF=[].slice.call(ed.querySelectorAll('.field')).filter(function(x){ var l=x.querySelector('label'); return l && /By how much|Amount/.test(l.textContent); })[0];
-    if(amtF) setText(amtF.querySelector('.vtext'), p.amt);
-    var save=ed.querySelector('.btn-save'); if(save) save.disabled=false;
+    if(amtF && p.amt) setText(amtF.querySelector('.vtext'), p.amt);
+    var save=ed.querySelector('.btn-save'); if(save) save.disabled=!p.nm;
     setTimeout(function(){ var y=ed.getBoundingClientRect().top+window.scrollY-140; window.scrollTo({top:Math.max(0,y), behavior:'smooth'}); }, 80);
   }
+  /* an idea that is already in the plan reads as done, not as a suggestion */
+  function inPlan(p){ var body=document.getElementById('eventsBody'); if(!body) return false; var rows=[].slice.call(body.querySelectorAll('.acct, .row, .pc-row')).map(function(r){ return (r.textContent||'').toLowerCase(); }).join(' | '); var k={ pt:/part-time/, ss:/social security/, med:/medicare/, down:/downsize/, prop:/vacation home|second home|sell the|buy a/, loan:/pay off|mortgage/, trip:/trip|portugal/, kid:/down payment|gift|charit/, inh:/inherit/ }[p.id]; return !!(k && k.test(rows)); }
+  /* how many events this person has added themselves; the seeded plan does not count, so the first visit always leads with the intro */
+  var KEY='boldin.lifeevents.added';
+  function userEvents(){ try{ return +localStorage.getItem(KEY)||0; }catch(e){ return 0; } }
+  document.addEventListener('click', function(e){ var b=e.target.closest('#eventsBody .edit-card .btn-save'); if(!b || b.disabled) return; var ed=b.closest('.edit-card'); if(!/Add a life event/.test((ed.querySelector('.ecTitleText')||{}).textContent||'')) return; try{ localStorage.setItem(KEY, String(userEvents()+1)); }catch(x){} setTimeout(build, 400); }, true);
   function build(){
-    var body=document.getElementById('eventsBody'); if(!body || body.querySelector('.pe-starters')) return !!body;
-    var wrap=document.createElement('div'); wrap.className='pe-starters-wrap';
-    wrap.innerHTML='<div class="pe-starters">'+PRESETS.map(function(p){
-      return '<button type="button" class="pe-starter" data-preset="'+p.id+'"><span class="ic">'+p.ic+'</span><span class="t">'+p.t+'</span><span class="s">'+p.s+'</span><span class="go">Add this '+GO+'</span></button>';
-    }).join('')+'</div><div class="pe-car-foot"><div class="pe-car-dots"></div></div>';
-    var L='<svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>', R='<svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    wrap.querySelector('.pe-car-foot').insertAdjacentHTML('beforeend','<div class="pe-car-nav"><button type="button" class="pe-car-btn" data-dir="-1" aria-label="Previous">'+L+'</button><button type="button" class="pe-car-btn" data-dir="1" aria-label="Next">'+R+'</button></div>');
-    body.insertBefore(wrap, body.firstChild);
-    var track=wrap.querySelector('.pe-starters'), dots=wrap.querySelector('.pe-car-dots'), pages=Math.ceil(PRESETS.length/3);
-    dots.innerHTML=Array.apply(null,{length:pages}).map(function(){ return '<i></i>'; }).join('');
-    function page(){ return Math.round(track.scrollLeft/track.clientWidth); }
-    function upd(){ var pg=page(); dots.querySelectorAll('i').forEach(function(d,i){ d.classList.toggle('on', i===pg); }); wrap.querySelector('[data-dir="-1"]').disabled=pg<=0; wrap.querySelector('[data-dir="1"]').disabled=pg>=pages-1; }
-    wrap.querySelectorAll('.pe-car-btn').forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); track.scrollBy({left:(+b.dataset.dir)*track.clientWidth, behavior:'smooth'}); }); });
-    dots.addEventListener('click', function(e){ var i=[].indexOf.call(dots.children, e.target); if(i>=0) track.scrollTo({left:i*track.clientWidth, behavior:'smooth'}); });
-    track.addEventListener('scroll', function(){ clearTimeout(track._t); track._t=setTimeout(upd, 80); }); upd();
-    var hb=document.querySelector('#events-block .acc-head .cx-actions'); if(hb){ hb.classList.add('pe-starters-add'); wrap.appendChild(hb); }
-    wrap.addEventListener('click', function(e){ var b=e.target.closest('.pe-starter'); if(!b) return; e.preventDefault(); e.stopPropagation(); var p=PRESETS.filter(function(x){ return x.id===b.dataset.preset; })[0]; if(p) start(p); });
+    var body=document.getElementById('eventsBody'); if(!body) return false;
+    var box=body.querySelector('.pe-ideas');
+    if(!box){
+      box=document.createElement('div'); box.className='pe-ideas';
+      box.innerHTML=''
+        +'<div class="pe-ideas-head"><h3 class="pe-ideas-t pe-ideas-q">What’s coming up for you?</h3></div><p class="pe-ideas-s"><span class="pe-lead-only">New: life events are the moments that change your money. </span>Tap one to add it, and the plan plays it forward through every year.</p><div class="pe-chips"></div>';
+      body.insertBefore(box, body.firstChild);
+      var hb=document.querySelector('#events-block .acc-head .cx-actions'); if(hb){ hb.classList.add('pe-starters-add'); box.querySelector('.pe-ideas-head').appendChild(hb); }
+      box.addEventListener('click', function(e){ var b=e.target.closest('.pe-chip'); if(!b || b.classList.contains('is-in')) return; e.preventDefault(); e.stopPropagation(); var p=IDEAS.filter(function(x){ return x.id===b.dataset.idea; })[0]; if(p) start(p); });
+    }
+    /* first-time experience: the tray leads until the plan has a few real events, then it steps aside */
+    var early=userEvents()<3, lead=box===body.firstElementChild;
+    if(early && !lead) body.insertBefore(box, body.firstChild); else if(!early && box!==body.lastElementChild) body.appendChild(box);
+    box.classList.toggle('is-lead', early);
+    var chips=box.querySelector('.pe-chips'); var html=IDEAS.map(function(p){ var done=inPlan(p); return '<button type="button" class="pe-chip'+(done?' is-in':'')+'" data-idea="'+p.id+'"'+(done?' aria-disabled="true" title="Already in your plan"':'')+'>'+(done?CHECK:PLUS)+p.t+'</button>'; }).join('');
+    if(chips.dataset.sig!==html){ chips.dataset.sig=html; chips.innerHTML=html; }
     return true;
   }
   if(!build()){ var tries=0, t=setInterval(function(){ if(build() || ++tries>80) clearInterval(t); }, 250); }
   document.addEventListener('click', function(){ setTimeout(build, 300); }, true);
+  new MutationObserver(function(){ clearTimeout(build._t); build._t=setTimeout(build, 200); }).observe(document.body, { childList:true, subtree:true });
 })();
 </script>
 <style id="planControllersCSS">
@@ -33614,6 +33674,8 @@ body.fb-open .layout.page[data-page="plan"] > .center > :not(#fbPage){ display:n
 #fbPage .fb-ptitle .fb-del{ background:none; border:0; padding:0; cursor:pointer; color:var(--ink); display:flex; }
 #fbPage .fb-ptitle .fb-del svg{ width:16px; height:16px; }
 #fbPage .fb-two{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+#fbPage .fb-two.fb-three-up{ grid-template-columns:1fr 1fr 1.5fr; gap:10px; }
+#fbPage .fb-two .fb-field{ margin-bottom:0; min-width:0; } #fbPage .fb-two .fb-sel{ width:100%; min-width:0; }
 #fbPage .fb-viz{ margin:18px 0 4px; padding-top:14px; border-top:1px solid var(--hairline); }
 #fbPage .fb-viz .vz-t{ font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; display:flex; justify-content:space-between; }
 #fbPage .fb-viz .vz-t span:last-child{ text-transform:none; letter-spacing:0; font-weight:500; }
@@ -33734,15 +33796,15 @@ body.fb-open #futrates-block{ display:none !important; }
   var ANCH=[['now','Now','2026'],['ret_m','Marshall retires','2028'],['medicare','Medicare begins','2030'],['ret_l','Lily retires','2032'],['ss_m','Social Security starts','2035'],['rmd','Required withdrawals','2038'],['age75','Age 75','2040'],['age80','Age 80','2045'],['age85','Age 85','2050'],['end','End of plan','2057']];
   function anch(k){ return ANCH.filter(function(a){ return a[0]===k; })[0]; }
   function anchYear(k){ var a=anch(k); return a?+a[2]:null; }
-  function anchSel(cls, cur, exclude){ return '<select class="fb-sel '+cls+'">'+ANCH.filter(function(a){ return a[0]!==exclude; }).map(function(a){ return '<option value="'+a[0]+'"'+(a[0]===cur?' selected':'')+'>'+a[1]+' \u00b7 '+a[2]+'</option>'; }).join('')+'</select>'; }
+  function anchSel(cls, cur, exclude){ return '<select class="fb-sel '+cls+'">'+ANCH.filter(function(a){ return a[0]!==exclude; }).map(function(a){ return '<option value="'+a[0]+'"'+(a[0]===cur?' selected':'')+'>'+a[1].replace('Marshall retires','M. retires').replace('Lily retires','L. retires').replace('Medicare begins','Medicare').replace('Required withdrawals','RMDs').replace('Social Security','SS')+' \u00b7 '+a[2]+'</option>'; }).join('')+'</select>'; }
   function periodHTML(per, i, n){
     var pr=preset(per.preset), avg=per.avg!=null?per.avg:pr[1], sd=per.sd!=null?per.sd:pr[2];
     var pess=per.pess!=null?per.pess:Math.round((avg-avg*0.2)*10)/10, opt=per.opt!=null?per.opt:Math.round((avg+avg*0.2)*10)/10;
     var start=per.start||'now', end=per.end||'end';
     return '<div class="fb-period'+(pr[0]==='Custom'?' custom':'')+(/Optimistic/.test(pr[0])?' optpess':'')+(/PlanPath/.test(pr[0])?' planpath':'')+'" data-i="'+i+'">'+
       (n>1?'<div class="fb-ptitle"><span>Period '+(i+1)+'</span>'+(i>0?'<button type="button" class="fb-del" aria-label="Remove this period">'+TRASH+'</button>':'')+'</div>':'')+
-      '<div class="fb-two"><div class="fb-field"><div class="fb-lab">Starts</div>'+anchSel('fb-start', start, 'end')+'</div><div class="fb-field"><div class="fb-lab">Ends</div>'+anchSel('fb-end', end, 'now')+'</div></div>'+
-      '<div class="fb-field"><div class="fb-lab">Rate of return</div><select class="fb-sel fb-preset">'+presetOpts(pr[0])+'</select></div>'+ppHTML(per.profile)+
+      '<div class="fb-two fb-three-up"><div class="fb-field"><div class="fb-lab">Starts</div>'+anchSel('fb-start', start, 'end')+'</div><div class="fb-field"><div class="fb-lab">Ends</div>'+anchSel('fb-end', end, 'now')+'</div>'+
+      '<div class="fb-field"><div class="fb-lab">Rate of return</div><select class="fb-sel fb-preset">'+presetOpts(pr[0])+'</select></div></div>'+ppHTML(per.profile)+
       '<div class="fb-three"><div><div class="fb-lab">Pessimistic</div><div class="fb-pct"><input class="fb-in fb-pess" type="number" step="0.1" value="'+pess+'"></div></div><div class="fb-avgf"><div class="fb-lab"><span class="fb-lab-r">Rate</span><span class="fb-lab-a">Average</span></div><div class="fb-pct"><input class="fb-in fb-avg" type="number" step="0.1" value="'+avg+'"></div></div><div><div class="fb-lab">Optimistic</div><div class="fb-pct"><input class="fb-in fb-opt" type="number" step="0.1" value="'+opt+'"></div></div></div>'+
       '<div class="fb-sd">Standard deviation<b class="fb-sdv">'+sd+'%</b></div>'+(i===0?'<button type="button" class="fb-how">How rates work</button>':'')+'</div>';
   }
@@ -33813,7 +33875,7 @@ body.fb-open #futrates-block{ display:none !important; }
     var sec=null;
     function rows(){ if(!host.children.length) build(); var ks=Object.keys(DATA); return ks.map(function(k){ var d=DATA[k]; return '<button type="button" class="fbs-row" data-acct="'+k+'"><span class="fbs-nm">'+(d.nm||'Account')+'<small>'+(d.ty||'')+'</small></span><span class="fbs-rate'+(d.changed?' changed':'')+'">'+summary(d)+'</span></button>'; }).join(''); }
     function ensure(){ var le=document.getElementById('events-block'); if(!le || sec) return; sec=document.createElement('div'); sec.className='acc'; sec.id='futrates-block';
-      sec.innerHTML='<div class="acc-head"><div><h2>Future Rates</h2><div class="sub">The rate each account grows at, and when it changes</div></div><div class="assets-actions"><button class="btn-collapse" aria-label="Collapse" aria-expanded="true"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"></path></svg></button></div></div><div class="acc-body"><div class="fbs-list"></div><a class="fbs-open" data-fb-open>Open Future Rates &rsaquo;</a></div>';
+      sec.innerHTML='<div class="acc-head"><div><h2>Future Rates</h2><div class="sub">The rate each account grows at, and when it changes</div></div><div class="assets-actions"><button class="btn-collapse" aria-label="Collapse" aria-expanded="true"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M6 15l6-6 6 6"></path></svg></button></div></div><div class="acc-body"><div class="fbs-list"></div></div>';
       le.insertAdjacentElement('afterend', sec); sync();
       sec.addEventListener('click', function(e){ var r=e.target.closest('.fbs-row'); if(r){ open(); setTimeout(function(){ var row=host.querySelector('.fb-row[data-acct="'+r.dataset.acct+'"]'); if(row){ openEd(row); row.nextElementSibling.scrollIntoView({ block:'center', behavior:'smooth' }); } }, 60); return; } if(e.target.closest('[data-fb-open]')) open(); if(e.target.closest('.btn-collapse')){ var c=sec.classList.toggle('collapsed'); e.target.closest('.btn-collapse').setAttribute('aria-expanded', !c); } });
     }
@@ -35920,3 +35982,13 @@ PAGES["trust"]=function(){
     fresh.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); go('site'); }, true); }
 })();
 </script>
+<!-- ===== right rail +50px on every page ===== -->
+<style>
+.layout, .dock .dock-inner{ grid-template-columns:200px minmax(0,620px) 1fr; }
+.hm-page .grid2, body.bai-open .hm-page .grid2{ grid-template-columns:minmax(0,1fr) minmax(0,1fr) 410px !important; }
+.hm-page .bai-col .bai, body.bai-open .hm-page .bai-col .bai{ width:410px; }
+.hm-page .bai-col .bai{ width:410px; }
+body.bai-open:not(.fire-page) .layout.page.opt-index{ grid-template-columns:minmax(0,1fr) 410px; }
+body.opt-v2.bai-open:not(.fire-page) .layout.page.opt-index{ grid-template-columns:220px minmax(0,1fr) 410px; }
+body.scn-open.bai-open #scnPage .scn-frame{ grid-template-columns:minmax(0,1fr) 410px; }
+</style>
