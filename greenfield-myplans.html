@@ -32774,6 +32774,7 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   }
   /* add straight to the plan, no editor to close: for the planner who wants ten in a row */
   function quickSave(p){ var q=Object.assign({}, p); if(!q.nm) q.nm=q.t; var ed=start(q, true); if(!ed) return false; var save=ed.querySelector('.btn-save'); if(save){ save.disabled=false; save.click(); } try{ localStorage.setItem(KEY, String(userEvents()+1)); }catch(x){} return true; }
+  window.__peQuick=function(p){ return quickSave(p); }; window.__peToast=function(m){ toast(m); };
   function toast(msg){ var t=document.querySelector('.pe-toast'); if(!t){ t=document.createElement('div'); t.className='pe-toast'; document.body.appendChild(t); } t.textContent=msg; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('on'); }, 1800); }
   /* an idea that is already in the plan reads as done, not as a suggestion */
   function inPlan(p){ var body=document.getElementById('eventsBody'); if(!body) return false; var rows=[].slice.call(body.querySelectorAll('.acct, .row, .pc-row')).map(function(r){ return (r.textContent||'').toLowerCase(); }).join(' | '); var k={ pt:/part-time/, ss:/social security/, med:/medicare/, down:/downsize/, prop:/vacation home|second home|sell the|buy a/, loan:/pay off|mortgage/, trip:/trip|portugal/, kid:/down payment|gift|charit/, inh:/inherit/ }[p.id]; return !!(k && k.test(rows)); }
@@ -32836,7 +32837,12 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
     if(!p) return '<div class="pe-deck"><div class="pe-dk-card pe-dk-end"><b>That\u2019s the deck.</b><span>'+(DECK.added.length?DECK.added.length+' added to your plan. Open any of them below to set the year and amount.':'Nothing for now. Your plan is yours.')+'</span><button type="button" class="pe-dk-reset">Start over</button></div>'+added+'</div>';
     var a=ART[p.id]||ART.else; var next=left[1];
     return '<div class="pe-deck">'+dots+'<div class="pe-dk-stack">'+(next?'<div class="pe-dk-card pe-dk-under"></div>':'')+'<div class="pe-dk-card" data-idea="'+p.id+'"><span class="pe-dk-art" style="background:'+a[0]+';color:'+a[1]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+a[2]+'</svg></span><b>'+p.t+'</b><span class="pe-dk-w">'+p.why+'</span><span class="pe-dk-when">Pencilled in for '+p.yr+(p.amt?' \u00b7 $'+p.amt:'')+'</span></div></div><div class="pe-dk-btns"><button type="button" class="pe-dk-no">Not us</button><button type="button" class="pe-dk-yes">Yes, that\u2019s coming</button></div><div class="pe-dk-hint">\u2190 no &nbsp;\u00b7&nbsp; yes \u2192</div>'+added+'</div>'; }
-  function deckAct(box, yes){ var card=box.querySelector('.pe-dk-card[data-idea]'); if(!card) return; var id=card.dataset.idea; card.classList.add(yes?'fly-r':'fly-l'); setTimeout(function(){ if(yes){ var p=IDEAS.filter(function(x){ return x.id===id; })[0]; if(quickSave(p)) DECK.added.push(id); else DECK.passed.push(id); } else DECK.passed.push(id); box.querySelector('.pe-ideas-body').dataset.sig=''; build(); }, 260); }
+  function deckAct(box, yes){ var card=box.querySelector('.pe-dk-card[data-idea]'); if(!card) return; var id=card.dataset.idea; card.classList.add(yes?'fly-r':'fly-l'); setTimeout(function(){ if(yes){ var p=IDEAS.filter(function(x){ return x.id===id; })[0]; if(quickSave(p)) DECK.added.push(id); else DECK.passed.push(id); } else DECK.passed.push(id); deckRefresh(); }, 260); }
+  function deckRefresh(){ var body=document.querySelector('.pe-ideas .pe-ideas-body'); if(body){ body.dataset.sig=''; build(); } document.querySelectorAll('[data-pe-deck]').forEach(function(h){ h.innerHTML=deckHTML(); }); }
+  /* the same deck, mounted anywhere (the Home card uses this) */
+  window.__peDeck={ mount:function(host){ host.setAttribute('data-pe-deck',''); host.innerHTML=deckHTML(); if(host.dataset.wired) return; host.dataset.wired='1'; host.tabIndex=-1;
+      host.addEventListener('click', function(e){ var dy=e.target.closest('.pe-dk-yes'), dn=e.target.closest('.pe-dk-no'), dr=e.target.closest('.pe-dk-reset'); if(dy||dn){ e.preventDefault(); e.stopPropagation(); deckAct(host, !!dy); } else if(dr){ e.preventDefault(); e.stopPropagation(); DECK={ i:0, added:[], passed:[] }; deckRefresh(); } });
+      host.addEventListener('keydown', function(e){ if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ e.preventDefault(); deckAct(host, e.key==='ArrowRight'); } }); }, refresh:deckRefresh };
   function bodyHTML(){ var v=variant(); return v==='cards'?cardsHTML():v==='timeline'?timelineHTML():v==='ask'?askHTML():v==='checklist'?checklistHTML():v==='story'?storyHTML():v==='deck'?deckHTML():chipsHTML(); }
   function build(){
     var body=document.getElementById('eventsBody'); if(!body) return false;
@@ -36157,6 +36163,106 @@ PAGES["trust"]=function(){
   var brand=document.querySelector('.topnav .brand');
   if(brand){ var fresh=brand.cloneNode(true); brand.parentNode.replaceChild(fresh, brand); fresh.style.cursor='pointer';
     fresh.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); go('site'); }, true); }
+})();
+</script>
+<!-- ===== The route (full-screen plan): add a life event from here, in a modal, and see it land on the route ===== -->
+<style>
+.sum-layout .alo-top.rt-top{ position:relative; padding-right:190px; }
+.sum-layout .rt-add{ position:absolute; right:0; top:4px; display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:14px; font-weight:600; color:#fff; background:var(--green-cta); border:1px solid var(--green-cta); border-radius:999px; padding:10px 16px 10px 12px; cursor:pointer; }
+.sum-layout .rt-add:hover{ background:#0B6440; }
+.sum-layout .rt-add svg{ width:13px; height:13px; }
+.sum-layout .sxtl-row.rt-user .sxtl-dot{ background:var(--green-cta) !important; box-shadow:0 0 0 4px rgba(14,121,78,.14); }
+.sum-layout .sxtl-row.rt-user .sxtl-t::after{ content:'Added by you'; display:inline-block; margin-left:8px; font-size:11.5px; font-weight:600; color:var(--green-cta); background:#EAF6EF; border-radius:999px; padding:2px 8px; vertical-align:2px; }
+.sum-layout .sxtl-row.rt-new{ animation:rtIn .6s cubic-bezier(.2,.9,.2,1) both; }
+@keyframes rtIn{ from{ opacity:0; transform:translateY(10px); background:rgba(14,121,78,.10); } to{ opacity:1; transform:none; background:transparent; } }
+/* the modal */
+.rt-x{ position:absolute; top:-16px; right:-16px; width:36px; height:36px; border-radius:50%; border:1px solid var(--hairline); background:#fff; color:var(--ink); font-size:20px; line-height:1; cursor:pointer; z-index:2; display:flex; align-items:center; justify-content:center; }
+.rt-modal{ position:fixed; inset:0; z-index:140; display:none; align-items:center; justify-content:center; padding:24px; }
+.rt-modal.on{ display:flex; }
+.rt-modal .rt-scrim{ position:absolute; inset:0; background:rgba(16,24,44,.6); }
+.rt-modal .rt-card{ position:relative; width:min(620px, 100%); max-height:calc(100vh - 48px); overflow:visible; background:transparent; border-radius:22px; padding:0; animation:rtPop .28s cubic-bezier(.2,.9,.2,1) both; }
+.rt-modal .rt-host .edit-card{ margin:0; background:#F3FBF7 linear-gradient(rgba(4,180,119,.03), rgba(4,180,119,.06)) !important; border:1px solid rgba(4,180,119,.22) !important; max-height:calc(100vh - 48px); overflow:auto; }
+.rt-modal .rt-host .ec-head{ padding-right:0; }
+@keyframes rtPop{ from{ opacity:0; transform:translateY(12px) scale(.98); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .rt-modal .rt-card, .sum-layout .sxtl-row.rt-new{ animation:none; } }
+</style>
+<script>
+(function(){
+  'use strict';
+  var PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+  var modal=null, ed=null, mo=null;
+  function ensureModal(){
+    if(modal) return modal;
+    modal=document.createElement('div'); modal.className='rt-modal'; modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true');
+    modal.innerHTML='<div class="rt-scrim"></div><div class="rt-card"><button type="button" class="rt-x" aria-label="Close">&times;</button><div class="rt-host"></div></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e){ if(e.target.closest('.rt-scrim, .rt-x')){ cancel(); return; }
+      /* the editor's own Save does the saving; we read the values first and mirror them onto the route */
+      var sv=e.target.closest('.btn-save'); if(sv && ed && ed.contains(sv) && !sv.disabled){ var v=ed._read ? ed._read() : null; if(v) setTimeout(function(){ addRow(v); if(window.__peToast) window.__peToast('Added to the route and your plan'); }, 40); } }, true);
+    modal.addEventListener('keydown', function(e){ if(e.key==='Escape') cancel(); });
+    return modal;
+  }
+  /* the very same editor the Life Events section uses, lifted into the modal */
+  function open(){
+    if(!window.__peSpawn) return; var m=ensureModal();
+    ed=window.__peSpawn('next', { top:false }); if(!ed) return;
+    m.querySelector('.rt-host').appendChild(ed);
+    ed.querySelectorAll('.ec-toggle').forEach(function(t){ t.style.display='none'; });
+    m.classList.add('on');
+    if(mo) mo.disconnect(); mo=new MutationObserver(function(){ if(ed && !document.body.contains(ed)) close(); }); mo.observe(m, { childList:true, subtree:true });
+    setTimeout(function(){ var f=ed.querySelector('select, .vtext'); if(f) f.focus({ preventScroll:true }); }, 80);
+  }
+  function cancel(){ if(ed){ var row=document.querySelector('#eventsBody .acct.acct-new'); ed.remove(); if(row) row.remove(); } close(); }
+  function close(){ if(mo){ mo.disconnect(); mo=null; } ed=null; if(modal) modal.classList.remove('on'); }
+  /* the row lands in year order on the route and scrolls into view */
+  function addRow(v){
+    var lay=document.querySelector('.sum-layout .sxtl'); if(!lay) return;
+    var yr=+v.yr||2029, rows=[].slice.call(lay.querySelectorAll('.sxtl-row'));
+    var before=null; for(var i=0;i<rows.length;i++){ var y=parseInt(((rows[i].querySelector('.sxtl-date')||{}).textContent||'').slice(0,4),10); if(y && y>yr){ before=rows[i]; break; } }
+    var who=v.who==='Lily'?('Lily '+(yr-1967)):v.who==='Both'?('Marshall '+(yr-1965)+', Lily '+(yr-1967)):('Marshall '+(yr-1965));
+    var n=Math.abs(+v.amt||0), neg=(+v.amt||0)<0, money='$'+n.toLocaleString('en-US'), until=String(v.until||'').toLowerCase();
+    var body=v.kind==='marker'?'A marker on the route. Nothing changes in the numbers.'
+      : v.kind==='once'?((neg?'One-time money in of ':'A one-time cost of ')+money+'.')
+      : ((v.kind==='income'?'Income ':'Spending ')+(neg?'falls':'rises')+' by '+money+' a month'+(until==='once'||!until?'':', '+until)+'.');
+    var r=document.createElement('div'); r.className='sxtl-row rt-user rt-new'; r.innerHTML='<span class="sxtl-dot"></span><div><div class="sxtl-date">'+yr+' · '+who+'</div><div class="sxtl-t">'+String(v.nm||v.type||'Life event').replace(/</g,'&lt;')+'</div><div class="sxtl-b">'+body+'</div></div>';
+    if(before) lay.insertBefore(r, before); else { var tail=lay.querySelector('.sum-tail'); if(tail) lay.insertBefore(r, tail); else lay.appendChild(r); }
+    setTimeout(function(){ r.scrollIntoView({ block:'center', behavior:'smooth' }); }, 120);
+  }
+  /* the button sits in the route header */
+  function arm(){ var top=document.querySelector('.sum-layout .center .alo-top'); if(!top || top.querySelector('.rt-add')) return; top.classList.add('rt-top'); var b=document.createElement('button'); b.type='button'; b.className='rt-add'; b.innerHTML=PLUS+'Add a life event'; top.appendChild(b); b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); open(); }); }
+  new MutationObserver(function(){ clearTimeout(arm._t); arm._t=setTimeout(arm, 150); }).observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class'] });
+  setInterval(arm, 1000);
+  window.__routeAdd={ open:open, close:cancel };
+})();
+</script>
+<!-- ===== Home: a Life events card that runs the rapid-fire deck ===== -->
+<style>
+#hm-events .pe-deck{ padding:0; gap:12px; }
+#hm-events .pe-dk-stack{ width:100%; max-width:300px; height:216px; }
+#hm-events .pe-dk-card{ padding:18px; }
+#hm-events .pe-dk-art{ width:52px; height:52px; } #hm-events .pe-dk-art svg{ width:26px; height:26px; }
+#hm-events .pe-dk-card b{ font-size:17px; }
+#hm-events .pe-dk-w{ font-size:13.5px; }
+#hm-events .pe-dk-btns{ width:100%; max-width:300px; } #hm-events .pe-dk-btns button{ flex:1; padding:10px 12px; font-size:14px; }
+#hm-events .pe-dk-end{ width:100%; max-width:300px; height:216px; }
+#hm-events .pe-dk-added{ justify-content:flex-start; }
+#hm-events .hx-sub{ font-size:13.5px; color:var(--text-secondary); margin:-6px 0 0; }
+</style>
+<script>
+(function(){
+  'use strict';
+  function build(){
+    var grid=document.querySelector('.hm-page .grid2'); if(!grid || !grid.querySelector('.hm-next') || !window.__homeCustomize || !window.__peDeck) return false;
+    if(grid.querySelector('#hm-events')) return true;
+    var card=document.createElement('div'); card.className='hm-x'; card.id='hm-events'; card.setAttribute('data-hmx','');
+    card.innerHTML='<div class="hx-head"><div class="eyebrow">Life events</div><button type="button" class="hx-link" data-go="events">See all</button></div><p class="hx-sub">What’s coming up? Yes or no, as fast as you like.</p><div class="hm-deck"></div>';
+    var bai=grid.querySelector('.bai-col'); grid.insertBefore(card, bai||null);
+    window.__peDeck.mount(card.querySelector('.hm-deck'));
+    __homeCustomize.register({ k:'events', sel:'#hm-events', name:'Life events', span:1 }, 'plans');
+    card.querySelector('[data-go="events"]').addEventListener('click', function(){ var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my plans/i.test(x.textContent); })[0]; if(nav) nav.click(); setTimeout(function(){ var li=[].slice.call(document.querySelectorAll('#sideNav li, .side li')).filter(function(l){ return /life events/i.test(l.textContent); })[0]; if(li) li.click(); }, 500); });
+    return true;
+  }
+  if(!build()){ var n=0, t=setInterval(function(){ if(build() || ++n>60) clearInterval(t); }, 300); }
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
