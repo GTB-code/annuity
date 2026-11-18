@@ -36625,3 +36625,17 @@ body.bai-open .hm-page .welcome{ margin-right:calc(410px + 24px); }
 #snapshotView .rm-head .rm-dd .caret{ display:none; }
 #snapshotView .rm-head .rm-menu, #snapshotView .rm-head [role="listbox"]{ display:none !important; }
 </style>
+<style>
+#snapshotView .rm-head .rm-filter{ display:none !important; }
+#snapshotView .rm-head .jr-power{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:13.5px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:8px 14px 8px 10px; cursor:pointer; white-space:nowrap; }
+#snapshotView .rm-head .jr-power:hover{ border-color:var(--ink); }
+#snapshotView .rm-head .jr-power svg{ width:14px; height:14px; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var BOLT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>';
+  function arm(){ var h=document.querySelector('#snapshotView .rm-head'); if(!h || h.querySelector('.jr-power')) return; var b=document.createElement('button'); b.type='button'; b.className='jr-power'; b.innerHTML=BOLT+'Power mode'; h.appendChild(b); b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(window.__sum2 && window.__sum2.open) window.__sum2.open(); }); }
+  setInterval(arm, 700); arm();
+})();
+</script>
