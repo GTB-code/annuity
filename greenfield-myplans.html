@@ -29251,8 +29251,8 @@ body[data-view="plan"] #spend-block{ margin-top:24px !important; padding-top:0 !
 .pe-spend-head .s{ font-size:13px; color:var(--text-secondary); }
 .pe-spend svg{ width:100%; height:auto; display:block; overflow:visible; }
 .pe-spend .grid{ stroke:var(--hairline); stroke-width:1; }
-.pe-spend .area{ fill:rgba(4,180,119,0.10); }
-.pe-spend .line{ fill:none; stroke:var(--green-cta); stroke-width:2.2; stroke-linejoin:round; }
+.pe-spend .area{ fill:url(#spgrad); }
+.pe-spend .line{ fill:none; stroke:#04B477; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
 .pe-spend .tick{ stroke:var(--ink); stroke-width:1; stroke-dasharray:3 4; opacity:.45; }
 .pe-spend .tick.now{ stroke-dasharray:none; opacity:.9; }
 .pe-spend text{ font-family:var(--font); font-size:11.5px; fill:var(--text-secondary); }
@@ -29705,6 +29705,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
       d+=(i?'L':'M')+X+' '+Y+' L'+nx+' '+Y+' '; area+=' L'+X+' '+Y+' L'+nx+' '+Y; });
     area+=' L'+sx(Y1+1)+' '+sy(0)+' Z';
     var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+    s+='<defs><linearGradient id="spgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#04B477" stop-opacity="0.20"/><stop offset="100%" stop-color="#04B477" stop-opacity="0.02"/></linearGradient></defs>';
     s+='<line class="grid" x1="'+L+'" y1="'+sy(0)+'" x2="'+(W-R)+'" y2="'+sy(0)+'"/>';
     s+='<path class="area" d="'+area+'"/><path class="line" d="'+d+'"/>';
     [2030,2040,2050,2060].forEach(function(y){ s+='<text class="ax" x="'+sx(y)+'" y="'+(H-8)+'" text-anchor="'+(y===2060?'end':'middle')+'">'+y+'</text>'; });
