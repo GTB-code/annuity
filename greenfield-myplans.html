@@ -30551,6 +30551,13 @@ body.bai-open .hm-page #s-money .money-total .chip, body.bai-open .hm-page #s-pl
 
 /* ---- every other page: the component takes over the right rail, down to the bottom of the window ---- */
 .rail.bai-host{ min-height:calc(100vh - 96px - 24px); }
+.sum-route.bai-host{ position:relative; height:calc(100vh - 206px); min-height:0; }
+.sum-route.bai-host > :not(.bai){ visibility:hidden; opacity:0; }
+.sum-route.bai-host .bai{ position:absolute; inset:0; animation:baiIn .4s cubic-bezier(.2,.7,.2,1); display:flex; flex-direction:column; }
+.sum-route.bai-host.bai-leaving > :not(.bai){ visibility:visible; opacity:1; transition:opacity .35s ease .1s; }
+.sum-route.bai-host.bai-leaving .bai{ animation:baiOut .35s cubic-bezier(.2,.7,.2,1) forwards; pointer-events:none; }
+.sum-route.bai-host .bai.is-full{ position:fixed; z-index:55; inset:73px 0 0 0; width:auto; height:auto; transform:none; border-left:0; padding:0 max(32px, calc(50% - 675px)); animation:none; }
+.sum-route.bai-host .bai.is-moving{ position:fixed; z-index:55; inset:auto; transform:none; animation:none; }
 .rail.bai-host > :not(.bai){ visibility:hidden; opacity:0; }
 /* closing: the rail's own content fades back while the AI slides out the way it came */
 .rail.bai-host.bai-leaving > :not(.bai){ visibility:visible; opacity:1; transition:opacity .35s ease .1s; }
@@ -30750,7 +30757,7 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
     for(var i=0;i<rails.length;i++){ if(rails[i].offsetParent!==null && rails[i].getBoundingClientRect().width>0) return rails[i]; }
     return null;
   }
-  function findHost(){ if(document.body.classList.contains('scn-open')){ var sr=document.querySelector('#scnPage .scn-rail'); if(sr) return sr; } if(isHome()) return homeCol; var r=visibleRail(); if(r) return r; var lays=[].slice.call(document.querySelectorAll('.layout.page.on')).filter(function(l){ return getComputedStyle(l).display!=='none'; }); for(var i=0;i<lays.length;i++){ var rr=lays[i].querySelector(':scope > .rail'); if(rr) return rr; } var opt=document.querySelector('.layout.page.opt-index.on'); return opt && !document.body.classList.contains('fire-page') ? opt.querySelector(':scope > .rail') : null; }
+  function findHost(){ if(document.body.classList.contains('sum-open')){ var su=document.body.classList.contains('sum-alt') ? document.querySelector('.sum-layout .sum-ai') : document.querySelector('.sum-layout .sum-route'); if(su) return su; } if(document.body.classList.contains('scn-open')){ var sr=document.querySelector('#scnPage .scn-rail'); if(sr) return sr; } if(isHome()) return homeCol; var r=visibleRail(); if(r) return r; var lays=[].slice.call(document.querySelectorAll('.layout.page.on')).filter(function(l){ return getComputedStyle(l).display!=='none'; }); for(var i=0;i<lays.length;i++){ var rr=lays[i].querySelector(':scope > .rail'); if(rr) return rr; } var opt=document.querySelector('.layout.page.opt-index.on'); return opt && !document.body.classList.contains('fire-page') ? opt.querySelector(':scope > .rail') : null; }
   function settle(){ var t0=performance.now(); (function f(){ window.dispatchEvent(new Event('resize')); if(performance.now()-t0<560) requestAnimationFrame(f); })(); }
 
   function open(q){
@@ -36599,6 +36606,61 @@ PAGES["trust"]=function(){
   function arm(){ var a=document.querySelector('#events-block .acc-head > div'); if(a && !a.querySelector('.eh-link')){ var b=document.createElement('button'); b.type='button'; b.className='eh-link'; b.innerHTML=Q+'How life events work'; a.appendChild(b); var sub=a.querySelector('.sub'); if(sub){ sub.hidden=false; sub.innerHTML=''; sub.style.display='block'; sub.appendChild(b); } b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); open(); }); } }
   setInterval(arm, 700); arm();
   window.__eventsHelp={ open:open, close:close };
+})();
+</script>
+<!-- ===== Route, alternative layout: the route on the left, the chart in the middle, Boldin AI open on the right. Toggle in the header. ===== -->
+<style>
+body.sum-open.sum-alt .layout.page.sum-layout{ grid-template-columns:300px minmax(0,1fr) 410px; column-gap:28px; max-width:1480px; }
+body.sum-open.sum-alt .sum-layout .sum-route{ grid-column:1; grid-row:1; animation:none; }
+body.sum-open.sum-alt .sum-layout .center{ grid-column:2; grid-row:1; }
+body.sum-open.sum-alt .sum-layout .sum-ai{ grid-column:3; grid-row:1; position:sticky; top:96px; height:calc(100vh - 206px); min-height:0; border-left:1px solid var(--hairline); }
+.sum-layout .sum-ai{ display:none; }
+body.sum-open.sum-alt .sum-layout .sum-ai{ display:block; position:relative; }
+.sum-ai.bai-host .bai{ position:absolute; inset:0; display:flex; flex-direction:column; animation:baiIn .4s cubic-bezier(.2,.7,.2,1); }
+.sum-ai.bai-host .bai.is-full{ position:fixed; z-index:55; inset:73px 0 0 0; width:auto; height:auto; transform:none; border-left:0; padding:0 max(32px, calc(50% - 675px)); animation:none; }
+.sum-ai.bai-host .bai.is-moving{ position:fixed; z-index:55; inset:auto; transform:none; animation:none; }
+body.sum-open.sum-alt .sum-route .sum-rhead .sum-close{ display:none; }
+body.sum-open.sum-alt .sum-route .sum-rscroll{ max-height:calc(100vh - 260px); }
+body.sum-open.sum-alt .sum-ai .sum-ai-empty{ padding:24px 20px; color:var(--text-secondary); font-size:14px; }
+/* the toggle */
+body.sum-open .rt-layout{ position:fixed; left:24px; bottom:24px; display:inline-flex; gap:2px; padding:3px; border:1px solid var(--hairline); border-radius:999px; background:#fff; z-index:61; }
+.rt-layout button{ font:inherit; font-size:12px; font-weight:600; color:var(--text-muted); background:none; border:0; border-radius:999px; padding:5px 11px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+.rt-layout button.on{ background:var(--ink); color:#fff; }
+.rt-layout svg{ width:13px; height:13px; }
+body.sum-open.sum-alt .sum-layout .alo-top{ padding-right:0; }
+body.sum-open.sum-alt .sum-layout .sum-rhead{ padding-top:0; }
+/* page close lives top right of the AI column in the alt layout */
+body.sum-open.sum-alt .sum-ai .sum-ai-close{ position:absolute; top:-58px; right:0; width:40px; height:40px; border-radius:50%; border:1px solid var(--hairline); background:#fff; color:var(--ink); cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:4; }
+body.sum-open.sum-alt .sum-ai .sum-ai-close svg{ width:16px; height:16px; }
+.rt-layout{ display:none; }
+body.sum-open .rt-layout{ display:inline-flex; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var KEY='boldin.route.layout';
+  var I_R='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="11" height="16" rx="2"/><rect x="16" y="4" width="5" height="16" rx="1.5"/></svg>';
+  var I_L='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="6" height="16" rx="2"/><rect x="18" y="4" width="3" height="16" rx="1"/></svg>';
+  var X='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  function mode(){ try{ return localStorage.getItem(KEY)||'right'; }catch(e){ return 'right'; } }
+  function apply(m){
+    var on=m==='left'; document.body.classList.toggle('sum-alt', on);
+    var lay=document.querySelector('.sum-layout'); if(!lay) return;
+    var ai=lay.querySelector('.sum-ai'); if(!ai){ ai=document.createElement('section'); ai.className='sum-ai'; ai.innerHTML='<button type="button" class="sum-ai-close" aria-label="Close">'+X+'</button>'; lay.appendChild(ai); ai.querySelector('.sum-ai-close').addEventListener('click', function(){ var c=lay.querySelector('.sum-route .sum-close, .sum-route [data-sum-back]'); if(c) c.click(); else if(window.__sum2 && window.__sum2.close) window.__sum2.close(); }); }
+    var tg=document.querySelector('.rt-layout'); if(tg) tg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.m===m); });
+    if(!window.__bai) return;
+    if(on){ setTimeout(function(){ if(document.body.classList.contains('sum-open') && document.body.classList.contains('sum-alt')){ if(window.__bai.isOpen()) window.__bai.close(); setTimeout(function(){ window.__bai.open(); }, 60); } }, 80); }
+    else if(window.__bai.isOpen() && window.__bai.active()){ var h=document.querySelector('.sum-ai.bai-host'); if(h) window.__bai.close(); }
+  }
+  function arm(){
+    var top=document.querySelector('.sum-layout .center .alo-top'); if(!top) return;
+    if(!document.querySelector('.rt-layout')){ var t=document.createElement('div'); t.className='rt-layout'; t.setAttribute('role','group'); t.setAttribute('aria-label','Route layout'); t.innerHTML='<button type="button" data-m="right">'+I_R+'Route right</button><button type="button" data-m="left">'+I_L+'Route left + AI</button>'; document.body.appendChild(t);
+      t.addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; try{ localStorage.setItem(KEY, b.dataset.m); }catch(x){} apply(b.dataset.m); }); }
+    if(document.body.classList.contains('sum-open') && !document.body.dataset.sumApplied){ document.body.dataset.sumApplied='1'; apply(mode()); }
+    if(!document.body.classList.contains('sum-open')){ delete document.body.dataset.sumApplied; document.body.classList.remove('sum-alt'); }
+  }
+  setInterval(arm, 400);
+  window.__routeLayout={ set:function(m){ try{ localStorage.setItem(KEY, m); }catch(x){} apply(m); } };
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
