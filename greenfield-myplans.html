@@ -25080,7 +25080,7 @@ function vBudget(){
   const inc=M.map(r=>r.work+r.ss+r.rmd);
   const exp={living:M.map(r=>r.expenses.living),housing:M.map(r=>r.expenses.housing),health:M.map(r=>r.expenses.health),tax:M.map(r=>r.fed+r.irmaa),save:M.map(r=>r.contrib)};
   const sur=M.map(r=>r.surplus);
-  return head(1,'Where your money comes from, and goes.','Today, and what changes when the paychecks stop.')+flag('budget')
+  return head(1,'Where your money comes from, and goes.','')+flag('budget')
   +answer(`Your paychecks cover everything today with about ${mo(K.surplus0)} a month to spare, and that flips in 2037 when Luis stops working.`,['Is my retirement budget realistic?'])
   +card({plain:true,power:'budget-flow',title:'Where does my money go this year?',src:'Lifetime Cash Flow (Sankey)',take:`Of every dollar you earn, <b>${pct(r0.expenses.living/210000)}</b> goes to everyday living and <b>${pct(36000/210000)}</b> to savings.`,
     draw:h=>sankey(h,{left:[{name:'Maya’s pay',v:115000,color:COL.c1},{name:'Luis’s pay',v:95000,color:COL.c2}],right:[{name:'Everyday living',v:r0.expenses.living,color:COL.c1},{name:'Taxes',v:Math.round(r0.fed),color:COL.c4},{name:'Saving',v:36000,color:COL.c2},{name:'Mortgage',v:26000,color:COL.c5},{name:'Left over',v:Math.round(r0.surplus),color:COL.c3},{name:'Healthcare',v:r0.expenses.health,color:COL.c0}],mid:''})})
@@ -30820,7 +30820,7 @@ body.bai-open .dock{ opacity:0; transform:translateY(16px); pointer-events:none;
   fullBtn.addEventListener('click',function(){ setFull(!full); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape' && full) setFull(false); });
   /* a page change closes the rail; it reopens from the ask bar or the star on the new page */
-  document.addEventListener('click',function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a, .topnav .iconbtn[data-view], [data-hm-go], #sideNav li'); if(!a) return; var toHome=(a.dataset.view==='home')||/^\s*home\s*$/i.test(a.textContent||'')||a.dataset.hmGo==='home'; if(toHome){ document.body.classList.add('bai-still'); homeAI(0); homeAI(60); homeAI(200); return; } if(isOpen()) setTimeout(close,80); },true);
+  document.addEventListener('click',function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a, .topnav .iconbtn[data-view], [data-hm-go], #sideNav li'); if(!a) return; var toHome=(a.dataset.view==='home')||/^\s*home\s*$/i.test(a.textContent||'')||a.dataset.hmGo==='home'; if(toHome){ document.body.classList.add('bai-still'); homeAI(0); homeAI(60); homeAI(200); return; } if(isOpen() && !/optimize/i.test(a.textContent||'')) setTimeout(close,80); },true);
   /* the ask bar at the bottom: typing there sends into the rail */
   document.addEventListener('keydown',function(e){
     if(e.key!=='Enter') return;
@@ -32591,7 +32591,7 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
       if((v==='3'||v==='4') && window.__bai && !window.__bai.isOpen()) setTimeout(function(){ window.__bai.open(); }, user?120:600);
       }
     document.querySelectorAll('.os-view button').forEach(function(b){ b.addEventListener('click', function(){ set(b.dataset.v, true); }); });
-    var v='1'; try{ v=localStorage.getItem('boldin.optView')||'1'; }catch(e){}
+    var v='4'; try{ v=localStorage.getItem('boldin.optView')||'4'; }catch(e){}
     set(v, false);
     /* entering Optimize in Rails mode brings the AI with it */
     document.addEventListener('click', function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a'); if(a && /optimize/i.test(a.textContent) && /^[34]$/.test(document.body.dataset.optView)) setTimeout(function(){ if(window.__bai && !window.__bai.isOpen()) window.__bai.open(); }, 500); }, true);
@@ -32620,7 +32620,7 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   var OPT_CHIPS=['Which move pays off the most?','Try all three as a what-if','What happens if I do nothing?'];
   var briefed=false;
   function brief(){ if(briefed || !window.__bai || !window.__bai.isOpen()) return; briefed=true; setTimeout(function(){ if(onOptimize()) window.__bai.context(OPT_TEXT, OPT_CHIPS); }, 120); }
-  function ensure(){ clearTimeout(pend); pend=setTimeout(function(){ if(!onOptimize()){ briefed=false; return; } if(document.body.classList.contains('flow-open') || document.body.classList.contains('scn-open') || !window.__bai) return; if(!window.__bai.isOpen()) window.__bai.open(); brief(); }, 380); }
+  function ensure(){ clearTimeout(pend); pend=setTimeout(function(){ if(!onOptimize()){ briefed=false; return; } if(document.body.classList.contains('flow-open') || document.body.classList.contains('scn-open') || !window.__bai) return; if(!window.__bai.isOpen()){ if(document.body.classList.contains('opt-stage')) return; window.__bai.open(); } brief(); }, 380); }
   new MutationObserver(ensure).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
   document.addEventListener('click', function(e){
     var card=e.target.closest && e.target.closest('.opt-grid [data-opt], .opt-grid #optHero, .onav-item[data-opt]');
@@ -36870,7 +36870,7 @@ body[data-view="today"] .rail .bg-rail.on{ display:block; }
   function estHTML(){ var t=totals(); return '<div class="bg-est"><div class="k">Estimated from your income and savings</div><div class="big">'+usd(8400)+' / mo</div><p>Take-home pay of $12,400, less the $2,650 you save and the $1,350 going to the mortgage principal, leaves about $8,400 that life costs. A fine starting point until you have a budget you trust.</p><div class="rows"><span>Take-home income</span><b>$12,400</b><span>Saved each month</span><b>− $2,650</b><span>Mortgage principal</span><b>− $1,350</b><span>Estimated spending</span><b>$8,400</b></div><button type="button" class="use">Use this estimate</button></div>'; }
   function detHTML(){ return '<div class="bg-det"><b>Detailed budgeter.</b> Every line, by category, with a must-have and a nice-to-have amount for each, and the ability to change any of them at retirement. Best once the basics are settled.<br><button type="button" class="go">Open the detailed budgeter ↗</button></div>'; }
   function railCard(){ var rail=[].slice.call(document.querySelectorAll('.layout.page.on > .rail')).filter(function(r){ return r.offsetParent; })[0]; if(!rail) return null; var c=rail.querySelector('.bg-rail'); if(!c){ c=document.createElement('div'); c.className='bg-rail'; rail.insertBefore(c, rail.firstChild); } return c; }
-  function paintRail(){ var c=railCard(); if(!c) return; var acc=host && host.closest('.acc'); var bodyEl=acc && acc.querySelector('.acc-body'); var open=!!(bodyEl && bodyEl.getBoundingClientRect().height>40 && host.getBoundingClientRect().height>0 && document.body.dataset.view==='today' && mode()==='basic'); var t=totals();
+  function paintRail(){ var c=railCard(); if(!c) return; var acc=host && host.closest('.acc'); var bodyEl=acc && acc.querySelector('.acc-body'); var open=!!(document.body.dataset.view==='today' && document.body.classList.contains('mm-donut') && host && host.getBoundingClientRect().height>0 && mode()==='basic'); var t=totals();
     c.innerHTML='<div class="rk">Current monthly expenses</div><div class="bg-donut">'+donut(t)+'<div class="c"><small>Expenses</small><b>'+usd(t.all)+'</b><em>/ mo</em></div><div class="bg-leg">'+GROUPS.map(function(g){ return '<span><i style="background:'+g[2]+'"></i>'+g[1]+' <b>'+usd(t[g[0]])+' · '+(t.all?Math.round(100*t[g[0]]/t.all):0)+'%</b></span>'; }).join('')+'</div></div>';
     c.classList.toggle('on', open); c.parentElement.classList.toggle('bg-rail-on', open); }
   setInterval(paintRail, 600);
@@ -36903,6 +36903,839 @@ body[data-view="today"] .rail .bg-rail.on{ display:block; }
 (function(){
   function fix(){ var c=document.getElementById('c1'); if(!c || !/Where does my money go/.test(c.textContent)) return; var wrap=c.parentElement, head=wrap.querySelector('.qhead'); if(!head) return; if(head.nextElementSibling!==c) head.insertAdjacentElement('afterend', c); }
   setInterval(fix, 400);
+})();
+</script>
+
+<style>
+/* Budgeting head: just the question */
+#v-budget .qhead .eyebrow, #v-budget .qhead .bud-dl{ display:none !important; }
+</style>
+<!-- ===== Optimize, rebuilt to match staging /greenfield/optimize: one scrolling page, tools rail on the left, nothing on the right ===== -->
+<style id="optStageCSS">
+body.opt-stage:not(.fire-page) .layout.page.opt-index{ grid-template-columns:200px minmax(0,1fr) !important; }
+body.opt-stage:not(.fire-page) .opt-index > .side{ display:block !important; grid-column:1; }
+body.opt-stage:not(.fire-page) .opt-index > .center{ grid-column:2 !important; }
+body.opt-stage.bai-open:not(.fire-page) .layout.page.opt-index{ grid-template-columns:200px minmax(0,1fr) 410px !important; }
+body.opt-stage.bai-open:not(.fire-page) .opt-index > .rail.bai-host{ display:block; grid-column:3 !important; }
+body.opt-stage:not(.fire-page) .opt-index > .center > *:not(#optStage){ display:none !important; }
+body.opt-stage:not(.fire-page) .opt-index > .side > *:not(.ost-nav){ display:none !important; }
+body.opt-stage .os-view{ display:none !important; }
+body.opt-stage .opt-index{ padding-bottom:140px; }
+/* card view + AI: a card opens its tool as a page, the AI stays beside it */
+body.ost-open:not(.fire-page) .opt-index > .center > *:not(#optStage){ display:none !important; }
+body.ost-open:not(.fire-page) .opt-index > .side{ display:none !important; }
+body.ost-open .os-view{ display:none !important; }
+body:not(.opt-stage):not(.ost-open) #optStage{ display:none; }
+body.ost-open #optStage > .ost-sec{ display:none; border-top:0 !important; padding-top:8px !important; }
+body.ost-open #optStage > .ost-sec.ost-on{ display:block; }
+body.ost-open #optStage h1.ost-h1{ display:none; }
+.ost-top{ display:none; flex-direction:column; align-items:flex-start; gap:12px; margin:0 0 22px; }
+body.ost-open .ost-top{ display:flex; }
+.ost-top .ost-subnav{ display:none !important; }
+.ost-top .ost-back{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:14.5px; font-weight:600; color:var(--text-secondary); background:none; border:0; padding:0; cursor:pointer; }
+.ost-top .ost-back:hover{ color:var(--ink); }
+.ost-top .ost-subnav{ display:flex; gap:4px; flex-wrap:wrap; }
+.ost-top .ost-subnav a{ font-size:13px; font-weight:600; color:var(--text-secondary); padding:5px 10px; border-radius:999px; border:1px solid var(--hairline-strong); cursor:pointer; text-decoration:none; }
+.ost-top .ost-subnav a:hover{ color:var(--ink); background:#F6F7F8; }
+body.ost-open .opt-index{ padding-bottom:140px; }
+
+/* ---- tools rail ---- */
+.ost-nav{ position:sticky; top:72px; max-height:calc(100vh - 90px); overflow:auto; padding-right:6px; }
+.ost-nav .ost-collapse{ display:flex; justify-content:flex-end; color:var(--text-secondary); font-size:16px; padding:0 6px 10px; cursor:pointer; }
+.ost-nav .ost-head{ display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:600; color:var(--text-secondary); padding:0 0 6px 2px; }
+.ost-nav .ost-head svg{ width:12px; height:12px; }
+.ost-nav ul{ list-style:none; margin:0; padding:0; }
+.ost-nav li{ margin:0; display:block !important; padding:0; width:auto; }
+.ost-nav ul{ display:block !important; }
+.ost-nav ul.ost-sub{ display:none !important; }
+.ost-nav li.on > ul.ost-sub{ display:block !important; }
+.ost-nav .ost-item{ display:flex; align-items:center; gap:10px; padding:7px 10px 7px 4px; border-radius:10px; font-size:16px; font-weight:500; color:var(--ink); cursor:pointer; line-height:1.3; }
+.ost-nav .ost-item::before{ content:''; width:6px; height:6px; border-radius:50%; border:1px solid #C9CDD4; flex:none; }
+.ost-nav .ost-item:hover{ background:#F6F7F8; }
+.ost-nav li.on .ost-item{ background:#F2F3F5; color:var(--green-cta); font-weight:600; }
+.ost-nav li.on .ost-item::before{ border-color:#D9DDE3; }
+.ost-nav .ost-sub{ display:none; list-style:none; margin:2px 0 6px; padding:0 0 0 20px; }
+.ost-nav li.on .ost-sub{ display:block; }
+.ost-nav .ost-sub a{ display:block; padding:5px 6px; font-size:15px; font-weight:500; color:var(--text-secondary); border-radius:8px; cursor:pointer; text-decoration:none; line-height:1.3; }
+.ost-nav .ost-sub a:hover{ color:var(--ink); }
+
+/* ---- page ---- */
+#optStage{ max-width:1054px; }
+#optStage h1.ost-h1{ font-size:34px; font-weight:400; letter-spacing:-0.3px; margin:0 0 28px; color:var(--ink); line-height:1.15; }
+#optStage .ost-sec{ padding:24px 0 48px; scroll-margin-top:84px; }
+#optStage .ost-sec + .ost-sec{ border-top:1px solid var(--hairline-strong); padding-top:40px; }
+#optStage .ost-eyebrow{ font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-secondary); margin:0 0 12px; }
+#optStage .ost-hero{ font-size:28px; font-weight:400; line-height:1.15; margin:0; color:var(--ink); letter-spacing:-0.2px; }
+#optStage .ost-hero .p{ color:var(--green-cta); }
+#optStage .ost-hero .g{ color:#E0A526; }
+#optStage .ost-herosub{ font-size:16px; color:var(--text-secondary); margin:8px 0 0; }
+#optStage .ost-h2{ font-size:28px; font-weight:400; margin:0 0 16px; }
+#optStage .ost-bh{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin:40px 0 12px; }
+#optStage .ost-bh h3{ font-size:18px; font-weight:600; margin:0; color:var(--ink); }
+#optStage .ost-bh .cap{ font-size:14px; color:var(--text-secondary); }
+#optStage .ost-card{ border:1px solid #E5E7EB; border-radius:12px; padding:18px 18px 16px; background:#fff; }
+#optStage .ost-card + .ost-card{ margin-top:16px; }
+#optStage .ost-card .t{ font-size:16px; font-weight:600; margin:0 0 4px; }
+#optStage .ost-card p{ margin:0; font-size:15px; line-height:1.55; color:var(--ink); }
+#optStage .ost-note{ font-size:15px; color:var(--ink); line-height:1.55; margin:12px 0 0; max-width:62ch; }
+#optStage .ost-note.wide{ max-width:none; }
+#optStage .ost-link{ color:var(--green-cta); font-weight:600; font-size:15px; cursor:pointer; text-decoration:none; }
+#optStage .ost-link:hover{ text-decoration:underline; }
+#optStage .ost-muted{ color:var(--text-secondary); }
+#optStage svg text{ font-family:var(--font); }
+#optStage .ost-axis{ font-size:11px; fill:#6E7687; }
+#optStage .ost-grid{ stroke:#E3E6EA; stroke-dasharray:2 3; }
+#optStage .ost-legend{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px 14px; font-size:11.5px; color:var(--text-secondary); margin-top:6px; }
+#optStage .ost-legend i{ width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:5px; vertical-align:1px; }
+
+/* levers */
+#optStage .ost-lever{ padding:10px 0 6px; }
+#optStage .ost-lever + .ost-lever{ margin-top:4px; }
+#optStage .ost-lever .lr{ display:flex; justify-content:space-between; align-items:baseline; font-size:15px; color:var(--ink); }
+#optStage .ost-lever .lr b{ font-weight:600; }
+#optStage .ost-lever .ls{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+#optStage input[type=range].ost-range{ -webkit-appearance:none; appearance:none; width:100%; height:18px; background:none; margin:4px 0 0; display:block; }
+#optStage input[type=range].ost-range::-webkit-slider-runnable-track{ height:4px; border-radius:999px; background:linear-gradient(90deg, var(--green-cta) 0, var(--green-cta) var(--p,50%), #E9EBEE var(--p,50%), #E9EBEE 100%); }
+#optStage input[type=range].ost-range::-webkit-slider-thumb{ -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid var(--green-cta); margin-top:-5px; cursor:pointer; }
+#optStage input[type=range].ost-range::-moz-range-track{ height:4px; border-radius:999px; background:#E9EBEE; }
+#optStage input[type=range].ost-range::-moz-range-progress{ height:4px; border-radius:999px; background:var(--green-cta); }
+#optStage input[type=range].ost-range::-moz-range-thumb{ width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid var(--green-cta); cursor:pointer; }
+
+/* chips */
+#optStage .ost-chips{ display:inline-flex; gap:2px; padding:3px; background:#F2F3F5; border-radius:8px; margin:0 0 10px; }
+#optStage .ost-chips button{ border:0; background:none; font:inherit; font-size:13px; font-weight:500; color:var(--text-secondary); padding:5px 9px; border-radius:6px; cursor:pointer; }
+#optStage .ost-chips button.on{ background:#fff; color:var(--ink); font-weight:600; }
+#optStage .ost-seg{ display:inline-flex; gap:14px; font-size:14px; font-weight:600; color:var(--text-secondary); }
+#optStage .ost-seg button{ border:0; background:none; font:inherit; font-weight:600; color:inherit; padding:0 0 4px; cursor:pointer; border-bottom:2px solid transparent; }
+#optStage .ost-seg button.on{ color:var(--ink); border-bottom-color:var(--green-cta); }
+#optStage .ost-pill{ display:inline-flex; gap:2px; padding:3px; background:#F2F3F5; border-radius:8px; }
+#optStage .ost-pill button{ border:0; background:none; font:inherit; font-size:13.5px; font-weight:500; color:var(--text-secondary); padding:5px 10px; border-radius:6px; cursor:pointer; }
+#optStage .ost-pill button.on{ background:#fff; color:var(--ink); font-weight:600; }
+
+/* allocation */
+#optStage .ost-rows{ margin-top:14px; }
+#optStage .ost-row{ display:flex; align-items:center; gap:12px; padding:14px 0; border-top:1px solid var(--hairline); font-size:15px; }
+#optStage .ost-row:last-child{ border-bottom:1px solid var(--hairline); }
+#optStage .ost-row .dot{ width:10px; height:10px; border-radius:50%; flex:none; }
+#optStage .ost-row .nm{ font-weight:600; flex:1; }
+#optStage .ost-row .v{ color:var(--text-secondary); }
+#optStage .ost-row .v b{ color:var(--ink); font-weight:600; }
+#optStage .ost-tag{ font-size:12.5px; font-weight:600; padding:3px 8px; border-radius:6px; background:#FDECEC; color:#B42318; }
+#optStage .ost-tag.ok{ background:#E6F5EE; color:var(--green-cta); }
+#optStage .ost-mini{ margin-top:18px; }
+#optStage .ost-mini .mh{ font-size:14px; font-weight:600; margin:0 0 6px; }
+#optStage .ost-mini .mr{ display:flex; align-items:center; gap:8px; font-size:13.5px; padding:3px 0; }
+#optStage .ost-mini .mr .dot{ width:8px; height:8px; border-radius:50%; }
+#optStage .ost-mini .mr .nm{ flex:1; }
+#optStage .ost-mini .mr .amt{ color:var(--text-secondary); width:70px; text-align:right; }
+#optStage .ost-mini .mr .pc{ font-weight:600; width:36px; text-align:right; }
+#optStage .ost-move{ display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--hairline); }
+#optStage .ost-move .mt{ font-size:15px; font-weight:600; }
+#optStage .ost-move .ms{ font-size:14px; color:var(--text-secondary); margin-top:2px; }
+#optStage .ost-move .mv{ font-size:16px; font-weight:600; }
+#optStage .ost-move .mv.up{ color:var(--green-cta); }
+#optStage .ost-acct{ padding:14px 0; border-bottom:1px solid var(--hairline); }
+#optStage .ost-acct .ar{ display:flex; justify-content:space-between; align-items:baseline; }
+#optStage .ost-acct .an{ font-size:15px; font-weight:600; }
+#optStage .ost-acct .at{ font-size:13.5px; color:var(--text-secondary); }
+#optStage .ost-acct .av{ font-size:16px; font-weight:600; }
+#optStage .ost-acct .bar{ display:flex; height:6px; border-radius:999px; overflow:hidden; margin:10px 0 6px; background:#EEF0F2; }
+#optStage .ost-acct .bar i{ display:block; height:100%; }
+#optStage .ost-acct .bl{ font-size:12px; color:var(--text-secondary); display:flex; gap:14px; flex-wrap:wrap; }
+#optStage .ost-acct .bl b{ color:var(--ink); }
+#optStage .ost-acct .none{ font-size:14px; margin-top:6px; }
+
+/* budgeter */
+#optStage .ost-room{ background:#F6F7F8; border-radius:12px; padding:16px 18px; margin-bottom:24px; }
+#optStage .ost-room .t{ font-size:16px; font-weight:600; display:flex; align-items:center; gap:6px; }
+#optStage .ost-room .t svg{ width:14px; height:14px; }
+#optStage .ost-room p{ margin:4px 0 6px; font-size:15px; }
+#optStage .ost-sm .sh{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+#optStage .ost-sm .sh .t{ font-size:19px; font-weight:600; margin:0; }
+#optStage .ost-sm .lab{ font-size:13.5px; font-weight:600; color:var(--text-secondary); }
+#optStage .ost-sm .amt{ font-size:26px; font-weight:600; margin:2px 0 4px; }
+#optStage .ost-sm .ok{ background:#F6F7F8; border-radius:8px; padding:12px 14px; margin-top:14px; font-size:15px; display:flex; gap:8px; align-items:center; }
+#optStage .ost-sm .ok svg{ width:16px; height:16px; color:var(--green-cta); }
+#optStage .ost-sm .nud{ background:#F6F7F8; border-radius:8px; padding:14px; margin-top:12px; max-width:420px; font-size:13.5px; line-height:1.5; }
+#optStage .ost-sm .nud b{ font-weight:600; }
+#optStage .ost-sm .nud a{ display:block; margin-top:4px; }
+#optStage .ost-xtools{ display:flex; justify-content:flex-end; margin:24px 0 10px; }
+#optStage .ost-filt{ display:flex; align-items:center; gap:12px; margin-bottom:22px; }
+#optStage .ost-filt .cnt{ font-size:12.5px; color:var(--text-secondary); }
+#optStage .ost-cat{ margin:0 0 30px; }
+#optStage .ost-cat h4{ font-size:17px; font-weight:600; margin:0 0 10px; }
+#optStage .ost-xp{ display:flex; justify-content:space-between; align-items:flex-start; padding:4px 4px 10px; gap:16px; }
+#optStage .ost-xp .xn{ font-size:16px; font-weight:600; }
+#optStage .ost-xp .xs{ font-size:13.5px; color:var(--text-secondary); margin-top:2px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+#optStage .ost-xp .xtag{ font-size:12px; font-weight:600; border:1px solid #E5E7EB; border-radius:999px; padding:2px 8px; color:var(--ink); }
+#optStage .ost-xp .xv{ font-size:16px; font-weight:600; }
+#optStage .ost-empty{ font-size:14.5px; color:var(--ink); padding:0 4px 8px; }
+#optStage .ost-addx{ font-size:14.5px; font-weight:600; color:var(--green-cta); padding:0 4px; cursor:pointer; }
+#optStage .ost-csv{ margin-top:10px; }
+#optStage .ost-btn{ display:inline-flex; align-items:center; gap:6px; border:1px solid #D9DDE3; background:#fff; border-radius:8px; padding:8px 12px; font:inherit; font-size:14.5px; font-weight:600; color:var(--ink); cursor:pointer; }
+#optStage .ost-btn.dis{ color:#9AA0AB; cursor:default; }
+
+/* SS explorer */
+#optStage .ost-ssx{ display:flex; justify-content:space-between; gap:24px; align-items:center; }
+#optStage .ost-ssx .ssl{ font-size:11.5px; color:var(--text-secondary); margin-top:6px; }
+#optStage .ost-ssx .ssl i{ width:7px; height:7px; border-radius:50%; display:inline-block; margin-right:5px; }
+
+/* tax */
+#optStage .ost-form{ display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; margin-top:14px; }
+#optStage .ost-form label{ display:block; font-size:13.5px; font-weight:600; margin-bottom:6px; }
+#optStage .ost-form select{ width:100%; font:inherit; font-size:15px; padding:9px 12px; border:1px solid #D9DDE3; border-radius:8px; background:#fff; color:var(--ink); }
+#optStage .ost-form .ro{ border:1px solid #E5E7EB; border-radius:8px; padding:8px 12px; }
+#optStage .ost-form .ro small{ display:block; font-size:12px; color:var(--text-secondary); }
+#optStage .ost-form .ro span{ font-size:15px; }
+#optStage .ost-yn{ display:flex; justify-content:space-between; align-items:center; font-size:15px; padding:10px 0 0; }
+#optStage .ost-yn .ost-pill{ padding:2px; }
+#optStage .ost-yn .ost-pill button{ padding:3px 8px; font-size:13px; }
+#optStage .ost-ladder{ margin-top:16px; }
+#optStage .ost-ladder .lrow{ display:grid; grid-template-columns:70px 1fr 110px 110px; gap:12px; font-size:14px; padding:9px 0; border-top:1px solid var(--hairline); align-items:center; }
+#optStage .ost-ladder .lrow.h{ font-size:12.5px; font-weight:600; color:var(--text-secondary); border-top:0; }
+#optStage .ost-ladder .lrow b{ font-weight:600; }
+#optStage .ost-ladder .lrow .bar{ height:8px; border-radius:999px; background:#E6F5EE; position:relative; }
+#optStage .ost-ladder .lrow .bar i{ position:absolute; left:0; top:0; bottom:0; border-radius:999px; background:var(--green-cta); }
+#optStage .ost-kpis{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px; }
+#optStage .ost-kpi{ border:1px solid #E5E7EB; border-radius:12px; padding:14px 16px; }
+#optStage .ost-kpi .kl{ font-size:13.5px; color:var(--text-secondary); }
+#optStage .ost-kpi .kv{ font-size:20px; font-weight:600; margin-top:2px; }
+#optStage .ost-kpi .ks{ font-size:13.5px; margin-top:4px; }
+#optStage .ost-kpi .ks.dn{ color:#B42318; }
+#optStage .ost-kpi .ks.up{ color:var(--green-cta); }
+#optStage .ost-div{ display:grid; grid-template-columns:200px 1fr; gap:24px; align-items:center; }
+#optStage .ost-div .drow{ display:flex; gap:12px; align-items:flex-start; padding:9px 0; }
+#optStage .ost-div .drow .dot{ width:10px; height:10px; border-radius:50%; margin-top:5px; flex:none; }
+#optStage .ost-div .drow .dn{ font-size:15px; font-weight:600; }
+#optStage .ost-div .drow .ds{ font-size:13.5px; color:var(--text-secondary); }
+#optStage .ost-div .drow .dv{ margin-left:auto; text-align:right; font-size:15px; font-weight:600; }
+#optStage .ost-div .drow .dv small{ display:block; font-weight:400; font-size:13px; color:var(--text-secondary); }
+#optStage .ost-mix{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px; }
+#optStage .ost-mixc{ border:1px solid #E5E7EB; border-radius:12px; padding:14px 16px; }
+#optStage .ost-mixc .mt{ font-size:14.5px; font-weight:600; }
+#optStage .ost-mixc .ma{ font-size:20px; font-weight:600; margin-top:6px; }
+#optStage .ost-mixc .ms{ font-size:13px; color:var(--text-secondary); margin-bottom:10px; }
+#optStage .ost-mixc .bar{ display:flex; height:5px; border-radius:999px; overflow:hidden; background:#EEF0F2; margin-bottom:8px; }
+#optStage .ost-mixc .bar i{ display:block; height:100%; }
+#optStage .ost-mixc .mr{ display:flex; align-items:center; gap:7px; font-size:12.5px; padding:2.5px 0; }
+#optStage .ost-mixc .mr .dot{ width:7px; height:7px; border-radius:50%; }
+#optStage .ost-mixc .mr .nm{ flex:1; }
+#optStage .ost-mixc .mr .pc{ color:var(--text-secondary); width:34px; text-align:right; }
+#optStage .ost-mixc .mr .amt{ font-weight:600; width:60px; text-align:right; }
+
+/* social security explorer */
+#optStage #ssxSvg text, #optStage #ssxBars text, #optStage #ssxTax text{ font-size:15px; }
+#optStage .ssx-presets{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px; }
+#optStage .ssx-presets button{ font:inherit; font-size:13.5px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:8px 14px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+#optStage .ssx-presets button.on{ background:#1F2A44; color:#fff; border-color:#1F2A44; }
+#optStage .ssx-presets button em{ font-style:normal; font-size:11px; font-weight:600; background:#F2F3F5; color:var(--ink); padding:2px 7px; border-radius:999px; }
+#optStage .ssx-presets button.on em{ background:rgba(255,255,255,.18); color:#fff; }
+#optStage .ssx-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 16px; }
+#optStage .ssx-stats .kv{ font-size:22px; }
+#optStage .ssx-main{ display:grid; grid-template-columns:240px 1fr; gap:16px; align-items:start; }
+#optStage .ssx-main .ost-card + .ost-card{ margin-top:0; }
+#optStage .ssx-lab{ font-size:11px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-secondary); margin:4px 0 2px; }
+#optStage .ssx-rule{ border-top:1px solid var(--hairline); margin:12px 0 10px; }
+#optStage .ssx-ch{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+#optStage .ssx-acts{ display:none; align-items:center; gap:10px; margin-top:16px; }
+#optStage .ssx-acts .ssx-apply{ background:var(--green-cta); color:#fff; border-color:var(--green-cta); }
+#optStage .ssx-dd{ position:relative; }
+#optStage .ssx-dd .ssx-menu{ display:none; position:absolute; left:0; top:calc(100% + 4px); background:#fff; border:1px solid var(--hairline-strong); border-radius:8px; padding:4px; min-width:150px; z-index:5; }
+#optStage .ssx-dd.open .ssx-menu{ display:block; }
+#optStage .ssx-dd .ssx-menu a{ display:block; padding:7px 10px; font-size:14px; border-radius:6px; cursor:pointer; }
+#optStage .ssx-dd .ssx-menu a:hover{ background:#F6F7F8; }
+#optStage .ssx-tbl .r{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr 1.2fr; gap:10px; font-size:14px; padding:10px 8px; border-bottom:1px solid var(--hairline); }
+#optStage .ssx-tbl .r > :not(:first-child){ text-align:right; }
+#optStage .ssx-tbl .r.h{ font-size:13px; font-weight:600; color:var(--text-secondary); border-bottom:1px solid var(--hairline-strong); }
+#optStage .ssx-tbl .r b{ font-weight:600; }
+/* withdrawal */
+#optStage .ost-order{ display:flex; gap:8px; margin-bottom:14px; }
+#optStage .ost-order .oc{ border:1px solid #E5E7EB; border-radius:8px; padding:10px 12px; background:#fff; min-width:0; }
+#optStage .ost-order .oc.on{ background:#EEF6F1; border-color:#CFE6D9; }
+#optStage .ost-order .oc .ot{ font-size:13.5px; font-weight:600; }
+#optStage .ost-order .oc .oy{ font-size:12px; color:var(--text-secondary); margin-top:2px; }
+#optStage .ost-order .oc .oa{ font-size:12px; color:var(--text-secondary); margin-top:2px; }
+#optStage .ost-guard{ position:relative; height:28px; margin:8px 0 2px; }
+#optStage .ost-guard .tr{ position:absolute; left:0; right:0; top:8px; height:8px; border-radius:999px; background:#EEF0F2; }
+#optStage .ost-guard .band{ position:absolute; top:8px; height:8px; border-radius:999px; background:#CFE6D9; }
+#optStage .ost-guard .pt{ position:absolute; top:7px; width:10px; height:10px; border-radius:50%; transform:translateX(-50%); }
+#optStage .ost-guard .lb{ position:absolute; top:22px; transform:translateX(-50%); font-size:11.5px; color:var(--text-secondary); white-space:nowrap; }
+#optStage .ost-gleg{ font-size:14px; display:flex; gap:16px; margin:14px 0 10px; }
+#optStage .ost-gleg i{ width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px; }
+#optStage .ost-two{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
+#optStage .ost-two .ost-kpi .kv{ font-size:22px; }
+#optStage .ost-two .ost-kpi p{ margin:4px 0 0; font-size:13.5px; color:var(--text-secondary); line-height:1.5; }
+#optStage .ost-two .ost-kpi .rev{ display:inline-block; font-size:11px; font-weight:600; letter-spacing:.8px; text-transform:uppercase; background:#FDECEC; color:#B42318; padding:2px 6px; border-radius:4px; margin:4px 0; }
+#optStage .ost-two .ost-kpi .adj{ font-size:14px; font-weight:600; margin-top:6px; }
+#optStage .ost-month{ display:flex; gap:6px; margin:4px 0 12px; }
+#optStage .ost-month .mb{ color:#fff; border-radius:8px; padding:10px 12px; font-size:12.5px; min-width:0; }
+#optStage .ost-month .mb b{ display:block; font-size:14px; font-weight:600; }
+#optStage .ost-month .mb.pf{ background:#CFE6D9; color:var(--ink); }
+#optStage .ost-move2{ padding:14px 8px; }
+#optStage .ost-move2 .t{ font-size:15px; font-weight:600; }
+#optStage .ost-move2 .v{ font-size:14.5px; color:var(--text-secondary); margin-top:2px; }
+#optStage .ost-move2 + .ost-move2{ padding-top:0; }
+</style>
+
+<div id="optStageTpl" hidden></div>
+
+<script>
+(function(){
+  'use strict';
+  var page=document.querySelector('.layout.page.opt-index'); if(!page) return;
+  var center=page.querySelector(':scope > .center'), side=page.querySelector(':scope > .side'); if(!center||!side) return;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function usd(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function k(n){ var a=Math.abs(n); var s= a>=1e6 ? '$'+(a/1e6).toFixed(a>=1e7?0:1)+'M' : a>=1e3 ? '$'+Math.round(a/1e3)+'K' : '$'+Math.round(a); return (n<0?'-':'')+s; }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* ---------- rail ---------- */
+  var TOOLS=[
+    {id:'stress-test',  t:'Stress Test',              sub:[['Your levers','st-levers'],['This scenario','st-scenario'],['1,000 futures','st-futures']]},
+    {id:'asset-allocation', t:'Asset Allocation',     sub:[['Your mix today','aa-mix'],['Suggested moves','aa-moves'],['By account','aa-accounts']]},
+    {id:'budget',       t:'Detailed Budgeter',        sub:[['Home Related','bx-home'],['Utilities','bx-util'],['Daily Transportation','bx-trans'],['Food and Dining','bx-food'],['Personal Care','bx-care'],['Travel and Entertainment','bx-travel'],['Hobbies and Interests','bx-hobby'],['Family','bx-family'],['Pets','bx-pets'],['All Insurance','bx-ins'],['Gifts and Charitable Donations','bx-gifts'],['Business / Job Related','bx-biz'],['Personal Financial Services','bx-fin'],['Debt','bx-debt']]},
+    {id:'social-security', t:'Social Security',       sub:[]},
+    {id:'social-security-explorer', t:'Social Security Explorer', sub:[['Your scenario','ssxStats'],['By year','ssxBars'],['Compare','ssxTbl']]},
+    {id:'tax-planning', t:'Tax Planning',             sub:[['The window','tx-window'],['The ladder','tx-ladder'],['The guardrail','tx-guard'],['Your move','tx-move'],['Required distributions','tx-rmd'],['Tax diversification','tx-div'],['Taxes by year','tx-year']]},
+    {id:'withdrawal-strategy', t:'Withdrawal Strategy', sub:[['The order','wd-order'],['Guardrails','wd-guard'],['One month, mapped','wd-month'],['Your move','wd-move']]}
+  ];
+  var nav=document.createElement('nav'); nav.className='ost-nav'; nav.setAttribute('aria-label','Optimize tools');
+  nav.innerHTML='<div class="ost-collapse" aria-hidden="true">&lsaquo;</div><div class="ost-head"><span>Optimize Tools</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div><ul>'+TOOLS.map(function(t,i){ return '<li data-sec="'+t.id+'"'+(i===0?' class="on"':'')+'><div class="ost-item">'+esc(t.t)+'</div>'+(t.sub.length?'<ul class="ost-sub">'+t.sub.map(function(s){ return '<li><a data-go="'+s[1]+'">'+esc(s[0])+'</a></li>'; }).join('')+'</ul>':'')+'</li>'; }).join('')+'</ul>';
+  side.appendChild(nav);
+
+  /* ---------- page shell ---------- */
+  var root=document.createElement('div'); root.id='optStage';
+  root.innerHTML=
+    '<h1 class="ost-h1">Optimize</h1><div class="ost-top"><button type="button" class="ost-back"><span aria-hidden="true">&larr;</span> Optimize</button><div class="ost-subnav"></div></div>'+
+    '<section class="ost-sec" id="stress-test"></section>'+
+    '<section class="ost-sec" id="asset-allocation"></section>'+
+    '<section class="ost-sec" id="budget"></section>'+
+    '<section class="ost-sec" id="social-security"></section>'+
+    '<section class="ost-sec" id="social-security-explorer"></section>'+
+    '<section class="ost-sec" id="tax-planning"></section>'+
+    '<section class="ost-sec" id="withdrawal-strategy"></section>';
+  center.appendChild(root);
+
+  /* ======================================================= STRESS TEST ======================================================= */
+  (function(){
+    var sec=root.querySelector('#stress-test');
+    var LIFE=['Frugal','Comfortable','Generous'], RR=['Conservative','As planned','Aggressive'];
+    var S={ret:67, ss:70, spend:6300, life:1, ret_r:1}, shock='none';
+    function model(){ return window.STRESS; }
+    sec.innerHTML=
+      '<p class="ost-eyebrow">Stress test</p>'+
+      '<h2 class="ost-hero" id="stHero">Still funded to <span class="p">92</span>, at <span class="g">87%</span>.</h2>'+
+      '<p class="ost-herosub">Every slider moves the whole plan. Nothing here is saved.</p>'+
+      '<div class="ost-bh" id="st-levers"><h3>Your levers</h3><span class="cap">Pull one. See the cost.</span></div>'+
+      '<div class="ost-card">'+
+        lever('ret','Retirement age',62,72,1)+lever('ss','Social Security age',62,70,1)+lever('spend','Monthly spending in retirement',4500,9000,100)+lever('life','Lifestyle',0,2,1)+lever('ret_r','Investment return',0,2,1)+
+      '</div>'+
+      '<div class="ost-bh" id="st-scenario"><h3>This scenario</h3></div>'+
+      '<div class="ost-chips" id="stChips"><button data-shock="none" class="on">No downturn</button><button data-shock="decade">A decade of poor returns</button><button data-shock="three">A three year sequence of bad returns</button></div>'+
+      '<p class="ost-note wide" style="margin:0 0 8px" id="stShockNote">Projected under the mean assumption; a downturn starts when you retire and reaches every invested account.</p>'+
+      '<svg id="stSvg" viewBox="0 0 1054 300" width="100%" role="img" aria-label="Projected savings under this scenario"></svg>'+
+      '<div class="ost-legend" id="stLeg"></div>'+
+      '<p class="ost-note wide">Projected savings under the mean assumption, for this scenario and for your plan as it stands, so the plan’s figures here can differ by a point from your SnapShot’s.</p>'+
+      '<div class="ost-card" style="margin-top:16px"><div class="t">Your plan, as it stands</div><p id="stPlanCard"></p></div>'+
+      '<div class="ost-bh" id="st-futures"><h3>1,000 futures</h3><span class="cap">Monte Carlo simulation</span></div>'+
+      '<p class="ost-note wide" style="margin:0 0 8px" id="stMcLine"></p>'+
+      '<svg id="mcSvg" viewBox="0 0 1054 300" width="100%" role="img" aria-label="One thousand simulated futures"></svg>'+
+      '<div class="ost-legend"><span><i style="background:#0D3F4A"></i>Average path</span><span><i style="background:#10182C"></i>Median</span><span><i style="background:#9FDFC6"></i>Middle 80% of futures</span><span><i style="background:#4CC79A"></i>Middle half of futures</span></div>'+
+      '<p class="ost-note wide">Each future varies investment returns year by year. The lighter band holds the middle 80% of futures and the darker band the middle half.</p>';
+    function lever(key,label,min,max,step){ return '<div class="ost-lever" data-key="'+key+'"><div class="lr"><span>'+label+'</span><b data-v></b></div><input class="ost-range" type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+S[key]+'" aria-label="'+label+'"></div>'; }
+    function fmt(key,v){ return key==='spend'?usd(v):key==='life'?LIFE[v]:key==='ret_r'?RR[v]:String(v); }
+    function paintRanges(){ sec.querySelectorAll('.ost-lever').forEach(function(l){ var key=l.dataset.key, inp=l.querySelector('input'); inp.value=S[key]; var p=(S[key]-inp.min)/(inp.max-inp.min)*100; inp.style.setProperty('--p', p+'%'); l.querySelector('[data-v]').textContent=fmt(key,S[key]); }); }
+    sec.querySelectorAll('.ost-lever input').forEach(function(inp){ inp.addEventListener('input', function(){ S[inp.closest('.ost-lever').dataset.key]=+inp.value; paintRanges(); draw(); }); });
+    sec.querySelector('#stChips').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; shock=b.dataset.shock; sec.querySelectorAll('#stChips button').forEach(function(x){ x.classList.toggle('on', x===b); }); draw(); });
+    function runShock(v, kind){
+      var M=model(); if(!M) return null;
+      if(kind==='none') return M.run(v,false);
+      var r=M.run(v,true);
+      if(kind==='decade'){ /* stretch the bad years: a longer, shallower slump */
+        var base=M.run(v,false); r.rows=r.rows.map(function(row,i){ var b=base.rows[i]; var t=Math.max(0, Math.min(1,(row.y-r.retY)/10)); var f=(row.y>=r.retY && row.y<r.retY+10) ? 0.80+0.12*(1-t) : 0.84; return {y:row.y, bal: row.y<r.retY ? b.bal : Math.max(0, b.bal*f), spend:row.spend, base:row.base}; }); r.raw=r.raw-4; }
+      return r;
+    }
+    function draw(){
+      var M=model(); if(!M){ return; }
+      var base=M.run(M.BASE,false), cur=M.run(S,false), sh=runShock(S, shock);
+      var confCur=M.conf(cur), confSh=M.conf(sh);
+      var lastYear=function(r){ var out=r.out; return out ? (out-2026+65) : 92; };
+      var hero=sec.querySelector('#stHero'); var conf=shock==='none'?confCur:confSh; var to=shock==='none'?lastYear(cur):lastYear(sh);
+      hero.innerHTML='Still funded to <span class="p">'+to+'</span>, at <span class="'+(conf>=70?'p':'g')+'">'+conf+'%</span>.';
+      var shockLabel={none:'', decade:'a decade of poor returns', three:'a three year sequence of bad returns'}[shock];
+      sec.querySelector('#stShockNote').textContent = shock==='none' ? 'Projected under the mean assumption, with no downturn applied.' : 'A downturn starts when you retire, or a year from now if you already have, and reaches every invested account.';
+      sec.querySelector('#stPlanCard').innerHTML='Social Security at <b>'+S.ss+'</b>, spending <b>'+usd(S.spend)+'</b> a month in retirement. Confidence <b>'+confCur+'%</b>, ending around <b>'+k(cur.end)+'</b>.'+(shock!=='none'?' Through '+shockLabel+', confidence is <b>'+confSh+'%</b> and the money '+(sh.out?'runs out at '+lastYear(sh):'lasts')+'.':'');
+      /* scenario chart */
+      var svg=sec.querySelector('#stSvg'), W=1054,H=300,L=52,R=W-10,T=14,B=H-40;
+      var rows=cur.rows, n=rows.length, hi=Math.max.apply(null, base.rows.concat(rows).map(function(r){ return r.bal; }))*1.08;
+      var X=function(i){ return L+(R-L)*i/(n-1); }, Y=function(v){ return T+(B-T)*(1-v/hi); };
+      var g='';
+      for(var t=0;t<=4;t++){ var v=hi*t/4; g+='<line class="ost-grid" x1="'+L+'" y1="'+Y(v).toFixed(1)+'" x2="'+R+'" y2="'+Y(v).toFixed(1)+'"/><text class="ost-axis" x="'+(L-6)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+(v?k(v):'$0')+'</text>'; }
+      for(var i=0;i<n;i+=2){ g+='<text class="ost-axis" x="'+X(i).toFixed(1)+'" y="'+(B+16)+'" text-anchor="middle">'+rows[i].y+'</text>'; }
+      function path(rs){ return rs.map(function(r,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
+      function area(rs){ return path(rs)+' L'+X(rs.length-1).toFixed(1)+' '+B+' L'+L+' '+B+' Z'; }
+      g+='<path d="'+area(base.rows)+'" fill="#B9BED0" fill-opacity="0.35"/>';
+      g+='<path d="'+area(rows)+'" fill="#0D3F4A" fill-opacity="0.10"/>';
+      g+='<path d="'+path(base.rows)+'" fill="none" stroke="#B9BED0" stroke-width="1.5"/>';
+      g+='<path d="'+path(rows)+'" fill="none" stroke="#0D3F4A" stroke-width="2.2" stroke-linejoin="round"/>';
+      if(shock!=='none'){ g+='<path d="'+path(sh.rows)+'" fill="none" stroke="#F2784B" stroke-width="2.2" stroke-linejoin="round"/>'; }
+      svg.innerHTML=g;
+      sec.querySelector('#stLeg').innerHTML='<span><i style="background:#0D3F4A"></i>This scenario</span>'+(shock!=='none'?'<span><i style="background:#F2784B"></i>This scenario through '+shockLabel+'</span>':'')+'<span><i style="background:#B9BED0"></i>Your plan as it stands</span>';
+      /* monte carlo */
+      var mc=sec.querySelector('#mcSvg'); var med=cur.rows; var hi2=1;
+      var Y2=function(v){ return T+(B-T)*(1-Math.max(0,v)/hi2); };
+      var band=function(mult){ return med.map(function(r,i){ var t=i/(n-1); return Math.max(0, r.bal*(1+mult*Math.sqrt(t))); }); };
+      var p10=band(-0.55), p25=band(-0.28), p75=band(0.32), p90=band(0.62), avg=band(0.06); hi2=Math.max.apply(null,p90)*1.08;
+      function pl(arr){ return arr.map(function(v,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y2(v).toFixed(1); }).join(' '); }
+      function bandPath(lo,hiA){ return pl(hiA)+' '+lo.slice().reverse().map(function(v,j){ var i=n-1-j; return 'L'+X(i).toFixed(1)+' '+Y2(v).toFixed(1); }).join(' ')+' Z'; }
+      var m='';
+      for(var t2=0;t2<=4;t2++){ var v2=hi2*t2/4; m+='<line class="ost-grid" x1="'+L+'" y1="'+Y2(v2).toFixed(1)+'" x2="'+R+'" y2="'+Y2(v2).toFixed(1)+'"/><text class="ost-axis" x="'+(L-6)+'" y="'+(Y2(v2)+4).toFixed(1)+'" text-anchor="end">'+(v2?k(v2):'$0')+'</text>'; }
+      for(var i2=0;i2<n;i2+=2){ m+='<text class="ost-axis" x="'+X(i2).toFixed(1)+'" y="'+(B+16)+'" text-anchor="middle">'+rows[i2].y+'</text>'; }
+      m+='<path d="'+bandPath(p10,p90)+'" fill="#9FDFC6" fill-opacity="0.45"/><path d="'+bandPath(p25,p75)+'" fill="#4CC79A" fill-opacity="0.45"/>';
+      m+='<path d="'+pl(med.map(function(r){ return r.bal; }))+'" fill="none" stroke="#10182C" stroke-width="2"/><path d="'+pl(avg)+'" fill="none" stroke="#0D3F4A" stroke-width="2" stroke-dasharray="5 4"/>';
+      mc.innerHTML=m;
+      sec.querySelector('#stMcLine').innerHTML='In <b>'+confCur+'</b> of every 100 simulated futures, this scenario’s savings last to '+lastYear(cur)+'.';
+    }
+    paintRanges();
+    var tries=0, t=setInterval(function(){ if(model()){ clearInterval(t); draw(); } else if(++tries>60) clearInterval(t); }, 150);
+    window.addEventListener('resize', function(){ if(model()) draw(); });
+  })();
+
+  /* ======================================================= ASSET ALLOCATION ======================================================= */
+  (function(){
+    var sec=root.querySelector('#asset-allocation');
+    var TOTAL=486000, EQ=0.68, TEQ=0.60, PRICED=486000;
+    var CLASSES=[['US Large Cap',236000,'#0D3F4A'],['International',94480,'#4A99C4'],['Bonds',118000,'#E0A526'],['Cash & Cash Equivalents',37520,'#8E6BC2']];
+    var ACCTS=[
+      {n:'Fidelity 401(k) · Marshall', t:'401(k)', v:268000, mix:[['US Large Cap',62,'#0D3F4A'],['International',18,'#4A99C4'],['Bonds',20,'#E0A526']]},
+      {n:'Vanguard 401(k) · Marshall', t:'401(k)', v:142000, mix:[['US Large Cap',45,'#0D3F4A'],['International',25,'#4A99C4'],['Bonds',30,'#E0A526']]},
+      {n:'Marcus Invest Core Portfolio', t:'Investment', v:46000, mix:[['US Large Cap',70,'#0D3F4A'],['Bonds',30,'#E0A526']]},
+      {n:'Ally Online Savings', t:'Savings', v:30000, mix:[['Cash & Cash Equivalents',100,'#8E6BC2']]},
+      {n:'Empower 401(k) · Lily', t:'401(k)', v:0, mix:null}
+    ];
+    var pts=Math.round((EQ-TEQ)*100);
+    function gauge(){
+      var cx=200,cy=190,r1=150,r2=118,w1=26,w2=22; function arc(r,a0,a1){ var x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1); return 'M'+x0.toFixed(1)+' '+y0.toFixed(1)+' A'+r+' '+r+' 0 '+((a1-a0)>Math.PI?1:0)+' 1 '+x1.toFixed(1)+' '+y1.toFixed(1); }
+      var PI=Math.PI; var s='';
+      s+='<path d="'+arc(r1,PI,PI+PI*EQ)+'" stroke="#0D3F4A" stroke-width="'+w1+'" fill="none"/><path d="'+arc(r1,PI+PI*EQ,2*PI)+'" stroke="#0E9F6E" stroke-width="'+w1+'" fill="none"/>';
+      s+='<path d="'+arc(r2,PI,PI+PI*TEQ)+'" stroke="#8A9199" stroke-width="'+w2+'" fill="none"/><path d="'+arc(r2,PI+PI*TEQ,2*PI)+'" stroke="#9FDFC6" stroke-width="'+w2+'" fill="none"/>';
+      s+='<text x="'+cx+'" y="'+(cy-14)+'" text-anchor="middle" font-size="30" font-weight="600" fill="#10182C">'+usd(TOTAL)+'</text><text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="13" fill="#47495A">in holdings we can classify</text>';
+      return '<svg viewBox="0 0 400 216" width="400" height="216" style="display:block;margin:0 auto" aria-hidden="true">'+s+'</svg><div class="ost-muted" style="text-align:center;font-size:12px;margin-top:6px">Outer ring: today · Inner ring: your target</div>';
+    }
+    sec.innerHTML=
+      '<p class="ost-eyebrow">Asset allocation</p>'+
+      '<h2 class="ost-hero">You are <b style="font-weight:600">'+pts+' points</b> from your <span class="p">moderate</span> target.</h2>'+
+      '<p class="ost-herosub">Where your invested dollars sit today, and where your target wants them.</p>'+
+      '<div class="ost-bh" id="aa-mix"><h3>Your mix today</h3></div>'+
+      '<p class="ost-note wide" style="margin:0 0 18px">Of the <b>'+usd(TOTAL)+'</b> in holdings we can classify, your mix is <b>'+Math.round(EQ*100)+'% equities / '+Math.round((1-EQ)*100)+'% fixed income and cash</b>, '+pts+' points above your moderate target of '+Math.round(TEQ*100)+' / '+Math.round((1-TEQ)*100)+'.</p>'+
+      gauge()+
+      '<div class="ost-rows">'+
+        '<div class="ost-row"><span class="dot" style="background:#0D3F4A"></span><span class="nm">Equities</span><span class="v"><b>'+usd(TOTAL*EQ)+'</b> · '+Math.round(EQ*100)+'% now · '+Math.round(TEQ*100)+'% target</span><span class="ost-tag">+'+pts+' pts vs target</span></div>'+
+        '<div class="ost-row"><span class="dot" style="background:#0E9F6E"></span><span class="nm">Fixed income and cash</span><span class="v"><b>'+usd(TOTAL*(1-EQ))+'</b> · '+Math.round((1-EQ)*100)+'% now · '+Math.round((1-TEQ)*100)+'% target</span><span class="ost-tag">−'+pts+' pts vs target</span></div>'+
+      '</div>'+
+      '<p class="ost-note wide" style="margin-top:14px">Alt Investments, Unclassified, balances without holdings aren’t included in this comparison.</p>'+
+      '<p style="margin:12px 0 0"><a class="ost-link" data-goto-opt="alloc">View your moderate profile’s details</a></p>'+
+      '<div class="ost-mini"><p class="mh">By asset class · '+usd(PRICED)+' in priced holdings</p>'+CLASSES.map(function(c){ return '<div class="mr"><span class="dot" style="background:'+c[2]+'"></span><span class="nm">'+c[0]+'</span><span class="amt">'+usd(c[1])+'</span><span class="pc">'+Math.round(c[1]/PRICED*100)+'%</span></div>'; }).join('')+'</div>'+
+      '<div class="ost-bh" id="aa-moves"><h3>Suggested moves</h3><span class="cap">For reference only; nothing here trades</span></div>'+
+      '<div class="ost-move"><div><div class="mt">Sell equities</div><div class="ms">Trim back to your target’s '+Math.round(TEQ*100)+'%</div></div><div class="mv">−'+usd(TOTAL*(EQ-TEQ))+'</div></div>'+
+      '<div class="ost-move"><div><div class="mt">Buy fixed income and cash</div><div class="ms">Bring it up to your target’s '+Math.round((1-TEQ)*100)+'%</div></div><div class="mv up">+'+usd(TOTAL*(EQ-TEQ))+'</div></div>'+
+      '<p class="ost-note wide">These are suggestions, not trades. Boldin doesn’t change your accounts; make any moves with your custodian, then update your positions in Assets.</p>'+
+      '<div class="ost-bh" id="aa-accounts"><h3>By account</h3><span class="cap">Where each account’s money sits</span></div>'+
+      ACCTS.map(function(a){ return '<div class="ost-acct"><div class="ar"><div><div class="an">'+a.n+'</div><div class="at">'+a.t+'</div></div><div class="av">'+usd(a.v)+'</div></div>'+(a.mix?'<div class="bar">'+a.mix.map(function(m){ return '<i style="width:'+m[1]+'%;background:'+m[2]+'"></i>'; }).join('')+'</div><div class="bl">'+a.mix.map(function(m){ return '<span>'+m[0]+' <b>'+m[1]+'%</b></span>'; }).join('')+'</div>':'<div class="none">No positions yet. <a class="ost-link" data-goto="today">Add them in Assets</a></div>')+'</div>'; }).join('');
+  })();
+
+  /* ======================================================= DETAILED BUDGETER ======================================================= */
+  (function(){
+    var sec=root.querySelector('#budget');
+    var WANT=6323, ESS=4246;
+    var CATS=[['bx-home','Home Related',[['Mortgage','Total Home Related Expenses · Monthly · Like $2,400',2400,'you'],['Internet','Total Home Related Expenses · Monthly · Like $80',80,'you']]],['bx-util','Utilities',[['Electric and gas','Monthly · Like $310',310,'you']]],['bx-trans','Daily Transportation',[]],['bx-food','Food and Dining',[['Groceries','Monthly · Like $900',900,'you']]],['bx-care','Personal Care',[]],['bx-travel','Travel and Entertainment',[]],['bx-hobby','Hobbies and Interests',[]],['bx-family','Family',[]],['bx-pets','Pets',[]],['bx-ins','All Insurance',[]],['bx-gifts','Gifts and Charitable Donations',[]],['bx-biz','Business / Job Related',[]],['bx-fin','Personal Financial Services',[]],['bx-debt','Debt',[['Car loan','Monthly',420,'plan']]]];
+    var you=0, plan=0; CATS.forEach(function(c){ c[2].forEach(function(x){ if(x[3]==='you') you++; else plan++; }); });
+    sec.innerHTML=
+      '<p class="ost-eyebrow">Detailed budgeter</p>'+
+      '<h2 class="ost-hero">Live <span class="p">well</span> on <span class="g">'+usd(WANT)+'</span> a month.</h2>'+
+      '<p class="ost-herosub">Document what you spend now and what you would like to spend.</p>'+
+      '<div class="ost-room" style="margin-top:28px"><div class="t">Room to live <svg viewBox="0 0 24 24" fill="none" stroke="#0E794E" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><p>Essentials take <b>'+usd(ESS)+'</b>. The other <b>'+usd(WANT-ESS)+'</b> a month is yours: trips, grandkids, Saturday golf.</p><a class="ost-link" data-goto="plan">See it in your plan ↗</a></div>'+
+      '<div class="ost-card ost-sm"><div class="sh"><p class="t">Spending method</p><div class="ost-seg"><button class="on">One amount</button><button>Full budget</button></div></div>'+
+        '<div class="lab">Monthly amount</div><div class="amt">'+usd(WANT)+'</div><div style="font-size:14px">About '+usd(WANT*12)+' per year, before adjusting for inflation. <a class="ost-link" data-goto="plan">Edit ongoing expenses</a></div>'+
+        '<div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.3 2.3L15.5 10"/></svg>Your plan spends this amount.</div>'+
+        '<div class="nud"><b>Want a plan that fits real life?</b> One number assumes every year looks the same. The full budget lets housing, healthcare, and travel rise and fall on their own, so the plan funds the life you will actually live.<a class="ost-link">Switch to Full budget →</a></div>'+
+      '</div>'+
+      '<div class="ost-xtools"><div class="ost-pill"><button class="on">Expense list</button><button>Planning table</button></div></div>'+
+      '<div class="ost-filt"><div class="ost-pill"><button class="on">All</button><button>Entered by you</button><button>From your plan</button></div><span class="cnt">'+you+' entered by you · '+plan+' synced from your plan</span></div>'+
+      CATS.map(function(c){ var items=c[2]; return '<div class="ost-cat" id="'+c[0]+'"><h4>'+c[1]+(items.length?' ('+items.length+')':'')+'</h4>'+(items.length?items.map(function(x){ return '<div class="ost-xp"><div><div class="xn">'+x[0]+'</div><div class="xs">'+x[1]+' <span class="xtag">'+(x[3]==='you'?'✎ Entered by you':'Synced from your plan')+'</span></div></div><div class="xv">'+usd(x[2])+'</div></div>'; }).join(''):'<div class="ost-empty">Nothing here yet.</div>')+(c[0]==='bx-debt'?'<p class="ost-note">Debt payments sync from Debts in your plan. Edit them there and they update here.</p>':'<div class="ost-addx">+ Add expense</div>')+'</div>'; }).join('')+
+      '<div class="ost-card ost-csv"><div class="t">Take your budget with you</div><p>Download a spreadsheet copy of everything you have entered here.</p><p style="margin-top:10px"><button class="ost-btn" type="button">Download as CSV</button></p></div>';
+    sec.addEventListener('click', function(e){ var b=e.target.closest('.ost-seg button, .ost-pill button'); if(!b) return; b.parentNode.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x===b); }); });
+  })();
+
+  /* ======================================================= SOCIAL SECURITY ======================================================= */
+  (function(){
+    var sec=root.querySelector('#social-security');
+    sec.innerHTML='<p class="ost-eyebrow">Social security</p><h2 class="ost-h2">Social Security</h2>'+
+      '<div class="ost-card"><div class="t">Marshall claims at 70, Lily at 67.</div><p>Waiting to 70 is a guaranteed 8% raise for every year past full retirement age: <b>$4,380</b> a month for Marshall instead of $3,540 at 67. Lily’s own benefit, <b>$2,210</b> at 67, comes first; the spousal top-up starts when Marshall files.</p></div>';
+  })();
+
+  /* ======================================================= SOCIAL SECURITY EXPLORER (staging /optimize/social-security-explorer) ======================================================= */
+  (function(){
+    var sec=root.querySelector('#social-security-explorer');
+    /* the two of them, in today's dollars */
+    var P=[{n:'Marshall', pia:3540, age0:60}, {n:'Lily', pia:2210, age0:58}];   /* age in 2026 */
+    var YR0=2026;
+    var PLAN={c:[70,67], live:[92,94]};
+    var S={c:[70,67], live:[92,94]}, mode='monthly';
+    function factor(a){ return a>=67 ? 1+(a-67)*0.08 : (a>=64 ? 1-(67-a)*12*(5/9)/100 : 1-36*(5/9)/100-(64-a)*12*(5/12)/100); }
+    function ben(i,a){ return Math.round(P[i].pia*factor(a)); }
+    /* one row per year of Marshall's age 62..(last death) */
+    function run(st){
+      var bM=ben(0,st.c[0]), bL=ben(1,st.c[1]); var rows=[], tot=0, totM=0, totL=0;
+      var lastAge=Math.max(st.live[0], st.live[1]+(P[0].age0-P[1].age0));
+      for(var a=62;a<=lastAge;a++){
+        var la=a-(P[0].age0-P[1].age0); var mAlive=a<=st.live[0], lAlive=la<=st.live[1];
+        var m=0,l=0;
+        if(mAlive && a>=st.c[0]) m=bM;
+        if(lAlive && la>=st.c[1]) l=bL;
+        if(!mAlive && lAlive && la>=st.c[1]) l=Math.max(bL,bM);
+        if(!lAlive && mAlive && a>=st.c[0]) m=Math.max(bM,bL);
+        rows.push({a:a, y:YR0+(a-P[0].age0), m:m, l:l, mo:m+l});
+        tot+=(m+l)*12; totM+=m*12; totL+=l*12;
+      }
+      return {rows:rows, bM:bM, bL:bL, both:bM+bL, surv:Math.max(bL,bM), total:tot, totM:totM, totL:totL};
+    }
+    function best(live){ var b=null; for(var i=62;i<=70;i++) for(var j=62;j<=70;j++){ var r=run({c:[i,j], live:live}); if(!b || r.total>b.r.total) b={c:[i,j], r:r}; } return b; }
+    function same(a,b){ return a[0]===b[0] && a[1]===b[1]; }
+    var plan=run(PLAN);
+    sec.innerHTML=
+      '<h2 class="ost-h2" style="margin:0 0 6px">Social Security Explorer</h2>'+
+      '<p class="ost-herosub" style="margin:0 0 18px">You can claim any time from 62 to 70. Waiting means bigger checks for life, but fewer of them. Try a few ages and see what each one adds up to.</p>'+
+      '<div class="ssx-presets" id="ssxPresets"></div>'+
+      '<div class="ssx-stats" id="ssxStats"></div>'+
+      '<div class="ssx-main">'+
+        '<div class="ost-card ssx-scn"><div class="t" style="font-size:17px;margin-bottom:10px">Your scenario</div>'+
+          '<div class="ssx-lab">Claim at</div>'+slider('c0','Marshall',62,70)+slider('c1','Lily',62,70)+
+          '<div class="ssx-rule"></div><div class="ssx-lab">Plan to live to</div>'+slider('l0','Marshall',70,100)+slider('l1','Lily',70,100)+
+        '</div>'+
+        '<div class="ost-card ssx-chart"><div class="ssx-ch"><div class="t" style="font-size:17px" id="ssxChartT">Monthly benefits by Marshall’s age</div><div class="ost-seg" id="ssxMode"><button data-m="monthly" class="on">Monthly</button><button data-m="lifetime">Lifetime</button></div></div>'+
+          '<div class="ost-legend ssx-leg" id="ssxLeg" style="justify-content:flex-start;margin:4px 0 8px"></div>'+
+          '<svg id="ssxSvg" viewBox="0 0 780 260" width="100%" role="img" aria-label="Benefits by age"></svg>'+
+        '</div>'+
+      '</div>'+
+      '<div class="ssx-acts" id="ssxActs"><button class="ost-btn ssx-apply" type="button">Apply to my plan</button><span class="ssx-dd"><button class="ost-btn" type="button">Apply to another scenario <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button><div class="ssx-menu"><a>Plan B</a></div></span><a class="ost-link ssx-reset" style="color:var(--ink)">Reset to my plan</a></div>'+
+      '<div class="ost-card" style="margin-top:28px"><div class="t" style="font-size:17px">Social Security income by year</div><p class="ost-muted" id="ssxBarsSub" style="font-size:14px"></p><svg id="ssxBars" viewBox="0 0 780 240" width="100%" role="img" aria-label="Social Security income by year"></svg><div class="ost-legend" id="ssxBarsLeg" style="justify-content:flex-start"></div></div>'+
+      '<div class="ost-card" style="margin-top:16px"><div class="t" style="font-size:17px">Share of benefits subject to tax, by year</div><p class="ost-muted" style="font-size:14px">The part of your Social Security that counts as taxable income. The most that can be taxed is 85%.</p><svg id="ssxTax" viewBox="0 0 780 220" width="100%" role="img" aria-label="Share of benefits subject to tax"></svg><div class="ost-legend" style="justify-content:flex-start"><span><i style="background:#0D3F4A;height:2px;width:14px;border-radius:0"></i>Taxable share</span><span><i style="background:none;border-top:2px dashed #10182C;height:0;width:14px;border-radius:0"></i>Most that can be taxed (85%)</span></div><p class="ost-note wide" style="font-size:13.5px;color:var(--text-secondary)">Based on your plan’s other taxable income each year, filing jointly while you’re both alive and single after the first death. The federal income limits behind this aren’t raised for inflation.</p></div>'+
+      '<div class="ost-bh" style="margin-top:32px"><h3>Compare</h3></div><div class="ssx-tbl" id="ssxTbl"></div><p class="ost-note wide" style="font-size:13.5px;color:var(--text-secondary)">Today’s dollars, before taxes. Planning estimates, not a guarantee of benefits.</p>';
+    function slider(key,label,min,max){ return '<div class="ost-lever" data-k="'+key+'"><div class="lr"><span>'+label+'</span><b data-v></b></div><input class="ost-range" type="range" min="'+min+'" max="'+max+'" step="1" aria-label="'+label+'"></div>'; }
+    function get(key){ return key==='c0'?S.c[0]:key==='c1'?S.c[1]:key==='l0'?S.live[0]:S.live[1]; }
+    function set(key,v){ if(key==='c0') S.c[0]=v; else if(key==='c1') S.c[1]=v; else if(key==='l0') S.live[0]=v; else S.live[1]=v; }
+    function paintSliders(){ sec.querySelectorAll('.ost-lever[data-k]').forEach(function(l){ var k=l.dataset.k, inp=l.querySelector('input'); inp.value=get(k); inp.style.setProperty('--p', ((get(k)-inp.min)/(inp.max-inp.min)*100)+'%'); l.querySelector('[data-v]').textContent=get(k); }); }
+    sec.querySelectorAll('.ost-lever[data-k] input').forEach(function(inp){ inp.addEventListener('input', function(){ set(inp.closest('.ost-lever').dataset.k, +inp.value); paintSliders(); draw(); }); });
+    sec.querySelector('#ssxMode').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; mode=b.dataset.m; sec.querySelectorAll('#ssxMode button').forEach(function(x){ x.classList.toggle('on', x===b); }); draw(); });
+    sec.querySelector('#ssxPresets').addEventListener('click', function(e){ var b=e.target.closest('button[data-c]'); if(!b) return; var c=b.dataset.c.split(',').map(Number); S.c=[c[0],c[1]]; paintSliders(); draw(); });
+    sec.querySelector('.ssx-reset').addEventListener('click', function(){ S.c=PLAN.c.slice(); S.live=PLAN.live.slice(); paintSliders(); draw(); });
+    sec.querySelector('.ssx-apply').addEventListener('click', function(){ PLAN.c=S.c.slice(); PLAN.live=S.live.slice(); plan=run(PLAN); draw(); if(window.__peToast) window.__peToast('Social Security ages saved to your plan'); });
+    var dd=sec.querySelector('.ssx-dd'); dd.querySelector('button').addEventListener('click', function(){ dd.classList.toggle('open'); }); dd.querySelector('.ssx-menu a').addEventListener('click', function(){ dd.classList.remove('open'); if(window.__peToast) window.__peToast('Applied to Plan B'); });
+    document.addEventListener('click', function(e){ if(!e.target.closest('.ssx-dd')) dd.classList.remove('open'); });
+    function fmtDelta(d){ if(Math.abs(d)<500) return 'Same as your plan'; return usd(Math.abs(d))+(d<0?' less':' more')+' than your plan'; }
+    function draw(){
+      var cur=run(S), hi=best(S.live), trying=!same(S.c,PLAN.c)||!(S.live[0]===PLAN.live[0]&&S.live[1]===PLAN.live[1]);
+      var bestIsPlan=same(hi.c,PLAN.c);
+      /* presets */
+      var pr=[{t:'Your plan', c:PLAN.c, tag:bestIsPlan?'Highest total':''}];
+      if(!bestIsPlan) pr.push({t:'Highest total', c:hi.c});
+      pr.push({t:'Both as early as possible', c:[62,62]}); pr.push({t:'Marshall early, Lily at 70', c:[62,70]});
+      sec.querySelector('#ssxPresets').innerHTML=pr.map(function(p){ return '<button type="button" data-c="'+p.c.join(',')+'" class="'+(same(p.c,S.c)?'on':'')+'">'+p.t+(p.tag?' <em>'+p.tag+'</em>':'')+'</button>'; }).join('');
+      /* stats */
+      sec.querySelector('#ssxStats').innerHTML=
+        '<div class="ost-kpi"><div class="kl">Lifetime total</div><div class="kv">'+usd(cur.total)+'</div><div class="ks ost-muted">'+fmtDelta(cur.total-plan.total)+'</div></div>'+
+        '<div class="ost-kpi"><div class="kl">Monthly once both claim</div><div class="kv">'+usd(cur.both)+'</div><div class="ks ost-muted">Your plan: '+usd(plan.both)+'</div></div>'+
+        '<div class="ost-kpi"><div class="kl">If Marshall dies first, Lily gets</div><div class="kv">'+usd(cur.surv)+'</div><div class="ks ost-muted">A month, for life</div></div>';
+      /* chart */
+      sec.querySelector('#ssxChartT').textContent=(mode==='monthly'?'Monthly benefits':'Total collected')+' by Marshall’s age';
+      sec.querySelector('#ssxLeg').innerHTML=(trying?'<span><i style="background:#0D3F4A;height:2px;width:14px;border-radius:0"></i>What you’re trying ('+S.c[0]+' and '+S.c[1]+')</span>':'')+'<span><i style="background:none;border-top:2px dashed #F2784B;height:0;width:14px;border-radius:0"></i>Your plan ('+PLAN.c[0]+' and '+PLAN.c[1]+')</span>';
+      var svg=sec.querySelector('#ssxSvg'), W=780,H=260,L=50,R=W-14,T=22,B=H-30;
+      var a0=62, a1=Math.max(cur.rows[cur.rows.length-1].a, plan.rows[plan.rows.length-1].a, 92);
+      function series(r){ var out=[], acc=0; for(var a=a0;a<=a1;a++){ var row=r.rows.filter(function(x){ return x.a===a; })[0]; var v=row?row.mo:0; acc+=v*12; out.push(mode==='monthly'?v:acc); } return out; }
+      var sc=series(cur), sp=series(plan); var top=Math.max.apply(null, sc.concat(sp))*1.15||1; var stepN=mode==='monthly'?2000:400000; top=Math.ceil(top/stepN)*stepN;
+      var X=function(a){ return L+(R-L)*(a-a0)/(a1-a0); }, Y=function(v){ return T+(B-T)*(1-v/top); };
+      var g=''; for(var t=0;t<=4;t++){ var v=top*t/4; g+='<line class="ost-grid" x1="'+L+'" y1="'+Y(v).toFixed(1)+'" x2="'+R+'" y2="'+Y(v).toFixed(1)+'"/><text class="ost-axis" x="'+(L-6)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+(v?k(v):'$0')+'</text>'; }
+      for(var a=a0;a<=a1;a+=2) g+='<text class="ost-axis" x="'+X(a).toFixed(1)+'" y="'+(B+16)+'" text-anchor="middle">'+a+'</text>';
+      /* death markers, at Marshall's age */
+      var dM=S.live[0], dL=S.live[1]+(P[0].age0-P[1].age0);
+      [[dM,'Marshall to '+S.live[0]],[dL,'Lily to '+S.live[1]]].forEach(function(m){ if(m[0]<a0||m[0]>a1) return; g+='<line x1="'+X(m[0]).toFixed(1)+'" y1="'+T+'" x2="'+X(m[0]).toFixed(1)+'" y2="'+B+'" stroke="#9AA0AB" stroke-dasharray="3 3"/><text class="ost-axis" x="'+(X(m[0])-4).toFixed(1)+'" y="'+(T-8)+'" text-anchor="end" fill="#10182C">'+m[1]+'</text>'; });
+      function pathOf(arr){ return arr.map(function(v,i){ var x=X(a0+i), y=Y(v); return (i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1); }).join(' '); }
+      function stepPath(arr){ var d=''; arr.forEach(function(v,i){ var x=X(a0+i), y=Y(v); if(!i) d='M'+x.toFixed(1)+' '+y.toFixed(1); else { var px=X(a0+i-1); d+=' L'+(x-(x-px)*0.0).toFixed(1)+' '+Y(arr[i-1]).toFixed(1)+' L'+x.toFixed(1)+' '+y.toFixed(1); } }); return d; }
+      var pf = mode==='monthly' ? stepPath : pathOf;
+      g+='<path d="'+pf(sp)+'" fill="none" stroke="#F2784B" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round"/>';
+      if(trying) g+='<path d="'+pf(sc)+'" fill="none" stroke="#0D3F4A" stroke-width="2.2" stroke-linejoin="round"/>';
+      svg.innerHTML=g;
+      /* actions */
+      sec.querySelector('#ssxActs').style.display=trying?'flex':'none';
+      /* bars by year */
+      var rows=cur.rows.filter(function(r){ return r.mo>0; }); var bs=sec.querySelector('#ssxBars'); var BW=780,BH=240,BL=50,BR=BW-14,BT=14,BB=BH-30;
+      var mx=Math.max.apply(null, rows.map(function(r){ return r.mo*12; }))*1.1||1; mx=Math.ceil(mx/20000)*20000; var bw=(BR-BL)/rows.length;
+      var bg=''; for(var t2=0;t2<=4;t2++){ var v2=mx*t2/4, yy=BT+(BB-BT)*(1-v2/mx); bg+='<line class="ost-grid" x1="'+BL+'" y1="'+yy.toFixed(1)+'" x2="'+BR+'" y2="'+yy.toFixed(1)+'"/><text class="ost-axis" x="'+(BL-6)+'" y="'+(yy+4).toFixed(1)+'" text-anchor="end">'+(v2?k(v2):'$0')+'</text>'; }
+      rows.forEach(function(r,i){ var x=BL+i*bw+2, w=Math.max(2,bw-4); var hM=(BB-BT)*(r.m*12/mx), hL=(BB-BT)*(r.l*12/mx); bg+='<rect x="'+x.toFixed(1)+'" y="'+(BB-hM).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+hM.toFixed(1)+'" fill="#0D3F4A"/><rect x="'+x.toFixed(1)+'" y="'+(BB-hM-hL).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+hL.toFixed(1)+'" fill="#F2784B"/>'; if(rows.length<=24 || i%2===0) bg+='<text class="ost-axis" x="'+(x+w/2).toFixed(1)+'" y="'+(BB+16)+'" text-anchor="middle">'+r.y+'</text>'; });
+      bs.innerHTML=bg;
+      sec.querySelector('#ssxBarsSub').textContent='Marshall claims at '+S.c[0]+', Lily at '+S.c[1]+'. Each bar is one year of checks.';
+      sec.querySelector('#ssxBarsLeg').innerHTML='<span><i style="background:#0D3F4A"></i>Marshall, '+k(cur.totM)+' lifetime</span><span><i style="background:#F2784B"></i>Lily, '+k(cur.totL)+' lifetime</span>';
+      /* taxable share */
+      var tx=sec.querySelector('#ssxTax'); var TH=220, TB=TH-30, TT=14; var tg='';
+      for(var t3=0;t3<=4;t3++){ var pv=t3*25, py=TT+(TB-TT)*(1-pv/100); tg+='<line class="ost-grid" x1="'+BL+'" y1="'+py.toFixed(1)+'" x2="'+BR+'" y2="'+py.toFixed(1)+'"/><text class="ost-axis" x="'+(BL-6)+'" y="'+(py+4).toFixed(1)+'" text-anchor="end">'+pv+'%</text>'; }
+      var y85=TT+(TB-TT)*(1-0.85); tg+='<line x1="'+BL+'" y1="'+y85.toFixed(1)+'" x2="'+BR+'" y2="'+y85.toFixed(1)+'" stroke="#10182C" stroke-dasharray="5 4"/>';
+      var firstDeath=Math.min(S.live[0], S.live[1]+(P[0].age0-P[1].age0));
+      var pts=rows.map(function(r,i){ var share=0.26+0.0035*i+(cur.both>7000?0.12:cur.both>5000?0.06:0); if(r.a>firstDeath) share+=(r.a===firstDeath+1?-0.06:-0.01)+0.0;  share=Math.min(0.85, Math.max(0, share)); return [BL+i*bw+bw/2, TT+(TB-TT)*(1-share)]; });
+      tg+='<path d="'+pts.map(function(p,i){ return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1); }).join(' ')+'" fill="none" stroke="#0D3F4A" stroke-width="2"/>';
+      rows.forEach(function(r,i){ if(rows.length<=24 || i%2===0) tg+='<text class="ost-axis" x="'+(BL+i*bw+bw/2).toFixed(1)+'" y="'+(TB+16)+'" text-anchor="middle">'+r.y+'</text>'; });
+      tx.innerHTML=tg;
+      /* compare */
+      var rowsT=[['Your plan',PLAN.c,plan],['What you’re trying',S.c,cur],['Highest total',hi.c,hi.r]];
+      sec.querySelector('#ssxTbl').innerHTML='<div class="r h"><span>Strategy</span><span>Claim ages</span><span>Both claiming</span><span>Survivor</span><span>Lifetime total</span></div>'+rowsT.map(function(r){ return '<div class="r"><b>'+r[0]+'</b><span>'+r[1][0]+' and '+r[1][1]+'</span><span>'+usd(r[2].both)+'</span><span>'+usd(r[2].surv)+'</span><span>'+usd(r[2].total)+'</span></div>'; }).join('');
+    }
+    paintSliders(); draw();
+    window.__ssx={ state:S, plan:PLAN, run:run, draw:draw };
+  })();
+
+  /* ======================================================= TAX PLANNING ======================================================= */
+  (function(){
+    var sec=root.querySelector('#tax-planning');
+    var LAD=[[2026,40000,'22%',8800],[2027,42000,'22%',9240],[2028,44000,'22%',9680],[2029,46000,'22%',10120],[2030,48000,'22%',10560],[2031,50000,'22%',11000]];
+    var TAXABLE=76000, DEFERRED=410000, FREE=0, ALL=TAXABLE+DEFERRED+FREE;
+    function mixCard(title, amt, rows){ var tot=rows.reduce(function(a,r){ return a+r[2]; },0)||1; return '<div class="ost-mixc"><div class="mt">'+title+'</div><div class="ma">'+usd(amt)+'</div><div class="ms">'+Math.round(amt/ALL*100)+'% of the total</div><div class="bar">'+rows.map(function(r){ return '<i style="width:'+(r[2]/tot*100)+'%;background:'+r[1]+'"></i>'; }).join('')+'</div>'+rows.map(function(r){ return '<div class="mr"><span class="dot" style="background:'+r[1]+'"></span><span class="nm">'+r[0]+'</span><span class="pc">'+(amt?Math.round(r[2]/amt*100):0)+'%</span><span class="amt">'+usd(r[2])+'</span></div>'; }).join('')+'</div>'; }
+    var CL=[['Equities','#0D3F4A'],['Fixed income','#2A8C8C'],['Cash','#E0A526'],['Alternative investments','#B02A5B'],['Unclassified','#8A8F98']];
+    function rowsFor(vals){ return CL.map(function(c,i){ return [c[0],c[1],vals[i]]; }); }
+    /* taxes by year */
+    var yrs=[], y0=2026; for(var y=2026;y<=2059;y++) yrs.push(y);
+    var SER=[['Federal income tax','#C8102E'],['State income tax','#0D3F4A'],['FICA','#0E9F6E'],['Other state taxes','#F2784B'],['Early withdrawal penalty','#8E6BC2']];
+    function taxes(y){ var ret=y>=2028; var fed = ret ? (y<2032?9800:(y<2040?6200:8400)) : 21400; var st = ret ? (y<2032?2600:(y<2040?1700:2300)) : 6100; var fica = ret?0:11300; var oth = ret?300:400; return [fed,st,fica,oth,0]; }
+    var W=1054,H=300,L=52,R=W-10,T=18,B=H-40, hi=44000; var bwid=(R-L)/yrs.length-4; var g='';
+    for(var t=0;t<=4;t++){ var v=hi*t/4; var yy=T+(B-T)*(1-v/hi); g+='<line class="ost-grid" x1="'+L+'" y1="'+yy.toFixed(1)+'" x2="'+R+'" y2="'+yy.toFixed(1)+'"/><text class="ost-axis" x="'+(L-6)+'" y="'+(yy+4).toFixed(1)+'" text-anchor="end">'+(v?('$'+Math.round(v/1000)+'K'):'$0')+'</text>'; }
+    yrs.forEach(function(y,i){ var x=L+i*((R-L)/yrs.length)+2; var vals=taxes(y); var cum=0; vals.forEach(function(v,j){ if(!v) return; var y1=T+(B-T)*(1-(cum+v)/hi), y2=T+(B-T)*(1-cum/hi); g+='<rect x="'+x.toFixed(1)+'" y="'+y1.toFixed(1)+'" width="'+bwid.toFixed(1)+'" height="'+(y2-y1).toFixed(1)+'" fill="'+SER[j][1]+'"/>'; cum+=v; }); if(i%2===0) g+='<text class="ost-axis" x="'+(x+bwid/2).toFixed(1)+'" y="'+(B+16)+'" text-anchor="middle">'+y+'</text>'; if(y===2028){ g+='<line x1="'+(x+bwid/2).toFixed(1)+'" y1="'+T+'" x2="'+(x+bwid/2).toFixed(1)+'" y2="'+B+'" stroke="#10182C" stroke-dasharray="3 3"/><rect x="'+(x+bwid/2-26).toFixed(1)+'" y="'+(T-14)+'" width="52" height="16" rx="8" fill="#10182C"/><text x="'+(x+bwid/2).toFixed(1)+'" y="'+(T-2)+'" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">Retire 67</text>'; } });
+    sec.innerHTML=
+      '<p class="ost-eyebrow">Tax planning</p><h2 class="ost-h2">Tax planning</h2>'+
+      '<div class="ost-card"><p>Showing the lowest-lifetime-tax ladder, paying conversion tax from taxable savings, converting into a new Roth IRA for you and a new Roth IRA for your spouse.</p>'+
+        '<div class="ost-form"><div><label>Strategy</label><select><option>Lowest lifetime tax liability</option><option>Highest ending balance</option><option>Stay under a bracket</option></select></div><div><label>Pay conversion tax from</label><select><option>Taxable savings only</option><option>The converted amount</option></select></div>'+
+        '<div class="ro"><small>Your conversions go to</small><span>A new Roth IRA, created when you apply the ladder</span></div><div class="ro"><small>Your spouse’s conversions go to</small><span>A new Roth IRA, created when you apply the ladder</span></div></div>'+
+        '<div class="ost-yn"><span>Keep a minimum in taxable savings?</span><span class="ost-pill"><button>Yes</button><button class="on">No</button></span></div>'+
+        '<div class="ost-yn"><span>Convert only between two ages?</span><span class="ost-pill"><button>Yes</button><button class="on">No</button></span></div>'+
+        '<div class="ost-yn"><span>Cap each year’s conversion?</span><span class="ost-pill"><button>Yes</button><button class="on">No</button></span></div>'+
+        '<p style="margin-top:14px"><button class="ost-btn dis" type="button">Update the ladder</button></p>'+
+      '</div>'+
+      '<div class="ost-bh" id="tx-window"><h3>The window</h3><span class="cap">Six low-bracket Decembers</span></div>'+
+      '<p class="ost-note wide">Between retiring at 67 and Social Security at 70, your taxable income drops into the <b>22% bracket</b> with room to spare. That is the window: six years where a conversion is taxed lighter than it will ever be again. The first closes December 31.</p>'+
+      '<div class="ost-bh" id="tx-ladder"><h3>The ladder</h3><span class="cap">What to convert, year by year</span></div>'+
+      '<div class="ost-ladder"><div class="lrow h"><span>Year</span><span>Conversion</span><span>Bracket</span><span>Tax due</span></div>'+LAD.map(function(r){ return '<div class="lrow"><b>'+r[0]+'</b><div class="bar"><i style="width:'+(r[1]/50000*100)+'%"></i></div><span>'+r[2]+'</span><span>'+usd(r[3])+'</span></div>'; }).join('')+'</div>'+
+      '<div class="ost-kpis"><div class="ost-kpi"><div class="kl">Converted over six years</div><div class="kv">$270,000</div></div><div class="ost-kpi"><div class="kl">Lifetime tax saved</div><div class="kv" style="color:var(--green-cta)">$61,000</div></div><div class="ost-kpi"><div class="kl">Roth balance at 92</div><div class="kv">$604,000</div></div></div>'+
+      '<div class="ost-bh" id="tx-guard"><h3>The guardrail</h3><span class="cap">Never a bracket you did not choose</span></div>'+
+      '<p class="ost-note wide">Each year’s conversion stops at the top of the 22% bracket. IRMAA thresholds are checked two years ahead, so a December conversion never raises a Medicare premium you did not see coming.</p>'+
+      '<div class="ost-bh" id="tx-move"><h3>Your move</h3><span class="cap">Nothing converts until you say so</span></div>'+
+      '<div class="ost-card"><div class="t">Apply the ladder to your plan</div><p>The six conversions are added to your plan as scheduled events, paid from taxable savings. You can edit or remove any year later.</p><p style="margin-top:10px"><a class="ost-link" data-goto-opt="tax">Open the ladder →</a></p></div>'+
+      '<div class="ost-bh" id="tx-rmd"><h3>Required distributions</h3></div>'+
+      '<p class="ost-note">Required distributions are what you must withdraw from certain accounts each year to avoid IRS penalties: required minimum distributions (RMDs) from retirement accounts and some inherited accounts, and the 10-year rule, which requires some inherited accounts to be emptied by the end of the 10th year after the original owner’s death.</p>'+
+      '<p class="ost-note">Your first RMD comes due in 2034, the year Marshall turns 73. The ladder above lowers it by about <b>$9,800</b> a year.</p>'+
+      '<div class="ost-bh" id="tx-div"><h3>Tax diversification</h3></div>'+
+      '<p class="ost-note">This covers the <b>'+usd(ALL)+'</b> you’ve entered in your accounts. Add positions to your accounts to complete your picture.</p>'+
+      '<div class="ost-card" style="margin-top:14px"><div class="ost-div">'+donut([[TAXABLE,'#0E794E'],[DEFERRED,'#2E9E6E'],[FREE,'#C9EADB']], ALL)+'<div>'+
+        '<div class="drow"><span class="dot" style="background:#0E794E"></span><div><div class="dn">Taxable</div><div class="ds">Dividends, interest and gains are taxed as they occur.</div></div><div class="dv">'+usd(TAXABLE)+'<small>'+Math.round(TAXABLE/ALL*100)+'%</small></div></div>'+
+        '<div class="drow"><span class="dot" style="background:#2E9E6E"></span><div><div class="dn">Tax-deferred</div><div class="ds">Withdrawals are taxed as ordinary income.</div></div><div class="dv">'+usd(DEFERRED)+'<small>'+Math.round(DEFERRED/ALL*100)+'%</small></div></div>'+
+        '<div class="drow"><span class="dot" style="background:#C9EADB"></span><div><div class="dn">Tax-free</div><div class="ds">Qualified withdrawals aren’t taxed.</div></div><div class="dv">'+usd(FREE)+'<small>0%</small></div></div>'+
+      '</div></div></div>'+
+      '<div class="ost-mix">'+mixCard('Taxable mix',TAXABLE,rowsFor([32200,0,37520,6280,0]))+mixCard('Tax-deferred mix',DEFERRED,rowsFor([298280,111720,0,0,0]))+mixCard('Tax-free mix',FREE,rowsFor([0,0,0,0,0]))+'</div>'+
+      '<div class="ost-bh" id="tx-year"><h3>Taxes by year</h3></div>'+
+      '<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Taxes by year">'+g+'</svg>'+
+      '<div class="ost-legend">'+SER.map(function(s){ return '<span><i style="background:'+s[1]+'"></i>'+s[0]+'</span>'; }).join('')+'</div>'+
+      '<p class="ost-note">In years when your taxable income is lower, converting retirement savings to a Roth account may be taxed at a lower rate than at other times. These tax estimates are directional only; consult a tax professional for a more precise estimate, payment, and filing requirements.</p>';
+    function donut(parts,total){ var cx=90,cy=90,r=72,w=26, a=-Math.PI/2, s=''; parts.forEach(function(p){ if(!p[0]) return; var f=p[0]/total, a1=a+f*2*Math.PI; var x0=cx+r*Math.cos(a), y0=cy+r*Math.sin(a), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1); s+='<path d="M'+x0.toFixed(1)+' '+y0.toFixed(1)+' A'+r+' '+r+' 0 '+(f>0.5?1:0)+' 1 '+x1.toFixed(1)+' '+y1.toFixed(1)+'" stroke="'+p[1]+'" stroke-width="'+w+'" fill="none"/>'; a=a1; }); return '<svg viewBox="0 0 180 180" width="180" height="180" aria-hidden="true">'+s+'<text x="90" y="86" text-anchor="middle" font-size="11" fill="#47495A">All accounts</text><text x="90" y="104" text-anchor="middle" font-size="16" font-weight="600" fill="#10182C">'+usd(total)+'</text></svg>'; }
+    sec.addEventListener('click', function(e){ var b=e.target.closest('.ost-pill button'); if(!b) return; b.parentNode.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x===b); }); var u=sec.querySelector('.ost-btn.dis'); if(u) u.classList.remove('dis'); });
+  })();
+
+  /* ======================================================= WITHDRAWAL STRATEGY ======================================================= */
+  (function(){
+    var sec=root.querySelector('#withdrawal-strategy');
+    var SAFE=6480, PLAN=6300, LO=6150, HI=6820, CUR=1090000, FALL=980000, GROW=1240000;
+    var PEN=1800, OTH=400, PORT=4100, SUM=PEN+OTH+PORT;
+    var lo=5800, hi=7200; function px(v){ return ((v-lo)/(hi-lo)*100).toFixed(1)+'%'; }
+    sec.innerHTML=
+      '<p class="ost-eyebrow">Withdrawal strategy</p>'+
+      '<h2 class="ost-hero">Paychecks <span class="p">by design</span> for <span class="g">25 years</span>.</h2>'+
+      '<p class="ost-herosub">Which dollars you spend first decides how long all of them last.</p>'+
+      '<div class="ost-bh" id="wd-order"><h3>The order</h3><span class="cap">Right sequence, longer money</span></div>'+
+      '<div class="ost-order"><div class="oc on" style="flex:3"><div class="ot">1 · Taxable</div><div class="oy">2028 to 2036</div><div class="oa">Chase Total Checking, Ally Online Savings, Marcus Invest Core Portfolio, Wells Fargo Way2Save Savings</div></div><div class="oc" style="flex:2"><div class="ot">2 · Tax-deferred</div><div class="oy">2036 to 2059</div><div class="oa">Fidelity 401(k), Vanguard 401(k), Empower 401(k)</div></div><div class="oc" style="flex:1.2"><div class="ot">3 · Tax-free</div><div class="oy">Last</div><div class="oa">Roth IRA</div></div></div>'+
+      '<p class="ost-note">Your plan follows the <b>traditional order</b>: taxable money first, then tax-deferred, with Roth money last, so the tax-free dollars grow untouched the longest. Required minimum distributions come out whatever the order.</p>'+
+      '<div class="ost-bh" id="wd-guard"><h3>Guardrails</h3><span class="cap">Raises in good years, never a guess</span></div>'+
+      '<div class="ost-guard"><div class="tr"></div><div class="band" style="left:'+px(LO)+';width:calc('+px(HI)+' - '+px(LO)+')"></div><div class="pt" style="left:'+px(SAFE)+';background:var(--green-cta)"></div><div class="pt" style="left:'+px(PLAN)+';background:#10182C"></div><div class="lb" style="left:'+px(LO)+'">'+usd(LO)+'</div><div class="lb" style="left:'+px(HI)+'">'+usd(HI)+'</div></div>'+
+      '<div class="ost-gleg"><span><i style="background:var(--green-cta)"></i>Safe target '+usd(SAFE)+'</span><span><i style="background:#10182C"></i>Your plan '+usd(PLAN)+'</span></div>'+
+      '<p class="ost-note">Spending floats between <b>'+usd(LO)+' / mo</b> and <b>'+usd(HI)+' / mo</b>: small raises after good markets, small trims after bad ones. The rule decides, so a headline never does.</p>'+
+      '<div class="ost-two"><div class="ost-kpi"><div class="kl">Safe spending target</div><div class="kv">'+usd(SAFE)+' / mo</div><p>With confidence, your savings and income will sustain this amount through retirement. The target aims for about an 80% chance your money lasts.</p></div>'+
+        '<div class="ost-kpi"><div class="kl">Your planned spend</div><div class="kv">'+usd(PLAN)+' / mo</div><span class="rev" style="background:#E6F5EE;color:var(--green-cta)">Within the target</span><p>Your average monthly spend throughout retirement.</p><div class="adj">Adjust spending to stay on track over time</div></div></div>'+
+      '<div class="ost-kpis"><div class="ost-kpi"><div class="kl">If savings fall to</div><div class="kv">'+k(FALL)+'</div><div class="ks dn">⊖ decrease spending to</div><div class="kv" style="font-size:17px">'+usd(LO)+' / mo</div></div><div class="ost-kpi"><div class="kl">Savings balance at retirement</div><div class="kv">'+k(CUR)+'</div><div class="ks">Projected for 2028, the year you retire.</div></div><div class="ost-kpi"><div class="kl">If savings grow to</div><div class="kv">'+k(GROW)+'</div><div class="ks up">⊕ increase spending to</div><div class="kv" style="font-size:17px">'+usd(HI)+' / mo</div></div></div>'+
+      '<p class="ost-note">Amounts are average monthly spending from today to goal age, including taxes, in today’s dollars. Spending changes are driven by changes in your savings, not month-to-month fluctuations.</p>'+
+      '<div class="ost-bh" id="wd-month"><h3>One month, mapped</h3><span class="cap">Where a '+usd(SUM)+' month comes from</span></div>'+
+      '<div class="ost-month"><div class="mb" style="background:#1F2A44;flex:'+PEN+'"><b>'+usd(PEN)+'</b>Pensions</div><div class="mb" style="background:#1F2A44;flex:'+OTH+'"><b>'+usd(OTH)+'</b>Other income</div><div class="mb pf" style="flex:'+PORT+'"><b>'+usd(PORT)+'</b>Portfolio</div></div>'+
+      '<p class="ost-note">An average month of 2028, the first calendar year your plan withdraws for retirement. <b>'+Math.round(PORT/SUM*100)+' cents</b> of every dollar you spend comes from your portfolio, the part that depends on a good year; the rest arrives no matter what the market does.</p>'+
+      '<div class="ost-bh" id="wd-move"><h3>Your move</h3><span class="cap">Set how your plan draws</span></div>'+
+      '<div class="ost-card"><div class="ost-move2"><div class="t">Withdrawal strategy</div><div class="v">Based on spending needs</div></div><div class="ost-move2"><div class="t">Withdrawal order</div><div class="v">Traditional</div></div></div>'+
+      '<div class="ost-card"><div class="t">See if your spending aligns with what’s sustainable</div><p>Compare your entered expenses to your safe spending to see if you’re on track.</p><p style="margin-top:10px"><button class="ost-btn" type="button" data-goto="plan">Modify expenses</button></p></div>';
+  })();
+
+  /* ---------- rail behaviour: click scrolls, scroll highlights ---------- */
+  function setActive(id){ nav.querySelectorAll('li[data-sec]').forEach(function(li){ li.classList.toggle('on', li.dataset.sec===id); }); }
+  nav.addEventListener('click', function(e){
+    var a=e.target.closest('a[data-go]'); var it=e.target.closest('li[data-sec] > .ost-item');
+    var target = a ? document.getElementById(a.dataset.go) : it ? document.getElementById(it.parentNode.dataset.sec) : null; if(!target) return;
+    e.preventDefault(); e.stopPropagation();
+    if(it) setActive(it.parentNode.dataset.sec);
+    var y=target.getBoundingClientRect().top+window.scrollY-84; window.scrollTo({ top:y, behavior:reduce?'auto':'smooth' });
+    try{ history.replaceState(null,'','#'+(a?a.dataset.go:it.parentNode.dataset.sec)); }catch(err){}
+  }, true);
+  var io=new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting) setActive(en.target.id); }); }, { rootMargin:'-20% 0px -70% 0px', threshold:0 });
+  root.querySelectorAll('.ost-sec').forEach(function(s){ io.observe(s); });
+
+  /* links into the existing deep tools */
+  root.addEventListener('click', function(e){ var a=e.target.closest('[data-goto-opt]'); if(!a) return; e.preventDefault(); e.stopPropagation(); var id=MAP[a.dataset.gotoOpt]; if(id){ openTool(id); return; } var c=document.querySelector('.opt-grid [data-opt="'+a.dataset.gotoOpt+'"], .opt-grid #optHero[data-opt="'+a.dataset.gotoOpt+'"]'); if(c) c.click(); }, true);
+
+  /* ---------- card view + AI: the index stays the card grid, each card opens its tool as a page ---------- */
+  var MAP={ stress:'stress-test', alloc:'asset-allocation', budget:'budget', ss:'social-security-explorer', ssx:'social-security-explorer', tax:'tax-planning', withdraw:'withdrawal-strategy' };
+  function openTool(id){
+    var sec=root.querySelector('#'+id); if(!sec) return;
+    root.querySelectorAll('.ost-sec').forEach(function(x){ x.classList.toggle('ost-on', x===sec); });
+    var tool=TOOLS.filter(function(t){ return t.id===id; })[0];
+    root.querySelector('.ost-subnav').innerHTML=(tool&&tool.sub.length?tool.sub.slice(0,8).map(function(s){ return '<a data-go="'+s[1]+'">'+esc(s[0])+'</a>'; }).join(''):'');
+    document.body.classList.add('ost-open'); window.scrollTo({ top:0, behavior:'auto' });
+    if(window.__bai && !window.__bai.isOpen()) setTimeout(function(){ window.__bai.open(); }, 200);
+  }
+  function closeTool(){ document.body.classList.remove('ost-open'); window.scrollTo({ top:0, behavior:'auto' }); }
+  window.__optTools={ open:openTool, close:closeTool, MAP:MAP };
+  root.querySelector('.ost-back').addEventListener('click', closeTool);
+  root.querySelector('.ost-subnav').addEventListener('click', function(e){ var a=e.target.closest('a[data-go]'); if(!a) return; var t=document.getElementById(a.dataset.go); if(t){ var y=t.getBoundingClientRect().top+window.scrollY-84; window.scrollTo({ top:y, behavior:reduce?'auto':'smooth' }); } });
+  /* cards and rail titles route to the new tools instead of the old sub-pages */
+  document.addEventListener('click', function(e){
+    if(document.body.classList.contains('opt-stage')) return;
+    var c=e.target.closest('.opt-grid .opt-card[data-opt], .opt-grid #optHero[data-opt], .onav-item[data-opt]'); if(!c) return;
+    var id=MAP[c.dataset.opt]; if(!id) return;
+    e.preventDefault(); e.stopImmediatePropagation(); openTool(id);
+  }, true);
+  /* leaving Optimize closes the tool page */
+  new MutationObserver(function(){ if(document.body.dataset.view!=='optimize' && document.body.classList.contains('ost-open')) document.body.classList.remove('ost-open'); }).observe(document.body,{ attributes:true, attributeFilter:['data-view'] });
+  /* the index is the card view with the AI open */
+  try{ if(localStorage.getItem('boldin.optView.cards')!=='1'){ localStorage.setItem('boldin.optView','4'); localStorage.setItem('boldin.optView.cards','1'); } }catch(err){}
+  setTimeout(function(){ var b=document.querySelector('.os-view button[data-v="4"]'); if(b && !b.classList.contains('on')) b.click(); }, 0);
+})();
+</script>
+<!-- ===== Optimize index: the card design, carrying the staging tools ===== -->
+<style id="optCardsCSS">
+body.ost-cards:not(.ost-open):not(.fire-page) .opt-index > .center > .oli,
+body.ost-cards:not(.ost-open):not(.fire-page) .opt-index > .center > .opt-grid:not(.ost-grid),
+body.ost-cards:not(.ost-open):not(.fire-page) .opt-index > .center > .os-page-head,
+body.ost-cards:not(.ost-open):not(.fire-page) .opt-index > .center > .os-side-card{ display:none !important; }
+body.ost-cards .os-view{ display:none !important; }
+/* the AI is simply there when Optimize opens: no column slide, no fade-in */
+body.ost-cards .layout.page.opt-index{ transition:none !important; }
+body.ost-cards .opt-index > .rail.bai-host .bai{ animation:none !important; transition:none !important; }
+body.ost-cards .opt-index > .rail.bai-host{ transition:none !important; }
+body.ost-open #ostIndex{ display:none; }
+#ostIndex h1{ font-size:34px; font-weight:400; letter-spacing:-0.3px; margin:0 0 6px; line-height:1.15; color:var(--ink); }
+#ostIndex .ost-isub{ font-size:16px; color:var(--text-secondary); margin:0 0 24px; }
+#ostIndex .opt-card{ position:relative; }
+#ostIndex .opt-card .ost-ceye{ font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-secondary); }
+#ostIndex .opt-card .opt-card-t{ font-size:22px; font-weight:400; line-height:1.2; letter-spacing:-0.2px; }
+#ostIndex .opt-card .opt-card-t .p{ color:var(--green-cta); }
+#ostIndex .opt-card .opt-card-t .g{ color:#E0A526; }
+#ostIndex .opt-card .ost-cviz{ margin:4px 0 2px; min-height:96px; display:flex; align-items:center; }
+#ostIndex .opt-card .ost-cviz > svg{ width:100%; height:auto; display:block; }
+#ostIndex .opt-card .ost-cviz .ost-guard{ width:100%; }
+#ostIndex .opt-card .ost-cviz svg text{ font-size:10px; }
+#ostIndex .opt-card .opt-card-go{ margin-top:auto; }
+#ostIndex .opt-card.wide{ grid-column:1 / -1; }
+#ostIndex .ost-cbars{ display:flex; flex-direction:column; gap:8px; width:100%; }
+#ostIndex .ost-cbars .r{ display:grid; grid-template-columns:120px 1fr 70px; align-items:center; gap:10px; font-size:13px; color:var(--text-secondary); }
+#ostIndex .ost-cbars .r b{ color:var(--ink); text-align:right; }
+#ostIndex .ost-cbars .r i{ display:block; height:8px; border-radius:999px; background:var(--green-cta); }
+#ostIndex .ost-cbars .r i.soft{ background:#CFE6D9; }
+#ostIndex .ost-csplit{ display:flex; gap:6px; width:100%; }
+#ostIndex .ost-csplit .mb{ color:#fff; border-radius:8px; padding:8px 10px; font-size:11.5px; min-width:0; background:#1F2A44; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; min-width:max-content; }
+#ostIndex .ost-csplit .mb b{ display:block; font-size:13px; }
+#ostIndex .ost-csplit .mb.pf{ background:#CFE6D9; color:var(--ink); }
+</style>
+<script>
+(function(){
+  'use strict';
+  var root=document.getElementById('optStage'); if(!root) return;
+  var center=root.parentNode;
+  var T=window.__optTools; if(!T) return;
+  var idx=document.createElement('div'); idx.id='ostIndex';
+  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Seven tools, each one a lever on the whole plan. Open any of them; nothing changes until you say so.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
+  center.insertBefore(idx, root);
+  var grid=idx.querySelector('#ostGrid');
+  function go(label){ return '<span class="opt-card-go">'+label+' <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; }
+  function card(id, eye, title, sub, viz, cta, wide){ var c=document.createElement('div'); c.className='opt-card'+(wide?' wide':''); c.dataset.tool=id; c.setAttribute('role','link'); c.tabIndex=0; c.innerHTML='<div class="ost-ceye">'+eye+'</div><div class="opt-card-t">'+title+'</div><div class="opt-card-sub">'+sub+'</div><div class="ost-cviz"></div>'+go(cta); var v=c.querySelector('.ost-cviz'); if(typeof viz==='string') v.innerHTML=viz; else if(viz) v.appendChild(viz); return c; }
+  function ssMini(){ var ages=[62,63,64,65,66,67,68,69,70], m=[2480,2660,2850,3080,3300,3540,3820,4100,4380], l=[1550,1660,1780,1920,2060,2210,2390,2560,2740]; var W=240,H=60,hi=4400,bw=10,gap=(W-ages.length*(bw*2+3))/ages.length,s=''; ages.forEach(function(a,i){ var x=i*(bw*2+3+gap), h1=m[i]/hi*H, h2=l[i]/hi*H; s+='<rect x="'+x.toFixed(1)+'" y="'+(H-h1).toFixed(1)+'" width="'+bw+'" height="'+h1.toFixed(1)+'" rx="2" fill="#0D3F4A"/><rect x="'+(x+bw+3).toFixed(1)+'" y="'+(H-h2).toFixed(1)+'" width="'+bw+'" height="'+h2.toFixed(1)+'" rx="2" fill="#F2784B"/>'; if(a===62||a===67||a===70) s+='<text x="'+(x+bw+1).toFixed(1)+'" y="'+(H+11)+'" text-anchor="middle" font-size="9" fill="#47495A">'+a+'</text>'; }); return '<svg viewBox="0 0 '+W+' '+(H+14)+'" style="max-height:90px" aria-hidden="true">'+s+'</svg>'; }
+  function cloneSvg(sel, h){ var s=root.querySelector(sel); if(!s) return ''; var c=s.cloneNode(true); c.removeAttribute('id'); c.removeAttribute('width'); c.removeAttribute('height'); c.removeAttribute('style'); c.querySelectorAll('[id]').forEach(function(x){ x.removeAttribute('id'); }); if(h) c.style.maxHeight=h+'px'; return c; }
+  function build(){
+    grid.innerHTML='';
+    var hero=(root.querySelector('#stHero')||{}).innerHTML||'Still funded to <span class="p">92</span>, at <span class="g">87%</span>.';
+    grid.appendChild(card('stress-test','Stress test', hero, 'Every slider moves the whole plan. Nothing here is saved.', cloneSvg('#stSvg',150), 'Pull a lever', true));
+    grid.appendChild(card('asset-allocation','Asset allocation', 'You are <b style="font-weight:600">8 points</b> from your <span class="p">moderate</span> target.', 'Where your invested dollars sit today, and where your target wants them.', cloneSvg('#asset-allocation svg',150), 'See the moves'));
+    grid.appendChild(card('budget','Detailed budgeter', 'Live <span class="p">well</span> on <span class="g">$6,323</span> a month.', 'Document what you spend now and what you would like to spend.', '<div class="ost-cbars"><div class="r"><span>Essentials</span><i style="width:67%"></i><b>$4,246</b></div><div class="r"><span>Room to live</span><i class="soft" style="width:33%"></i><b>$2,077</b></div></div>', 'Open the budgeter'));
+    grid.appendChild(card('social-security-explorer','Social Security Explorer', 'A guaranteed <span class="p">8% raise</span> for every year you wait.', 'See how the age you claim changes your checks, and what each choice adds up to over your lifetime.', ssMini(), 'Explore claiming ages'));
+    grid.appendChild(card('tax-planning','Tax planning', 'Six low-bracket Decembers. <span class="p">$61,000</span> stays yours.', 'The lowest-lifetime-tax ladder, paid from taxable savings, converting into a new Roth IRA.', cloneSvg('#tax-planning .ost-div svg',130), 'Open the ladder'));
+    var gw='<div class="ost-csplit"><div class="mb" style="flex:1800"><b>$1,800</b>Pensions</div><div class="mb" style="flex:400"><b>$400</b>Other income</div><div class="mb pf" style="flex:4100"><b>$4,100</b>Portfolio</div></div>';
+    grid.appendChild(card('withdrawal-strategy','Withdrawal strategy', 'Paychecks <span class="p">by design</span> for <span class="g">25 years</span>.', 'Which dollars you spend first decides how long all of them last.', gw, 'Set the order'));
+  }
+  build();
+  /* the stress chart is drawn once the model is ready; refresh the card then */
+  var tries=0, t=setInterval(function(){ var s=root.querySelector('#stSvg'); if(s && s.innerHTML.length>100){ clearInterval(t); build(); } else if(++tries>80) clearInterval(t); }, 200);
+  grid.addEventListener('click', function(e){ var c=e.target.closest('.opt-card[data-tool]'); if(c) T.open(c.dataset.tool); });
+  grid.addEventListener('keydown', function(e){ var c=e.target.closest('.opt-card[data-tool]'); if(c && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); T.open(c.dataset.tool); } });
+  document.body.classList.add('ost-cards');
+  /* open the AI in the same frame Optimize appears, so nothing shifts afterwards */
+  function openNow(){ if(document.body.dataset.view!=='optimize' || !window.__bai || document.body.classList.contains('flow-open')) return; var host=document.querySelector('.opt-index > .rail .bai'); if(window.__bai.isOpen() && host) return; if(window.__bai.isOpen()) window.__bai.close(); window.__bai.open(); }
+  new MutationObserver(openNow).observe(document.body,{ attributes:true, attributeFilter:['data-view'] });
+  document.addEventListener('click', function(e){ var a=e.target.closest && e.target.closest('.topnav nav.modes a'); if(a && /optimize/i.test(a.textContent)) setTimeout(openNow, 0); }, true);
+  openNow();
+})();
+</script>
+<!-- ===== My Money rail: a story on load, the expenses donut once Assets reaches the top ===== -->
+<style id="moneyRailCSS">
+.rail .mr-story{ display:none; }
+body[data-view="today"] .rail.mr-story-on .mr-story{ display:block; }
+body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-pop){ display:none !important; }
+.rail .mr-story .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:20px; font-weight:600; color:var(--ink); margin:0 0 var(--s-4); }
+.rail .mr-story .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; display:inline-flex; }
+.rail .mr-story p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0 0 var(--s-5); max-width:none; }
+.rail .mr-story p b{ color:var(--ink); font-weight:600; }
+.rail .mr-story .mr-cta{ display:inline-flex; align-items:center; gap:6px; color:var(--green-cta); font-size:16px; font-weight:600; text-decoration:none; cursor:pointer; }
+.rail .mr-story .mr-cta:hover{ text-decoration:underline; }
+.rail .mr-story .mr-list{ list-style:none; margin:0 0 var(--s-5); padding:0; display:flex; flex-direction:column; gap:10px; }
+.rail .mr-story .mr-list li{ display:flex; gap:10px; align-items:flex-start; font-size:15px; color:var(--ink); line-height:1.45; cursor:pointer; }
+.rail .mr-story .mr-list li i{ flex:none; width:22px; height:22px; border-radius:50%; background:#E6F5EE; color:var(--green-cta); display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; font-style:normal; margin-top:1px; }
+.rail .mr-story .mr-list li b{ font-weight:600; }
+.rail .mr-story .mr-list li:hover b{ color:var(--green-cta); }
+</style>
+<script>
+(function(){
+  'use strict';
+  function page(){ return [].slice.call(document.querySelectorAll('.layout.page')).filter(function(l){ return l.querySelector('#assets-block') && l.querySelector(':scope > .rail'); })[0]; }
+  var L=page(); if(!L) return; var rail=L.querySelector(':scope > .rail'), assets=L.querySelector('#assets-block');
+  var card=document.createElement('div'); card.className='mr-story side-ctx';
+  card.innerHTML='<div class="story-head">Your Money Today <span class="spk"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span></div>'+
+    '<p><b>$1.14M</b> is already yours, and <b>$2,650</b> a month is still going to work. Link your last two accounts and every balance keeps itself current.</p>'+
+    '<a class="mr-cta" data-go="connect">Link an account <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>';
+  rail.insertBefore(card, rail.firstChild);
+  function jump(id){ var el=L.querySelector(id); if(!el) return; var y=el.getBoundingClientRect().top+window.scrollY-84; window.scrollTo({ top:y, behavior:'smooth' }); }
+  card.addEventListener('click', function(e){
+    var a=e.target.closest('.mr-cta'); if(!a) return; e.preventDefault();
+    var btn=[].slice.call(L.querySelectorAll('#assets-block button, #assets-block a')).filter(function(x){ return /connect/i.test(x.textContent); })[0];
+    if(btn) btn.click(); else jump('#assets-block');
+  });
+  /* the story holds the rail until Assets reaches the top of the viewport; from there the expenses donut takes over */
+  function tick(){
+    if(document.body.dataset.view!=='today' || !assets.offsetParent){ rail.classList.remove('mr-story-on'); document.body.classList.remove('mm-donut'); return; }
+    var top=assets.getBoundingClientRect().top; var past = top <= 96;
+    rail.classList.toggle('mr-story-on', !past);
+    document.body.classList.toggle('mm-donut', past);
+  }
+  var raf=null; function onScroll(){ if(raf) return; raf=requestAnimationFrame(function(){ raf=null; tick(); }); }
+  window.addEventListener('scroll', onScroll, { passive:true }); window.addEventListener('resize', onScroll);
+  new MutationObserver(function(){ setTimeout(tick, 30); setTimeout(tick, 400); }).observe(document.body, { attributes:true, attributeFilter:['data-view','class'] });
+  tick(); setInterval(tick, 700);
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
