@@ -36761,6 +36761,150 @@ body.whatif-open .rail.scn-pop-on{ padding-top:8px; }
   window.__scnPop={ open:open, close:close };
 })();
 </script>
+<!-- ===== My Money · Expenses: the Basic Budgeter (Estimated · Basic · Detailed), modelled on classic's Expenses and Healthcare ===== -->
+<style>
+/* plan-only blocks never show on My Money */
+body:not([data-view="plan"]) #futrates-block, body:not([data-view="plan"]) #spend-block{ display:none !important; }
+/* the budgeter lives at the top of the Expenses body on My Money */
+.bg{ display:none; margin:0 0 28px; }
+body[data-view="today"] .acc[data-pe-exp] .bg{ display:block; }
+body[data-view="today"] .acc[data-pe-exp] .acc-head .sub .sub-roll, body[data-view="today"] .acc[data-pe-exp] .acc-head .sub .sub-roll-dot{ display:none; }
+body[data-view="today"] .acc[data-pe-exp] .acc-head .sub .bg-sub{ display:inline; }
+.bg-sub{ display:none; }
+.bg-modes{ display:inline-flex; border:1px solid var(--hairline-strong); border-radius:12px; overflow:hidden; margin:0 0 18px; }
+.bg-modes button{ font:inherit; font-size:14px; font-weight:600; color:var(--text-secondary); background:#fff; border:0; border-left:1px solid var(--hairline-strong); padding:10px 18px; cursor:pointer; }
+.bg-modes button:first-child{ border-left:0; }
+.bg-modes button.on{ background:#F1F8F4; color:var(--green-cta); }
+.bg-top{ display:block; }
+.bg-top > .bg-donut{ display:none; }
+.rail .bg-rail{ display:none; margin:0 0 22px; }
+body[data-view="today"] .rail .bg-rail.on{ display:block; }
+.rail .bg-rail .bg-donut{ border:0; padding:0; align-items:flex-start; }
+.rail .bg-rail .bg-donut svg{ width:170px; height:170px; align-self:center; }
+.rail .bg-rail .bg-donut .c{ align-self:center; }
+.rail .bg-rail .rk{ font-size:12.5px; font-weight:600; color:var(--text-muted); margin-bottom:10px; }
+.rail .bg-rail .bg-leg{ font-size:13.5px; } .rail .bg-rail .bg-leg i{ width:10px; height:10px; }
+.rail.bg-rail-on > :not(.bg-rail):not(.bai):not(.scn-pop){ display:none !important; }
+.bg-donut{ display:flex; flex-direction:column; align-items:center; gap:10px; padding:14px 10px; border:1px solid var(--hairline); border-radius:16px; }
+.bg-donut svg{ width:150px; height:150px; display:block; }
+.bg-donut .c{ text-align:center; } .bg-donut .c small{ display:block; font-size:12px; color:var(--text-secondary); } .bg-donut .c b{ display:block; font-size:22px; font-weight:600; color:var(--ink); line-height:1.1; } .bg-donut .c em{ font-style:normal; font-size:12px; color:var(--text-muted); }
+.bg-leg{ display:flex; flex-direction:column; gap:4px; font-size:12.5px; color:var(--text-secondary); width:100%; }
+.bg-leg span{ display:flex; align-items:center; gap:7px; } .bg-leg i{ width:9px; height:9px; border-radius:50%; flex:0 0 9px; } .bg-leg b{ margin-left:auto; color:var(--ink); font-weight:600; }
+.bg-group{ margin-bottom:6px; }
+.bg-gh{ display:flex; justify-content:space-between; align-items:baseline; padding:10px 12px; background:#FAF8F0; border-radius:10px; font-size:14px; font-weight:600; color:var(--ink); }
+.bg-gh small{ font-weight:400; color:var(--text-secondary); } .bg-gh small b{ color:var(--ink); font-weight:600; }
+.bg-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:13px 12px; border-bottom:1px solid var(--hairline); }
+.bg-row:last-child{ border-bottom:0; }
+.bg-row .nm{ font-size:15.5px; font-weight:600; color:var(--ink); } .bg-row .when{ font-size:13px; color:var(--text-secondary); margin-top:2px; }
+.bg-row .amt{ font-size:15.5px; font-weight:600; color:var(--ink); white-space:nowrap; }
+.bg-row .acts{ display:flex; gap:4px; margin-left:4px; }
+.bg-row .acts button{ width:30px; height:30px; border-radius:50%; border:1px solid transparent; background:none; color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.bg-row .acts button:hover{ background:#F1F2F4; color:var(--ink); } .bg-row .acts button svg{ width:15px; height:15px; }
+.bg-row.locked .acts{ visibility:hidden; } .bg-row.locked .nm::after{ content:' · from Healthcare'; font-size:12px; font-weight:400; color:var(--text-muted); }
+.bg-add{ display:inline-flex; align-items:center; gap:6px; margin:12px 0 4px; font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:#fff; border:1px dashed var(--hairline-strong); border-radius:999px; padding:8px 14px 8px 10px; cursor:pointer; }
+.bg-add:hover{ border-style:solid; border-color:var(--green-cta); background:#F1F8F4; } .bg-add svg{ width:13px; height:13px; }
+/* the row editor */
+.bg-ed{ margin:8px 0 10px; padding:18px 18px 16px; border:1px solid rgba(4,180,119,.22); border-radius:16px; background:#F3FBF7; }
+.bg-ed .t{ font-size:15px; font-weight:600; color:var(--ink); margin-bottom:12px; }
+.bg-ed .g{ display:grid; grid-template-columns:1fr 1fr; gap:12px 14px; }
+.bg-ed .f{ display:flex; flex-direction:column; gap:5px; } .bg-ed .f.w{ grid-column:1 / -1; }
+.bg-ed label{ font-size:12.5px; font-weight:600; color:var(--text-secondary); }
+.bg-ed input, .bg-ed select{ font:inherit; font-size:15px; color:var(--ink); border:1px solid var(--hairline-strong); border-radius:10px; padding:10px 12px; background:#fff; width:100%; box-sizing:border-box; }
+.bg-ed input:focus, .bg-ed select:focus{ outline:none; border-color:var(--green-cta); box-shadow:0 0 0 3px rgba(14,121,78,.12); }
+.bg-ed .money{ position:relative; } .bg-ed .money input{ padding-left:24px; padding-right:72px; } .bg-ed .money::before{ content:'$'; position:absolute; left:11px; top:11px; color:var(--text-muted); } .bg-ed .money::after{ content:'monthly'; position:absolute; right:12px; top:11px; font-size:13px; color:var(--text-muted); }
+.bg-ed .hint{ grid-column:1 / -1; font-size:12.5px; color:var(--text-secondary); line-height:1.45; margin-top:-2px; }
+.bg-ed .acts{ display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }
+.bg-ed .acts button{ font:inherit; font-size:14px; font-weight:600; border-radius:999px; padding:9px 16px; cursor:pointer; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+.bg-ed .acts .pri{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; } .bg-ed .acts .pri:disabled{ opacity:.45; cursor:default; }
+.bg-ed .acts .del{ margin-right:auto; border:0; color:#B3261E; padding-left:4px; }
+/* estimated mode */
+.bg-est{ border:1px solid var(--hairline); border-radius:16px; padding:18px 20px; }
+.bg-est .k{ font-size:12.5px; font-weight:600; color:var(--green-cta); } .bg-est .big{ font-size:28px; font-weight:600; color:var(--ink); margin:2px 0 4px; } .bg-est p{ margin:0 0 12px; font-size:14px; color:var(--text-secondary); line-height:1.5; }
+.bg-est .rows{ display:grid; grid-template-columns:1fr auto; gap:6px 16px; font-size:14px; color:var(--text-secondary); } .bg-est .rows b{ color:var(--ink); font-weight:600; text-align:right; }
+.bg-est .use{ margin-top:14px; font:inherit; font-size:14px; font-weight:600; color:#fff; background:var(--green-cta); border:0; border-radius:999px; padding:9px 16px; cursor:pointer; }
+.bg-det{ border:1px dashed var(--hairline-strong); border-radius:16px; padding:18px 20px; font-size:14px; color:var(--text-secondary); line-height:1.5; }
+.bg-det b{ color:var(--ink); } .bg-det .go{ display:inline-block; margin-top:10px; font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:none; border:0; padding:0; cursor:pointer; }
+.bg-onetime{ font-size:12.5px; font-weight:600; color:var(--text-secondary); margin:6px 0 2px 12px; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var KEY='boldin.budgeter.v1', MODEKEY='boldin.budgeter.mode';
+  var PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+  var PEN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>';
+  var BIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>';
+  var GROUPS=[['general','General recurring','#10394A'],['debt','Non-mortgage debts','#F5A26B'],['medical','Medical','#E8646C']];
+  var DEFAULT=[
+    { id:'housing', g:'general', nm:'Housing', amt:2320, start:'now', stop:'life' },
+    { id:'food', g:'general', nm:'Groceries and dining', amt:1480, start:'now', stop:'life' },
+    { id:'util', g:'general', nm:'Utilities and phone', amt:360, start:'now', stop:'life' },
+    { id:'car', g:'general', nm:'Car and transport', amt:620, start:'now', stop:'life' },
+    { id:'ins', g:'general', nm:'Insurance', amt:410, start:'now', stop:'life' },
+    { id:'fun', g:'general', nm:'Travel and fun', amt:450, start:'now', stop:'life' },
+    { id:'give', g:'general', nm:'Giving', amt:480, start:'now', stop:'life' },
+    { id:'rest', g:'general', nm:'Everything else', amt:1170, start:'now', stop:'life' },
+    { id:'carloan', g:'debt', nm:'Car loan', amt:380, start:'now', stop:'a64' },
+    { id:'card', g:'debt', nm:'Credit card', amt:280, start:'now', stop:'a62' },
+    { id:'med', g:'medical', nm:'Health premiums and care', amt:900, start:'now', stop:'life', locked:true }
+  ];
+  var AGES=[]; for(var a=61;a<=92;a++) AGES.push(a);
+  function ageLabel(v){ if(v==='now') return 'Now'; if(v==='prior') return 'Prior to Jan 2026'; if(v==='life') return 'Lifetime'; if(v==='ret') return 'Retirement (63)'; var n=+String(v).slice(1); return 'Age '+n+' · '+(2026+(n-61)); }
+  function load(){ try{ var s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s && s.length) return s; }catch(e){} return DEFAULT.map(function(x){ return Object.assign({}, x); }); }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(ITEMS)); }catch(e){} }
+  function mode(){ try{ return localStorage.getItem(MODEKEY)||'basic'; }catch(e){ return 'basic'; } }
+  var ITEMS=load(), editing=null, host=null;
+  function usd(v){ return '$'+Math.round(v).toLocaleString('en-US'); }
+  function totals(){ var t={ all:0 }; GROUPS.forEach(function(g){ t[g[0]]=0; }); ITEMS.forEach(function(it){ t[it.g]+=it.amt; t.all+=it.amt; }); return t; }
+  function donut(t){ var r=58, c=2*Math.PI*r, off=0, segs=''; GROUPS.forEach(function(g){ var f=t.all?t[g[0]]/t.all:0; segs+='<circle r="'+r+'" cx="75" cy="75" fill="none" stroke="'+g[2]+'" stroke-width="18" stroke-dasharray="'+(c*f).toFixed(1)+' '+(c*(1-f)).toFixed(1)+'" stroke-dashoffset="'+(-off).toFixed(1)+'" transform="rotate(-90 75 75)"/>'; off+=c*f; }); return '<svg viewBox="0 0 150 150">'+segs+'</svg>'; }
+  function rowHTML(it){ var when=(it.start==='now'||it.start==='prior')&&it.stop==='life' ? 'Now to lifetime' : ageLabel(it.start)+' to '+ageLabel(it.stop); return '<div class="bg-row'+(it.locked?' locked':'')+'" data-id="'+it.id+'"><div><div class="nm">'+esc(it.nm)+'</div><div class="when">'+when+'</div></div><div class="amt">'+usd(it.amt)+' / mo</div><div class="acts"><button type="button" class="ed" aria-label="Edit">'+PEN+'</button><button type="button" class="rm" aria-label="Remove">'+BIN+'</button></div></div>'; }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function edHTML(it){ it=it||{ nm:'', amt:'', start:'now', stop:'life', g:'general' };
+    function opts(cur, kind){ var list=kind==='start'?[['now','Now'],['prior','Prior to Jan 2026'],['ret','Retirement (63)']]:[['life','Lifetime'],['ret','Retirement (63)']]; AGES.forEach(function(a){ list.push(['a'+a, ageLabel('a'+a)]); }); return list.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===cur?' selected':'')+'>'+o[1]+'</option>'; }).join(''); }
+    return '<div class="bg-ed" data-id="'+(it.id||'')+'"><div class="t">'+(it.id?'Edit expense':'Add an expense')+'</div><div class="g"><div class="f w"><label>Label</label><input class="e-nm" type="text" value="'+esc(it.nm)+'" placeholder="e.g. Gym and classes"></div><div class="f"><label>Amount</label><div class="money"><input class="e-amt" type="text" inputmode="numeric" value="'+(it.amt?it.amt.toLocaleString('en-US'):'')+'" placeholder="0"></div></div><div class="f"><label>Group</label><select class="e-g">'+GROUPS.filter(function(g){ return g[0]!=='medical'; }).map(function(g){ return '<option value="'+g[0]+'"'+(g[0]===it.g?' selected':'')+'>'+g[1]+'</option>'; }).join('')+'</select></div><div class="f"><label>Start age</label><select class="e-start">'+opts(it.start,'start')+'</select></div><div class="f"><label>Stop age</label><select class="e-stop">'+opts(it.stop,'stop')+'</select></div><p class="hint">Enter today’s dollars. Boldin inflates this over time using your inflation assumption in Rate Assumptions.</p></div><div class="acts">'+(it.id?'<button type="button" class="del">Delete</button>':'')+'<button type="button" class="cancel">Cancel</button><button type="button" class="pri save">Save</button></div></div>'; }
+  function basicHTML(){ var t=totals();
+    var h='<div class="bg-top"><div>';
+    GROUPS.forEach(function(g){ var list=ITEMS.filter(function(x){ return x.g===g[0]; }); if(!list.length && g[0]==='medical') return; h+='<div class="bg-group"><div class="bg-gh">'+g[1]+'<small>Current <b>'+usd(t[g[0]])+' / mo</b></small></div>'+list.map(rowHTML).join('')+'</div>'; });
+    h+='<button type="button" class="bg-add">'+PLUS+'Add an expense</button></div>';
+    h+='<div class="bg-donut">'+donut(t)+'<div class="c"><small>Expenses</small><b>'+usd(t.all)+'</b><em>/ mo</em></div><div class="bg-leg">'+GROUPS.map(function(g){ return '<span><i style="background:'+g[2]+'"></i>'+g[1]+' <b>'+(t.all?Math.round(100*t[g[0]]/t.all):0)+'%</b></span>'; }).join('')+'</div></div></div>';
+    return h; }
+  function estHTML(){ var t=totals(); return '<div class="bg-est"><div class="k">Estimated from your income and savings</div><div class="big">'+usd(8400)+' / mo</div><p>Take-home pay of $12,400, less the $2,650 you save and the $1,350 going to the mortgage principal, leaves about $8,400 that life costs. A fine starting point until you have a budget you trust.</p><div class="rows"><span>Take-home income</span><b>$12,400</b><span>Saved each month</span><b>− $2,650</b><span>Mortgage principal</span><b>− $1,350</b><span>Estimated spending</span><b>$8,400</b></div><button type="button" class="use">Use this estimate</button></div>'; }
+  function detHTML(){ return '<div class="bg-det"><b>Detailed budgeter.</b> Every line, by category, with a must-have and a nice-to-have amount for each, and the ability to change any of them at retirement. Best once the basics are settled.<br><button type="button" class="go">Open the detailed budgeter ↗</button></div>'; }
+  function railCard(){ var rail=[].slice.call(document.querySelectorAll('.layout.page.on > .rail')).filter(function(r){ return r.offsetParent; })[0]; if(!rail) return null; var c=rail.querySelector('.bg-rail'); if(!c){ c=document.createElement('div'); c.className='bg-rail'; rail.insertBefore(c, rail.firstChild); } return c; }
+  function paintRail(){ var c=railCard(); if(!c) return; var acc=host && host.closest('.acc'); var bodyEl=acc && acc.querySelector('.acc-body'); var open=!!(bodyEl && bodyEl.getBoundingClientRect().height>40 && host.getBoundingClientRect().height>0 && document.body.dataset.view==='today' && mode()==='basic'); var t=totals();
+    c.innerHTML='<div class="rk">Current monthly expenses</div><div class="bg-donut">'+donut(t)+'<div class="c"><small>Expenses</small><b>'+usd(t.all)+'</b><em>/ mo</em></div><div class="bg-leg">'+GROUPS.map(function(g){ return '<span><i style="background:'+g[2]+'"></i>'+g[1]+' <b>'+usd(t[g[0]])+' · '+(t.all?Math.round(100*t[g[0]]/t.all):0)+'%</b></span>'; }).join('')+'</div></div>';
+    c.classList.toggle('on', open); c.parentElement.classList.toggle('bg-rail-on', open); }
+  setInterval(paintRail, 600);
+  function render(){ if(!host) return; var m=mode(); host.innerHTML='<div class="bg-modes" role="group" aria-label="Budget method">'+[['est','Estimated spending'],['basic','Basic budgeter'],['det','Detailed budgeter']].map(function(x){ return '<button type="button" data-m="'+x[0]+'"'+(x[0]===m?' class="on"':'')+'>'+x[1]+'</button>'; }).join('')+'</div>'+(m==='est'?estHTML():m==='det'?detHTML():basicHTML()); sub(); paintRail(); }
+  function sub(){ var acc=host && host.closest('.acc'); if(!acc) return; var s=acc.querySelector('.acc-head .sub'); if(!s) return; var b=s.querySelector('.bg-sub'); if(!b){ b=document.createElement('span'); b.className='bg-sub'; s.insertBefore(b, s.firstChild); } var t=totals(); b.innerHTML='<b>'+usd(mode()==='est'?8400:t.all)+'</b> · '; }
+  function openEd(it, afterEl){ closeEd(); var d=document.createElement('div'); d.innerHTML=edHTML(it); editing=d.firstChild; if(afterEl) afterEl.insertAdjacentElement('afterend', editing); else host.querySelector('.bg-add').insertAdjacentElement('beforebegin', editing); setTimeout(function(){ editing.querySelector('.e-nm').focus(); }, 40); }
+  function closeEd(){ if(editing){ editing.remove(); editing=null; } }
+  function wire(){
+    host.addEventListener('click', function(e){
+      var mb=e.target.closest('.bg-modes button'); if(mb){ try{ localStorage.setItem(MODEKEY, mb.dataset.m); }catch(x){} render(); return; }
+      if(e.target.closest('.bg-add')){ openEd(null); return; }
+      var row=e.target.closest('.bg-row');
+      if(e.target.closest('.bg-row .ed') && row){ var it=ITEMS.filter(function(x){ return x.id===row.dataset.id; })[0]; openEd(it, row); return; }
+      if(e.target.closest('.bg-row .rm') && row){ ITEMS=ITEMS.filter(function(x){ return x.id!==row.dataset.id; }); save(); render(); return; }
+      if(e.target.closest('.bg-ed .cancel')){ closeEd(); return; }
+      if(e.target.closest('.bg-ed .del')){ var id=editing.dataset.id; ITEMS=ITEMS.filter(function(x){ return x.id!==id; }); save(); render(); return; }
+      if(e.target.closest('.bg-ed .save')){ var ed=editing, nm=ed.querySelector('.e-nm').value.trim(), amt=+ed.querySelector('.e-amt').value.replace(/[^\d]/g,''); if(!nm||!amt){ ed.querySelector(nm?'.e-amt':'.e-nm').focus(); return; } var rec={ id:ed.dataset.id||('x'+Date.now()), g:ed.querySelector('.e-g').value, nm:nm, amt:amt, start:ed.querySelector('.e-start').value, stop:ed.querySelector('.e-stop').value }; var i=ITEMS.findIndex(function(x){ return x.id===rec.id; }); if(i>=0) ITEMS[i]=Object.assign(ITEMS[i], rec); else ITEMS.push(rec); save(); render(); return; }
+      if(e.target.closest('.bg-est .use')){ try{ localStorage.setItem(MODEKEY,'basic'); }catch(x){} render(); return; }
+      if(e.target.closest('.bg-det .go')){ var b=[].slice.call(host.closest('.acc').querySelectorAll('a, button')).filter(function(x){ return /detailed budgeter/i.test(x.textContent) && !x.closest('.bg'); })[0]; if(b) b.click(); return; }
+    });
+    host.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target.closest('.bg-ed') && e.target.tagName==='INPUT'){ e.preventDefault(); host.querySelector('.bg-ed .save').click(); } if(e.key==='Escape' && editing) closeEd(); });
+  }
+  function arm(){ var acc=[].slice.call(document.querySelectorAll('.center .acc')).filter(function(a){ return ((a.querySelector('.acc-head h2')||{}).textContent||'').trim()==='Expenses'; })[0]; if(!acc) return; var body=acc.querySelector('.acc-body'); if(!body) return; if(host && body.contains(host)) return; host=document.createElement('div'); host.className='bg'; body.insertBefore(host, body.firstChild); var ot=body.querySelector('.bucket[data-bucket="onetime"]'); if(ot && !ot.previousElementSibling.classList.contains('bg-onetime')){ var l=document.createElement('div'); l.className='bg-onetime'; l.textContent='One-time and future expenses'; ot.insertAdjacentElement('beforebegin', l); } wire(); render(); }
+  setInterval(arm, 700); arm();
+  window.__budgeter={ items:function(){ return ITEMS.slice(); }, total:function(){ return totals().all; }, render:render };
+})();
+</script>
+<script>
+/* Budgeting page: the money-flow Sankey ("Where does my money go this year?") is the top graph */
+(function(){
+  function fix(){ var c=document.getElementById('c1'); if(!c || !/Where does my money go/.test(c.textContent)) return; var wrap=c.parentElement, head=wrap.querySelector('.qhead'); if(!head) return; if(head.nextElementSibling!==c) head.insertAdjacentElement('afterend', c); }
+  setInterval(fix, 400);
+})();
+</script>
 <!-- ===== right rail +50px on every page ===== -->
 <style>
 .layout, .dock .dock-inner{ grid-template-columns:200px minmax(0,620px) 1fr; }
