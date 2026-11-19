@@ -33311,7 +33311,7 @@ body.whatif-cmp .dock{ z-index:60; }
   /* straight to the plan, no scenario in between */
   function applyNow(label){ var s=st(); if(!s) return; if(W.solid){ makePlan(); return; } var nm=autoName(); s.rebase(); reflect(); ORIG.forEach(function(v,el){ el.classList.remove('wi-shadowed'); }); ORIG.clear(); document.querySelectorAll('.sbox .meter > i').forEach(function(i){ delete i.dataset.wiW; }); W.open=false; W.cmp=false; W.changes={}; W.moves={}; paint(); say('Plan updated \u2014 '+nm); }
   function applyMove(label){ if(W.open && !W.solid && Object.keys(W.moves).length===0 && !count()){ W.open=false; } paint(); say('Plan updated \u2014 '+label); }
-  window.WHATIF={ open:function(){ ensureOpen(); paint(); }, keepAs:function(name){ if(W.solid) return; finalize((name||'').trim()||autoName()); }, lines:function(){ var m=metrics(); return m? lines(m) : []; }, metrics:metrics, levers:function(){ var s=st(); return s? s.S : null; }, activate:activate, makePlan:makePlan, remove:function(id){ SOLID=SOLID.filter(function(x){ return x.id!==id; }); SOLID.forEach(function(x,i){ x.letter='Plan '+String.fromCharCode(66+i); }); save(); if(W.solid&&W.solid.id===id) discard(); rail(); }, list:function(){ return SOLID.slice(); }, metricsFor:function(vals, moves){ var s=st(); if(!s) return null; var r=s.run(vals,false); r.conf=s.conf(r); var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); return { funded:r.out?(61+(r.out-2026)):92, conf:r.conf, end:r.end+extra, rows:r.rows, ret:vals.ret, ss:vals.ss, spend:vals.spend }; }, planMetrics:function(){ var s=st(); if(!s) return null; var b=s.base; return { funded:92, conf:b.conf, end:b.end, rows:b.rows, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend }; }, setLevers:function(o){ var s=st(); if(!s) return; Object.keys(o).forEach(function(k){ var inp=document.getElementById('st_'+k); var v=o[k]; if(inp){ v=Math.max(+inp.min, Math.min(+inp.max, v)); inp.value=v; inp.dispatchEvent(new Event('input')); } s.S[k]=v; }); s.render(null); syncStress(); }, base:function(){ var s=st(); return s? s.BASE : null; }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
+  window.WHATIF={ add:function(name, vals){ var v={}; Object.keys(vals||{}).forEach(function(k){ v[k]=vals[k]; }); var item={ id:'wi'+Date.now().toString(36), name:name, letter:'Plan '+String.fromCharCode(66+SOLID.length), vals:v, changes:{}, moves:{} }; SOLID.push(item); save(); rail(); return item; }, open:function(){ ensureOpen(); paint(); }, keepAs:function(name){ if(W.solid) return; finalize((name||'').trim()||autoName()); }, lines:function(){ var m=metrics(); return m? lines(m) : []; }, metrics:metrics, levers:function(){ var s=st(); return s? s.S : null; }, activate:activate, makePlan:makePlan, remove:function(id){ SOLID=SOLID.filter(function(x){ return x.id!==id; }); SOLID.forEach(function(x,i){ x.letter='Plan '+String.fromCharCode(66+i); }); save(); if(W.solid&&W.solid.id===id) discard(); rail(); }, list:function(){ return SOLID.slice(); }, metricsFor:function(vals, moves){ var s=st(); if(!s) return null; var r=s.run(vals,false); r.conf=s.conf(r); var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); return { funded:r.out?(61+(r.out-2026)):92, conf:r.conf, end:r.end+extra, rows:r.rows, ret:vals.ret, ss:vals.ss, spend:vals.spend }; }, planMetrics:function(){ var s=st(); if(!s) return null; var b=s.base; return { funded:92, conf:b.conf, end:b.end, rows:b.rows, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend }; }, setLevers:function(o){ var s=st(); if(!s) return; Object.keys(o).forEach(function(k){ var inp=document.getElementById('st_'+k); var v=o[k]; if(inp){ v=Math.max(+inp.min, Math.min(+inp.max, v)); inp.value=v; inp.dispatchEvent(new Event('input')); } s.S[k]=v; }); s.render(null); syncStress(); }, base:function(){ var s=st(); return s? s.BASE : null; }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
 })();
 </script>
 <style id="osApplyCSS">
@@ -37764,6 +37764,186 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
   window.addEventListener('scroll', onScroll, { passive:true }); window.addEventListener('resize', onScroll);
   new MutationObserver(function(){ setTimeout(tick, 30); setTimeout(tick, 400); }).observe(document.body, { attributes:true, attributeFilter:['data-view'] });
   tick(); setInterval(tick, 700);
+})();
+</script>
+<!-- ===== The route: show an alternative scenario beside the plan, and add one from here ===== -->
+<style id="routeScnCSS">
+.sum-layout .rs-bar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:-6px 0 14px; }
+.sum-layout .rs-bar .rs-lab{ font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-right:2px; }
+.sum-layout .rs-chip{ display:inline-flex; align-items:center; gap:7px; font:inherit; font-size:13.5px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:6px 12px; cursor:pointer; }
+.sum-layout .rs-chip i{ width:9px; height:9px; border-radius:50%; background:#04B477; display:inline-block; }
+.sum-layout .rs-chip.alt i{ background:#4A99C4; }
+.sum-layout .rs-chip.on{ background:#1F2A44; color:#fff; border-color:#1F2A44; }
+.sum-layout .rs-chip.on i{ box-shadow:0 0 0 2px rgba(255,255,255,.35); }
+.sum-layout .rs-chip.add{ color:var(--green-cta); border-style:dashed; }
+.sum-layout .rs-chip.add:hover{ background:#F3FBF7; }
+.sum-layout .rs-leg{ display:flex; gap:16px; font-size:12.5px; color:var(--text-secondary); margin:4px 0 0 74px; }
+.sum-layout .rs-leg i{ width:14px; height:0; border-top:2.5px solid #04B477; display:inline-block; margin-right:6px; vertical-align:3px; }
+.sum-layout .rs-leg i.alt{ border-top:2.5px dashed #4A99C4; }
+.sum-layout .sum-svg .rs-path{ fill:none; stroke:#4A99C4; stroke-width:2.6; stroke-dasharray:7 6; stroke-linecap:round; stroke-linejoin:round; }
+.sum-layout .sum-svg .rs-ret{ stroke:#4A99C4; stroke-width:1.4; stroke-dasharray:4 5; opacity:.7; }
+.sum-layout .sum-svg .rs-dot{ fill:#4A99C4; stroke:#fff; stroke-width:2.4; }
+/* the scenario card at the top of the route */
+.sum-layout .rs-card{ border:1px solid #CFE3EF; background:#F4F9FC; border-radius:14px; padding:14px 16px; margin:0 0 18px; }
+.sum-layout .rs-card .rh{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.sum-layout .rs-card .rh b{ font-size:15px; font-weight:600; display:inline-flex; align-items:center; gap:8px; }
+.sum-layout .rs-card .rh b i{ width:9px; height:9px; border-radius:50%; background:#4A99C4; display:inline-block; }
+.sum-layout .rs-card .rh .x{ border:0; background:none; font:inherit; color:var(--text-secondary); cursor:pointer; font-size:13px; }
+.sum-layout .rs-card .rs-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:12px 0; }
+.sum-layout .rs-card .rs-stats .k{ font-size:11.5px; color:var(--text-secondary); }
+.sum-layout .rs-card .rs-stats .v{ font-size:16px; font-weight:600; }
+.sum-layout .rs-card .rs-stats .d{ font-size:11.5px; color:var(--text-secondary); }
+.sum-layout .rs-card .rs-stats .d.up{ color:var(--green-cta); } .sum-layout .rs-card .rs-stats .d.dn{ color:#B42318; }
+.sum-layout .rs-card ul{ list-style:none; margin:0 0 12px; padding:0; display:flex; flex-direction:column; gap:6px; }
+.sum-layout .rs-card li{ font-size:13.5px; line-height:1.4; color:var(--ink); padding-left:14px; position:relative; }
+.sum-layout .rs-card li::before{ content:''; position:absolute; left:0; top:7px; width:6px; height:6px; border-radius:50%; background:#4A99C4; }
+.sum-layout .rs-card .rs-acts{ display:flex; gap:14px; flex-wrap:wrap; }
+.sum-layout .rs-card .rs-acts a{ font-size:13.5px; font-weight:600; color:var(--green-cta); cursor:pointer; text-decoration:none; }
+.sum-layout .rs-card .rs-acts a:hover{ text-decoration:underline; }
+/* scenario rows in the route */
+.sum-layout .sxtl-row.rs-row .sxtl-dot{ background:#4A99C4 !important; box-shadow:0 0 0 4px rgba(74,153,196,.16); }
+.sum-layout .sxtl-row.rs-row .sxtl-t::after{ content:attr(data-plan); display:inline-block; margin-left:8px; font-size:11.5px; font-weight:600; color:#2F6F93; background:#E6F1F8; border-radius:999px; padding:2px 8px; vertical-align:2px; }
+/* add a scenario: a small sheet over the route */
+.rs-modal{ position:fixed; inset:0; z-index:90; display:none; }
+.rs-modal.on{ display:block; }
+.rs-modal .rs-scrim{ position:absolute; inset:0; background:rgba(16,24,44,.28); }
+.rs-modal .rs-sheet{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(520px, calc(100vw - 32px)); background:#fff; border-radius:18px; padding:22px 24px 20px; border:1px solid var(--hairline-strong); }
+.rs-modal h3{ margin:0 0 4px; font-size:20px; font-weight:600; }
+.rs-modal .rs-sub{ margin:0 0 16px; font-size:14px; color:var(--text-secondary); }
+.rs-modal label{ display:block; font-size:13px; font-weight:600; margin:0 0 6px; }
+.rs-modal input[type=text]{ width:100%; font:inherit; font-size:15px; padding:9px 12px; border:1px solid #D9DDE3; border-radius:8px; margin-bottom:14px; box-sizing:border-box; }
+.rs-modal .rs-lever{ padding:8px 0 4px; }
+.rs-modal .rs-lever .lr{ display:flex; justify-content:space-between; font-size:14px; }
+.rs-modal .rs-lever .lr b{ font-weight:600; }
+.rs-modal input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:18px; background:none; margin:2px 0 0; display:block; }
+.rs-modal input[type=range]::-webkit-slider-runnable-track{ height:4px; border-radius:999px; background:linear-gradient(90deg, var(--green-cta) 0, var(--green-cta) var(--p,50%), #E9EBEE var(--p,50%), #E9EBEE 100%); }
+.rs-modal input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid var(--green-cta); margin-top:-5px; cursor:pointer; }
+.rs-modal .rs-read{ margin:14px 0 16px; padding:12px 14px; background:#F6F7F8; border-radius:10px; font-size:14px; line-height:1.5; }
+.rs-modal .rs-read b{ font-weight:600; }
+.rs-modal .rs-btns{ display:flex; gap:10px; justify-content:flex-end; }
+.rs-modal .rs-btns button{ font:inherit; font-size:14.5px; font-weight:600; border-radius:999px; padding:9px 16px; cursor:pointer; border:1px solid #D9DDE3; background:#fff; color:var(--ink); }
+.rs-modal .rs-btns button.go{ background:var(--green-cta); color:#fff; border-color:var(--green-cta); }
+</style>
+<script>
+(function(){
+  'use strict';
+  var LIFE=['Frugal','Comfortable','Generous'], RR=['Conservative','As planned','Aggressive'];
+  var active=null;   /* the scenario id shown beside the plan, or null */
+  function usd(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function money(v){ return v>=1e6 ? '$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M' : '$'+Math.round(v/1e3)+'K'; }
+  function lay(){ return document.querySelector('.layout.page.sum-layout'); }
+  function list(){ return (window.WHATIF && window.WHATIF.list) ? window.WHATIF.list() : []; }
+  function base(){ return window.STRESS ? window.STRESS.BASE : null; }
+  function item(id){ return list().filter(function(x){ return x.id===id; })[0]||null; }
+  function diffs(it){
+    var B=base(); if(!B) return []; var v=it.vals||{}; var out=[];
+    if(v.ret!==undefined && v.ret!==B.ret) out.push('Retire at <b>'+v.ret+'</b> instead of '+B.ret+(v.ret<B.ret?', '+(B.ret-v.ret)+' years sooner':', '+(v.ret-B.ret)+' years later'));
+    if(v.ss!==undefined && v.ss!==B.ss) out.push('Social Security at <b>'+v.ss+'</b> instead of '+B.ss);
+    if(v.spend!==undefined && v.spend!==B.spend) out.push('Spend <b>'+usd(v.spend)+'</b> a month in retirement, '+(v.spend<B.spend?usd(B.spend-v.spend)+' less':usd(v.spend-B.spend)+' more'));
+    if(v.life!==undefined && v.life!==B.life) out.push('A <b>'+LIFE[v.life].toLowerCase()+'</b> lifestyle');
+    if(v.ret_r!==undefined && v.ret_r!==B.ret_r) out.push('<b>'+RR[v.ret_r]+'</b> returns');
+    Object.keys(it.moves||{}).forEach(function(k){ var m=it.moves[k]; if(m && m.label) out.push(m.label); });
+    return out;
+  }
+  /* ---------- the bar above the chart ---------- */
+  function bar(){
+    var L=lay(); if(!L) return; var top=L.querySelector('.center .alo-top'); if(!top) return;
+    var b=L.querySelector('.rs-bar'); if(!b){ b=document.createElement('div'); b.className='rs-bar'; var chips=L.querySelector('.sum-chips'); (chips||top).insertAdjacentElement(chips?'beforebegin':'afterend', b);
+      b.addEventListener('click', function(e){ var c=e.target.closest('.rs-chip'); if(!c) return; if(c.classList.contains('add')){ openAdd(); return; } var id=c.dataset.id||null; if(id===null){ show(null); return; } show(active===id?null:id); }); }
+    var items=list();
+    b.innerHTML='<span class="rs-lab">Showing</span><button type="button" class="rs-chip'+(active?'':' on')+'"><i></i>My Financial Plan</button>'+items.map(function(it){ return '<button type="button" class="rs-chip alt'+(active===it.id?' on':'')+'" data-id="'+it.id+'"><i></i>'+esc(it.letter)+' · '+esc(it.name)+'</button>'; }).join('')+'<button type="button" class="rs-chip add">+ Add a scenario</button>';
+  }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  /* ---------- the overlay on the chart ---------- */
+  function overlay(){
+    var L=lay(); if(!L) return; var svg=L.querySelector('.sum-svg'); if(!svg) return;
+    var old=svg.querySelector('.rs-layer'); if(old) old.remove();
+    var leg=L.querySelector('.rs-leg'); if(leg) leg.remove();
+    var it=active && item(active); if(!it || !window.WHATIF || !window.WHATIF.metricsFor || !window.STRESS) return;
+    var J=window.__journey; var m=window.WHATIF.metricsFor(it.vals, it.moves), bse=window.STRESS.base; if(!m || !bse) return;
+    /* the plan's route, scaled by how the scenario's balances compare to the plan's, year by year */
+    var vb=(svg.getAttribute('viewBox')||'0 0 720 460').split(' ').map(Number), W=vb[2], H=vb[3];
+    var padL=74, padR=26, padT=26, padB=34, pw=W-padL-padR, ph=H-padT-padB, yMax=2500000;
+    var brush=L.querySelector('#sumBrush .br-win'); var lo=J.span[0], hi=J.span[1];
+    var rd=(L.querySelector('#sumReadout')||{}).textContent||''; var mm=rd.match(/(\d{4})\D+(\d{4})/); if(mm){ lo=+mm[1]; hi=+mm[2]; }
+    function X(y){ return padL+(y-lo)/(hi-lo)*pw; } function Y(v){ return padT+ph-(Math.max(0,v)/yMax)*ph; }
+    function ratio(y){ var yi=Math.round(y); var a=bse.rows.filter(function(r){ return r.y===yi; })[0], b=m.rows.filter(function(r){ return r.y===yi; })[0]; if(!a||!b||a.bal<=0) return 1; return b.bal/a.bal; }
+    var d='', last=null; for(var y=lo;y<=hi+0.001;y+=0.5){ var v=J.valueAt(y)*ratio(y); var x=X(y), yy=Y(v); d+=(d?' L':'M')+x.toFixed(1)+' '+yy.toFixed(1); last=[x,yy,v]; }
+    var g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('class','rs-layer');
+    var ret=2026+(it.vals.ret-65)+0.95; var rx=X(ret);
+    g.innerHTML='<path class="rs-path" d="'+d+'"/>'+((ret>=lo&&ret<=hi)?'<line class="rs-ret" x1="'+rx.toFixed(1)+'" y1="'+padT+'" x2="'+rx.toFixed(1)+'" y2="'+(padT+ph)+'"/><text x="'+(rx+8).toFixed(1)+'" y="'+(padT+ph-8)+'" font-size="12" font-weight="600" fill="#2F6F93">'+esc(it.letter)+' retires '+it.vals.ret+'</text>':'')+(last?'<circle class="rs-dot" cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="5.5"/>':'');
+    svg.appendChild(g);
+    var lg=document.createElement('div'); lg.className='rs-leg'; lg.innerHTML='<span><i></i>My Financial Plan</span><span><i class="alt"></i>'+esc(it.letter)+' · '+esc(it.name)+'</span>'; L.querySelector('.sum-plot').insertAdjacentElement('afterend', lg);
+  }
+  /* ---------- the card and rows in the route ---------- */
+  function routeCard(){
+    var L=lay(); if(!L) return; var ctx=L.querySelector('#sumCtx'); if(!ctx) return;
+    var old=ctx.querySelector('.rs-card'); if(old) old.remove();
+    ctx.querySelectorAll('.sxtl-row.rs-row').forEach(function(r){ r.remove(); });
+    var it=active && item(active); if(!it || !window.WHATIF) return;
+    var m=window.WHATIF.metricsFor(it.vals, it.moves), p=window.WHATIF.planMetrics ? window.WHATIF.planMetrics() : null; if(!m) return;
+    var card=document.createElement('div'); card.className='rs-card';
+    function stat(k,v,d,cls){ return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div>'+(d?'<div class="d '+(cls||'')+'">'+d+'</div>':'')+'</div>'; }
+    var dConf=p?m.conf-p.conf:0, dEnd=p?m.end-p.end:0;
+    card.innerHTML='<div class="rh"><b><i></i>'+esc(it.letter)+' · '+esc(it.name)+'</b><button type="button" class="x">Hide</button></div>'+
+      '<div class="rs-stats">'+stat('Funded to', m.funded, p?(m.funded===p.funded?'same as plan':(m.funded<p.funded?'plan lasts to '+p.funded:'')):'', m.funded<(p?p.funded:92)?'dn':'')+stat('Confidence', m.conf+'%', p?((dConf>=0?'+':'')+dConf+' pts vs plan'):'', dConf<0?'dn':dConf>0?'up':'')+stat('At 92', money(m.end), p?((dEnd>=0?'+':'−')+money(Math.abs(dEnd))+' vs plan'):'', dEnd<0?'dn':dEnd>0?'up':'')+'</div>'+
+      '<ul>'+diffs(it).map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>'+
+      '<div class="rs-acts"><a data-act="plan">Make this my plan</a><a data-act="compare">Compare in Scenarios</a><a data-act="remove">Remove</a></div>';
+    ctx.insertBefore(card, ctx.firstChild);
+    var sc=ctx.closest('.sum-rscroll'); if(sc) sc.scrollTop=0;
+    card.addEventListener('click', function(e){ var a=e.target.closest('[data-act], .x'); if(!a) return; e.preventDefault(); e.stopPropagation();
+      if(a.classList.contains('x')) { show(null); return; }
+      var act=a.dataset.act;
+      if(act==='plan'){ if(window.WHATIF.activate) window.WHATIF.activate(it, true); setTimeout(function(){ if(window.WHATIF.makePlan) window.WHATIF.makePlan(); if(window.__peToast) window.__peToast(it.letter+' is now your plan'); show(null); }, 80); }
+      else if(act==='compare'){ if(window.__sum2 && window.__sum2.close) window.__sum2.close(); setTimeout(function(){ if(window.SCENARIOS) window.SCENARIOS.open(); }, 350); }
+      else if(act==='remove'){ window.WHATIF.remove(it.id); show(null); }
+    });
+    /* the scenario's own moments, placed on the route by year */
+    var B=base(); var tl=ctx.querySelector('.sxtl'); if(!tl || !B) return;
+    var rows=[];
+    if(it.vals.ret!==B.ret) rows.push({ yr:2026+(it.vals.ret-65), age:it.vals.ret, t:'Retirement day, '+it.letter, b:'Marshall '+it.vals.ret+'. '+(it.vals.ret<B.ret?'The last paycheck arrives '+(B.ret-it.vals.ret)+' years earlier than the plan.':'The paychecks run '+(it.vals.ret-B.ret)+' more years than the plan.') });
+    if(it.vals.ss!==B.ss) rows.push({ yr:2026+(it.vals.ss-65), age:it.vals.ss, t:'Social Security, '+it.letter, b:'Marshall claims at '+it.vals.ss+(it.vals.ss<70?', giving up the delayed credits to 70.':'.') });
+    rows.forEach(function(v){
+      var rr=[].slice.call(tl.querySelectorAll('.sxtl-row')); var before=null; for(var i=0;i<rr.length;i++){ var y=parseInt(((rr[i].querySelector('.sxtl-date')||{}).textContent||'').slice(0,4),10); if(y && y>v.yr){ before=rr[i]; break; } }
+      var r=document.createElement('div'); r.className='sxtl-row rs-row'; r.innerHTML='<span class="sxtl-dot"></span><div><div class="sxtl-date">'+v.yr+' · Marshall '+v.age+'</div><div class="sxtl-t" data-plan="'+esc(it.letter)+'">'+esc(v.t)+'</div><div class="sxtl-b">'+v.b+'</div></div>';
+      if(before) tl.insertBefore(r, before); else { var tail=tl.querySelector('.sum-tail'); if(tail) tl.insertBefore(r, tail); else tl.appendChild(r); }
+    });
+  }
+  function show(id){ active=id; bar(); overlay(); routeCard(); }
+  /* the chart is redrawn on every brush move; the overlay goes back on top each time */
+  var pend=null; function rearm(){ if(pend) return; pend=requestAnimationFrame(function(){ pend=null; var L=lay(); if(!L || !active) return; if(!L.querySelector('.sum-svg .rs-layer')) overlay(); }); }
+  var mo=new MutationObserver(function(ms){ for(var i=0;i<ms.length;i++){ var t=ms[i].target; if(t && t.closest && t.closest('.sum-svg')){ rearm(); return; } } });
+  /* ---------- add a scenario from here ---------- */
+  var modal=null, S=null;
+  function openAdd(){
+    var B=base(); if(!B){ return; }
+    if(!modal){ modal=document.createElement('div'); modal.className='rs-modal'; document.body.appendChild(modal);
+      modal.addEventListener('click', function(e){ if(e.target.closest('.rs-scrim, [data-rs-cancel]')) closeAdd(); if(e.target.closest('[data-rs-keep]')) keep(); });
+      modal.addEventListener('input', function(e){ var inp=e.target.closest('input[type=range]'); if(!inp) return; S[inp.dataset.k]=+inp.value; paintS(); }); }
+    S={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r };
+    var n=list().length; var letter='Plan '+String.fromCharCode(66+n);
+    modal.innerHTML='<div class="rs-scrim"></div><div class="rs-sheet"><h3>Add a scenario</h3><p class="rs-sub">Start from your plan and change what you are curious about. It shows up beside the route as <b>'+letter+'</b>; nothing in your plan changes.</p>'+
+      '<label>Name it</label><input type="text" id="rsName" placeholder="Retire at 65, spend a little less" maxlength="60">'+
+      lever('ret','Retirement age',65,72,1)+lever('ss','Social Security age',62,70,1)+lever('spend','Monthly spending in retirement',4500,9000,100)+lever('life','Lifestyle',0,2,1)+lever('ret_r','Investment return',0,2,1)+
+      '<div class="rs-read" id="rsRead"></div><div class="rs-btns"><button type="button" data-rs-cancel>Cancel</button><button type="button" class="go" data-rs-keep>Keep it on the route</button></div></div>';
+    modal.classList.add('on'); paintS(); setTimeout(function(){ var f=modal.querySelector('#rsName'); if(f) f.focus(); }, 60);
+  }
+  function lever(k,label,min,max,step){ return '<div class="rs-lever"><div class="lr"><span>'+label+'</span><b data-v="'+k+'"></b></div><input type="range" data-k="'+k+'" min="'+min+'" max="'+max+'" step="'+step+'" value="'+S[k]+'"></div>'; }
+  function fmt(k,v){ return k==='spend'?usd(v):k==='life'?LIFE[v]:k==='ret_r'?RR[v]:String(v); }
+  function paintS(){ if(!modal) return; modal.querySelectorAll('input[type=range]').forEach(function(inp){ var k=inp.dataset.k; inp.value=S[k]; inp.style.setProperty('--p', ((S[k]-inp.min)/(inp.max-inp.min)*100)+'%'); var b=modal.querySelector('[data-v="'+k+'"]'); if(b) b.textContent=fmt(k,S[k]); });
+    var m=window.WHATIF && window.WHATIF.metricsFor ? window.WHATIF.metricsFor(S,{}) : null, p=window.WHATIF && window.WHATIF.planMetrics ? window.WHATIF.planMetrics() : null; var r=modal.querySelector('#rsRead'); if(!r||!m) return;
+    r.innerHTML='Funded to <b>'+m.funded+'</b> at <b>'+m.conf+'%</b>, ending around <b>'+money(m.end)+'</b>'+(p?' (your plan: '+p.conf+'%, '+money(p.end)+')':'')+'.'; }
+  function closeAdd(){ if(modal) modal.classList.remove('on'); }
+  function keep(){
+    var nm=((modal.querySelector('#rsName')||{}).value||'').trim(); if(!nm){ var B=base(); var bits=[]; if(S.ret!==B.ret) bits.push('retire at '+S.ret); if(S.ss!==B.ss) bits.push('Social Security at '+S.ss); if(S.spend!==B.spend) bits.push('spend '+usd(S.spend)); nm=bits.length?bits.join(', '):'A scenario'; nm=nm.charAt(0).toUpperCase()+nm.slice(1); }
+    var it=window.WHATIF && window.WHATIF.add ? window.WHATIF.add(nm, S) : null; closeAdd(); if(it) show(it.id); if(window.__peToast) window.__peToast('Kept as '+(it?it.letter:'a scenario')+' — '+nm);
+  }
+  /* ---------- lifecycle ---------- */
+  function arm(){ var L=lay(); if(!L) return; if(!L.dataset.rsArmed){ L.dataset.rsArmed='1'; mo.observe(L, { childList:true, subtree:true }); }
+    if(document.body.classList.contains('sum-open')){ if(!L.querySelector('.rs-bar')) { bar(); } if(active && !L.querySelector('#sumCtx .rs-card')) routeCard(); } }
+  new MutationObserver(function(){ clearTimeout(arm._t); arm._t=setTimeout(arm, 120); }).observe(document.body, { attributes:true, attributeFilter:['class'] });
+  setInterval(arm, 1000);
+  window.__routeScn={ show:show, add:openAdd, active:function(){ return active; } };
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
