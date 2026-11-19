@@ -37198,7 +37198,8 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     {id:'social-security', t:'Social Security',       sub:[]},
     {id:'social-security-explorer', t:'Social Security Explorer', sub:[['Your scenario','ssxStats'],['By year','ssxBars'],['Compare','ssxTbl']]},
     {id:'tax-planning', t:'Tax Planning',             sub:[['The window','tx-window'],['The ladder','tx-ladder'],['The guardrail','tx-guard'],['Your move','tx-move'],['Required distributions','tx-rmd'],['Tax diversification','tx-div'],['Taxes by year','tx-year']]},
-    {id:'withdrawal-strategy', t:'Withdrawal Strategy', sub:[['The order','wd-order'],['Guardrails','wd-guard'],['One month, mapped','wd-month'],['Your move','wd-move']]}
+    {id:'withdrawal-strategy', t:'Withdrawal Strategy', sub:[['The order','wd-order'],['Guardrails','wd-guard'],['One month, mapped','wd-month'],['Your move','wd-move']]},
+    {id:'healthcare', t:'Healthcare Costs', sub:[]}
   ];
   var nav=document.createElement('nav'); nav.className='ost-nav'; nav.setAttribute('aria-label','Optimize tools');
   nav.innerHTML='<div class="ost-collapse" aria-hidden="true">&lsaquo;</div><div class="ost-head"><span>Optimize Tools</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div><ul>'+TOOLS.map(function(t,i){ return '<li data-sec="'+t.id+'"'+(i===0?' class="on"':'')+'><div class="ost-item">'+esc(t.t)+'</div>'+(t.sub.length?'<ul class="ost-sub">'+t.sub.map(function(s){ return '<li><a data-go="'+s[1]+'">'+esc(s[0])+'</a></li>'; }).join('')+'</ul>':'')+'</li>'; }).join('')+'</ul>';
@@ -37214,7 +37215,8 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     '<section class="ost-sec" id="social-security"></section>'+
     '<section class="ost-sec" id="social-security-explorer"></section>'+
     '<section class="ost-sec" id="tax-planning"></section>'+
-    '<section class="ost-sec" id="withdrawal-strategy"></section>';
+    '<section class="ost-sec" id="withdrawal-strategy"></section>'+
+    '<section class="ost-sec" id="healthcare"></section>';
   center.appendChild(root);
 
   /* ======================================================= STRESS TEST ======================================================= */
@@ -37576,6 +37578,16 @@ body.ost-open .opt-index{ padding-bottom:140px; }
       '<div class="ost-card"><div class="t">See if your spending aligns with what’s sustainable</div><p>Compare your entered expenses to your safe spending to see if you’re on track.</p><p style="margin-top:10px"><button class="ost-btn" type="button" data-goto="plan">Modify expenses</button></p></div>';
   })();
 
+  /* ======================================================= HEALTHCARE COSTS ======================================================= */
+  (function(){
+    var sec=root.querySelector('#healthcare'); if(!sec) return;
+    sec.innerHTML='<p class="ost-eyebrow">Healthcare costs</p><h2 class="ost-hero">Care costs <span class="g">$1,180</span> a month until 65, then <span class="p">$640</span>.</h2><p class="ost-herosub">What you will pay for coverage before and after Medicare, in today\u2019s dollars.</p>'+
+      '<div class="ost-kpis"><div class="ost-kpi"><div class="kl">Before Medicare (2028\u20132030)</div><div class="kv">$1,180 / mo</div><div class="ks">Marketplace plan for two, after the premium credit</div></div><div class="ost-kpi"><div class="kl">After 65</div><div class="kv">$640 / mo</div><div class="ks">Parts B and D, a Medigap plan, for two</div></div><div class="ost-kpi"><div class="kl">Over the plan</div><div class="kv">$412,000</div><div class="ks">Premiums and out of pocket, to 92</div></div></div>'+
+      '<div class="ost-bh"><h3>Year by year</h3><span class="cap">Premiums, out of pocket, and IRMAA</span></div>'+
+      '<div class="ost-ladder"><div class="lrow h"><span>Year</span><span>Coverage</span><span>Premiums</span><span>Out of pocket</span></div>'+[[2028,'Marketplace, bridge',14160,3200],[2029,'Marketplace, bridge',14160,3200],[2030,'Medicare from June',10900,2600],[2031,'Medicare',7680,2400],[2035,'Medicare',7680,2800],[2040,'Medicare + IRMAA tier 1',9900,3100]].map(function(r){ return '<div class="lrow"><b>'+r[0]+'</b><span>'+r[1]+'</span><span>'+usd(r[2])+'</span><span>'+usd(r[3])+'</span></div>'; }).join('')+'</div>'+
+      '<p class="ost-note wide">Converting too much in the bridge years raises your marketplace premium; converting too much after 63 raises Medicare premiums two years later. The Roth ladder keeps both in view.</p>';
+  })();
+
   /* ---------- rail behaviour: click scrolls, scroll highlights ---------- */
   function setActive(id){ nav.querySelectorAll('li[data-sec]').forEach(function(li){ li.classList.toggle('on', li.dataset.sec===id); }); }
   nav.addEventListener('click', function(e){
@@ -37632,32 +37644,33 @@ body.ost-cards .layout.page.opt-index{ transition:none !important; }
 body.ost-cards .opt-index > .rail.bai-host .bai{ animation:none !important; transition:none !important; }
 body.ost-cards .opt-index > .rail.bai-host{ transition:none !important; }
 body.ost-open #ostIndex{ display:none; }
+/* the infographics breathe, barely: slow, small, looping */
+#ostIndex .ico-stress .dt, #ostIndex .ico-health .dt{ animation:icoPulse 3.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+#ostIndex .ico-stress .ln{ stroke-dasharray:1; stroke-dashoffset:0; animation:icoDraw 9s ease-in-out infinite; }
+#ostIndex .ico-ss .bp{ transform-box:fill-box; transform-origin:bottom; animation:icoBreathe 5s ease-in-out infinite; animation-delay:calc(var(--i) * .28s); }
+#ostIndex .ico-alloc .sg{ animation:icoFade 4.5s ease-in-out infinite; }
+#ostIndex .ico-tax .sg{ transform-box:view-box; transform-origin:80px 40px; animation:icoTurn 48s linear infinite; }
+#ostIndex .ico-budget .gr{ transform-box:fill-box; transform-origin:left center; animation:icoStretch 6s ease-in-out infinite; }
+#ostIndex .ico-budget .gr.g2{ animation-delay:1.4s; }
+#ostIndex .ico-wd .wb{ animation:icoWave 4.2s ease-in-out infinite; animation-delay:calc(var(--i) * .16s); }
+@keyframes icoPulse{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.35); opacity:.75; } }
+@keyframes icoDraw{ 0%{ stroke-dashoffset:1; } 22%,100%{ stroke-dashoffset:0; } }
+@keyframes icoBreathe{ 0%,100%{ transform:scaleY(1); } 50%{ transform:scaleY(.94); } }
+@keyframes icoFade{ 0%,100%{ opacity:1; } 50%{ opacity:.72; } }
+@keyframes icoTurn{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+@keyframes icoStretch{ 0%,100%{ transform:scaleX(1); } 50%{ transform:scaleX(.9); } }
+@keyframes icoWave{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
+@media (prefers-reduced-motion:reduce){ #ostIndex .ost-icon svg *{ animation:none !important; } }
 #ostIndex h1{ font-size:34px; font-weight:400; letter-spacing:-0.3px; margin:0 0 6px; line-height:1.15; color:var(--ink); }
 #ostIndex .ost-isub{ font-size:16px; color:var(--text-secondary); margin:0 0 24px; }
-#ostIndex .ost-grid{ display:grid !important; grid-template-columns:1fr 1fr; gap:var(--s-6); align-items:stretch; columns:auto !important; }
-#ostIndex .opt-card{ position:relative; display:flex; flex-direction:column; break-inside:avoid; margin:0 !important; }
-#ostIndex .opt-card .opt-card-sub{ min-height:1.5em; }
-#ostIndex .opt-card .ost-ceye{ font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-secondary); }
-#ostIndex .opt-card .opt-card-t{ font-size:22px; font-weight:400; line-height:1.2; letter-spacing:-0.2px; min-height:2.4em; }
-#ostIndex .opt-card .opt-card-t .p{ color:var(--green-cta); }
-#ostIndex .opt-card .opt-card-t .g{ color:#E0A526; }
-#ostIndex .opt-card .ost-cviz{ margin:12px 0 26px; height:124px; display:flex; align-items:center; }
-#ostIndex .opt-card .ost-cviz > svg{ width:100%; height:auto; display:block; }
-#ostIndex .opt-card .ost-cviz .ost-guard{ width:100%; }
-#ostIndex .opt-card .ost-cviz svg text{ font-size:12px; fill:#47495A; }
-#ostIndex .opt-card .ost-cviz svg text.b{ font-weight:600; fill:#10182C; }
-#ostIndex .opt-card .opt-card-go{ margin-top:auto; padding-top:4px; }
-#ostIndex .opt-card .opt-card-go{ margin-top:auto; }
-#ostIndex .opt-card.wide{ grid-column:1 / -1; }
-#ostIndex .ost-cbars{ display:flex; flex-direction:column; gap:8px; width:100%; }
-#ostIndex .ost-cbars .r{ display:grid; grid-template-columns:120px 1fr 70px; align-items:center; gap:10px; font-size:13px; color:var(--text-secondary); }
-#ostIndex .ost-cbars .r b{ color:var(--ink); text-align:right; }
-#ostIndex .ost-cbars .r i{ display:block; height:8px; border-radius:999px; background:var(--green-cta); }
-#ostIndex .ost-cbars .r i.soft{ background:#CFE6D9; }
-#ostIndex .ost-csplit{ display:flex; gap:6px; width:100%; }
-#ostIndex .ost-csplit .mb{ color:#fff; border-radius:8px; padding:8px 10px; font-size:11.5px; min-width:0; background:#1F2A44; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; min-width:max-content; }
-#ostIndex .ost-csplit .mb b{ display:block; font-size:13px; }
-#ostIndex .ost-csplit .mb.pf{ background:#CFE6D9; color:var(--ink); }
+#ostIndex .ost-grid{ display:grid !important; grid-template-columns:repeat(3,1fr); grid-auto-rows:1fr; gap:18px; align-items:stretch; columns:auto !important; }
+#ostIndex .opt-card.ost-tool{ position:relative; display:flex; flex-direction:column; gap:6px; margin:0 !important; padding:22px; min-height:0; cursor:pointer; border:1px solid var(--hairline); border-radius:18px; transition:border-color .15s ease; }
+#ostIndex .opt-card.ost-tool:hover{ border-color:var(--hairline-strong); }
+#ostIndex .ost-grid > .opt-card.ost-tool{ align-self:stretch !important; height:auto !important; }
+#ostIndex .opt-card.ost-tool .ost-icon{ background:#FDFDFC; border-radius:12px; height:104px; display:flex; align-items:center; justify-content:center; margin:0 0 14px; }
+#ostIndex .opt-card.ost-tool .ost-icon svg{ width:150px; height:76px; }
+#ostIndex .opt-card.ost-tool .opt-card-t{ font-size:21px; font-weight:600; line-height:1.2; letter-spacing:-0.1px; min-height:0; }
+#ostIndex .opt-card.ost-tool .opt-card-sub{ font-size:15px; color:var(--text-secondary); line-height:1.45; min-height:0; }
 </style>
 <script>
 (function(){
@@ -37666,49 +37679,35 @@ body.ost-open #ostIndex{ display:none; }
   var center=root.parentNode;
   var T=window.__optTools; if(!T) return;
   var idx=document.createElement('div'); idx.id='ostIndex';
-  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Six tools, each one a lever on the whole plan.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
+  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Seven tools, each one a lever on the whole plan.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
   center.insertBefore(idx, root);
   var grid=idx.querySelector('#ostGrid');
   function go(label){ return '<span class="opt-card-go">'+label+' <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; }
   function card(id, eye, title, sub, viz, cta, wide){ var c=document.createElement('div'); c.className='opt-card'+(wide?' wide':''); c.dataset.tool=id; c.setAttribute('role','link'); c.tabIndex=0; c.innerHTML='<div class="ost-ceye">'+eye+'</div><div class="opt-card-t">'+title+'</div><div class="opt-card-sub">'+sub+'</div><div class="ost-cviz"></div>'+go(cta); var v=c.querySelector('.ost-cviz'); if(typeof viz==='string') v.innerHTML=viz; else if(viz) v.appendChild(viz); return c; }
   function ssMini(){ var ages=[62,63,64,65,66,67,68,69,70], m=[2480,2660,2850,3080,3300,3540,3820,4100,4380], l=[1550,1660,1780,1920,2060,2210,2390,2560,2740]; var W=240,H=60,hi=4400,bw=10,gap=(W-ages.length*(bw*2+3))/ages.length,s=''; ages.forEach(function(a,i){ var x=i*(bw*2+3+gap), h1=m[i]/hi*H, h2=l[i]/hi*H; s+='<rect x="'+x.toFixed(1)+'" y="'+(H-h1).toFixed(1)+'" width="'+bw+'" height="'+h1.toFixed(1)+'" rx="2" fill="#0D3F4A"/><rect x="'+(x+bw+3).toFixed(1)+'" y="'+(H-h2).toFixed(1)+'" width="'+bw+'" height="'+h2.toFixed(1)+'" rx="2" fill="#F2784B"/>'; if(a===62||a===67||a===70) s+='<text x="'+(x+bw+1).toFixed(1)+'" y="'+(H+11)+'" text-anchor="middle" font-size="9" fill="#47495A">'+a+'</text>'; }); return '<svg viewBox="0 0 '+W+' '+(H+14)+'" style="max-height:90px" aria-hidden="true">'+s+'</svg>'; }
   function cloneSvg(sel, h){ var s=root.querySelector(sel); if(!s) return ''; var c=s.cloneNode(true); c.removeAttribute('id'); c.removeAttribute('width'); c.removeAttribute('height'); c.removeAttribute('style'); c.querySelectorAll('[id]').forEach(function(x){ x.removeAttribute('id'); }); if(h) c.style.maxHeight=h+'px'; return c; }
-  var MINI={
-    stress:function(){ var pts=[0.58,0.60,0.63,0.66,0.70,0.74,0.79,0.84,0.88,0.93,0.97,1.0,1.0,0.97,0.93,0.9]; var W=340,H=120,L=8,R=W-8,T=14,B=H-22; var X=function(i){ return L+(R-L)*i/(pts.length-1); }, Y=function(v){ return T+(B-T)*(1-v); };
-      var d=pts.map(function(v,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' '); var plan=pts.map(function(v,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v*0.93).toFixed(1); }).join(' ');
-      return '<svg viewBox="0 0 '+W+' '+H+'"><defs><linearGradient id="omgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E794E" stop-opacity=".28"/><stop offset="1" stop-color="#0E794E" stop-opacity="0"/></linearGradient></defs><path d="'+d+' L'+R+' '+B+' L'+L+' '+B+' Z" fill="url(#omgA)"/><path d="'+plan+'" fill="none" stroke="#B9BED0" stroke-width="1.5" stroke-dasharray="4 3"/><path d="'+d+'" fill="none" stroke="#0E794E" stroke-width="2.4" stroke-linejoin="round"/><circle cx="'+X(pts.length-1)+'" cy="'+Y(pts[pts.length-1])+'" r="4" fill="#0E794E" stroke="#fff" stroke-width="2"/><text x="'+L+'" y="'+(B+16)+'">2026</text><text x="'+(W/2)+'" y="'+(B+16)+'" text-anchor="middle">Retire 2028</text><text x="'+R+'" y="'+(B+16)+'" text-anchor="end">Age 92</text></svg>'; },
-    alloc:function(){ var EQ=0.68, TEQ=0.60, cx=120,cy=104,r1=84,r2=60,w1=20,w2=16,PI=Math.PI; function arc(r,a0,a1){ return 'M'+(cx+r*Math.cos(a0)).toFixed(1)+' '+(cy+r*Math.sin(a0)).toFixed(1)+' A'+r+' '+r+' 0 '+((a1-a0)>PI?1:0)+' 1 '+(cx+r*Math.cos(a1)).toFixed(1)+' '+(cy+r*Math.sin(a1)).toFixed(1); }
-      return '<svg viewBox="0 0 340 120"><path d="'+arc(r1,PI,PI+PI*EQ)+'" stroke="#0D3F4A" stroke-width="'+w1+'" fill="none"/><path d="'+arc(r1,PI+PI*EQ,2*PI)+'" stroke="#0E9F6E" stroke-width="'+w1+'" fill="none"/><path d="'+arc(r2,PI,PI+PI*TEQ)+'" stroke="#8A9199" stroke-width="'+w2+'" fill="none"/><path d="'+arc(r2,PI+PI*TEQ,2*PI)+'" stroke="#9FDFC6" stroke-width="'+w2+'" fill="none"/><text class="b" x="'+cx+'" y="'+(cy-4)+'" text-anchor="middle" font-size="16">68 / 32</text><text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" font-size="11">today</text>'+
-        '<g transform="translate(228 30)"><rect width="10" height="10" rx="2" fill="#0D3F4A"/><text x="16" y="9">Equities 68%</text><rect y="22" width="10" height="10" rx="2" fill="#0E9F6E"/><text x="16" y="31">Fixed &amp; cash 32%</text><rect y="52" width="10" height="10" rx="2" fill="#8A9199"/><text x="16" y="61">Target 60%</text><rect y="74" width="10" height="10" rx="2" fill="#9FDFC6"/><text x="16" y="83">Target 40%</text></g></svg>'; },
-    budget:function(){ var W=340,H=120, ess=4246, room=2077, tot=ess+room, L=8, R=W-8, y=48, h=26; var w1=(R-L)*ess/tot;
-      return '<svg viewBox="0 0 '+W+' '+H+'"><rect x="'+L+'" y="'+y+'" width="'+w1.toFixed(1)+'" height="'+h+'" rx="6" fill="#0E794E"/><rect x="'+(L+w1+3).toFixed(1)+'" y="'+y+'" width="'+(R-L-w1-3).toFixed(1)+'" height="'+h+'" rx="6" fill="#CFE6D9"/><text class="b" x="'+L+'" y="'+(y-12)+'" font-size="13">Essentials $4,246</text><text class="b" x="'+R+'" y="'+(y-12)+'" text-anchor="end" font-size="13">Room to live $2,077</text><text x="'+L+'" y="'+(y+h+20)+'">67% of the month</text><text x="'+R+'" y="'+(y+h+20)+'" text-anchor="end">33%: trips, grandkids, golf</text></svg>'; },
-    ss:function(){ var ages=[62,63,64,65,66,67,68,69,70], m=[2480,2660,2850,3080,3300,3540,3820,4100,4380], l=[1550,1660,1780,1920,2060,2210,2390,2560,2740]; var W=340,H=120,L=8,R=W-8,T=22,B=H-22, hi=4600, slot=(R-L)/ages.length, bw=(slot-8)/2; var g='';
-      ages.forEach(function(a,i){ var x=L+i*slot+2; var h1=(B-T)*m[i]/hi, h2=(B-T)*l[i]/hi; g+='<rect x="'+x.toFixed(1)+'" y="'+(B-h1).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h1.toFixed(1)+'" rx="3" fill="#0D3F4A"/><rect x="'+(x+bw+3).toFixed(1)+'" y="'+(B-h2).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h2.toFixed(1)+'" rx="3" fill="#F2784B"/>'; if(a===62||a===67||a===70) g+='<text x="'+(x+bw+1.5).toFixed(1)+'" y="'+(B+16)+'" text-anchor="middle">'+a+'</text>'; });
-      g+='<text class="b" x="'+L+'" y="14" font-size="12">$2,480 at 62</text><text class="b" x="'+R+'" y="14" text-anchor="end" font-size="12">$4,380 at 70</text>';
-      return '<svg viewBox="0 0 '+W+' '+H+'">'+g+'</svg>'; },
-    tax:function(){ var parts=[[76000,'#0E794E','Taxable','16%'],[410000,'#2E9E6E','Tax-deferred','84%'],[0,'#C9EADB','Tax-free','0%']], total=486000, cx=64,cy=60,r=44,w=16,a=-Math.PI/2, g='';
-      parts.forEach(function(p){ if(!p[0]) return; var f=p[0]/total, a1=a+f*2*Math.PI; g+='<path d="M'+(cx+r*Math.cos(a)).toFixed(1)+' '+(cy+r*Math.sin(a)).toFixed(1)+' A'+r+' '+r+' 0 '+(f>0.5?1:0)+' 1 '+(cx+r*Math.cos(a1)).toFixed(1)+' '+(cy+r*Math.sin(a1)).toFixed(1)+'" stroke="'+p[1]+'" stroke-width="'+w+'" fill="none"/>'; a=a1; });
-      g+='<text class="b" x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="13">$486K</text>';
-      parts.forEach(function(p,i){ var y=28+i*26; g+='<rect x="140" y="'+(y-9)+'" width="10" height="10" rx="2" fill="'+p[1]+'"/><text x="158" y="'+y+'">'+p[2]+'</text><text class="b" x="332" y="'+y+'" text-anchor="end">'+p[3]+'</text>'; });
-      return '<svg viewBox="0 0 340 120">'+g+'</svg>'; },
-    withdraw:function(){ var W=340,H=120,L=8,R=W-8, y=44,h=30, segs=[[1800,'#1F2A44','#fff','Pensions'],[400,'#1F2A44','#fff','Other'],[4100,'#CFE6D9','#10182C','Portfolio']], tot=6300, x=L, g='';
-      segs.forEach(function(sg,i){ var w=(R-L)*sg[0]/tot-(i<2?3:0); g+='<rect x="'+x.toFixed(1)+'" y="'+y+'" width="'+w.toFixed(1)+'" height="'+h+'" rx="6" fill="'+sg[1]+'"/>'; if(w>44) g+='<text x="'+(x+8).toFixed(1)+'" y="'+(y+19)+'" font-weight="600" font-size="12" style="fill:'+sg[2]+'">$'+sg[0].toLocaleString()+'</text><text x="'+x.toFixed(1)+'" y="'+(y+h+18)+'">'+sg[3]+'</text>'; x+=w+3; });
-      g+='<text class="b" x="'+L+'" y="22" font-size="13">One month, $6,300</text><text x="'+R+'" y="22" text-anchor="end">65\u00a2 per dollar from your portfolio</text>';
-      return '<svg viewBox="0 0 '+W+' '+H+'">'+g+'</svg>'; }
+  var ICO={
+    stress:'<svg viewBox="0 0 160 80" class="ico-stress"><path d="M20 60 C 60 50, 80 20, 120 28 L120 62 L20 62 Z" fill="#CFE6D9"/><path class="ln" pathLength="1" d="M20 60 C 60 50, 80 20, 120 28" fill="none" stroke="#0E794E" stroke-width="2.5" stroke-linecap="round"/><circle class="dt" cx="120" cy="28" r="4" fill="#0E794E"/></svg>',
+    ss:'<svg viewBox="0 0 160 80" class="ico-ss">'+[18,26,34,42,50,58,66].map(function(h,i){ var x=22+i*18; return '<g class="bp" style="--i:'+i+'"><rect x="'+x+'" y="'+(70-h)+'" width="6" height="'+h+'" rx="1.5" fill="#0D3F4A"/><rect x="'+(x+8)+'" y="'+(70-h*0.62)+'" width="6" height="'+(h*0.62)+'" rx="1.5" fill="#F2A07B"/></g>'; }).join('')+'</svg>',
+    alloc:'<svg viewBox="0 0 160 80" class="ico-alloc"><path d="M38 68 A42 42 0 0 1 108 32" fill="none" stroke="#0D3F4A" stroke-width="12"/><path class="sg" d="M108 32 A42 42 0 0 1 122 68" fill="none" stroke="#2E9E6E" stroke-width="12"/><path d="M56 68 A24 24 0 0 1 96 50" fill="none" stroke="#BFC3C8" stroke-width="10"/><path d="M96 50 A24 24 0 0 1 104 68" fill="none" stroke="#9FDFC6" stroke-width="10"/></svg>',
+    tax:'<svg viewBox="0 0 160 80" class="ico-tax"><circle cx="80" cy="40" r="26" fill="none" stroke="#2E9E6E" stroke-width="14"/><path class="sg" d="M80 14 A26 26 0 0 1 104 28" fill="none" stroke="#0D3F4A" stroke-width="14"/></svg>',
+    budget:'<svg viewBox="0 0 160 80" class="ico-budget"><rect x="30" y="24" width="60" height="14" rx="3" fill="#0D3F4A"/><rect class="gr" x="96" y="24" width="34" height="14" rx="3" fill="#2E9E6E"/><rect x="30" y="44" width="52" height="14" rx="3" fill="#0D3F4A"/><rect class="gr g2" x="88" y="44" width="42" height="14" rx="3" fill="#2E9E6E"/></svg>',
+    withdraw:'<svg viewBox="0 0 160 80" class="ico-wd">'+['#0D3F4A','#0D3F4A','#0D3F4A','#0D3F4A','#2E9E6E','#2E9E6E','#2E9E6E','#2E9E6E','#2E9E6E','#9FDFC6','#9FDFC6','#9FDFC6','#CFE6D9','#CFE6D9'].map(function(c,i){ return '<rect class="wb" style="--i:'+i+'" x="'+(24+i*8.5)+'" y="22" width="5" height="36" rx="1.2" fill="'+c+'"/>'; }).join('')+'</svg>',
+    health:'<svg viewBox="0 0 160 80" class="ico-health"><path d="M30 28 H86 V52 H130" fill="none" stroke="#0D3F4A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle class="dt" cx="86" cy="52" r="4" fill="#0E794E"/></svg>'
   };
   function build(){
     grid.innerHTML='';
-    var hero=(root.querySelector('#stHero')||{}).innerHTML||'Still funded to <span class="p">92</span>, at <span class="g">87%</span>.';
-    grid.appendChild(card('stress-test','Stress test', hero, 'Pull a lever, see the cost.', MINI.stress(), 'Pull a lever'));
-    grid.appendChild(card('asset-allocation','Asset allocation', 'You are <b style="font-weight:600">8 points</b> from your <span class="p">moderate</span> target.', 'Where your dollars sit, and where they belong.', MINI.alloc(), 'See the moves'));
-    grid.appendChild(card('budget','Detailed budgeter', 'Live <span class="p">well</span> on <span class="g">$6,323</span> a month.', 'What you spend, and what you would like to.', MINI.budget(), 'Open the budgeter'));
-    grid.appendChild(card('social-security-explorer','Social Security Explorer', 'A guaranteed <span class="p">8% raise</span> for every year you wait.', 'Try a few claiming ages.', MINI.ss(), 'Explore claiming ages'));
-    grid.appendChild(card('tax-planning','Tax planning', 'Six low-bracket Decembers. <span class="p">$61,000</span> stays yours.', 'A Roth ladder, one December at a time.', MINI.tax(), 'Open the ladder'));
-    grid.appendChild(card('withdrawal-strategy','Withdrawal strategy', 'Paychecks <span class="p">by design</span> for <span class="g">25 years</span>.', 'Which dollars you spend first.', MINI.withdraw(), 'Set the order'));
+    [['stress-test','stress','Stress Test','Test the plan against rough markets.'],
+     ['social-security-explorer','ss','Social Security Explorer','Compare claiming ages side by side.'],
+     ['asset-allocation','alloc','Asset Allocation','Check your mix against your target.'],
+     ['tax-planning','tax','Tax Planning','Plan Roth conversions year by year.'],
+     ['budget','budget','Detailed Budgeter','Map spending now and in retirement.'],
+     ['withdrawal-strategy','withdraw','Withdrawal Strategy','Choose which accounts pay you first.'],
+     ['healthcare','health','Healthcare Costs','Price care before and after Medicare.']
+    ].forEach(function(t){ var c=document.createElement('div'); c.className='opt-card ost-tool'; c.dataset.tool=t[0]; c.setAttribute('role','link'); c.tabIndex=0; c.innerHTML='<div class="ost-icon">'+ICO[t[1]]+'</div><div class="opt-card-t">'+t[2]+'</div><div class="opt-card-sub">'+t[3]+'</div>'; grid.appendChild(c); });
   }
   build();
   /* the stress chart is drawn once the model is ready; refresh the card then */
-  var tries=0, t=setInterval(function(){ var s=root.querySelector('#stHero'); if(s){ clearInterval(t); build(); } else if(++tries>40) clearInterval(t); }, 200);
   grid.addEventListener('click', function(e){ var c=e.target.closest('.opt-card[data-tool]'); if(c) T.open(c.dataset.tool); });
   grid.addEventListener('keydown', function(e){ var c=e.target.closest('.opt-card[data-tool]'); if(c && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); T.open(c.dataset.tool); } });
   document.body.classList.add('ost-cards');
@@ -37768,9 +37767,9 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
 </script>
 <!-- ===== The route: show an alternative scenario beside the plan, and add one from here ===== -->
 <style id="routeScnCSS">
-.sum-layout .rs-bar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:-6px 0 14px; }
+.sum-layout .rs-bar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:-4px 0 14px; }
 .sum-layout .rs-bar .rs-lab{ font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-right:2px; }
-.sum-layout .rs-chip{ display:inline-flex; align-items:center; gap:7px; font:inherit; font-size:13.5px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:6px 12px; cursor:pointer; }
+.sum-layout .rs-chip{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:13px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:5px 10px; cursor:pointer; }
 .sum-layout .rs-chip i{ width:9px; height:9px; border-radius:50%; background:#04B477; display:inline-block; }
 .sum-layout .rs-chip.alt i{ background:#4A99C4; }
 .sum-layout .rs-chip.on{ background:#1F2A44; color:#fff; border-color:#1F2A44; }
@@ -37784,7 +37783,8 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
 .sum-layout .sum-svg .rs-ret{ stroke:#4A99C4; stroke-width:1.4; stroke-dasharray:4 5; opacity:.7; }
 .sum-layout .sum-svg .rs-dot{ fill:#4A99C4; stroke:#fff; stroke-width:2.4; }
 /* the scenario card at the top of the route */
-.sum-layout .rs-card{ border:1px solid #CFE3EF; background:#F4F9FC; border-radius:14px; padding:14px 16px; margin:0 0 18px; }
+.sum-layout .rs-card{ border:1px solid #CFE3EF; background:#F4F9FC; border-radius:14px; padding:14px 18px; margin:18px 0 0; }
+.sum-layout .rs-card .rs-stats{ max-width:520px; }
 .sum-layout .rs-card .rh{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .sum-layout .rs-card .rh b{ font-size:15px; font-weight:600; display:inline-flex; align-items:center; gap:8px; }
 .sum-layout .rs-card .rh b i{ width:9px; height:9px; border-radius:50%; background:#4A99C4; display:inline-block; }
@@ -37848,7 +37848,7 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
   /* ---------- the bar above the chart ---------- */
   function bar(){
     var L=lay(); if(!L) return; var top=L.querySelector('.center .alo-top'); if(!top) return;
-    var b=L.querySelector('.rs-bar'); if(!b){ b=document.createElement('div'); b.className='rs-bar'; var chips=L.querySelector('.sum-chips'); (chips||top).insertAdjacentElement(chips?'beforebegin':'afterend', b);
+    var b=L.querySelector('.rs-bar'); if(!b){ b=document.createElement('div'); b.className='rs-bar'; var chips=L.querySelector('.center .sum-chips'); if(!chips) return; chips.insertAdjacentElement('beforebegin', b);
       b.addEventListener('click', function(e){ var c=e.target.closest('.rs-chip'); if(!c) return; if(c.classList.contains('add')){ openAdd(); return; } var id=c.dataset.id||null; if(id===null){ show(null); return; } show(active===id?null:id); }); }
     var items=list();
     b.innerHTML='<span class="rs-lab">Showing</span><button type="button" class="rs-chip'+(active?'':' on')+'"><i></i>My Financial Plan</button>'+items.map(function(it){ return '<button type="button" class="rs-chip alt'+(active===it.id?' on':'')+'" data-id="'+it.id+'"><i></i>'+esc(it.letter)+' · '+esc(it.name)+'</button>'; }).join('')+'<button type="button" class="rs-chip add">+ Add a scenario</button>';
@@ -37877,8 +37877,8 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
   }
   /* ---------- the card and rows in the route ---------- */
   function routeCard(){
-    var L=lay(); if(!L) return; var ctx=L.querySelector('#sumCtx'); if(!ctx) return;
-    var old=ctx.querySelector('.rs-card'); if(old) old.remove();
+    var L=lay(); if(!L) return; var ctx=L.querySelector('#sumCtx'); if(!ctx) return; var host=L.querySelector('.center .sum-range')||L.querySelector('.center');
+    var old=L.querySelector('.rs-card'); if(old) old.remove();
     ctx.querySelectorAll('.sxtl-row.rs-row').forEach(function(r){ r.remove(); });
     var it=active && item(active); if(!it || !window.WHATIF) return;
     var m=window.WHATIF.metricsFor(it.vals, it.moves), p=window.WHATIF.planMetrics ? window.WHATIF.planMetrics() : null; if(!m) return;
@@ -37889,8 +37889,7 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
       '<div class="rs-stats">'+stat('Funded to', m.funded, p?(m.funded===p.funded?'same as plan':(m.funded<p.funded?'plan lasts to '+p.funded:'')):'', m.funded<(p?p.funded:92)?'dn':'')+stat('Confidence', m.conf+'%', p?((dConf>=0?'+':'')+dConf+' pts vs plan'):'', dConf<0?'dn':dConf>0?'up':'')+stat('At 92', money(m.end), p?((dEnd>=0?'+':'−')+money(Math.abs(dEnd))+' vs plan'):'', dEnd<0?'dn':dEnd>0?'up':'')+'</div>'+
       '<ul>'+diffs(it).map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>'+
       '<div class="rs-acts"><a data-act="plan">Make this my plan</a><a data-act="compare">Compare in Scenarios</a><a data-act="remove">Remove</a></div>';
-    ctx.insertBefore(card, ctx.firstChild);
-    var sc=ctx.closest('.sum-rscroll'); if(sc) sc.scrollTop=0;
+    host.insertAdjacentElement('afterend', card);
     card.addEventListener('click', function(e){ var a=e.target.closest('[data-act], .x'); if(!a) return; e.preventDefault(); e.stopPropagation();
       if(a.classList.contains('x')) { show(null); return; }
       var act=a.dataset.act;
@@ -37940,10 +37939,75 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
   }
   /* ---------- lifecycle ---------- */
   function arm(){ var L=lay(); if(!L) return; if(!L.dataset.rsArmed){ L.dataset.rsArmed='1'; mo.observe(L, { childList:true, subtree:true }); }
-    if(document.body.classList.contains('sum-open')){ if(!L.querySelector('.rs-bar')) { bar(); } if(active && !L.querySelector('#sumCtx .rs-card')) routeCard(); } }
+    if(document.body.classList.contains('sum-open')){ if(!L.querySelector('.rs-bar')) { bar(); } if(active && !L.querySelector('.rs-card')) routeCard(); } }
   new MutationObserver(function(){ clearTimeout(arm._t); arm._t=setTimeout(arm, 120); }).observe(document.body, { attributes:true, attributeFilter:['class'] });
   setInterval(arm, 1000);
   window.__routeScn={ show:show, add:openAdd, active:function(){ return active; } };
+})();
+</script>
+<!-- ===== My Money looks at today only: Summary and Budgeting lose every forward-looking piece there; the Sankey power mode loses its years ===== -->
+<style id="todayOnlyCSS">
+body[data-view="today"] #v-first > .flag, body[data-view="today"] #v-first > .hero, body[data-view="today"] #v-first > .insight,
+body[data-view="today"] #v-first > .sr, body[data-view="today"] #v-first > .sech, body[data-view="today"] #v-first > .qgrid, body[data-view="today"] #v-first > .nextrow,
+body[data-view="today"] #v-first > .qhead:not(.td-head){ display:none !important; }
+body:not([data-view="today"]) #v-first > .td-only{ display:none !important; }
+body[data-view="today"] #v-budget > .flag, body[data-view="today"] #v-budget > .insight, body[data-view="today"] #v-budget > .nextrow,
+body[data-view="today"] #v-budget > .grid2, body[data-view="today"] #v-budget > .card.xp-future{ display:none !important; }
+/* today's summary */
+#v-first .td-strip{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin:18px 0 8px; }
+#v-first .td-strip > div{ border:1px solid var(--hairline); border-radius:14px; padding:14px 16px; }
+#v-first .td-strip .k{ font-size:13px; color:var(--text-secondary); }
+#v-first .td-strip .v{ font-size:24px; font-weight:600; margin-top:4px; letter-spacing:-0.3px; }
+#v-first .td-strip .d{ font-size:12.5px; color:var(--text-secondary); margin-top:2px; }
+#v-first .td-list{ margin:22px 0 0; }
+#v-first .td-list h3{ font-size:17px; font-weight:600; margin:0 0 8px; }
+#v-first .td-row{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:11px 0; border-top:1px solid var(--hairline); font-size:15px; }
+#v-first .td-row:last-child{ border-bottom:1px solid var(--hairline); }
+#v-first .td-row .n{ font-weight:600; }
+#v-first .td-row .s{ color:var(--text-secondary); font-size:13.5px; margin-left:8px; }
+#v-first .td-row .a{ font-weight:600; white-space:nowrap; }
+#v-first .td-row .a.neg{ color:#B42318; }
+/* the Sankey power mode, from My Money: this year only */
+body[data-view="today"].pm-open #powerMode .pm-year, body[data-view="today"].pm-open #powerMode [data-pm-view="time"]{ display:none !important; }
+body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view="today"].pm-open #powerMode .pm-tbl td:last-child{ display:none; }
+</style>
+<script>
+(function(){
+  'use strict';
+  function usd(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function money(v){ return Math.abs(v)>=1e6 ? '$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M' : '$'+Math.round(v/1e3)+'K'; }
+  function tagBudget(){
+    var v=document.getElementById('v-budget'); if(!v) return;
+    v.querySelectorAll(':scope > .card').forEach(function(c){ var t=((c.querySelector('h3')||{}).textContent||''); if(/over time|surplus or a gap|change in retirement/i.test(t)) c.classList.add('xp-future'); });
+  }
+  function buildToday(){
+    var v=document.getElementById('v-first'); if(!v || v.querySelector('.td-only')) return;
+    var D=window.__xpData ? window.__xpData() : null; if(!D || !D.M || !D.M.length) return;
+    var r0=D.M[0], K=D.K||{};
+    var income=r0.work||0, spend=(r0.expenses.living+r0.expenses.housing+r0.expenses.health), tax=Math.round((r0.fed||0)+(r0.irmaa||0)), save=36000, left=Math.round(K.surplus0||(income-spend-tax-save));
+    var head=document.createElement('div'); head.className='qhead td-head td-only';
+    head.innerHTML='<div class="eyebrow">Summary</div><h2 class="pf-hl">Where you stand today.</h2><p class="bud-sub">Your balances and this year’s cash flow, as of now. The future lives in My Plans.</p>';
+    var strip=document.createElement('div'); strip.className='td-strip td-only';
+    strip.innerHTML=[['Net worth today',money(K.nw0||1140000),'accounts, home, less debts'],['Income this year',money(income),'two paychecks'],['Spending this year',money(spend),usd(spend/12)+' a month, incl. mortgage'],['Left over',money(left),'after taxes and saving']].map(function(x){ return '<div><div class="k">'+x[0]+'</div><div class="v">'+x[1]+'</div><div class="d">'+x[2]+'</div></div>'; }).join('');
+    var list=document.createElement('div'); list.className='td-list td-only';
+    list.innerHTML='<h3>This year, in order</h3>'+[['Income','two paychecks',income,false],['Everyday living','groceries, cars, the usual',-r0.expenses.living,true],['Mortgage','principal and interest',-r0.expenses.housing,true],['Healthcare','premiums and out of pocket',-r0.expenses.health,true],['Taxes','federal, this year',-tax,true],['Saving','401(k)s and Roth IRAs',-save,true],['Left over','',left,false]].map(function(x){ return '<div class="td-row"><span><span class="n">'+x[0]+'</span>'+(x[1]?'<span class="s">'+x[1]+'</span>':'')+'</span><span class="a'+(x[3]?' neg':'')+'">'+(x[2]<0?'−':'')+usd(Math.abs(x[2]))+'</span></div>'; }).join('');
+    var first=v.querySelector(':scope > .qhead'); if(first){ first.insertAdjacentElement('afterend', head); } else v.insertBefore(head, v.firstChild);
+    head.insertAdjacentElement('afterend', strip); strip.insertAdjacentElement('afterend', list);
+  }
+  /* the short answer beside these chapters talks about today too */
+  var ANS={ first:['Today\u2019s paychecks cover everything with about <b>$2,100 a month</b> to spare, and $1.17M is already yours. What happens next lives in My Plans.','Where is my money sitting?'],
+            budget:['Of every dollar you earn this year, <b>42\u00a2</b> goes to everyday living, <b>17\u00a2</b> to saving and <b>14\u00a2</b> to taxes. The rest is yours.','Which expense is biggest?'] };
+  function railToday(){
+    if(document.body.dataset.view!=='today') return; var rail=document.getElementById('xpRail'); if(!rail || !rail.offsetParent) return;
+    var on=[].slice.call(document.querySelectorAll('#xpNav li.active')).map(function(l){ return l.dataset.xp; })[0] || ([].slice.call(document.querySelectorAll('.view.on')).map(function(v){ return (v.id||'').replace('v-',''); })[0]);
+    var a=ANS[on]; if(!a) return; var body=rail.querySelector('.ctx-body'), cta=rail.querySelector('.ctx-cta'); if(!body || body.dataset.td===on) return;
+    body.dataset.td=on; body.innerHTML=a[0]; if(cta){ cta.innerHTML=a[1]+' '+(cta.querySelector('svg')?cta.querySelector('svg').outerHTML:''); }
+  }
+  function run(){ tagBudget(); buildToday(); railToday(); }
+  new MutationObserver(function(ms){ for(var i=0;i<ms.length;i++){ var t=ms[i].target; if(t && t.id && /^(v-(first|budget)|xpRail)$/.test(t.id)){ setTimeout(run, 30); return; } } }).observe(document.body, { childList:true, subtree:true });
+  run(); setInterval(run, 1500);
+  /* no year travel in the Sankey while looking at today */
+  document.addEventListener('click', function(e){ if(document.body.dataset.view!=='today') return; var b=e.target.closest && e.target.closest('#powerMode [data-pm-view="time"], #powerMode tr[data-pm-year]'); if(b){ e.preventDefault(); e.stopPropagation(); } }, true);
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
