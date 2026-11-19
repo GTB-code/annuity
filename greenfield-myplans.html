@@ -37634,12 +37634,14 @@ body.ost-cards .opt-index > .rail.bai-host{ transition:none !important; }
 body.ost-open #ostIndex{ display:none; }
 #ostIndex h1{ font-size:34px; font-weight:400; letter-spacing:-0.3px; margin:0 0 6px; line-height:1.15; color:var(--ink); }
 #ostIndex .ost-isub{ font-size:16px; color:var(--text-secondary); margin:0 0 24px; }
-#ostIndex .opt-card{ position:relative; }
+#ostIndex .ost-grid{ display:grid !important; grid-template-columns:1fr 1fr; gap:var(--s-6); align-items:stretch; columns:auto !important; }
+#ostIndex .opt-card{ position:relative; display:flex; flex-direction:column; break-inside:avoid; margin:0 !important; }
+#ostIndex .opt-card .opt-card-sub{ min-height:1.5em; }
 #ostIndex .opt-card .ost-ceye{ font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-secondary); }
-#ostIndex .opt-card .opt-card-t{ font-size:22px; font-weight:400; line-height:1.2; letter-spacing:-0.2px; }
+#ostIndex .opt-card .opt-card-t{ font-size:22px; font-weight:400; line-height:1.2; letter-spacing:-0.2px; min-height:2.4em; }
 #ostIndex .opt-card .opt-card-t .p{ color:var(--green-cta); }
 #ostIndex .opt-card .opt-card-t .g{ color:#E0A526; }
-#ostIndex .opt-card .ost-cviz{ margin:14px 0 26px; min-height:120px; display:flex; align-items:center; }
+#ostIndex .opt-card .ost-cviz{ margin:12px 0 26px; height:124px; display:flex; align-items:center; }
 #ostIndex .opt-card .ost-cviz > svg{ width:100%; height:auto; display:block; }
 #ostIndex .opt-card .ost-cviz .ost-guard{ width:100%; }
 #ostIndex .opt-card .ost-cviz svg text{ font-size:12px; fill:#47495A; }
@@ -37664,7 +37666,7 @@ body.ost-open #ostIndex{ display:none; }
   var center=root.parentNode;
   var T=window.__optTools; if(!T) return;
   var idx=document.createElement('div'); idx.id='ostIndex';
-  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Seven tools, each one a lever on the whole plan. Open any of them; nothing changes until you say so.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
+  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Six tools, each one a lever on the whole plan.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
   center.insertBefore(idx, root);
   var grid=idx.querySelector('#ostGrid');
   function go(label){ return '<span class="opt-card-go">'+label+' <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; }
@@ -37697,12 +37699,12 @@ body.ost-open #ostIndex{ display:none; }
   function build(){
     grid.innerHTML='';
     var hero=(root.querySelector('#stHero')||{}).innerHTML||'Still funded to <span class="p">92</span>, at <span class="g">87%</span>.';
-    grid.appendChild(card('stress-test','Stress test', hero, 'Every slider moves the whole plan. Nothing here is saved.', MINI.stress(), 'Pull a lever'));
-    grid.appendChild(card('asset-allocation','Asset allocation', 'You are <b style="font-weight:600">8 points</b> from your <span class="p">moderate</span> target.', 'Where your invested dollars sit today, and where your target wants them.', MINI.alloc(), 'See the moves'));
-    grid.appendChild(card('budget','Detailed budgeter', 'Live <span class="p">well</span> on <span class="g">$6,323</span> a month.', 'Document what you spend now and what you would like to spend.', MINI.budget(), 'Open the budgeter'));
-    grid.appendChild(card('social-security-explorer','Social Security Explorer', 'A guaranteed <span class="p">8% raise</span> for every year you wait.', 'See how the age you claim changes your checks, and what each choice adds up to over your lifetime.', MINI.ss(), 'Explore claiming ages'));
-    grid.appendChild(card('tax-planning','Tax planning', 'Six low-bracket Decembers. <span class="p">$61,000</span> stays yours.', 'The lowest-lifetime-tax ladder, paid from taxable savings, converting into a new Roth IRA.', MINI.tax(), 'Open the ladder'));
-    grid.appendChild(card('withdrawal-strategy','Withdrawal strategy', 'Paychecks <span class="p">by design</span> for <span class="g">25 years</span>.', 'Which dollars you spend first decides how long all of them last.', MINI.withdraw(), 'Set the order'));
+    grid.appendChild(card('stress-test','Stress test', hero, 'Pull a lever, see the cost.', MINI.stress(), 'Pull a lever'));
+    grid.appendChild(card('asset-allocation','Asset allocation', 'You are <b style="font-weight:600">8 points</b> from your <span class="p">moderate</span> target.', 'Where your dollars sit, and where they belong.', MINI.alloc(), 'See the moves'));
+    grid.appendChild(card('budget','Detailed budgeter', 'Live <span class="p">well</span> on <span class="g">$6,323</span> a month.', 'What you spend, and what you would like to.', MINI.budget(), 'Open the budgeter'));
+    grid.appendChild(card('social-security-explorer','Social Security Explorer', 'A guaranteed <span class="p">8% raise</span> for every year you wait.', 'Try a few claiming ages.', MINI.ss(), 'Explore claiming ages'));
+    grid.appendChild(card('tax-planning','Tax planning', 'Six low-bracket Decembers. <span class="p">$61,000</span> stays yours.', 'A Roth ladder, one December at a time.', MINI.tax(), 'Open the ladder'));
+    grid.appendChild(card('withdrawal-strategy','Withdrawal strategy', 'Paychecks <span class="p">by design</span> for <span class="g">25 years</span>.', 'Which dollars you spend first.', MINI.withdraw(), 'Set the order'));
   }
   build();
   /* the stress chart is drawn once the model is ready; refresh the card then */
@@ -37802,3 +37804,10 @@ body.bai-open .hm-page .welcome{ margin-right:calc(410px + 24px); }
   setInterval(arm, 700); arm();
 })();
 </script>
+<style>
+/* Future Rates page head reads like every other section head: 23/600 title, 15px secondary subline */
+#fbPage .fb-top .inv-title{ font-size:23px !important; font-weight:600 !important; line-height:1.3 !important; letter-spacing:0; margin:0; }
+#fbPage .inv-sub.fb-sub{ font-size:15px !important; line-height:1.5; color:var(--text-secondary) !important; margin:3px 0 14px; }
+#fbPage .inv-sub.fb-sub .rh-link{ font-size:15px !important; }
+#fbPage .fb-top{ align-items:center; }
+</style>
