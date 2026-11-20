@@ -14646,7 +14646,7 @@ body.sum-closing .sum-layout .sum-route{ animation:sumOutRight 300ms var(--sum-e
     var dock=document.querySelector('.dock');
     var reserve=(dock ? dock.offsetHeight : 136) + 76;
     var avail=window.innerHeight - topInView - rangeEl.offsetHeight - reserve;
-    var target=Math.max(165, Math.min(620, avail));
+    var target=Math.max(165, Math.min(380, avail));
     var next=Math.round(target * 720 / colW);
     if(Math.abs(next-vbH) < 6) return false;
     vbH=next;
@@ -33214,7 +33214,7 @@ body.whatif-cmp .dock{ z-index:60; }
   }
   function finalize(name){
     var s=st(); var vals={}; if(s) Object.keys(s.S).forEach(function(k){ vals[k]=s.S[k]; });
-    var item={ id:'wi'+Date.now().toString(36), name:name, letter:'Plan '+String.fromCharCode(66+SOLID.length), vals:vals, changes:W.changes, moves:W.moves };
+    var item={ id:'wi'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), name:name, letter:'Plan '+String.fromCharCode(66+SOLID.length), vals:vals, changes:W.changes, moves:W.moves };
     SOLID.push(item); save(); rail(); activate(item, true);
     say('Kept as '+item.letter+' — '+item.name);
   }
@@ -33311,7 +33311,7 @@ body.whatif-cmp .dock{ z-index:60; }
   /* straight to the plan, no scenario in between */
   function applyNow(label){ var s=st(); if(!s) return; if(W.solid){ makePlan(); return; } var nm=autoName(); s.rebase(); reflect(); ORIG.forEach(function(v,el){ el.classList.remove('wi-shadowed'); }); ORIG.clear(); document.querySelectorAll('.sbox .meter > i').forEach(function(i){ delete i.dataset.wiW; }); W.open=false; W.cmp=false; W.changes={}; W.moves={}; paint(); say('Plan updated \u2014 '+nm); }
   function applyMove(label){ if(W.open && !W.solid && Object.keys(W.moves).length===0 && !count()){ W.open=false; } paint(); say('Plan updated \u2014 '+label); }
-  window.WHATIF={ add:function(name, vals){ var v={}; Object.keys(vals||{}).forEach(function(k){ v[k]=vals[k]; }); var item={ id:'wi'+Date.now().toString(36), name:name, letter:'Plan '+String.fromCharCode(66+SOLID.length), vals:v, changes:{}, moves:{} }; SOLID.push(item); save(); rail(); return item; }, open:function(){ ensureOpen(); paint(); }, keepAs:function(name){ if(W.solid) return; finalize((name||'').trim()||autoName()); }, lines:function(){ var m=metrics(); return m? lines(m) : []; }, metrics:metrics, levers:function(){ var s=st(); return s? s.S : null; }, activate:activate, makePlan:makePlan, remove:function(id){ SOLID=SOLID.filter(function(x){ return x.id!==id; }); SOLID.forEach(function(x,i){ x.letter='Plan '+String.fromCharCode(66+i); }); save(); if(W.solid&&W.solid.id===id) discard(); rail(); }, list:function(){ return SOLID.slice(); }, metricsFor:function(vals, moves){ var s=st(); if(!s) return null; var r=s.run(vals,false); r.conf=s.conf(r); var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); return { funded:r.out?(61+(r.out-2026)):92, conf:r.conf, end:r.end+extra, rows:r.rows, ret:vals.ret, ss:vals.ss, spend:vals.spend }; }, planMetrics:function(){ var s=st(); if(!s) return null; var b=s.base; return { funded:92, conf:b.conf, end:b.end, rows:b.rows, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend }; }, setLevers:function(o){ var s=st(); if(!s) return; Object.keys(o).forEach(function(k){ var inp=document.getElementById('st_'+k); var v=o[k]; if(inp){ v=Math.max(+inp.min, Math.min(+inp.max, v)); inp.value=v; inp.dispatchEvent(new Event('input')); } s.S[k]=v; }); s.render(null); syncStress(); }, base:function(){ var s=st(); return s? s.BASE : null; }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
+  window.WHATIF={ add:function(name, vals){ var v={}; Object.keys(vals||{}).forEach(function(k){ v[k]=vals[k]; }); var item={ id:'wi'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), name:name, letter:'Plan '+String.fromCharCode(66+SOLID.length), vals:v, changes:{}, moves:{} }; var s0=st(); if(s0) Object.keys(s0.BASE).forEach(function(k){ if(v[k]!==undefined && v[k]!==s0.BASE[k]) item.changes[k]={from:fmt(k,s0.BASE[k]), to:fmt(k,v[k])}; }); SOLID.push(item); save(); rail(); return item; }, open:function(){ ensureOpen(); paint(); }, keepAs:function(name){ if(W.solid) return; finalize((name||'').trim()||autoName()); }, lines:function(){ var m=metrics(); return m? lines(m) : []; }, metrics:metrics, levers:function(){ var s=st(); return s? s.S : null; }, activate:activate, makePlan:makePlan, remove:function(id){ SOLID=SOLID.filter(function(x){ return x.id!==id; }); SOLID.forEach(function(x,i){ x.letter='Plan '+String.fromCharCode(66+i); }); save(); if(W.solid&&W.solid.id===id) discard(); rail(); }, list:function(){ return SOLID.slice(); }, metricsFor:function(vals, moves){ var s=st(); if(!s) return null; var r=s.run(vals,false); r.conf=s.conf(r); var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); return { funded:r.out?(61+(r.out-2026)):92, conf:r.conf, end:r.end+extra, rows:r.rows, ret:vals.ret, ss:vals.ss, spend:vals.spend }; }, planMetrics:function(){ var s=st(); if(!s) return null; var b=s.base; return { funded:92, conf:b.conf, end:b.end, rows:b.rows, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend }; }, setLevers:function(o){ var s=st(); if(!s) return; Object.keys(o).forEach(function(k){ var inp=document.getElementById('st_'+k); var v=o[k]; if(inp){ v=Math.max(+inp.min, Math.min(+inp.max, v)); inp.value=v; inp.dispatchEvent(new Event('input')); } s.S[k]=v; }); s.render(null); syncStress(); }, base:function(){ var s=st(); return s? s.BASE : null; }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
 })();
 </script>
 <style id="osApplyCSS">
@@ -33604,15 +33604,14 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
     if(plan && base && list.length){
       var series=[{name:'Your plan', color:'#0F172A', rows:plan.rows, plan:true, m:plan}];
       list.forEach(function(it,i){ if(!picked[it.id]) return; var m=WI.metricsFor(it.vals, it.moves); if(m) series.push({name:it.name, color:COLORS[i%3], rows:m.rows, m:m, it:it}); });
-      h+='<h2>Compare</h2><p class="h2sub">'+(series.length>1?'Your plan in ink, your scenarios in colour. Same chart, same rules.':'Keep a scenario and it appears here beside your plan.')+'</p>';
+      h+='<h2>Compare</h2><p class="h2sub">'+(series.length>1?'Three numbers and one sentence per scenario. Your plan is the baseline.':'Keep a scenario and it appears here beside your plan.')+'</p>';
       h+='<div class="scn-cmp"><div class="scn-chart">'+chart(series)+'<div class="scn-legend">'+series.map(function(s){ return '<span><i style="border-color:'+s.color+'"></i>'+esc(s.name)+'</span>'; }).join('')+'</div></div>';
       function row(lab, f, cls){ var vals=series.map(function(s){ return f(s.m); }); var best=null; if(cls){ best=vals.slice(1).reduce(function(a,v){ return (a===null|| (cls==='hi'?v>a:v<a))?v:a; }, null); }
         return '<tr><td>'+lab+'</td>'+series.map(function(s,i){ var v=f(s.m); var d=''; if(i>0){ var dv=v-vals[0]; if(lab==='Ending balance') d=Math.abs(dv)>=1000?'<small class="'+(dv>0?'pos':'neg')+'">'+(dv>0?'+':'−')+big(Math.abs(dv))+'</small>':'<small>same</small>'; else if(lab==='Confidence'||lab==='Funded to') d=dv?'<small class="'+(dv>0?'pos':'neg')+'">'+(dv>0?'+':'')+dv+(lab==='Confidence'?' pts':' yrs')+'</small>':'<small>same</small>'; }
           var txt=lab==='Ending balance'?big(v):lab==='Confidence'?(v+'%'):lab==='Funded to'?('age '+v):lab==='Monthly spending'?('$'+v.toLocaleString('en-US')):('at '+v);
           return '<td'+(i>0&&cls&&v===best&&series.length>2?' class="best"':'')+'>'+txt+d+'</td>'; }).join('')+'</tr>'; }
-      h+='<div><table class="scn-tbl"><thead><tr><th></th>'+series.map(function(s){ return '<th><i style="border-color:'+s.color+'"></i>'+esc(s.name.length>18?s.name.slice(0,17)+'…':s.name)+'</th>'; }).join('')+'</tr></thead><tbody>'+
-        row('Funded to', function(m){ return m.funded; }, 'hi')+row('Confidence', function(m){ return m.conf; }, 'hi')+row('Ending balance', function(m){ return m.end; }, 'hi')+row('Retire', function(m){ return m.ret; })+row('Social Security', function(m){ return m.ss; })+row('Monthly spending', function(m){ return m.spend; })+'</tbody></table>';
-      if(series.length>1){ var bestS=series.slice(1).sort(function(a,b){ return b.m.conf-a.m.conf; })[0]; var dc=bestS.m.conf-plan.conf; h+='<p class="scn-read">'+(dc>0?('<b>'+esc(bestS.name)+'</b> is the stronger plan: '+dc+' points more confidence and '+big(bestS.m.end)+' at the end. If that is the life you want, make it your plan.'):dc<0?('None of these beats your plan on confidence. <b>'+esc(bestS.name)+'</b> comes closest, '+(-dc)+' points behind. That is useful to know: the plan you have is the one to keep.'):(function(){ var de=bestS.m.end-plan.end; return '<b>'+esc(bestS.name)+'</b> matches your plan on confidence'+(Math.abs(de)>=1000?(' but ends '+big(Math.abs(de))+(de<0?' lighter. The plan you have is the better deal.':' heavier. Same safety, more left over.')):', with a different shape. Choose the life, not the number.'); })())+'</p>'; }
+      if(series.length>1 && window.__scnStrip){ h+='<div class="scn-strips">'+series.slice(1).map(function(sr){ return window.__scnStrip.html(sr.it, sr.m, plan, { color:sr.color, acts:true }); }).join('')+'</div>'; }
+      else h+='<p class="scn-read">Tick a scenario above to see it against your plan: funded to, confidence, and what is left at 92.</p>';
       h+='</div></div>';
     }
     h+='<h2>Good to know</h2><div class="scn-faq">'+
@@ -33686,6 +33685,7 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
   function close(){ inOne=false; document.body.classList.remove('scn-open','scn-one'); if(window.__bai){ if(window.__bai.isOpen()) window.__bai.close(); if(window.__bai.resetChips) window.__bai.resetChips(); } }
   body.addEventListener('click', function(e){
     if(e.target.closest('.scn-back')){ close(); return; }
+    var sv=e.target.closest('.scn-strips .scv [data-act]'); if(sv){ e.preventDefault(); var WI2=window.WHATIF; var id=sv.closest('.scv').dataset.id, it=WI2.list().filter(function(x){ return x.id===id; })[0]; if(!it) return; if(sv.dataset.act==='remove'){ WI2.remove(id); showList(); } else if(sv.dataset.act==='plan'){ WI2.activate(it, true); setTimeout(function(){ WI2.makePlan(); showList(); }, 80); } return; }
     var st=e.target.closest('.scn-start'); if(st){ var sdef=STARTERS[+st.dataset.i]; if(sdef.ai){ if(window.__bai){ if(!window.__bai.isOpen()) window.__bai.open(); var ta=document.querySelector('.bai-ask textarea, .bai-ask input'); if(ta){ ta.focus(); } } return; } var b=window.WHATIF&&WHATIF.base(); if(!b) return; start(sdef.set(b)); return; }
     var row=e.target.closest('.scn-row'); if(!row) return; var id=row.dataset.id; var it=WHATIF.list().filter(function(x){ return x.id===id; })[0]; if(!it) return;
     if(e.target.closest('.pick')){ var n=Object.keys(picked).filter(function(k){ return picked[k]; }).length; if(!picked[id] && n>=3) return; picked[id]=!picked[id]; render(); return; }
@@ -37782,24 +37782,27 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
 .sum-layout .sum-svg .rs-path{ fill:none; stroke:#4A99C4; stroke-width:2.6; stroke-dasharray:7 6; stroke-linecap:round; stroke-linejoin:round; }
 .sum-layout .sum-svg .rs-ret{ stroke:#4A99C4; stroke-width:1.4; stroke-dasharray:4 5; opacity:.7; }
 .sum-layout .sum-svg .rs-dot{ fill:#4A99C4; stroke:#fff; stroke-width:2.4; }
-/* the scenario card at the top of the route */
-.sum-layout .rs-card{ border:1px solid #CFE3EF; background:#F4F9FC; border-radius:14px; padding:14px 18px; margin:18px 0 0; }
-.sum-layout .rs-card .rs-stats{ max-width:520px; }
-.sum-layout .rs-card .rh{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-.sum-layout .rs-card .rh b{ font-size:15px; font-weight:600; display:inline-flex; align-items:center; gap:8px; }
-.sum-layout .rs-card .rh b i{ width:9px; height:9px; border-radius:50%; background:#4A99C4; display:inline-block; }
-.sum-layout .rs-card .rh .x{ border:0; background:none; font:inherit; color:var(--text-secondary); cursor:pointer; font-size:13px; }
-.sum-layout .rs-card .rs-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:12px 0; }
-.sum-layout .rs-card .rs-stats .k{ font-size:11.5px; color:var(--text-secondary); }
-.sum-layout .rs-card .rs-stats .v{ font-size:16px; font-weight:600; }
-.sum-layout .rs-card .rs-stats .d{ font-size:11.5px; color:var(--text-secondary); }
-.sum-layout .rs-card .rs-stats .d.up{ color:var(--green-cta); } .sum-layout .rs-card .rs-stats .d.dn{ color:#B42318; }
-.sum-layout .rs-card ul{ list-style:none; margin:0 0 12px; padding:0; display:flex; flex-direction:column; gap:6px; }
-.sum-layout .rs-card li{ font-size:13.5px; line-height:1.4; color:var(--ink); padding-left:14px; position:relative; }
-.sum-layout .rs-card li::before{ content:''; position:absolute; left:0; top:7px; width:6px; height:6px; border-radius:50%; background:#4A99C4; }
-.sum-layout .rs-card .rs-acts{ display:flex; gap:14px; flex-wrap:wrap; }
-.sum-layout .rs-card .rs-acts a{ font-size:13.5px; font-weight:600; color:var(--green-cta); cursor:pointer; text-decoration:none; }
-.sum-layout .rs-card .rs-acts a:hover{ text-decoration:underline; }
+/* the comparison strip: three numbers, one sentence */
+.scv{ border:1px solid var(--hairline); border-radius:14px; padding:14px 18px; background:#fff; }
+.scv + .scv{ margin-top:12px; }
+.scv .scv-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+.scv .scv-name{ font-size:15px; font-weight:600; display:inline-flex; align-items:center; gap:8px; }
+.scv .scv-name i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+.scv .scv-diff{ font-size:13.5px; color:var(--text-secondary); }
+.scv .scv-x{ margin-left:auto; border:0; background:none; font:inherit; font-size:13px; color:var(--text-secondary); cursor:pointer; }
+.scv .scv-row{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:12px 0 10px; }
+.scv .scv-k{ display:flex; flex-direction:column; gap:1px; }
+.scv .scv-k .l{ font-size:12px; color:var(--text-secondary); }
+.scv .scv-k b{ font-size:20px; font-weight:600; letter-spacing:-0.2px; }
+.scv .scv-k small{ font-size:12px; font-weight:600; color:var(--text-secondary); }
+.scv .scv-k small.pos{ color:var(--green-cta); } .scv .scv-k small.neg{ color:#B42318; }
+.scv .scv-verdict{ margin:0; font-size:14.5px; line-height:1.5; color:var(--ink); }
+.scv .scv-acts{ display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
+.scv .scv-acts a{ font-size:13.5px; font-weight:600; color:var(--green-cta); cursor:pointer; text-decoration:none; }
+.scv .scv-acts a:hover{ text-decoration:underline; }
+.sum-layout .rs-card{ margin:18px 0 0; }
+.sum-layout .rs-card .scv{ border-color:var(--hairline-strong); background:#FAFBFC; }
+.sum-layout .rs-card .scv + .scv{ margin-top:10px; }
 /* scenario rows in the route */
 .sum-layout .sxtl-row.rs-row .sxtl-dot{ background:#4A99C4 !important; box-shadow:0 0 0 4px rgba(74,153,196,.16); }
 .sum-layout .sxtl-row.rs-row .sxtl-t::after{ content:attr(data-plan); display:inline-block; margin-left:8px; font-size:11.5px; font-weight:600; color:#2F6F93; background:#E6F1F8; border-radius:999px; padding:2px 8px; vertical-align:2px; }
@@ -37828,7 +37831,10 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
 (function(){
   'use strict';
   var LIFE=['Frugal','Comfortable','Generous'], RR=['Conservative','As planned','Aggressive'];
-  var active=null;   /* the scenario id shown beside the plan, or null */
+  var active=[];   /* the scenario ids shown beside the plan */
+  var COLS=['#4A99C4','#E0A526','#8E6BC2','#F2784B','#2A8C8C'];
+  function colorOf(id){ var i=list().map(function(x){ return x.id; }).indexOf(id); return COLS[(i<0?0:i)%COLS.length]; }
+  function isOn(id){ return active.indexOf(id)>=0; }
   function usd(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
   function money(v){ return v>=1e6 ? '$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M' : '$'+Math.round(v/1e3)+'K'; }
   function lay(){ return document.querySelector('.layout.page.sum-layout'); }
@@ -37849,9 +37855,9 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
   function bar(){
     var L=lay(); if(!L) return; var top=L.querySelector('.center .alo-top'); if(!top) return;
     var b=L.querySelector('.rs-bar'); if(!b){ b=document.createElement('div'); b.className='rs-bar'; var chips=L.querySelector('.center .sum-chips'); if(!chips) return; chips.insertAdjacentElement('beforebegin', b);
-      b.addEventListener('click', function(e){ var c=e.target.closest('.rs-chip'); if(!c) return; if(c.classList.contains('add')){ openAdd(); return; } var id=c.dataset.id||null; if(id===null){ show(null); return; } show(active===id?null:id); }); }
+      b.addEventListener('click', function(e){ var c=e.target.closest('.rs-chip'); if(!c) return; if(c.classList.contains('add')){ openAdd(); return; } var id=c.dataset.id||null; if(id===null) return; var next=active.slice(); var i=next.indexOf(id); if(i>=0) next.splice(i,1); else next.push(id); show(next); }); }
     var items=list();
-    b.innerHTML='<span class="rs-lab">Showing</span><button type="button" class="rs-chip'+(active?'':' on')+'"><i></i>My Financial Plan</button>'+items.map(function(it){ return '<button type="button" class="rs-chip alt'+(active===it.id?' on':'')+'" data-id="'+it.id+'"><i></i>'+esc(it.letter)+' · '+esc(it.name)+'</button>'; }).join('')+'<button type="button" class="rs-chip add">+ Add a scenario</button>';
+    b.innerHTML='<span class="rs-lab">Compare with</span>'+items.map(function(it){ return '<button type="button" class="rs-chip alt'+(isOn(it.id)?' on':'')+'" data-id="'+it.id+'"><i style="background:'+colorOf(it.id)+'"></i>'+esc(it.letter)+' · '+esc(it.name)+'</button>'; }).join('')+'<button type="button" class="rs-chip add">+ Add a scenario</button>';
   }
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   /* ---------- the overlay on the chart ---------- */
@@ -37859,58 +37865,74 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
     var L=lay(); if(!L) return; var svg=L.querySelector('.sum-svg'); if(!svg) return;
     var old=svg.querySelector('.rs-layer'); if(old) old.remove();
     var leg=L.querySelector('.rs-leg'); if(leg) leg.remove();
-    var it=active && item(active); if(!it || !window.WHATIF || !window.WHATIF.metricsFor || !window.STRESS) return;
-    var J=window.__journey; var m=window.WHATIF.metricsFor(it.vals, it.moves), bse=window.STRESS.base; if(!m || !bse) return;
-    /* the plan's route, scaled by how the scenario's balances compare to the plan's, year by year */
+    var its=active.map(item).filter(Boolean); if(!its.length || !window.WHATIF || !window.WHATIF.metricsFor || !window.STRESS) return;
+    var J=window.__journey, bse=window.STRESS.base; if(!bse) return;
+    /* the plan's route, scaled by how each scenario's balances compare to the plan's, year by year */
     var vb=(svg.getAttribute('viewBox')||'0 0 720 460').split(' ').map(Number), W=vb[2], H=vb[3];
     var padL=74, padR=26, padT=26, padB=34, pw=W-padL-padR, ph=H-padT-padB, yMax=2500000;
-    var brush=L.querySelector('#sumBrush .br-win'); var lo=J.span[0], hi=J.span[1];
+    var lo=J.span[0], hi=J.span[1];
     var rd=(L.querySelector('#sumReadout')||{}).textContent||''; var mm=rd.match(/(\d{4})\D+(\d{4})/); if(mm){ lo=+mm[1]; hi=+mm[2]; }
     function X(y){ return padL+(y-lo)/(hi-lo)*pw; } function Y(v){ return padT+ph-(Math.max(0,v)/yMax)*ph; }
-    function ratio(y){ var yi=Math.round(y); var a=bse.rows.filter(function(r){ return r.y===yi; })[0], b=m.rows.filter(function(r){ return r.y===yi; })[0]; if(!a||!b||a.bal<=0) return 1; return b.bal/a.bal; }
-    var d='', last=null; for(var y=lo;y<=hi+0.001;y+=0.5){ var v=J.valueAt(y)*ratio(y); var x=X(y), yy=Y(v); d+=(d?' L':'M')+x.toFixed(1)+' '+yy.toFixed(1); last=[x,yy,v]; }
-    var g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('class','rs-layer');
-    var ret=2026+(it.vals.ret-65)+0.95; var rx=X(ret);
-    g.innerHTML='<path class="rs-path" d="'+d+'"/>'+((ret>=lo&&ret<=hi)?'<line class="rs-ret" x1="'+rx.toFixed(1)+'" y1="'+padT+'" x2="'+rx.toFixed(1)+'" y2="'+(padT+ph)+'"/><text x="'+(rx+8).toFixed(1)+'" y="'+(padT+ph-8)+'" font-size="12" font-weight="600" fill="#2F6F93">'+esc(it.letter)+' retires '+it.vals.ret+'</text>':'')+(last?'<circle class="rs-dot" cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="5.5"/>':'');
-    svg.appendChild(g);
-    var lg=document.createElement('div'); lg.className='rs-leg'; lg.innerHTML='<span><i></i>My Financial Plan</span><span><i class="alt"></i>'+esc(it.letter)+' · '+esc(it.name)+'</span>'; L.querySelector('.sum-plot').insertAdjacentElement('afterend', lg);
+    var g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('class','rs-layer'); var html='', labels=0; var B=base();
+    its.forEach(function(it){
+      var m=window.WHATIF.metricsFor(it.vals, it.moves); if(!m) return; var col=colorOf(it.id);
+      function ratio(y){ var yi=Math.round(y); var a=bse.rows.filter(function(r){ return r.y===yi; })[0], b=m.rows.filter(function(r){ return r.y===yi; })[0]; if(!a||!b||a.bal<=0) return 1; return b.bal/a.bal; }
+      var d='', last=null; for(var y=lo;y<=hi+0.001;y+=0.5){ var v=J.valueAt(y)*ratio(y); var x=X(y), yy=Y(v); d+=(d?' L':'M')+x.toFixed(1)+' '+yy.toFixed(1); last=[x,yy,v]; }
+      var ret=2026+(it.vals.ret-65)+0.95; var rx=X(ret); var mark=B && it.vals.ret!==B.ret && ret>=lo && ret<=hi;
+      html+='<path class="rs-path" style="stroke:'+col+'" d="'+d+'"/>'+(mark?'<line class="rs-ret" style="stroke:'+col+'" x1="'+rx.toFixed(1)+'" y1="'+padT+'" x2="'+rx.toFixed(1)+'" y2="'+(padT+ph)+'"/><text x="'+(rx+8).toFixed(1)+'" y="'+(padT+ph-8-labels*16)+'" font-size="12" font-weight="600" style="fill:'+col+'">'+esc(it.letter)+' retires '+it.vals.ret+'</text>':'')+(last?'<circle class="rs-dot" style="fill:'+col+'" cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="5.5"/>':'');
+      if(mark) labels++;
+    });
+    g.innerHTML=html; svg.appendChild(g);
+    var lg=document.createElement('div'); lg.className='rs-leg'; lg.innerHTML='<span><i></i>My Financial Plan</span>'+its.map(function(it){ return '<span><i class="alt" style="border-top-color:'+colorOf(it.id)+'"></i>'+esc(it.letter)+' \u00b7 '+esc(it.name)+'</span>'; }).join(''); L.querySelector('.sum-plot').insertAdjacentElement('afterend', lg);
   }
-  /* ---------- the card and rows in the route ---------- */
+  /* ---------- one way to compare, everywhere: three numbers, one sentence ---------- */
+  function fmtDelta(kind, d){ if(kind==='end') return Math.abs(d)<1000?'same':((d>0?'+':'\u2212')+money(Math.abs(d))); return d===0?'same':((d>0?'+':'')+d+(kind==='conf'?' pts':' yrs')); }
+  function shortDiff(it){ var B=base(); if(!B) return ''; var v=it.vals||{}, o=[]; if(v.ret!==undefined&&v.ret!==B.ret) o.push('Retire '+v.ret); if(v.ss!==undefined&&v.ss!==B.ss) o.push('Social Security '+v.ss); if(v.spend!==undefined&&v.spend!==B.spend) o.push('Spend '+usd(v.spend)); if(v.life!==undefined&&v.life!==B.life) o.push(LIFE[v.life]); if(v.ret_r!==undefined&&v.ret_r!==B.ret_r) o.push(RR[v.ret_r]+' returns'); Object.keys(it.moves||{}).forEach(function(k){ if(it.moves[k]&&it.moves[k].label) o.push(it.moves[k].label); }); return o.join(' \u00b7 '); }
+  function verdict(m, p){ if(!p) return ''; var dc=m.conf-p.conf, de=m.end-p.end, big=Math.abs(de)>=1000;
+    if(dc>0) return dc+' points more confidence'+(big?(de>0?' and '+money(de)+' more at 92.':', '+money(-de)+' less at 92.'):'.')+' If that is the life you want, make it your plan.';
+    if(dc<0) return (-dc)+' points less confidence'+(big?(de>0?', '+money(de)+' more at 92.':' and '+money(-de)+' less at 92.'):'.')+' The plan you have is the safer one.';
+    if(big) return 'Same confidence, '+money(Math.abs(de))+(de<0?' less at 92. Your plan is the better deal.':' more at 92. Same safety, more left over.');
+    return 'Nothing moves. Choose the life, not the number.'; }
+  function strip(it, m, p, opts){ opts=opts||{}; var dc=p?m.conf-p.conf:0, de=p?m.end-p.end:0, df=p?m.funded-p.funded:0; var col=opts.color||'#4A99C4';
+    function k(l,v,d,kind){ var cls=d>0?'pos':d<0?'neg':''; return '<div class="scv-k"><span class="l">'+l+'</span><b>'+v+'</b><small class="'+cls+'">'+fmtDelta(kind,d)+'</small></div>'; }
+    return '<div class="scv" data-id="'+it.id+'"><div class="scv-head"><span class="scv-name"><i style="background:'+col+'"></i>'+esc(it.letter)+' \u00b7 '+esc(it.name)+'</span><span class="scv-diff">'+esc(shortDiff(it))+'</span>'+(opts.hide?'<button type="button" class="scv-x">Hide</button>':'')+'</div>'+
+      '<div class="scv-row">'+k('Funded to', m.funded, df, 'funded')+k('Confidence', m.conf+'%', dc, 'conf')+k('At 92', money(m.end), de, 'end')+'</div>'+
+      (p?'<p class="scv-verdict">'+verdict(m,p)+'</p>':'')+
+      (opts.acts!==false?'<div class="scv-acts"><a data-act="plan">Make this my plan</a>'+(opts.compare?'<a data-act="compare">Open in Scenarios</a>':'')+'<a data-act="remove">Remove</a></div>':'')+'</div>'; }
+  window.__scnStrip={ html:strip, verdict:verdict, diff:shortDiff };
   function routeCard(){
     var L=lay(); if(!L) return; var ctx=L.querySelector('#sumCtx'); if(!ctx) return; var host=L.querySelector('.center .sum-range')||L.querySelector('.center');
     var old=L.querySelector('.rs-card'); if(old) old.remove();
     ctx.querySelectorAll('.sxtl-row.rs-row').forEach(function(r){ r.remove(); });
-    var it=active && item(active); if(!it || !window.WHATIF) return;
-    var m=window.WHATIF.metricsFor(it.vals, it.moves), p=window.WHATIF.planMetrics ? window.WHATIF.planMetrics() : null; if(!m) return;
+    var its=active.map(item).filter(Boolean); if(!its.length || !window.WHATIF) return;
+    var p=window.WHATIF.planMetrics ? window.WHATIF.planMetrics() : null;
     var card=document.createElement('div'); card.className='rs-card';
-    function stat(k,v,d,cls){ return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div>'+(d?'<div class="d '+(cls||'')+'">'+d+'</div>':'')+'</div>'; }
-    var dConf=p?m.conf-p.conf:0, dEnd=p?m.end-p.end:0;
-    card.innerHTML='<div class="rh"><b><i></i>'+esc(it.letter)+' · '+esc(it.name)+'</b><button type="button" class="x">Hide</button></div>'+
-      '<div class="rs-stats">'+stat('Funded to', m.funded, p?(m.funded===p.funded?'same as plan':(m.funded<p.funded?'plan lasts to '+p.funded:'')):'', m.funded<(p?p.funded:92)?'dn':'')+stat('Confidence', m.conf+'%', p?((dConf>=0?'+':'')+dConf+' pts vs plan'):'', dConf<0?'dn':dConf>0?'up':'')+stat('At 92', money(m.end), p?((dEnd>=0?'+':'−')+money(Math.abs(dEnd))+' vs plan'):'', dEnd<0?'dn':dEnd>0?'up':'')+'</div>'+
-      '<ul>'+diffs(it).map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>'+
-      '<div class="rs-acts"><a data-act="plan">Make this my plan</a><a data-act="compare">Compare in Scenarios</a><a data-act="remove">Remove</a></div>';
+    card.innerHTML=its.map(function(it){ var m=window.WHATIF.metricsFor(it.vals, it.moves); return m?strip(it, m, p, { hide:true, compare:true, color:colorOf(it.id) }):''; }).join('');
     host.insertAdjacentElement('afterend', card);
-    card.addEventListener('click', function(e){ var a=e.target.closest('[data-act], .x'); if(!a) return; e.preventDefault(); e.stopPropagation();
-      if(a.classList.contains('x')) { show(null); return; }
+    card.addEventListener('click', function(e){ var a=e.target.closest('[data-act], .scv-x'); if(!a) return; e.preventDefault(); e.stopPropagation();
+      var sv=a.closest('.scv'); var it=sv && item(sv.dataset.id); if(!it) return;
+      if(a.classList.contains('scv-x')) { show(active.filter(function(x){ return x!==it.id; })); return; }
       var act=a.dataset.act;
-      if(act==='plan'){ if(window.WHATIF.activate) window.WHATIF.activate(it, true); setTimeout(function(){ if(window.WHATIF.makePlan) window.WHATIF.makePlan(); if(window.__peToast) window.__peToast(it.letter+' is now your plan'); show(null); }, 80); }
+      if(act==='plan'){ if(window.WHATIF.activate) window.WHATIF.activate(it, true); setTimeout(function(){ if(window.WHATIF.makePlan) window.WHATIF.makePlan(); if(window.__peToast) window.__peToast(it.letter+' is now your plan'); show([]); }, 80); }
       else if(act==='compare'){ if(window.__sum2 && window.__sum2.close) window.__sum2.close(); setTimeout(function(){ if(window.SCENARIOS) window.SCENARIOS.open(); }, 350); }
-      else if(act==='remove'){ window.WHATIF.remove(it.id); show(null); }
+      else if(act==='remove'){ window.WHATIF.remove(it.id); show(active.filter(function(x){ return x!==it.id; })); }
     });
-    /* the scenario's own moments, placed on the route by year */
+    /* each scenario's own moments, placed on the route by year */
     var B=base(); var tl=ctx.querySelector('.sxtl'); if(!tl || !B) return;
-    var rows=[];
-    if(it.vals.ret!==B.ret) rows.push({ yr:2026+(it.vals.ret-65), age:it.vals.ret, t:'Retirement day, '+it.letter, b:'Marshall '+it.vals.ret+'. '+(it.vals.ret<B.ret?'The last paycheck arrives '+(B.ret-it.vals.ret)+' years earlier than the plan.':'The paychecks run '+(it.vals.ret-B.ret)+' more years than the plan.') });
-    if(it.vals.ss!==B.ss) rows.push({ yr:2026+(it.vals.ss-65), age:it.vals.ss, t:'Social Security, '+it.letter, b:'Marshall claims at '+it.vals.ss+(it.vals.ss<70?', giving up the delayed credits to 70.':'.') });
-    rows.forEach(function(v){
-      var rr=[].slice.call(tl.querySelectorAll('.sxtl-row')); var before=null; for(var i=0;i<rr.length;i++){ var y=parseInt(((rr[i].querySelector('.sxtl-date')||{}).textContent||'').slice(0,4),10); if(y && y>v.yr){ before=rr[i]; break; } }
-      var r=document.createElement('div'); r.className='sxtl-row rs-row'; r.innerHTML='<span class="sxtl-dot"></span><div><div class="sxtl-date">'+v.yr+' · Marshall '+v.age+'</div><div class="sxtl-t" data-plan="'+esc(it.letter)+'">'+esc(v.t)+'</div><div class="sxtl-b">'+v.b+'</div></div>';
-      if(before) tl.insertBefore(r, before); else { var tail=tl.querySelector('.sum-tail'); if(tail) tl.insertBefore(r, tail); else tl.appendChild(r); }
+    its.forEach(function(it){
+      var rows=[]; var col=colorOf(it.id);
+      if(it.vals.ret!==B.ret) rows.push({ yr:2026+(it.vals.ret-65), age:it.vals.ret, t:'Retirement day, '+it.letter, b:'Marshall '+it.vals.ret+'. '+(it.vals.ret<B.ret?'The last paycheck arrives '+(B.ret-it.vals.ret)+' years earlier than the plan.':'The paychecks run '+(it.vals.ret-B.ret)+' more years than the plan.') });
+      if(it.vals.ss!==B.ss) rows.push({ yr:2026+(it.vals.ss-65), age:it.vals.ss, t:'Social Security, '+it.letter, b:'Marshall claims at '+it.vals.ss+(it.vals.ss<70?', giving up the delayed credits to 70.':'.') });
+      rows.forEach(function(v){
+        var rr=[].slice.call(tl.querySelectorAll('.sxtl-row')); var before=null; for(var i=0;i<rr.length;i++){ var y=parseInt(((rr[i].querySelector('.sxtl-date')||{}).textContent||'').slice(0,4),10); if(y && y>v.yr){ before=rr[i]; break; } }
+        var r=document.createElement('div'); r.className='sxtl-row rs-row'; r.innerHTML='<span class="sxtl-dot" style="background:'+col+' !important;box-shadow:0 0 0 4px '+col+'29"></span><div><div class="sxtl-date">'+v.yr+' \u00b7 Marshall '+v.age+'</div><div class="sxtl-t" data-plan="'+esc(it.letter)+'">'+esc(v.t)+'</div><div class="sxtl-b">'+v.b+'</div></div>';
+        if(before) tl.insertBefore(r, before); else { var tail=tl.querySelector('.sum-tail'); if(tail) tl.insertBefore(r, tail); else tl.appendChild(r); }
+      });
     });
   }
-  function show(id){ active=id; bar(); overlay(); routeCard(); }
+  function show(ids){ active=(ids||[]).slice(); bar(); overlay(); routeCard(); }
   /* the chart is redrawn on every brush move; the overlay goes back on top each time */
-  var pend=null; function rearm(){ if(pend) return; pend=requestAnimationFrame(function(){ pend=null; var L=lay(); if(!L || !active) return; if(!L.querySelector('.sum-svg .rs-layer')) overlay(); }); }
+  var pend=null; function rearm(){ if(pend) return; pend=requestAnimationFrame(function(){ pend=null; var L=lay(); if(!L || !active.length) return; if(!L.querySelector('.sum-svg .rs-layer')) overlay(); }); }
   var mo=new MutationObserver(function(ms){ for(var i=0;i<ms.length;i++){ var t=ms[i].target; if(t && t.closest && t.closest('.sum-svg')){ rearm(); return; } } });
   /* ---------- add a scenario from here ---------- */
   var modal=null, S=null;
@@ -37935,11 +37957,11 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
   function closeAdd(){ if(modal) modal.classList.remove('on'); }
   function keep(){
     var nm=((modal.querySelector('#rsName')||{}).value||'').trim(); if(!nm){ var B=base(); var bits=[]; if(S.ret!==B.ret) bits.push('retire at '+S.ret); if(S.ss!==B.ss) bits.push('Social Security at '+S.ss); if(S.spend!==B.spend) bits.push('spend '+usd(S.spend)); nm=bits.length?bits.join(', '):'A scenario'; nm=nm.charAt(0).toUpperCase()+nm.slice(1); }
-    var it=window.WHATIF && window.WHATIF.add ? window.WHATIF.add(nm, S) : null; closeAdd(); if(it) show(it.id); if(window.__peToast) window.__peToast('Kept as '+(it?it.letter:'a scenario')+' — '+nm);
+    var it=window.WHATIF && window.WHATIF.add ? window.WHATIF.add(nm, S) : null; closeAdd(); if(it) show(active.concat([it.id])); if(window.__peToast) window.__peToast('Kept as '+(it?it.letter:'a scenario')+' — '+nm);
   }
   /* ---------- lifecycle ---------- */
   function arm(){ var L=lay(); if(!L) return; if(!L.dataset.rsArmed){ L.dataset.rsArmed='1'; mo.observe(L, { childList:true, subtree:true }); }
-    if(document.body.classList.contains('sum-open')){ if(!L.querySelector('.rs-bar')) { bar(); } if(active && !L.querySelector('.rs-card')) routeCard(); } }
+    if(document.body.classList.contains('sum-open')){ if(!L.querySelector('.rs-bar')) { bar(); } if(active.length && !L.querySelector('.rs-card')) routeCard(); } }
   new MutationObserver(function(){ clearTimeout(arm._t); arm._t=setTimeout(arm, 120); }).observe(document.body, { attributes:true, attributeFilter:['class'] });
   setInterval(arm, 1000);
   window.__routeScn={ show:show, add:openAdd, active:function(){ return active; } };
