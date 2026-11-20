@@ -38119,6 +38119,21 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
 #assets-block .ao-menu button:hover{ background:#F6F7F8; }
 #assets-block .ao-menu button.on{ font-weight:600; color:var(--green-cta); }
 #assets-block .ao-menu .hint{ font-size:12px; color:var(--text-secondary); padding:6px 10px 4px; }
+/* groups the member makes: a quiet label with its total, accounts beneath */
+#assets-block .ag-group{ margin:0 0 6px; }
+#assets-block .ag-head{ display:flex; align-items:baseline; gap:10px; padding:22px 24px 8px 16px; border-bottom:1px solid var(--hairline-strong); }
+#assets-block .ag-name{ font-size:13px; font-weight:600; letter-spacing:.2px; color:var(--ink); cursor:text; border-radius:4px; padding:1px 3px; margin:-1px -3px; outline:none; min-width:40px; }
+#assets-block .ag-name:hover{ background:#F6F7F8; }
+#assets-block .ag-name:focus{ background:#fff; box-shadow:0 0 0 1.5px var(--green-cta); }
+#assets-block .ag-count{ font-size:12.5px; color:var(--text-secondary); }
+#assets-block .ag-total{ margin-left:auto; font-size:13px; font-weight:600; color:var(--ink); }
+#assets-block .ag-x{ border:0; background:none; color:var(--text-secondary); font-size:15px; line-height:1; cursor:pointer; padding:0 2px; opacity:0; transition:opacity .15s ease; }
+#assets-block .ag-head:hover .ag-x{ opacity:1; }
+#assets-block .ag-x:hover{ color:#B42318; }
+#assets-block .ag-empty{ font-size:13.5px; color:var(--text-secondary); padding:16px; border:1px dashed var(--hairline-strong); border-radius:10px; margin:10px 0 4px; text-align:center; }
+#assets-block .ag-group.ag-over .ag-empty{ border-color:var(--green-cta); color:var(--green-cta); }
+#assets-block .ag-rest + .bucket, #assets-block .ag-rest ~ .bucket{ margin-top:0 !important; padding-top:0 !important; }
+#assets-block .ag-rest{ padding:22px 16px 8px; font-size:13px; font-weight:600; color:var(--text-secondary); border-bottom:1px solid var(--hairline); }
 </style>
 <script>
 (function(){
@@ -38133,9 +38148,40 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
   function rows(bk){ return [].slice.call(bk.children).filter(function(c){ return c.classList.contains('acct') || c.classList.contains('edit-card'); }); }
   function foot(bk){ return bk.querySelector(':scope > .bucket-head'); }
   function place(bk, list){ var f=foot(bk); list.forEach(function(r){ if(f) bk.insertBefore(r, f); else bk.appendChild(r); }); }
-  function save(){ var A=document.getElementById('assets-block'); if(!A) return; var o={}; A.querySelectorAll('.bucket').forEach(function(bk,i){ o[i]=rows(bk).map(nameOf); }); put(KEY,o); }
+  function A_(){ return document.getElementById('assets-block'); }
+  function body(){ return document.getElementById('assetsBody'); }
+  function allRows(){ var A=A_(); return A ? [].slice.call(A.querySelectorAll('.bucket > .acct, .bucket > .edit-card, .ag-group > .acct, .ag-group > .edit-card')) : []; }
+  /* ---------- groups ---------- */
+  var GKEY='boldin.assets.groups';
+  function groups(){ return get(GKEY, []); }
+  function wrapEl(){ var b=body(); if(!b) return null; var w=b.querySelector(':scope > .ag-wrap'); if(!w){ w=document.createElement('div'); w.className='ag-wrap'; b.insertBefore(w, b.firstChild); } return w; }
+  function gEl(g){ var w=wrapEl(); var el=w.querySelector('.ag-group[data-g="'+g.id+'"]'); if(el) return el;
+    el=document.createElement('div'); el.className='ag-group'; el.dataset.g=g.id;
+    el.innerHTML='<div class="ag-head"><span class="ag-name" contenteditable="true" spellcheck="false"></span><span class="ag-count"></span><span class="ag-total"></span><button type="button" class="ag-x" aria-label="Ungroup">×</button></div><div class="ag-empty">Drag accounts here</div>';
+    el.querySelector('.ag-name').textContent=g.name; w.appendChild(el); return el; }
+  function fmt$(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function totals(){ var A=A_(); if(!A) return; A.querySelectorAll('.ag-group').forEach(function(el){ var rs=rows(el); el.querySelector('.ag-total').textContent=rs.length?fmt$(rs.reduce(function(a,r){ return a+amtOf(r); },0)):''; el.querySelector('.ag-count').textContent=rs.length?rs.length+(rs.length===1?' account':' accounts'):''; el.querySelector('.ag-empty').style.display=rs.length?'none':''; });
+    var rest=body() && body().querySelector(':scope > .ag-rest'); var any=A.querySelectorAll('.ag-group').length>0; var loose=[].slice.call(A.querySelectorAll('.bucket')).some(function(bk){ return rows(bk).length; });
+    if(any && loose && !rest){ rest=document.createElement('div'); rest.className='ag-rest'; rest.textContent='Not in a group'; var w=wrapEl(); w.insertAdjacentElement('afterend', rest); }
+    if(rest && (!any || !loose)) rest.remove(); }
+  function applyGroups(){
+    var gs=groups(); var A=A_(); if(!A) return; var byName={}; allRows().forEach(function(r){ byName[nameOf(r)]=r; });
+    gs.forEach(function(g){ var el=gEl(g); (g.rows||[]).forEach(function(n){ var r=byName[n]; if(r && r.parentNode!==el) el.appendChild(r); }); });
+    /* groups removed elsewhere: send their accounts home */
+    A.querySelectorAll('.ag-group').forEach(function(el){ if(!gs.some(function(g){ return g.id===el.dataset.g; })){ rows(el).forEach(home); el.remove(); } });
+    /* keep group order */
+    var w=wrapEl(); gs.forEach(function(g){ var el=w.querySelector('.ag-group[data-g="'+g.id+'"]'); if(el) w.appendChild(el); });
+    totals();
+  }
+  function home(r){ var ty=typeOf(r).toLowerCase(); var bks=[].slice.call(A_().querySelectorAll('.bucket')); var bk=bks.filter(function(b){ return /savings|checking/.test(ty) ? /savings/i.test((foot(b)||{}).textContent||'') : !/savings/i.test((foot(b)||{}).textContent||''); })[0]||bks[0]; var f=foot(bk); if(f) bk.insertBefore(r,f); else bk.appendChild(r); }
+  function saveGroups(){ var A=A_(); if(!A) return; var gs=[].slice.call(A.querySelectorAll('.ag-group')).map(function(el){ return { id:el.dataset.g, name:(el.querySelector('.ag-name').textContent||'').trim()||'Untitled group', rows:rows(el).map(nameOf) }; }); put(GKEY, gs); totals(); }
+  function newGroup(){ var gs=groups(); var g={ id:'g'+Date.now().toString(36), name:'New group', rows:[] }; gs.unshift(g); put(GKEY, gs); applyGroups(); var el=A_().querySelector('.ag-group[data-g="'+g.id+'"]'); if(el){ wrapEl().insertBefore(el, wrapEl().firstChild); saveGroups(); var n=el.querySelector('.ag-name'); n.focus(); var rg=document.createRange(); rg.selectNodeContents(n); var sel=getSelection(); sel.removeAllRanges(); sel.addRange(rg); } }
+  document.addEventListener('keydown', function(e){ var n=e.target.closest && e.target.closest('#assets-block .ag-name'); if(!n) return; if(e.key==='Enter'){ e.preventDefault(); n.blur(); } if(e.key==='Escape'){ n.blur(); } });
+  document.addEventListener('focusout', function(e){ if(e.target.closest && e.target.closest('#assets-block .ag-name')) saveGroups(); });
+  document.addEventListener('click', function(e){ var x=e.target.closest && e.target.closest('#assets-block .ag-x'); if(!x) return; e.stopPropagation(); var el=x.closest('.ag-group'); rows(el).forEach(home); el.remove(); saveGroups(); apply(); });
+  function save(){ var A=A_(); if(!A) return; var o={}; A.querySelectorAll('.bucket').forEach(function(bk,i){ o[i]=rows(bk).map(nameOf); }); put(KEY,o); saveGroups(); }
   function apply(){
-    var A=document.getElementById('assets-block'); if(!A) return; var mode=get(MODE,'custom'), o=get(KEY,{});
+    var A=A_(); if(!A) return; var mode=get(MODE,'custom'), o=get(KEY,{});
     A.querySelectorAll('.bucket').forEach(function(bk,i){
       var rs=rows(bk); if(!rs.length) return; var sorted=rs.slice();
       if(mode==='largest') sorted.sort(function(a,b){ return amtOf(b)-amtOf(a); });
@@ -38146,41 +38192,46 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
     });
   }
   function grips(){
-    var A=document.getElementById('assets-block'); if(!A) return;
-    A.querySelectorAll('.bucket').forEach(function(bk){ rows(bk).forEach(function(r){ if(r.querySelector(':scope > .ao-grip')) return; var g=document.createElement('span'); g.className='ao-grip'; g.setAttribute('role','button'); g.setAttribute('aria-label','Drag to reorder '+nameOf(r)); g.tabIndex=0; g.innerHTML=GRIP; r.appendChild(g); }); });
+    allRows().forEach(function(r){ if(r.querySelector(':scope > .ao-grip')) return; var g=document.createElement('span'); g.className='ao-grip'; g.setAttribute('role','button'); g.setAttribute('aria-label','Drag to reorder '+nameOf(r)); g.tabIndex=0; g.innerHTML=GRIP; r.appendChild(g); });
   }
   /* the sort control sits beside Add asset */
   function control(){
-    var A=document.getElementById('assets-block'); if(!A) return; var acts=A.querySelector('.acc-head .cx-actions'); if(!acts || acts.querySelector('.ao-btn')) return;
+    var A=A_(); if(!A) return; var acts=A.querySelector('.acc-head .cx-actions'); if(!acts || acts.querySelector('.ao-btn')) return;
     var b=document.createElement('button'); b.type='button'; b.className='ao-btn'; b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>Arrange';
     acts.appendChild(b);
     b.addEventListener('click', function(e){ e.stopPropagation(); var old=A.querySelector('.ao-menu'); if(old){ old.remove(); return; }
       var m=document.createElement('div'); m.className='ao-menu'; var cur=get(MODE,'custom');
-      m.innerHTML=[['custom','My order'],['largest','Largest first'],['az','A to Z'],['type','By account type']].map(function(x){ return '<button type="button" data-m="'+x[0]+'" class="'+(cur===x[0]?'on':'')+'">'+x[1]+'</button>'; }).join('')+'<div class="hint">Drag the ⠇ handle on any account to set your own order.</div>';
+      m.innerHTML='<button type="button" data-new="1" style="color:var(--green-cta);font-weight:600">+ New group</button><div style="height:1px;background:var(--hairline);margin:4px 6px"></div>'+[['custom','My order'],['largest','Largest first'],['az','A to Z'],['type','By account type']].map(function(x){ return '<button type="button" data-m="'+x[0]+'" class="'+(cur===x[0]?'on':'')+'">'+x[1]+'</button>'; }).join('')+'<div class="hint">Drag the ⠇ handle to reorder, or into a group.</div>';
       var r=b.getBoundingClientRect(), hr=A.getBoundingClientRect(); m.style.left=(r.left-hr.left)+'px'; m.style.top=(r.bottom-hr.top+4)+'px'; A.style.position='relative'; A.appendChild(m);
-      m.addEventListener('click', function(ev){ var x=ev.target.closest('[data-m]'); if(!x) return; put(MODE, x.dataset.m); if(x.dataset.m!=='custom'){ apply(); save(); put(MODE, x.dataset.m); } else apply(); m.remove(); });
+      m.addEventListener('click', function(ev){ if(ev.target.closest('[data-new]')){ m.remove(); newGroup(); return; } var x=ev.target.closest('[data-m]'); if(!x) return; put(MODE, x.dataset.m); apply(); if(x.dataset.m!=='custom'){ save(); put(MODE, x.dataset.m); } m.remove(); });
     });
     document.addEventListener('click', function(e){ if(!e.target.closest('.ao-menu, .ao-btn')){ var m=A.querySelector('.ao-menu'); if(m) m.remove(); } });
   }
-  /* dragging */
+  /* dragging: within a list, between lists, into and out of groups */
   var drag=null;
+  function lists(){ var A=A_(); return A ? [].slice.call(A.querySelectorAll('.ag-group, .bucket')) : []; }
   document.addEventListener('pointerdown', function(e){
     var g=e.target.closest('#assets-block .ao-grip'); if(!g) return; e.preventDefault(); e.stopPropagation();
-    var row=g.parentNode, bk=row.parentNode, rr=row.getBoundingClientRect();
-    var ghost=row.cloneNode(true); ghost.classList.add('ao-ghost'); ghost.style.width=rr.width+'px'; ghost.style.left=rr.left+'px'; ghost.style.top=rr.top+'px'; ghost.querySelectorAll('.ao-grip').forEach(function(x){ x.remove(); }); document.getElementById('assets-block').appendChild(ghost);
+    var row=g.parentNode, rr=row.getBoundingClientRect();
+    var ghost=row.cloneNode(true); ghost.classList.add('ao-ghost'); ghost.style.width=rr.width+'px'; ghost.style.left=rr.left+'px'; ghost.style.top=rr.top+'px'; ghost.querySelectorAll('.ao-grip').forEach(function(x){ x.remove(); }); A_().appendChild(ghost);
     row.classList.add('ao-dragging'); var gap=document.createElement('div'); gap.className='ao-gap';
-    drag={ row:row, bk:bk, ghost:ghost, gap:gap, dy:e.clientY-rr.top };
+    drag={ row:row, ghost:ghost, gap:gap, dy:e.clientY-rr.top };
     try{ g.setPointerCapture(e.pointerId); }catch(err){}
   }, true);
   document.addEventListener('pointermove', function(e){
     if(!drag) return; drag.ghost.style.top=(e.clientY-drag.dy)+'px';
-    var rs=rows(drag.bk).filter(function(r){ return r!==drag.row; }); var before=null;
-    for(var i=0;i<rs.length;i++){ var b=rs[i].getBoundingClientRect(); if(e.clientY < b.top+b.height/2){ before=rs[i]; break; } }
-    var f=foot(drag.bk); drag.bk.insertBefore(drag.gap, before||f||null);
+    var ls=lists(), tgt=null; for(var i=0;i<ls.length;i++){ var b=ls[i].getBoundingClientRect(); if(e.clientY>=b.top-6 && e.clientY<=b.bottom+6){ tgt=ls[i]; break; } }
+    if(!tgt){ var first=ls[0], last=ls[ls.length-1]; tgt = (first && e.clientY<first.getBoundingClientRect().top) ? first : last; }
+    A_().querySelectorAll('.ag-over').forEach(function(x){ x.classList.remove('ag-over'); }); if(tgt && tgt.classList.contains('ag-group')) tgt.classList.add('ag-over');
+    var rs=rows(tgt).filter(function(r){ return r!==drag.row; }); var before=null;
+    for(var j=0;j<rs.length;j++){ var bb=rs[j].getBoundingClientRect(); if(e.clientY < bb.top+bb.height/2){ before=rs[j]; break; } }
+    var end = before || (tgt.classList.contains('bucket') ? foot(tgt) : null);
+    if(end) tgt.insertBefore(drag.gap, end); else tgt.appendChild(drag.gap);
   });
   document.addEventListener('pointerup', function(){
     if(!drag) return; var d=drag; drag=null;
-    if(d.gap.parentNode){ d.bk.insertBefore(d.row, d.gap); d.gap.remove(); }
+    if(d.gap.parentNode){ d.gap.parentNode.insertBefore(d.row, d.gap); d.gap.remove(); }
+    A_().querySelectorAll('.ag-over').forEach(function(x){ x.classList.remove('ag-over'); });
     d.row.classList.remove('ao-dragging'); d.ghost.remove(); put(MODE,'custom'); save();
   });
   /* keyboard: arrow up and down on a focused handle */
@@ -38190,7 +38241,7 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
     if(e.key==='ArrowUp' && i>0) bk.insertBefore(row, rs[i-1]); else if(e.key==='ArrowDown' && i<rs.length-1) bk.insertBefore(row, rs[i+1].nextSibling);
     g.focus(); put(MODE,'custom'); save();
   });
-  function run(){ grips(); control(); if(!drag) apply(); }
+  function run(){ if(drag) return; var n=document.activeElement; if(n && n.classList && n.classList.contains('ag-name')) return; applyGroups(); grips(); control(); apply(); totals(); }
   run(); setInterval(run, 1500);
 })();
 </script>
