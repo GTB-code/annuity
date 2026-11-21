@@ -38104,10 +38104,15 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
 </script>
 <!-- ===== Assets: rearrange accounts by dragging; the order sticks ===== -->
 <style id="assetOrderCSS">
-#assets-block .bucket > .acct, #assets-block .bucket > .edit-card{ position:relative; }
+#assets-block .bucket > .acct, #assets-block .bucket > .edit-card, #assets-block .ag-group > .acct, #assets-block .ag-group > .edit-card{ position:relative; }
 #assets-block .ao-grip{ position:absolute; left:-3px; top:50%; transform:translateY(-50%); width:18px; height:28px; display:flex; align-items:center; justify-content:center; color:#A3A8B1; cursor:grab; opacity:0; transition:opacity .15s ease; border-radius:6px; touch-action:none; z-index:2; }
 #assets-block .ao-grip svg{ width:12px; height:16px; }
-#assets-block .bucket > .acct:hover .ao-grip, #assets-block .bucket > .edit-card:hover .ao-grip, #assets-block.ao-mode .ao-grip{ opacity:1; }
+#assets-block .bucket > .acct:hover .ao-grip, #assets-block .bucket > .edit-card:hover .ao-grip, #assets-block .ag-group > .acct:hover .ao-grip, #assets-block .ag-group > .edit-card:hover .ao-grip, #assets-block.ao-mode .ao-grip{ opacity:1; }
+/* a quick way out of a group */
+#assets-block .ag-out{ position:absolute; right:16px; top:10px; border:0; background:#fff; color:var(--text-secondary); font:inherit; font-size:12px; font-weight:600; padding:3px 8px; border-radius:999px; cursor:pointer; opacity:0; transition:opacity .15s ease; z-index:2; box-shadow:0 0 0 1px var(--hairline-strong); }
+#assets-block .ag-group > .acct:hover .ag-out, #assets-block .ag-group > .edit-card:hover .ag-out{ opacity:1; }
+#assets-block .ag-out:hover{ color:var(--ink); }
+#assets-block .bucket .ag-out{ display:none; }
 #assets-block .ao-grip:hover{ color:var(--ink); background:#F2F3F5; }
 #assets-block .ao-dragging{ opacity:.35; }
 #assets-block .ao-ghost{ position:fixed; z-index:200; pointer-events:none; background:#fff; border:1px solid var(--hairline-strong); border-radius:12px; padding:0 16px; box-sizing:border-box; }
@@ -38179,6 +38184,7 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
   document.addEventListener('keydown', function(e){ var n=e.target.closest && e.target.closest('#assets-block .ag-name'); if(!n) return; if(e.key==='Enter'){ e.preventDefault(); n.blur(); } if(e.key==='Escape'){ n.blur(); } });
   document.addEventListener('focusout', function(e){ if(e.target.closest && e.target.closest('#assets-block .ag-name')) saveGroups(); });
   document.addEventListener('click', function(e){ var x=e.target.closest && e.target.closest('#assets-block .ag-x'); if(!x) return; e.stopPropagation(); var el=x.closest('.ag-group'); rows(el).forEach(home); el.remove(); saveGroups(); apply(); });
+  document.addEventListener('click', function(e){ var o=e.target.closest && e.target.closest('#assets-block .ag-group .ag-out'); if(!o) return; e.preventDefault(); e.stopPropagation(); var r=o.parentNode; home(r); saveGroups(); apply(); }, true);
   function save(){ var A=A_(); if(!A) return; var o={}; A.querySelectorAll('.bucket').forEach(function(bk,i){ o[i]=rows(bk).map(nameOf); }); put(KEY,o); saveGroups(); }
   function apply(){
     var A=A_(); if(!A) return; var mode=get(MODE,'custom'), o=get(KEY,{});
@@ -38192,6 +38198,7 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
     });
   }
   function grips(){
+    allRows().forEach(function(r){ if(!r.querySelector(':scope > .ag-out')){ var o=document.createElement('button'); o.type='button'; o.className='ag-out'; o.textContent='Remove from group'; r.appendChild(o); } });
     allRows().forEach(function(r){ if(r.querySelector(':scope > .ao-grip')) return; var g=document.createElement('span'); g.className='ao-grip'; g.setAttribute('role','button'); g.setAttribute('aria-label','Drag to reorder '+nameOf(r)); g.tabIndex=0; g.innerHTML=GRIP; r.appendChild(g); });
   }
   /* the sort control sits beside Add asset */
@@ -38243,6 +38250,172 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
   });
   function run(){ if(drag) return; var n=document.activeElement; if(n && n.classList && n.classList.contains('ag-name')) return; applyGroups(); grips(); control(); apply(); totals(); }
   run(); setInterval(run, 1500);
+})();
+</script>
+<!-- ===== Scenarios: two simpler takes, behind a tiny toggle ===== -->
+<style id="scnVersCSS">
+#scnPage .sv-toggle{ position:fixed; bottom:20px; left:24px; z-index:60; border:1px solid var(--hairline-strong); background:#fff; display:inline-flex; gap:2px; padding:3px; background:#F2F3F5; border-radius:999px; }
+#scnPage .sv-toggle button{ border:0; background:none; font:inherit; font-size:12px; font-weight:600; color:var(--text-secondary); padding:4px 10px; border-radius:999px; cursor:pointer; }
+#scnPage .sv-toggle button.on{ background:#1F2A44; color:#fff; }
+body.scn-one #scnPage .sv-toggle{ display:none; }
+#scnPage .scn-alt{ grid-column:1; min-width:0; display:none; padding:56px 0 120px; }
+#scnPage.sv-2 .scn-body, #scnPage.sv-3 .scn-body{ display:none; }
+#scnPage.sv-2 .scn-alt, #scnPage.sv-3 .scn-alt{ display:block; }
+#scnPage .scn-alt h1{ font-size:34px; font-weight:400; letter-spacing:-0.3px; line-height:1.15; margin:0 0 6px; color:var(--ink); }
+#scnPage .scn-alt .sv-sub{ font-size:16px; color:var(--text-secondary); margin:0 0 28px; }
+#scnPage .scn-alt .sv-back{ display:inline-flex; align-items:center; gap:6px; border:0; background:none; font:inherit; font-size:14px; font-weight:600; color:var(--text-secondary); padding:0; margin:0 0 18px; cursor:pointer; }
+/* ---- version 2: side by side ---- */
+.sv2-cols{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:14px; }
+.sv2-col{ border:1px solid var(--hairline); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:4px; min-width:0; }
+.sv2-col.plan{ background:#FAFBFA; }
+.sv2-name{ display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--ink); min-height:22px; }
+.sv2-name i{ width:9px; height:9px; border-radius:50%; flex:none; }
+.sv2-name span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sv2-big{ font-size:40px; font-weight:600; letter-spacing:-0.8px; line-height:1.05; margin:12px 0 0; color:var(--ink); }
+.sv2-lab{ font-size:12.5px; color:var(--text-secondary); }
+.sv2-d{ font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-left:6px; }
+.sv2-d.pos{ color:var(--green-cta); } .sv2-d.neg{ color:#B42318; }
+.sv2-kv{ display:flex; justify-content:space-between; align-items:baseline; font-size:14px; padding:9px 0 0; margin-top:9px; border-top:1px solid var(--hairline); }
+.sv2-kv b{ font-weight:600; }
+.sv2-ch{ list-style:none; margin:12px 0 0; padding:0; display:flex; flex-direction:column; gap:4px; font-size:13px; color:var(--text-secondary); line-height:1.4; flex:1; }
+.sv2-ch li::before{ content:'\2022'; margin-right:6px; color:#C3C7CD; }
+.sv2-acts{ display:flex; gap:12px; margin-top:14px; }
+.sv2-acts a{ font-size:13px; font-weight:600; color:var(--green-cta); cursor:pointer; }
+.sv2-acts a.mute{ color:var(--text-secondary); }
+.sv2-col.new{ border-style:dashed; background:#fff; gap:8px; }
+.sv2-col.new .sv2-name{ color:var(--green-cta); }
+.sv2-col.new button{ text-align:left; font:inherit; font-size:14px; color:var(--ink); background:#fff; border:1px solid var(--hairline); border-radius:10px; padding:10px 12px; cursor:pointer; }
+.sv2-col.new button:hover{ border-color:var(--green-cta); }
+.sv2-col.new button.own{ color:var(--green-cta); font-weight:600; border-style:dashed; }
+.sv2-chart{ margin-top:28px; }
+.sv2-chart h3{ font-size:17px; font-weight:600; margin:0 0 4px; }
+.sv2-chart p{ font-size:14px; color:var(--text-secondary); margin:0 0 10px; }
+.sv2-chart svg text{ font-size:13px; fill:#6E7687; font-family:var(--font); }
+/* ---- version 3: one question ---- */
+.sv3-q{ font-size:30px; font-weight:400; line-height:1.55; letter-spacing:-0.3px; color:var(--ink); max-width:880px; margin:0; }
+.sv3-q .sel{ position:relative; display:inline-block; }
+.sv3-q select{ -webkit-appearance:none; appearance:none; font:inherit; color:var(--green-cta); background:none; border:0; border-bottom:2px dashed rgba(14,121,78,.45); padding:0 2px; margin:0 2px; cursor:pointer; }
+.sv3-q select:hover, .sv3-q select:focus{ border-bottom-color:var(--green-cta); outline:none; }
+.sv3-a{ margin:28px 0 0; padding:22px 24px; border-radius:16px; background:#F6F8F7; max-width:880px; display:grid; grid-template-columns:1fr 220px; gap:24px; align-items:center; }
+.sv3-a p{ margin:0; font-size:19px; line-height:1.5; color:var(--ink); }
+.sv3-a p b{ font-weight:600; }
+.sv3-a .sv3-hint{ font-size:13.5px; color:var(--text-secondary); margin-top:8px; }
+.sv3-a svg{ width:100%; height:90px; display:block; }
+.sv3-acts{ display:flex; gap:12px; align-items:center; margin-top:18px; }
+.sv3-acts button{ font:inherit; font-size:14.5px; font-weight:600; border-radius:999px; padding:10px 18px; cursor:pointer; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+.sv3-acts button.go{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+.sv3-acts button[disabled]{ opacity:.45; cursor:default; }
+.sv3-saved{ margin-top:48px; max-width:880px; }
+.sv3-saved h3{ font-size:17px; font-weight:600; margin:0 0 6px; }
+.sv3-row{ display:grid; grid-template-columns:14px 1fr auto auto auto; gap:14px; align-items:center; padding:13px 4px; border-top:1px solid var(--hairline); font-size:14.5px; }
+.sv3-row:last-child{ border-bottom:1px solid var(--hairline); }
+.sv3-row i{ width:9px; height:9px; border-radius:50%; }
+.sv3-row .n{ font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sv3-row .m{ color:var(--text-secondary); white-space:nowrap; }
+.sv3-row a{ font-size:13.5px; font-weight:600; color:var(--green-cta); cursor:pointer; }
+.sv3-row a.x{ color:var(--text-secondary); font-size:16px; }
+.sv3-empty{ font-size:14.5px; color:var(--text-secondary); padding:12px 0; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var KEY='boldin.scn.version';
+  var COLS=['#4A99C4','#E0A526','#8E6BC2','#F2784B','#2A8C8C'];
+  var LIFE=['Frugal','Comfortable','Generous'], RR=['Conservative','As planned','Aggressive'];
+  function usd(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function money(v){ v=Math.abs(v); return v>=1e6 ? '$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M' : '$'+Math.round(v/1e3)+'K'; }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function get(){ try{ return localStorage.getItem(KEY)||'1'; }catch(e){ return '1'; } }
+  function setV(v){ try{ localStorage.setItem(KEY, v); }catch(e){} }
+  var WI=function(){ return window.WHATIF; };
+  function colorOf(id){ var i=WI().list().map(function(x){ return x.id; }).indexOf(id); return COLS[(i<0?0:i)%COLS.length]; }
+  function changes(it){ var B=WI().base(); if(!B) return []; var v=it.vals||{}, o=[];
+    if(v.ret!==undefined&&v.ret!==B.ret) o.push('Retire at '+v.ret); if(v.ss!==undefined&&v.ss!==B.ss) o.push('Social Security at '+v.ss); if(v.spend!==undefined&&v.spend!==B.spend) o.push('Spend '+usd(v.spend)+'/mo'); if(v.life!==undefined&&v.life!==B.life) o.push(LIFE[v.life]+' lifestyle'); if(v.ret_r!==undefined&&v.ret_r!==B.ret_r) o.push(RR[v.ret_r]+' returns');
+    Object.keys(it.moves||{}).forEach(function(k){ if(it.moves[k]&&it.moves[k].label) o.push(it.moves[k].label); }); return o; }
+  function delta(v, unit){ if(!v) return '<span class="sv2-d">same</span>'; return '<span class="sv2-d '+(v>0?'pos':'neg')+'">'+(v>0?'+':'−')+(unit==='$'?money(v):Math.abs(v)+unit)+'</span>'; }
+
+  var page=null, alt=null, tog=null;
+  function ensure(){
+    page=document.getElementById('scnPage'); if(!page) return false;
+    if(!tog){ tog=document.createElement('div'); tog.className='sv-toggle'; tog.setAttribute('role','tablist'); tog.innerHTML='<button type="button" data-v="1">Classic</button><button type="button" data-v="2">Side by side</button><button type="button" data-v="3">One question</button>'; page.appendChild(tog);
+      tog.addEventListener('click', function(e){ var b=e.target.closest('button[data-v]'); if(!b) return; setV(b.dataset.v); paint(); page.scrollTop=0; }); }
+    if(!alt){ var frame=page.querySelector('.scn-frame'); if(!frame) return false; alt=document.createElement('div'); alt.className='scn-alt'; frame.insertBefore(alt, frame.firstChild); alt.addEventListener('click', onClick); alt.addEventListener('change', onChange); }
+    return true;
+  }
+  function paint(){
+    if(!ensure()) return; var v=get();
+    page.classList.toggle('sv-2', v==='2'); page.classList.toggle('sv-3', v==='3');
+    tog.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); });
+    if(v==='2') v2(); else if(v==='3') v3();
+  }
+
+  /* ---------------- version 2: side by side ---------------- */
+  var PRESETS=[['Retire 2 years sooner',function(B){ return {ret:B.ret-2}; }],['Spend $500 more a month',function(B){ return {spend:B.spend+500}; }],['Claim Social Security at 67',function(B){ return {ss:67}; }],['Poor markets early on',function(B){ return {ret_r:0}; }]];
+  function v2(){
+    var w=WI(); if(!w || !w.planMetrics) return; var p=w.planMetrics(); if(!p) return; var items=w.list();
+    var h='<button type="button" class="sv-back" data-act="back">← My Plans</button><h1>Your plan, side by side.</h1><p class="sv-sub">Each column is one way your retirement could go. The plan is the baseline.</p><div class="sv2-cols">';
+    h+='<div class="sv2-col plan"><div class="sv2-name"><i style="background:#0D3F4A"></i><span>My Financial Plan</span></div><div class="sv2-big">'+p.conf+'%</div><div class="sv2-lab">confidence</div><div class="sv2-kv"><span>Funded to</span><b>'+p.funded+'</b></div><div class="sv2-kv"><span>At 92</span><b>'+money(p.end)+'</b></div><ul class="sv2-ch"><li>Retire at '+p.ret+'</li><li>Social Security at '+p.ss+'</li><li>Spend '+usd(p.spend)+'/mo</li></ul></div>';
+    items.forEach(function(it){ var m=w.metricsFor(it.vals, it.moves); if(!m) return; var col=colorOf(it.id);
+      h+='<div class="sv2-col" data-id="'+it.id+'"><div class="sv2-name"><i style="background:'+col+'"></i><span title="'+esc(it.name)+'">'+esc(it.name)+'</span></div><div class="sv2-big">'+m.conf+'%'+delta(m.conf-p.conf,' pts')+'</div><div class="sv2-lab">confidence</div><div class="sv2-kv"><span>Funded to</span><b>'+m.funded+'</b></div><div class="sv2-kv"><span>At 92</span><b>'+money(m.end)+delta(m.end-p.end,'$')+'</b></div><ul class="sv2-ch">'+changes(it).map(function(c){ return '<li>'+esc(c)+'</li>'; }).join('')+'</ul><div class="sv2-acts"><a data-act="plan">Make my plan</a><a class="mute" data-act="remove">Remove</a></div></div>'; });
+    h+='<div class="sv2-col new"><div class="sv2-name"><span>+ New scenario</span></div>'+PRESETS.map(function(x,i){ return '<button type="button" data-preset="'+i+'">'+x[0]+'</button>'; }).join('')+'<button type="button" class="own" data-act="own">Build your own…</button></div>';
+    h+='</div>';
+    h+='<div class="sv2-chart"><h3>Savings over time</h3><p>Your plan in ink, each scenario in its colour.</p>'+chart(p, items)+'</div>';
+    alt.innerHTML=h;
+  }
+  function chart(p, items){
+    var w=WI(); var W=1000,H=260,L=56,R=W-12,T=12,B=H-28; var rows=p.rows||[]; if(!rows.length) return '';
+    var series=[{rows:rows, col:'#0D3F4A', dash:''}].concat(items.map(function(it){ var m=w.metricsFor(it.vals,it.moves); return m&&m.rows?{rows:m.rows, col:colorOf(it.id), dash:'6 5'}:null; }).filter(Boolean));
+    var y0=rows[0].y, y1=rows[rows.length-1].y; var hi=0; series.forEach(function(s){ s.rows.forEach(function(r){ if(r.bal>hi) hi=r.bal; }); }); hi=Math.ceil(hi*1.08/500000)*500000||1;
+    var X=function(y){ return L+(R-L)*(y-y0)/(y1-y0); }, Y=function(v){ return T+(B-T)*(1-Math.max(0,v)/hi); };
+    var g=''; for(var t=0;t<=4;t++){ var v=hi*t/4; g+='<line x1="'+L+'" y1="'+Y(v).toFixed(1)+'" x2="'+R+'" y2="'+Y(v).toFixed(1)+'" stroke="#E3E6EA" stroke-dasharray="2 3"/><text x="'+(L-8)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+(v?money(v):'$0')+'</text>'; }
+    for(var y=y0;y<=y1;y+=5) g+='<text x="'+X(y).toFixed(1)+'" y="'+(B+18)+'" text-anchor="middle">'+y+'</text>';
+    series.slice().reverse().forEach(function(s){ g+='<path d="'+s.rows.map(function(r,i){ return (i?'L':'M')+X(r.y).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' ')+'" fill="none" stroke="'+s.col+'" stroke-width="'+(s.dash?2.2:2.6)+'" '+(s.dash?'stroke-dasharray="'+s.dash+'"':'')+' stroke-linejoin="round" stroke-linecap="round"/>'; });
+    return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Savings over time, plan and scenarios">'+g+'</svg>';
+  }
+
+  /* ---------------- version 3: one question ---------------- */
+  var Q=null;
+  function opts(arr, cur){ return arr.map(function(o){ return '<option value="'+o[0]+'"'+(String(o[0])===String(cur)?' selected':'')+'>'+o[1]+'</option>'; }).join(''); }
+  function rng(a,b,step,f){ var o=[]; for(var x=a;x<=b;x+=step) o.push([x, f?f(x):String(x)]); return o; }
+  function v3(){
+    var w=WI(); if(!w || !w.planMetrics) return; var B=w.base(), p=w.planMetrics(); if(!B||!p) return;
+    if(!Q) Q={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r };
+    var h='<button type="button" class="sv-back" data-act="back">← My Plans</button>'+
+      '<p class="sv3-q">What if we retire at <span class="sel"><select data-k="ret" aria-label="Retirement age">'+opts(rng(60,72,1),Q.ret)+'</select></span>, claim Social Security at <span class="sel"><select data-k="ss" aria-label="Social Security age">'+opts(rng(62,70,1),Q.ss)+'</select></span>, and spend <span class="sel"><select data-k="spend" aria-label="Monthly spending">'+opts(rng(4500,9000,100,function(x){ return usd(x); }),Q.spend)+'</select></span> a month, with <span class="sel"><select data-k="ret_r" aria-label="Investment return">'+opts([[0,'poor'],[1,'normal'],[2,'strong']],Q.ret_r)+'</select></span> markets?</p>';
+    var m=w.metricsFor(Q,{}); var same=Q.ret===B.ret&&Q.ss===B.ss&&Q.spend===B.spend&&Q.ret_r===B.ret_r;
+    var dc=m.conf-p.conf, de=m.end-p.end;
+    var ans= same ? 'That is your plan today: funded to <b>'+p.funded+'</b> at <b>'+p.conf+'%</b>, with about <b>'+money(p.end)+'</b> left at 92.'
+      : 'You would be funded to <b>'+m.funded+'</b> at <b>'+m.conf+'%</b>, '+(dc===0?'the same confidence as your plan':(Math.abs(dc)+' points '+(dc>0?'more':'less')+' than your plan'))+', with about <b>'+money(m.end)+'</b> left at 92'+(Math.abs(de)>=1000?' ('+(de>0?money(de)+' more':money(de)+' less')+')':'')+'.';
+    h+='<div class="sv3-a"><div><p>'+ans+'</p><div class="sv3-hint">'+(same?'Change any green word to ask a different question.':'Nothing in your plan changes until you keep it.')+'</div></div>'+spark(p.rows, m.rows, same)+'</div>';
+    h+='<div class="sv3-acts"><button type="button" class="go" data-act="keep"'+(same?' disabled':'')+'>Keep this scenario</button><button type="button" data-act="reset"'+(same?' disabled':'')+'>Back to my plan</button></div>';
+    var items=w.list();
+    h+='<div class="sv3-saved"><h3>Saved scenarios</h3>'+(items.length?items.map(function(it){ var mm=w.metricsFor(it.vals,it.moves); return '<div class="sv3-row" data-id="'+it.id+'"><i style="background:'+colorOf(it.id)+'"></i><span class="n" title="'+esc(changes(it).join(' · '))+'">'+esc(it.name)+'</span><span class="m">'+mm.conf+'% · '+money(mm.end)+'</span><a data-act="load">Open</a><a class="x" data-act="remove" aria-label="Remove">×</a></div>'; }).join(''):'<div class="sv3-empty">Keep a question and it lands here.</div>')+'</div>';
+    alt.innerHTML=h;
+  }
+  function spark(a, b, same){
+    if(!a||!a.length) return ''; var W=220,H=90, hi=0; a.concat(b||[]).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); hi=hi*1.1||1; var n=a.length;
+    function path(rs){ return rs.map(function(r,i){ return (i?'L':'M')+(i/(n-1)*W).toFixed(1)+' '+(H-4-(r.bal/hi)*(H-8)).toFixed(1); }).join(' '); }
+    return '<svg viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><path d="'+path(a)+'" fill="none" stroke="#0D3F4A" stroke-width="2.2"/>'+(same||!b?'':'<path d="'+path(b)+'" fill="none" stroke="#0E794E" stroke-width="2.2" stroke-dasharray="5 4"/>')+'</svg>';
+  }
+  function onChange(e){ var s=e.target.closest('select[data-k]'); if(!s||!Q) return; Q[s.dataset.k]=+s.value; v3(); var again=alt.querySelector('select[data-k="'+s.dataset.k+'"]'); if(again) again.focus(); }
+
+  /* ---------------- shared actions ---------------- */
+  function name(vals){ var B=WI().base(), o=[]; if(vals.ret!==B.ret) o.push('Retire at '+vals.ret); if(vals.ss!==B.ss) o.push('Social Security at '+vals.ss); if(vals.spend!==B.spend) o.push('Spend '+usd(vals.spend)); if(vals.ret_r!==undefined&&vals.ret_r!==B.ret_r) o.push(RR[vals.ret_r]+' markets'); return o.join(', ')||'A scenario'; }
+  function onClick(e){
+    var w=WI(); var a=e.target.closest('[data-act], [data-preset]'); if(!a) return; e.preventDefault();
+    var act=a.dataset.act, id=(a.closest('[data-id]')||{}).dataset; id=id&&id.id; var it=id&&w.list().filter(function(x){ return x.id===id; })[0];
+    if(act==='back'){ if(window.SCENARIOS) window.SCENARIOS.close(); return; }
+    if(a.dataset.preset!==undefined){ var B=w.base(); var d=PRESETS[+a.dataset.preset]; var vals=Object.assign({ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, d[1](B)); w.add(d[0], vals); paint(); return; }
+    if(act==='own'){ if(window.__routeScn && window.__routeScn.add){ window.__routeScn.add(); var t=setInterval(function(){ var m=document.querySelector('.rs-modal.on'); if(!m){ clearInterval(t); paint(); } }, 400); } return; }
+    if(act==='remove' && it){ w.remove(it.id); paint(); return; }
+    if(act==='plan' && it){ w.activate(it, true); setTimeout(function(){ w.makePlan(); if(window.__peToast) window.__peToast(it.name+' is now your plan'); paint(); }, 80); return; }
+    if(act==='keep' && Q){ var vals2=Object.assign({}, Q); w.add(name(vals2), vals2); if(window.__peToast) window.__peToast('Kept: '+name(vals2)); v3(); return; }
+    if(act==='reset'){ Q=null; v3(); return; }
+    if(act==='load' && it){ var B2=w.base(); Q=Object.assign({ ret:B2.ret, ss:B2.ss, spend:B2.spend, life:B2.life, ret_r:B2.ret_r }, it.vals); v3(); window.scrollTo(0,0); var pg=document.getElementById('scnPage'); if(pg) pg.scrollTop=0; return; }
+  }
+  /* repaint whenever Scenarios opens */
+  var wasOpen=false; new MutationObserver(function(){ var on=document.body.classList.contains('scn-open'); if(on && !wasOpen){ Q=null; setTimeout(paint, 30); } wasOpen=on; }).observe(document.body, { attributes:true, attributeFilter:['class'] });
+  window.__scnVers={ set:function(v){ setV(String(v)); paint(); }, paint:paint };
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
