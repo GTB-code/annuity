@@ -29227,6 +29227,10 @@ body[data-view="plan"] .pe-only{ display:block; }
 /* editors: the choice fields keep the dropdown affordance the product uses */
 .edit-card .field.pe-choice .vselect{ flex:1; min-width:0; font-size:17px; color:var(--ink); font-family:inherit; cursor:pointer; }
 .edit-card .pe-two{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.row-editor.has-spec [data-pe-f="until"]{ visibility:hidden; }
+.row-editor .pe-spec .field[hidden], .row-editor .field[hidden], .row-editor .plan-range[hidden]{ display:none !important; }
+.row-editor .pe-two > [data-pe-f="when"]{ margin-bottom:14px; }
+.row-editor .pe-two > [data-pe-f="when"] .sub{ font-size:12.5px; color:var(--text-secondary); margin-left:10px; }
 .edit-card .pe-two .field{ margin-bottom:14px; }
 .edit-card .pe-effect{ font-size:14.5px; color:var(--text-secondary); margin:-2px 0 16px 2px; line-height:1.5; }
 .edit-card .pe-effect b{ color:var(--ink); font-weight:600; }
@@ -29497,6 +29501,77 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     var dir=e.amt<0?'falls':'rises';
     return (e.kind==='income'?'Monthly income':'Monthly spending')+' <b>'+dir+' by '+money(e.amt)+'</b> from <b>'+e.yr+'</b>'+(e.until && e.until!=='For life' && e.until!=='Once' ? ', '+e.until.toLowerCase() : '')+'.';
   }
+  /* ---------- each kind of life event asks for its own fields ---------- */
+  function num(x){ return parseFloat(String(x==null?'':x).replace(/[^0-9.\-]/g,''))||0; }
+  function comma(n){ return Math.round(n).toLocaleString('en-US'); }
+  var SS_F={62:.57,63:.61,64:.66,65:.71,66:.76,67:.81,68:.88,69:.94,70:1};
+  var SPECS={
+    'Retire':{ fields:[{k:'pay',l:'Paycheck that stops',t:'$',d:9500,sfx:'/mo'},{k:'after',l:'Spending after',t:['About the same','About 10% less','About 10% more']}],
+      calc:function(v,yr){ return {kind:'income', amt:-v.pay, until:'For life', eff:'Paychecks of <b>$'+comma(v.pay)+'/mo</b> stop in <b>'+yr+'</b>. Spending '+v.after.toLowerCase().replace('about','stays about').replace('stays about 10','runs about 10')+'.'}; },
+      from:function(e){ return {pay:Math.abs(e.amt)}; } },
+    'Go part-time':{ fields:[{k:'inc',l:'Part-time income',t:'$',d:3100,sfx:'/mo'},{k:'yrs',l:'For how many years',t:'n',d:5,sfx:'yrs'}],
+      calc:function(v,yr){ return {kind:'income', amt:v.inc, until:'For '+v.yrs+' years', eff:'<b>$'+comma(v.inc)+'/mo</b> comes in from <b>'+yr+'</b> to <b>'+(yr+v.yrs)+'</b>, so savings wait longer to be touched.'}; },
+      from:function(e){ return {inc:Math.abs(e.amt)}; } },
+    'Claim Social Security':{ fields:[{k:'age',l:'Claiming age',t:['62','63','64','65','66','67','68','69','70'],d:'70'},{k:'ben',l:'Monthly benefit at that age',t:'$',d:3940,sfx:'/mo'}],
+      calc:function(v,yr){ return {kind:'income', amt:v.ben, until:'For life', eff:'<b>$'+comma(v.ben)+'/mo</b> for life from age <b>'+v.age+'</b>, rising with inflation.'}; },
+      from:function(e){ return {ben:Math.abs(e.amt)}; }, ages:true },
+    'Start Medicare':{ fields:[{k:'prem',l:'Premiums, Part B, D and Medigap',t:'$',d:540,sfx:'/mo'},{k:'repl',l:'Coverage it replaces',t:'$',d:1180,sfx:'/mo'}],
+      calc:function(v,yr){ var d=v.prem-v.repl; return {kind:'spend', amt:d, until:'For life', eff:'Health spending '+(d<0?'falls':'rises')+' by <b>$'+comma(Math.abs(d))+'/mo</b> from <b>'+yr+'</b>.'}; },
+      from:function(e){ return e.amt<0?{repl:1180, prem:1180+e.amt}:{}; } },
+    'Move or downsize':{ fields:[{k:'sale',l:'Sale price of this home',t:'$',d:900000},{k:'next',l:'Next home costs',t:'$',d:600000},{k:'mort',l:'Mortgage left to pay',t:'$',d:0},{k:'fees',l:'Selling costs',t:'n',d:6,sfx:'%'}],
+      calc:function(v,yr){ var eq=v.sale*(1-v.fees/100)-v.mort-v.next; return eq>=0?{kind:'income', amt:eq, until:'Once', eff:'Frees <b>$'+comma(eq)+'</b> in <b>'+yr+'</b>, after selling costs and the next home.'}:{kind:'once', amt:-eq, until:'Once', eff:'The next home needs <b>$'+comma(-eq)+'</b> more than the sale brings in.'}; } },
+    'Buy or sell a property':{ fields:[{k:'act',l:'Buying or selling',t:['Buying','Selling']},{k:'price',l:'Price',t:'$',d:450000},{k:'down',l:'Down payment',t:'n',d:20,sfx:'%'},{k:'own',l:'Taxes, insurance, upkeep',t:'$',d:900,sfx:'/mo'}],
+      calc:function(v,yr){ if(v.act==='Selling'){ var net=v.price*0.94; return {kind:'income', amt:net, until:'Once', eff:'About <b>$'+comma(net)+'</b> arrives in <b>'+yr+'</b> after selling costs, and <b>$'+comma(v.own)+'/mo</b> of upkeep goes away.'}; } var dp=v.price*v.down/100; return {kind:'once', amt:dp, until:'Once', eff:'<b>$'+comma(dp)+'</b> down in <b>'+yr+'</b>, then about <b>$'+comma(v.own)+'/mo</b> to own it.'}; },
+      from:function(e){ return e.kind==='once'?{price:Math.round(e.amt/0.2)}:{}; } },
+    'Pay off a loan':{ fields:[{k:'bal',l:'Balance left',t:'$',d:85000},{k:'pay',l:'Monthly payment that ends',t:'$',d:1120,sfx:'/mo'},{k:'how',l:'How it ends',t:['On schedule','Early, in one payment']}],
+      calc:function(v,yr){ return {kind:'spend', amt:-v.pay, until:'For life', eff:(v.how==='On schedule'?'The last payment is in <b>'+yr+'</b>':'<b>$'+comma(v.bal)+'</b> from savings clears it in <b>'+yr+'</b>')+', and <b>$'+comma(v.pay)+'/mo</b> stays in your pocket.'}; },
+      from:function(e){ return {pay:Math.abs(e.amt)}; } },
+    'Plan a big trip':{ fields:[{k:'cost',l:'Total cost',t:'$',d:24000},{k:'rep',l:'How often',t:['Just once','Every year','Every 2 years']},{k:'yrs',l:'For how many years',t:'n',d:5,sfx:'yrs',when:{rep:['Every year','Every 2 years']}}],
+      calc:function(v,yr){ if(v.rep==='Just once') return {kind:'once', amt:v.cost, until:'Once', eff:'A one-time <b>$'+comma(v.cost)+'</b> in <b>'+yr+'</b>, paid from cash first.'}; var per=v.rep==='Every year'?1:2; return {kind:'spend', amt:Math.round(v.cost/12/per), until:'For '+v.yrs+' years', eff:'<b>$'+comma(v.cost)+'</b> '+v.rep.toLowerCase()+' from <b>'+yr+'</b> for '+v.yrs+' years.'}; },
+      from:function(e){ return e.kind==='once'?{cost:e.amt}:{}; } },
+    'Support a family member or charitable organization':{ fields:[{k:'to',l:'Who it goes to',t:'txt',d:'Our daughter'},{k:'how',l:'How you give',t:['A one-time gift','Monthly support']},{k:'amt',l:'How much',t:'$',d:50000},{k:'yrs',l:'For how many years',t:'n',d:3,sfx:'yrs',when:{how:['Monthly support']}}],
+      calc:function(v,yr){ if(v.how==='Monthly support') return {kind:'spend', amt:v.amt, until:'For '+v.yrs+' years', eff:'<b>$'+comma(v.amt)+'/mo</b> to '+esc(v.to||'them')+' from <b>'+yr+'</b> for '+v.yrs+' years.'}; return {kind:'once', amt:v.amt, until:'Once', eff:'A <b>$'+comma(v.amt)+'</b> gift to '+esc(v.to||'them')+' in <b>'+yr+'</b>.'}; },
+      from:function(e){ return e.kind==='once'?{amt:e.amt}:{}; } },
+    'Receive an inheritance':{ fields:[{k:'amt',l:'Expected',t:'$',d:180000},{k:'form',l:'Arrives as',t:['Cash','A brokerage account','An inherited IRA, taxed as you withdraw','Property']},{k:'sure',l:'How sure',t:['Likely, count it','Maybe, just mark it']}],
+      calc:function(v,yr){ if(/^Maybe/.test(v.sure)) return {kind:'marker', amt:0, until:'Once', eff:'Marked for <b>'+yr+'</b> but not counted, so the plan works without it.'}; return {kind:'income', amt:v.amt, until:'Once', eff:'<b>$'+comma(v.amt)+'</b> arrives in <b>'+yr+'</b> as '+v.form.charAt(0).toLowerCase()+v.form.slice(1)+'.'}; },
+      from:function(e){ return {amt:Math.abs(e.amt)}; } },
+    'Long-term care':{ fields:[{k:'cost',l:'Yearly cost',t:'$',d:110000,sfx:'/yr'},{k:'yrs',l:'How many years',t:'n',d:3,sfx:'yrs'},{k:'ins',l:'Insurance covers',t:'$',d:0,sfx:'/yr'}],
+      calc:function(v,yr){ var net=Math.max(0,v.cost-v.ins); return {kind:'spend', amt:Math.round(net/12), until:'For '+v.yrs+' years', eff:'<b>$'+comma(net)+'</b> a year out of pocket from <b>'+yr+'</b> for '+v.yrs+' years.'}; },
+      from:function(e){ return {cost:Math.abs(e.amt)*12}; } }
+  };
+  if(EVENT_TYPES.indexOf('Long-term care')<0) EVENT_TYPES.splice(EVENT_TYPES.length-1, 0, 'Long-term care');
+  function guessType(e){ var n=(e.nm||'').toLowerCase(); if(/social security/.test(n)) return 'Claim Social Security'; if(/medicare/.test(n)) return 'Start Medicare'; if(/long-term care/.test(n)) return 'Long-term care'; if(/part-time/.test(n)) return 'Go part-time'; if(/retire/.test(n)) return 'Retire'; if(/mortgage|loan|pay off/.test(n)) return 'Pay off a loan'; if(/downsiz|move/.test(n)) return 'Move or downsize'; if(/inherit/.test(n)) return 'Receive an inheritance'; if(/trip|travel/.test(n)) return 'Plan a big trip'; if(/gift|charit/.test(n)) return 'Support a family member or charitable organization'; return null; }
+  function spFieldHTML(f, v){
+    var w=f.when?' data-when=\''+JSON.stringify(f.when)+'\'':'';
+    if(Array.isArray(f.t)) return '<div class="field pe-choice" data-sp="'+f.k+'"'+w+'><label>'+f.l+'</label><div class="val"><select class="vselect">'+f.t.map(function(o){ return '<option'+(String(o)===String(v)?' selected':'')+'>'+esc(o)+'</option>'; }).join('')+'</select><span class="car">▾</span></div></div>';
+    var shown=f.t==='txt'?String(v):f.t==='$'?comma(v):String(v);
+    return '<div class="field" data-sp="'+f.k+'"'+w+'><label>'+f.l+'</label><div class="val">'+(f.t==='$'?'<span class="pfx">$</span>':'')+'<span class="vtext" contenteditable="true">'+esc(shown)+'</span>'+(f.sfx?'<span class="sfx">'+f.sfx+'</span>':'')+'</div></div>';
+  }
+  function wireSpec(ed, e){
+    var host=ed.querySelector('.pe-spec'); if(!host) return;
+    var gen=$$('.field', ed).filter(function(x){ var l=x.querySelector('label'); return l && /^(What it changes|By how much|Amount)$/.test(l.textContent); });
+    function set(type, vals){
+      var sp=SPECS[type]; ed._spec=sp||null; ed._specType=type;
+      ed.classList.toggle('has-spec', !!sp); gen.forEach(function(g){ g.hidden=!!sp; });
+      var whenF=ed.querySelector('[data-pe-f="when"]'), rng=ed.querySelector('.plan-range'), whoF=ed.querySelector('select[data-pe="who"]'); whoF=whoF&&whoF.closest('.pe-two');
+      if(whenF && rng && whoF){ if(sp){ whoF.appendChild(whenF); rng.hidden=true; } else { rng.insertBefore(whenF, rng.firstChild); rng.hidden=false; } }
+      if(!sp){ host.innerHTML=''; return; }
+      var v={}; sp.fields.forEach(function(f){ v[f.k]=(vals&&vals[f.k]!=null)?vals[f.k]:f.d; });
+      var hs=sp.fields.map(function(f){ return spFieldHTML(f, v[f.k]); }), out='';
+      for(var i=0;i<hs.length;i+=2) out+='<div class="pe-two">'+hs[i]+(hs[i+1]||'<div></div>')+'</div>';
+      host.innerHTML=out; gate();
+    }
+    function gate(){ $$('[data-when]', host).forEach(function(f){ var w=JSON.parse(f.getAttribute('data-when')), ok=Object.keys(w).every(function(k){ var c=host.querySelector('[data-sp="'+k+'"] select'); return c && w[k].indexOf(c.value)>-1; }); f.style.visibility=ok?'':'hidden'; }); }
+    function read(){ var v={}; (ed._spec?ed._spec.fields:[]).forEach(function(f){ var el=host.querySelector('[data-sp="'+f.k+'"]'); if(!el) return; var s=el.querySelector('select'); var raw=s?s.value:(el.querySelector('.vtext')||{}).textContent; v[f.k]=(Array.isArray(f.t)||f.t==='txt')?raw:num(raw); }); return v; }
+    ed._specRead=read;
+    ed._specPreset=function(amt){ if(!ed._spec || !amt) return; var f=ed._spec.fields.filter(function(x){ return x.t==='$'; })[0]; var el=f&&host.querySelector('[data-sp="'+f.k+'"] .vtext'); if(el){ el.textContent=comma(num(amt)); ed.dispatchEvent(new Event('input')); } };
+    host.addEventListener('change', function(ev){ gate();
+      var a=ev.target.closest('[data-sp="age"]'); if(a && ed._spec && ed._spec.ages){ var age=+ev.target.value, who=(ed.querySelector('select[data-pe="who"]')||{}).value||'Marshall'; who=who==='Both'?'Marshall':who; var now=ageIn(who,2026); var vt=ed.querySelector('[data-pe-f="when"] .vtext'); if(vt && now!=null){ vt.textContent=2026+(age-now); vt.dispatchEvent(new Event('input')); }
+        var b=host.querySelector('[data-sp="ben"] .vtext'); if(b){ var b70=ed._ben70||(num(b.textContent)/SS_F[ed._lastAge||70]); ed._ben70=b70; b.textContent=comma(b70*SS_F[age]); } ed._lastAge=age; } });
+    var tsel=ed.querySelector('select[data-pe="type"]');
+    if(tsel){ tsel.addEventListener('change', function(){ set(tsel.value); ed.dispatchEvent(new Event('input')); }); set(tsel.value); }
+    else { var t=e.type||guessType(e); var sp=SPECS[t]; set(t, e.sv || (sp&&sp.from?sp.from(e):null)); }
+  }
   function buildEventEditor(row){
     var e=byId(row.dataset.ev) || { id:'new', nm:'', yr:2029, who:'Both', kind:'spend', amt:0, until:'For life', chap:row.dataset.chap||'bridge', eff:'' };
     var isNew=!byId(row.dataset.ev);
@@ -29506,6 +29581,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
       +fieldHTML('Name', e.nm, 'e.g. Sell the condo')
       +'<div class="pe-two">'+selectHTML('Who', WHO, e.who, 'who')+selectHTML('What it changes', CHANGES, changeLabel(e), 'kind')+'</div>'
       +rangeHTML(e)
+      +'<div class="pe-spec"></div>'
       +fieldHTML(e.kind==='once'?'Amount':'By how much', (e.kind==='marker'||isNew||!e.amt)?'':money(e.amt).replace('$',''), 'e.g. 1,200', '$', e.kind==='once'||e.kind==='marker'?'':'/mo')
       +'<div class="pe-effect">'+(isNew ? 'Say what happens and when, and the plan bends around it.' : effectLine(e))+'</div>';
     ed.innerHTML=cardHTML(e.nm || 'Add a life event', 'Life event', amtText(e), body);
@@ -29516,7 +29592,8 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     kindSel.addEventListener('change', function(){ var lab=$$('.field', ed).filter(function(x){ return /By how much|Amount/.test(x.querySelector('label').textContent); })[0];
       var k=parseChange(kindSel.value); if(lab){ lab.querySelector('label').textContent = k.kind==='once' ? 'Amount' : 'By how much'; var s=lab.querySelector('.sfx'); if(s) s.textContent = (k.kind==='once'||k.kind==='marker') ? '' : '/mo'; } });
     wireRange(ed, e);
-    function refreshEffect(){ var v=ed._read ? ed._read() : null; var el=ed.querySelector('.pe-effect'); if(!v || !el) return; if(!v.amt && v.kind!=='marker'){ el.innerHTML='Say what happens and when, and the plan bends around it.'; return; } el.innerHTML=effectLine({kind:v.kind, amt:v.amt, yr:v.yr, until:v.until}); }
+    wireSpec(ed, e);
+    function refreshEffect(){ var v=ed._read ? ed._read() : null; var el=ed.querySelector('.pe-effect'); if(!v || !el) return; if(v.eff){ el.innerHTML=v.eff; return; } if(!v.amt && v.kind!=='marker'){ el.innerHTML='Say what happens and when, and the plan bends around it.'; return; } el.innerHTML=effectLine({kind:v.kind, amt:v.amt, yr:v.yr, until:v.until}); }
     ed.addEventListener('input', refreshEffect); ed.addEventListener('change', refreshEffect);
     ed._read=function(){
       var nm=(ed.querySelector('.field:not(.pe-choice) .vtext')||{}); var name=nm.classList && nm.classList.contains('is-placeholder') ? '' : (nm.textContent||'').trim();
@@ -29526,7 +29603,9 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
       var amtF=$$('.field', ed).filter(function(x){ return /By how much|Amount/.test(x.querySelector('label').textContent); })[0];
       var raw=amtF ? (amtF.querySelector('.vtext').classList.contains('is-placeholder') ? '' : amtF.querySelector('.vtext').textContent) : '';
       var n=Math.abs(parseFloat(String(raw).replace(/[^0-9.]/g,''))||0);
-      return { nm:name || e.nm || (sel?sel.value:'Life event'), who:who, kind:kind, yr:yr, until:until, amt:kind==='marker'?0:n*(ch.sign||1) };
+      var out={ nm:name || e.nm || (sel?sel.value:'Life event'), who:who, kind:kind, yr:yr, until:until, amt:kind==='marker'?0:n*(ch.sign||1) };
+      if(ed._spec){ var sv=ed._specRead(), r=ed._spec.calc(sv, yr); out.kind=r.kind; out.amt=r.kind==='marker'?0:Math.round(r.amt); out.until=r.until; out.eff=r.eff; out.type=ed._specType; out.sv=sv; }
+      return out;
     };
     return ed;
   }
@@ -29598,7 +29677,7 @@ body.rail-mini .side #sideNav li, .layout.page[data-page="plan"] .side{ transiti
     var v=ed._read ? ed._read() : null; if(!v) return;
     var e=byId(row.dataset.ev);
     if(!e){ e={ id:'ev'+Date.now(), eff:'' }; EVENTS.push(e); }
-    e.nm=v.nm; e.who=v.who; e.kind=v.kind; e.yr=v.yr; e.until=v.until; e.amt=v.amt; e.chap=chapFor(v.yr);
+    e.nm=v.nm; e.who=v.who; e.kind=v.kind; e.yr=v.yr; e.until=v.until; e.amt=v.amt; e.chap=chapFor(v.yr); if(v.type){ e.type=v.type; e.sv=v.sv; } if(v.eff) e.eff=v.eff.replace(/<[^>]+>/g,'');
     if(row.classList.contains('acct-new')){ row.remove(); addRow(e, true); }
     else { row.dataset.ev=e.id; row.innerHTML=rowHTML(e); if(row.parentNode && row.parentNode.dataset.chap!==e.chap){ row.remove(); addRow(e, true); } }
     paintMiles(true); paintSpend(); rollups();
@@ -32780,6 +32859,7 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
     setText(ed.querySelector('[data-pe-f="when"] .vtext'), String(p.yr));
     var amtF=[].slice.call(ed.querySelectorAll('.field')).filter(function(x){ var l=x.querySelector('label'); return l && /By how much|Amount/.test(l.textContent); })[0];
     if(amtF && p.amt) setText(amtF.querySelector('.vtext'), p.amt);
+    if(ed._specPreset && p.amt) ed._specPreset(p.amt);
     var save=ed.querySelector('.btn-save'); if(save) save.disabled=!p.nm;
     if(!quiet) setTimeout(function(){ var y=ed.getBoundingClientRect().top+window.scrollY-140; window.scrollTo({top:Math.max(0,y), behavior:'smooth'}); }, 80);
     return ed;
@@ -33065,6 +33145,19 @@ body.whatif-cmp .dock{ z-index:60; }
 .wi-band.solid .wi-in{ background:#F6F9FC; border:1px solid #D3E3EF; }
 .wi-band.solid .wi-tag{ display:inline-flex; align-items:center; gap:6px; background:#2F6F93; color:#fff; font-size:12.5px; padding:4px 11px 4px 9px; }
 .wi-band.solid .wi-name{ color:#1D4E6B; }
+/* simplified band: one quiet line */
+.wi-band.solid .wi-in{ min-height:44px; padding:4px 6px 4px 14px; gap:10px; }
+.wi-band.solid .wi-tag{ background:none; color:#2F6F93; padding:0; font-size:13px; font-weight:600; gap:5px; }
+.wi-band.solid .wi-name{ font-size:15px; color:var(--ink); max-width:260px; }
+.wi-band.solid .wi-chips{ gap:0; }
+.wi-band.solid .wi-chip{ background:none; padding:0; gap:4px; font-size:13.5px; animation:none; }
+.wi-band.solid .wi-chip + .wi-chip::before{ content:'\00b7'; color:#9AA0AE; margin:0 8px; }
+.wi-band.solid .wi-chip > span:not(.to):not(.arr), .wi-band.solid .wi-chip .arr{ display:none; }
+.wi-band.solid .wi-chip b{ font-weight:400; color:var(--text-secondary); }
+.wi-band.solid .wi-chip .to{ font-weight:600; color:var(--ink); }
+.wi-band.solid .wi-chip.wi-chip-move .to{ font-weight:400; color:var(--text-secondary); }
+.wi-band.solid .wi-btn{ height:32px; font-size:13.5px; padding:0 12px; }
+.wi-band.solid .wi-btn.ghost{ color:var(--ink); }
 body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid #4A99C4; pointer-events:none; z-index:57; }
 .wi-qc{ margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid var(--hairline); }
 .wi-qc svg{ width:100%; height:auto; display:block; font-family:var(--font); }
@@ -33366,7 +33459,7 @@ body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid 
     band.classList.toggle('solid', !!W.solid);
     band.classList.toggle('cmp', W.cmp); document.body.classList.toggle('whatif-cmp', !!(W.open && W.cmp));
     if(!W.open) return;
-    if(W.solid){ $tag.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="9" r="2.4"/><path d="M6 8.4v7.2M18 11.4c0 3-3 4.2-9.6 5.4"/></svg>You\u2019re in a scenario'; $name.textContent=W.solid.name; $keep.hidden=true; $plan.hidden=false; $x.setAttribute('aria-label','Close'); }
+    if(W.solid){ $tag.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="9" r="2.4"/><path d="M6 8.4v7.2M18 11.4c0 3-3 4.2-9.6 5.4"/></svg>Scenario'; $name.textContent=W.solid.name; $keep.hidden=true; $plan.hidden=false; $x.setAttribute('aria-label','Close'); }
     else { $tag.textContent='What-if'; $tag.removeAttribute('data-x'); if($name.getAttribute('contenteditable')!=='true') $name.textContent=autoName(); $keep.hidden=false; $plan.hidden=true; $x.setAttribute('aria-label','Discard'); }
     $cmp.classList.toggle('is-on', W.cmp);
     paintChips(); if(W.cmp) paintSheet();
@@ -36474,6 +36567,117 @@ PAGES["trust"]=function(){
   if(!build()){ var n=0, t=setInterval(function(){ if(build() || ++n>60) clearInterval(t); }, 300); }
 })();
 </script>
+<!-- ===== HOME: Autopilot card — one click to optimize the plan ===== -->
+<style>
+#hm-autopilot{ gap:0; }
+#hm-autopilot .ap-mark{ display:inline-flex; align-items:center; gap:6px; }
+#hm-autopilot .ap-mark svg{ width:14px; height:14px; color:var(--green-cta); }
+#hm-autopilot .ap-h{ font-size:22px; font-weight:600; letter-spacing:-0.3px; line-height:1.25; color:var(--ink); margin:14px 0 0; }
+#hm-autopilot .ap-h .g{ color:var(--green-cta); }
+#hm-autopilot .ap-track{ position:relative; height:6px; border-radius:999px; background:#EEF1F0; margin:16px 0 6px; overflow:hidden; }
+#hm-autopilot .ap-track i{ position:absolute; left:0; top:0; bottom:0; border-radius:999px; }
+#hm-autopilot .ap-track .now{ background:#10182C; width:var(--now); transition:width .9s cubic-bezier(.2,.7,.2,1); }
+#hm-autopilot .ap-track .gain{ background:repeating-linear-gradient(90deg,#0E794E 0 4px,transparent 4px 7px); width:var(--to); opacity:.45; }
+#hm-autopilot.done .ap-track .now{ background:var(--green-cta); width:var(--to); }
+#hm-autopilot .ap-scale{ display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary); }
+#hm-autopilot .ap-list{ list-style:none; margin:16px 0 0; padding:0; }
+#hm-autopilot .ap-list li{ display:flex; align-items:center; gap:10px; padding:9px 0; border-top:1px solid var(--hairline); font-size:14px; color:var(--ink); }
+#hm-autopilot .ap-list li:first-child{ border-top:0; }
+#hm-autopilot .ap-list .c{ flex:none; width:18px; height:18px; border-radius:50%; border:1.5px solid #C9CFD6; display:flex; align-items:center; justify-content:center; transition:background .25s ease, border-color .25s ease; }
+#hm-autopilot .ap-list .c svg{ width:10px; height:10px; color:#fff; opacity:0; transition:opacity .2s ease; }
+#hm-autopilot .ap-list li.on .c{ background:var(--green-cta); border-color:var(--green-cta); }
+#hm-autopilot .ap-list li.on .c svg{ opacity:1; }
+#hm-autopilot .ap-list li.run .c{ border-color:var(--green-cta); border-top-color:transparent; animation:apSpin .7s linear infinite; }
+@keyframes apSpin{ to{ transform:rotate(360deg); } }
+#hm-autopilot .ap-list .t{ flex:1; min-width:0; }
+#hm-autopilot .ap-list .v{ flex:none; font-size:13px; font-weight:600; color:var(--green-cta); }
+#hm-autopilot .ap-go{ margin-top:18px; width:100%; height:44px; font:inherit; font-size:15px; font-weight:600; border:0; border-radius:999px; background:var(--green-cta); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+#hm-autopilot .ap-go:hover{ background:#0B6440; }
+#hm-autopilot .ap-go[disabled]{ opacity:.7; cursor:default; }
+#hm-autopilot .ap-go svg{ width:16px; height:16px; }
+#hm-autopilot .ap-note{ font-size:12.5px; color:var(--text-secondary); text-align:center; margin:10px 0 0; }
+#hm-autopilot .ap-auto{ display:flex; align-items:center; gap:12px; margin-top:18px; padding-top:14px; border-top:1px solid var(--hairline); }
+#hm-autopilot .ap-auto .tx{ flex:1; font-size:14px; color:var(--ink); }
+#hm-autopilot .ap-auto .tx small{ display:block; font-size:12.5px; color:var(--text-secondary); margin-top:1px; }
+#hm-autopilot .ap-sw{ flex:none; width:40px; height:24px; border-radius:999px; background:#D5DAD8; border:0; position:relative; cursor:pointer; transition:background .2s ease; padding:0; }
+#hm-autopilot .ap-sw::after{ content:''; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:transform .2s ease; }
+#hm-autopilot .ap-sw[aria-checked="true"]{ background:var(--green-cta); }
+#hm-autopilot .ap-sw[aria-checked="true"]::after{ transform:translateX(16px); }
+#hm-autopilot .ap-links{ display:flex; justify-content:space-between; margin-top:14px; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var KEY='boldin.autopilot';
+  var CHECK='<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2l2.3 2.3 4.7-5"/></svg>';
+  var MARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var BOLT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>';
+  var MOVES=[
+    { t:'Rebalance back to 60/40', v:'+2 pts' },
+    { t:'Convert $40K a year to Roth, 2026–2032', v:'+$186K' },
+    { t:'Draw from taxable first, then pre-tax', v:'+$94K' },
+    { t:'Put $18K of idle cash to work', v:'+1 pt' }
+  ];
+  var FROM=87, TO=93;
+  var S={ done:false, auto:false, sid:null };
+  try{ var v=JSON.parse(localStorage.getItem(KEY)||'null'); if(v) S=Object.assign(S,v); }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+  function nav(re){ var a=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return re.test(x.textContent); })[0]; if(a) a.click(); }
+
+  function paint(card, running){
+    card.classList.toggle('done', S.done);
+    card.style.setProperty('--now', FROM+'%'); card.style.setProperty('--to', TO+'%');
+    var h='<div class="hx-head"><div class="eyebrow ap-mark">'+MARK+'Autopilot</div>'+(S.done?'<button type="button" class="hx-link" data-ap="undo">Undo</button>':'')+'</div>';
+    h+= S.done
+      ? '<p class="ap-h">Optimized. Confidence is now <span class="g">'+TO+'%</span>.</p>'
+      : '<p class="ap-h">'+MOVES.length+' moves could lift your confidence from '+FROM+'% to <span class="g">'+TO+'%</span>.</p>';
+    h+='<div class="ap-track"><i class="gain"></i><i class="now"></i></div><div class="ap-scale"><span>'+(S.done?'Was ':'Now ')+FROM+'%</span><span>'+(S.done?'Now ':'Optimized ')+TO+'%</span></div>';
+    h+='<ul class="ap-list">'+MOVES.map(function(m){ return '<li class="'+(S.done?'on':'')+'"><span class="c">'+CHECK+'</span><span class="t">'+m.t+'</span><span class="v">'+m.v+'</span></li>'; }).join('')+'</ul>';
+    if(!S.done){
+      h+='<button type="button" class="ap-go" data-ap="go"'+(running?' disabled':'')+'>'+BOLT+(running?'Optimizing…':'Optimize my plan')+'</button><p class="ap-note">One click. Nothing moves money, and you can undo it.</p>';
+    } else {
+      h+='<div class="ap-auto"><div class="tx">Keep on autopilot<small>Re-checks every month and asks before changing anything.</small></div><button type="button" class="ap-sw" role="switch" aria-checked="'+S.auto+'" aria-label="Keep on autopilot" data-ap="auto"></button></div>';
+      h+='<div class="ap-links"><button type="button" class="hx-link" data-ap="plan">See it on My Plans</button><button type="button" class="hx-link" data-ap="opt">Fine-tune in Optimize</button></div>';
+    }
+    card.innerHTML=h;
+  }
+
+  function run(card){
+    paint(card, true);
+    var lis=card.querySelectorAll('.ap-list li'), i=0;
+    (function step(){
+      if(i>0){ lis[i-1].classList.remove('run'); lis[i-1].classList.add('on'); }
+      if(i<lis.length){ lis[i].classList.add('run'); i++; setTimeout(step, 520); return; }
+      setTimeout(function(){
+        S.done=true;
+        var w=window.WHATIF;
+        if(w && w.base && w.base()){ var moves={}; MOVES.forEach(function(m,k){ moves['ap'+k]={ label:m.t, impact:m.t, end:0, conf:(TO-FROM)/MOVES.length }; }); try{ var it=w.add('Autopilot plan', Object.assign({}, w.base()), moves); S.sid=it.id; }catch(e){} }
+        save(); paint(card);
+        if(window.__peToast) window.__peToast('Plan optimized');
+      }, 300);
+    })();
+  }
+
+  function build(){
+    var grid=document.querySelector('.hm-page .grid2'); if(!grid || !window.__homeCustomize || !grid.querySelector('#hm-events')) return false;
+    if(grid.querySelector('#hm-autopilot')) return true;
+    var card=document.createElement('div'); card.className='hm-x'; card.id='hm-autopilot'; card.setAttribute('data-hmx','');
+    var bai=grid.querySelector('.bai-col'); grid.insertBefore(card, bai||null);
+    paint(card);
+    __homeCustomize.register({ k:'autopilot', sel:'#hm-autopilot', name:'Autopilot', span:1 }, 'events');
+    card.addEventListener('click', function(e){
+      var b=e.target.closest('[data-ap]'); if(!b || b.disabled) return; var a=b.dataset.ap;
+      if(a==='go') run(card);
+      else if(a==='undo'){ if(S.sid && window.WHATIF){ try{ WHATIF.remove(S.sid); }catch(e){} } S.done=false; S.sid=null; save(); paint(card); }
+      else if(a==='auto'){ S.auto=!S.auto; save(); b.setAttribute('aria-checked', S.auto); if(window.__peToast) window.__peToast(S.auto?'Autopilot on':'Autopilot off'); }
+      else if(a==='plan'){ var it=S.sid && window.WHATIF && WHATIF.list().filter(function(x){ return x.id===S.sid; })[0]; nav(/my plans/i); if(it) setTimeout(function(){ WHATIF.activate(it); }, 300); }
+      else if(a==='opt'){ nav(/optimize/i); var n=0, t=setInterval(function(){ var c=document.querySelector('.ost-tool[data-tool="scenario-adjust"]'); if(window.__optTools){ clearInterval(t); __optTools.open('scenario-adjust'); } else if(c && c.offsetParent){ clearInterval(t); c.click(); } else if(++n>30) clearInterval(t); }, 150); }
+    });
+    return true;
+  }
+  if(!build()){ var n=0, t=setInterval(function(){ if(build() || ++n>80) clearInterval(t); }, 300); }
+})();
+</script>
 <!-- ===== What life costs: full-screen Power mode (line, stacked by category, what moves it) ===== -->
 <style>
 #spend-block .acc-head{ align-items:center; }
@@ -37873,19 +38077,23 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     function load(id){ var w=W(); sel=id; var it=id&&w.list().filter(function(x){ return x.id===id; })[0]; V=Object.assign(base(), it?it.vals:{}); M=Object.assign({}, it?it.moves:{}); dirty=false; }
     function cat(){ return (window.__routeScn && window.__routeScn.cat) || []; }
     function catOf(k){ return cat().filter(function(c){ return c.k===k; })[0]; }
-    function spark(a,b){ if(!a||!a.length) return ''; var Wd=600,H=160,P=6, hi=0; a.concat(b||[]).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); hi*=1.08; var n=a.length, y0=a[0].y, y1=a[n-1].y; function X(y){ return P+(Wd-2*P)*(y-y0)/(y1-y0); } function Y(v){ return H-20-(Math.max(0,v)/hi)*(H-30); } function pth(rs){ return rs.map(function(r,i){ return (i?'L':'M')+X(r.y).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
-      return '<svg viewBox="0 0 '+Wd+' '+H+'" class="sa-chart"><path d="'+pth(a)+'" fill="none" stroke="#10182C" stroke-width="2" stroke-dasharray="5 4"/>'+(b?'<path d="'+pth(b)+'" fill="none" stroke="#4A99C4" stroke-width="2.8"/>':'')+'<text x="'+P+'" y="'+(H-4)+'" font-size="12" fill="#6E7687">'+y0+'</text><text x="'+(Wd-P)+'" y="'+(H-4)+'" font-size="12" fill="#6E7687" text-anchor="end">'+y1+'</text></svg>'; }
+    function spark(a,b){ if(!a||!a.length) return ''; var Wd=1000,H=300,L=56,R=10,T=12,Bm=28, hi=0; a.concat(b||[]).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); var step=hi>4e6?2e6:hi>2e6?1e6:5e5; hi=Math.ceil(hi*1.04/step)*step; var n=a.length, y0=a[0].y, y1=a[n-1].y; function X(y){ return L+(Wd-L-R)*(y-y0)/(y1-y0); } function Y(v){ return T+(H-T-Bm)*(1-Math.max(0,v)/hi); } function pth(rs){ return rs.map(function(r,i){ return (i?'L':'M')+X(r.y).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
+      var g=''; for(var v=0; v<=hi; v+=step){ g+='<line x1="'+L+'" x2="'+(Wd-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#EEF1F3"/><text x="'+(L-10)+'" y="'+(Y(v)+4)+'" font-size="12" fill="#6E7687" text-anchor="end">'+(v?money(v):'$0')+'</text>'; }
+      var xl=''; for(var yy=Math.ceil(y0/10)*10; yy<=y1; yy+=10) xl+='<text x="'+X(yy)+'" y="'+(H-6)+'" font-size="12" fill="#6E7687" text-anchor="middle">'+yy+'</text>';
+      var area=b?'<path d="'+pth(b)+' L'+X(b[b.length-1].y)+' '+Y(0)+' L'+X(b[0].y)+' '+Y(0)+'Z" fill="#4A99C4" opacity=".08"/>':'';
+      return '<svg viewBox="0 0 '+Wd+' '+H+'" class="sa-chart">'+g+xl+area+'<path d="'+pth(a)+'" fill="none" stroke="#10182C" stroke-width="2" stroke-dasharray="6 5"/>'+(b?'<path d="'+pth(b)+'" fill="none" stroke="#4A99C4" stroke-width="3"/>':'')+'</svg>'; }
+    function bend(rows, moves){ var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); if(!extra) return rows; var n=rows.length; return rows.map(function(r,i){ return { y:r.y, bal:Math.max(0, r.bal+extra*(n>1?i/(n-1):1)) }; }); }
     function paint(){
       var w=W(); if(!w||!w.planMetrics||!w.base()) return; if(V===null) load((w.list()[0]||{}).id||null);
       var items=w.list(), p=w.planMetrics(), m=w.metricsFor(V, M), B=base(), it=sel&&items.filter(function(x){ return x.id===sel; })[0];
       var dc=m.conf-p.conf, de=m.end-p.end;
       var h='<h2 class="ost-hero">Adjust a <span class="p">scenario</span>.</h2><p class="ost-herosub">Pick one, move anything, watch the result. Saving updates the scenario everywhere.</p>';
       h+='<div class="sa-pick"><span class="l">Scenario</span>'+items.map(function(x){ return '<button type="button" data-sa="'+x.id+'" class="'+(x.id===sel?'on':'')+'">'+esc(x.name)+'</button>'; }).join('')+'<button type="button" data-sa="" class="new'+(sel?'':' on')+'">+ New from my plan</button></div>';
-      h+='<div class="sa-grid"><div class="sa-l">'+LV.map(function(l){ var v=V[l.k], diff=v!==B[l.k]; return '<div class="sa-lev'+(diff?' is-diff':'')+'"><div class="r"><span>'+l.t+'</span><b>'+l.f(v)+'</b></div><input type="range" data-k="'+l.k+'" min="'+l.min+'" max="'+l.max+'" step="'+l.step+'" value="'+v+'" style="--p:'+((v-l.min)/(l.max-l.min)*100)+'%">'+(diff?'<small>plan '+l.f(B[l.k])+'</small>':'')+'</div>'; }).join('')+
+      h+='<div class="sa-grid"><div class="sa-r"><div class="sa-res"><div><span>Confidence</span><b>'+m.conf+'%</b><em class="'+(dc>0?'pos':dc<0?'neg':'')+'">'+(dc?((dc>0?'+':'−')+Math.abs(dc)+' pts vs plan'):'same as plan')+'</em></div><div><span>Left at 92</span><b>'+money(m.end)+'</b><em class="'+(de>=1000?'pos':de<=-1000?'neg':'')+'">'+(Math.abs(de)<1000?'same as plan':((de>0?'+':'−')+money(Math.abs(de))+' vs plan'))+'</em></div></div>'+spark(p.rows, bend(m.rows, M))+'<div class="sa-leg"><span><i class="d"></i>Your plan</span><span><i></i>'+(it?esc(it.name):'This scenario')+'</span></div>'+
+        '<div class="sa-acts"><button type="button" class="go" data-sact="save"'+(dirty||!sel?'':' disabled')+'>'+(sel?'Save changes':'Save as a scenario')+'</button><button type="button" data-sact="open"'+(sel?'':' disabled')+'>Open in My Plans</button></div></div>'+
+        '<div class="sa-l">'+LV.map(function(l){ var v=V[l.k], diff=v!==B[l.k]; return '<div class="sa-lev'+(diff?' is-diff':'')+'"><div class="r"><span>'+l.t+'</span><b>'+l.f(v)+'</b></div><input type="range" data-k="'+l.k+'" min="'+l.min+'" max="'+l.max+'" step="'+l.step+'" value="'+v+'" style="--p:'+((v-l.min)/(l.max-l.min)*100)+'%">'+(diff?'<small>plan '+l.f(B[l.k])+'</small>':'')+'</div>'; }).join('')+
         Object.keys(M).map(function(id){ var mv=M[id], c=mv.cat&&catOf(mv.cat); if(!c) return '<div class="sa-lev is-diff"><div class="r"><span>'+esc(mv.label)+' <button type="button" class="sa-del" data-del="'+id+'">×</button></span></div></div>'; return '<div class="sa-lev is-diff"><div class="r"><span>'+c.t+' <button type="button" class="sa-del" data-del="'+id+'">×</button></span><b>'+c.f(mv.v)+'</b></div><input type="range" data-mid="'+id+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+mv.v+'" style="--p:'+((mv.v-c.min)/(c.max-c.min)*100)+'%"></div>'; }).join('')+
-        '<div class="sa-add"><span>Add your own</span>'+cat().filter(function(c){ return !Object.keys(M).some(function(id){ return M[id].cat===c.k; }); }).map(function(c){ return '<button type="button" data-cat="'+c.k+'">'+c.t+'</button>'; }).join('')+'</div></div>'+
-        '<div class="sa-r"><div class="sa-res"><div><span>Confidence</span><b>'+m.conf+'%</b><em class="'+(dc>0?'pos':dc<0?'neg':'')+'">'+(dc?((dc>0?'+':'−')+Math.abs(dc)+' pts vs plan'):'same as plan')+'</em></div><div><span>Left at 92</span><b>'+money(m.end)+'</b><em class="'+(de>=1000?'pos':de<=-1000?'neg':'')+'">'+(Math.abs(de)<1000?'same as plan':((de>0?'+':'−')+money(Math.abs(de))+' vs plan'))+'</em></div></div>'+spark(p.rows, m.rows)+'<div class="sa-leg"><span><i class="d"></i>Your plan</span><span><i></i>'+(it?esc(it.name):'This scenario')+'</span></div>'+
-        '<div class="sa-acts"><button type="button" class="go" data-sact="save"'+(dirty||!sel?'':' disabled')+'>'+(sel?'Save changes':'Save as a scenario')+'</button><button type="button" data-sact="open"'+(sel?'':' disabled')+'>Open in My Plans</button></div></div></div>';
+        '<div class="sa-add"><span>Add your own</span>'+cat().filter(function(c){ return !Object.keys(M).some(function(id){ return M[id].cat===c.k; }); }).map(function(c){ return '<button type="button" data-cat="'+c.k+'">'+c.t+'</button>'; }).join('')+'</div></div></div>';
       sec.innerHTML=h;
     }
     function money(v){ v=Math.abs(v); return v>=1e6?'$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':'$'+Math.round(v/1e3)+'K'; }
@@ -37982,7 +38190,10 @@ body.ost-open #ostIndex{ display:none; }
 #optStage .sa-pick button.on{ background:#1F2A44; color:#fff; border-color:#1F2A44; }
 #optStage .sa-pick button.new{ color:var(--green-cta); border-style:dashed; }
 #optStage .sa-pick button.new.on{ background:#F5FBF8; color:var(--green-cta); border-color:var(--green-cta); }
-#optStage .sa-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:28px; align-items:start; }
+#optStage .sa-grid{ display:block; }
+#optStage .sa-l{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:40px; margin-top:22px; }
+#optStage .sa-l .sa-add{ grid-column:1 / -1; }
+@media (max-width:800px){ #optStage .sa-l{ grid-template-columns:minmax(0,1fr); } }
 #optStage .sa-lev{ padding:10px 0 8px; border-bottom:1px solid var(--hairline); }
 #optStage .sa-lev .r{ display:flex; justify-content:space-between; font-size:14px; color:var(--text-secondary); }
 #optStage .sa-lev .r b{ color:var(--ink); font-weight:600; }
@@ -37997,7 +38208,8 @@ body.ost-open #ostIndex{ display:none; }
 #optStage .sa-add span{ font-size:13px; font-weight:600; color:var(--green-cta); margin-right:4px; }
 #optStage .sa-add button{ font:inherit; font-size:12.5px; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:4px 10px; cursor:pointer; }
 #optStage .sa-add button:hover{ border-color:#4A99C4; }
-#optStage .sa-r{ position:sticky; top:96px; border:1px solid var(--hairline); border-radius:16px; padding:18px; }
+#optStage .sa-r{ border:1px solid var(--hairline); border-radius:16px; padding:20px 22px; }
+#optStage .sa-res{ max-width:520px; }
 #optStage .sa-res{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 #optStage .sa-res span{ display:block; font-size:12.5px; color:var(--text-secondary); }
 #optStage .sa-res b{ display:block; font-size:30px; font-weight:600; letter-spacing:-0.6px; margin:2px 0; }
