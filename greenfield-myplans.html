@@ -33066,7 +33066,78 @@ body.whatif-cmp .dock{ z-index:60; }
 .wi-band.solid .wi-tag{ display:inline-flex; align-items:center; gap:6px; background:#2F6F93; color:#fff; font-size:12.5px; padding:4px 11px 4px 9px; }
 .wi-band.solid .wi-name{ color:#1D4E6B; }
 body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid #4A99C4; pointer-events:none; z-index:57; }
-body.whatif-solid .topnav{ box-shadow:inset 0 -3px 0 #4A99C4; }
+.wi-qc{ margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid var(--hairline); }
+.wi-qc svg{ width:100%; height:auto; display:block; font-family:var(--font); }
+.wi-qcl{ display:flex; gap:14px; font-size:12px; color:var(--text-secondary); margin-top:4px; }
+.wi-qcl i{ display:inline-block; width:14px; height:0; border-top:2.4px solid #4A99C4; margin-right:6px; vertical-align:3px; }
+.wi-qcl i.d{ border-top:1.8px dashed #10182C; }
+.wi-full{ margin-top:16px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font:inherit; font-size:15.5px; font-weight:600; color:#fff; background:var(--green-cta); border:0; border-radius:999px; padding:13px 18px; cursor:pointer; transition:filter .15s ease; }
+.wi-full:hover{ filter:brightness(1.08); }
+.wi-band.cmp .wi-sheet{ max-height:640px; }
+/* quick compare, balanced: verdict, three tiles beside the chart, changes and the way through */
+.wi-sheet-in{ display:block !important; padding:22px 26px 22px !important; }
+.wi-read{ border-left:0 !important; padding-left:0 !important; }
+.qc-top{ margin:0 0 18px; }
+.qc-v{ margin:0; font-size:20px; line-height:1.4; color:var(--ink); letter-spacing:-0.1px; }
+.qc-mid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:22px; align-items:stretch; }
+.qc-tiles{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.qc-t{ border:1px solid var(--hairline); border-radius:14px; padding:14px 14px 12px; display:flex; flex-direction:column; justify-content:space-between; }
+.qc-t .k{ font-size:12.5px; color:var(--text-secondary); }
+.qc-t .v{ font-size:28px; font-weight:600; letter-spacing:-0.5px; margin:6px 0 10px; color:var(--ink); }
+.qc-t .f{ display:flex; justify-content:space-between; align-items:baseline; gap:6px; font-size:12px; color:var(--text-secondary); flex-wrap:wrap; }
+.qc-t .f em{ font-style:normal; font-weight:600; color:var(--text-secondary); }
+.qc-t .f em.pos{ color:var(--green-cta); } .qc-t .f em.neg{ color:#B42318; }
+.qc-mid .wi-qc{ margin:0; padding:12px 14px 10px; border:1px solid var(--hairline); border-radius:14px; }
+.qc-bot{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:18px; }
+.qc-ch{ display:flex; flex-wrap:wrap; gap:6px; }
+.qc-ch span{ font-size:13px; color:var(--text-secondary); background:#F4F5F6; border-radius:999px; padding:5px 11px; }
+.qc-ch span b{ color:var(--ink); font-weight:600; margin-right:2px; }
+.qc-bot .wi-full{ width:auto !important; margin:0 !important; flex:none; padding:12px 22px !important; }
+@media (max-width:1000px){ .qc-mid{ grid-template-columns:1fr; } }
+.wi-read{ position:relative; }
+.qc-bot .qc-mode{ margin-left:auto; }
+.qc-addm{ position:relative; flex:none; }
+.qc-addbtn{ font:inherit; font-size:13.5px; font-weight:600; color:var(--green-cta); background:#fff; border:1.5px dashed #9FD2B9; border-radius:999px; padding:6px 13px; cursor:pointer; }
+.qc-addbtn:hover{ border-color:var(--green-cta); }
+.qc-menu{ position:absolute; bottom:calc(100% + 6px); left:0; background:#fff; border:1px solid var(--hairline-strong); border-radius:12px; padding:6px; min-width:250px; z-index:8; }
+.qc-menu[hidden]{ display:none; }
+.qc-menu > button{ display:block; width:100%; text-align:left; font:inherit; font-size:14px; color:var(--ink); background:none; border:0; border-radius:8px; padding:8px 10px; cursor:pointer; }
+.qc-menu > button:hover{ background:#F6F7F8; }
+.qc-age{ display:flex; align-items:center; gap:8px; padding:6px 10px; border-bottom:1px solid var(--hairline); margin-bottom:4px; font-size:14px; }
+.qc-age span{ flex:1; }
+.qc-age input{ width:56px; font:inherit; font-size:14px; padding:5px 6px; border:1px solid var(--hairline-strong); border-radius:6px; }
+.qc-age button{ font:inherit; font-size:13px; font-weight:600; color:#fff; background:var(--green-cta); border:0; border-radius:999px; padding:5px 11px; cursor:pointer; }
+.qc-t.qc-x{ position:relative; border-style:dashed; }
+.qc-del{ border:0; background:none; color:var(--text-secondary); font-size:15px; line-height:1; cursor:pointer; padding:0 3px; }
+.qc-t .qc-del{ position:absolute; top:8px; right:8px; opacity:0; transition:opacity .15s ease; }
+.qc-t:hover .qc-del{ opacity:1; }
+.qc-del:hover{ color:#B42318; }
+.qg-key{ flex-wrap:wrap; } .qc-mode{ position:static; display:inline-flex; gap:2px; padding:2px; background:#F2F3F5; border-radius:999px; z-index:2; }
+.qc-mode button{ border:0; background:none; font:inherit; font-size:11.5px; font-weight:600; color:var(--text-secondary); padding:3px 9px; border-radius:999px; cursor:pointer; }
+.qc-mode button.on{ background:#fff; color:var(--ink); }
+
+.qb{ display:grid; grid-template-columns:1fr 140px 1fr; align-items:stretch; }
+.qb-c{ border:1px solid var(--hairline); border-radius:16px; padding:16px 20px; }
+.qb-c.plan{ background:#FAFBFA; }
+.qb-c.what{ border-color:#BCD6E8; background:#F4F9FC; }
+.qb-h{ font-size:14px; font-weight:600; color:var(--ink); margin:0 0 6px; display:flex; align-items:center; gap:8px; }
+.qb-h i{ width:9px; height:9px; border-radius:50%; background:#4A99C4; }
+.qb-r{ display:flex; justify-content:space-between; align-items:baseline; padding:10px 0; border-top:1px solid var(--hairline); }
+.qb-r span{ font-size:14px; color:var(--text-secondary); }
+.qb-r b{ font-size:24px; font-weight:600; letter-spacing:-0.4px; }
+.qb-mid{ display:grid; grid-template-rows:30px; grid-auto-rows:1fr; align-items:center; justify-items:center; padding:16px 0; }
+.qb-arrow{ font-size:22px; color:#9AA0AB; }
+.qb-d{ font-size:14px; font-weight:600; color:var(--text-secondary); background:#fff; border:1px solid var(--hairline); border-radius:999px; padding:4px 10px; }
+.qb-d.pos{ color:var(--green-cta); border-color:#CFE6D9; } .qb-d.neg{ color:#B42318; border-color:#F3D3D0; }
+.qb-v{ margin:16px 0 0 !important; font-size:16px !important; color:var(--text-secondary) !important; }
+.qg-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin:0 0 6px; }
+.qg-head .qc-v{ flex:1; }
+.qg-key{ display:flex; gap:22px; flex:none; }
+.qg-key span{ display:block; font-size:12.5px; color:var(--text-secondary); }
+.qg-key b{ font-size:22px; font-weight:600; letter-spacing:-0.3px; }
+.qg-key b.neg{ color:#B42318; } .qg-key b.pos{ color:var(--green-cta); }
+.qg svg{ width:100%; height:auto; display:block; font-family:var(--font); margin-top:8px; }
+.wi-qcl i.g{ border-top:8px solid; opacity:.25; vertical-align:0; }
 </style>
 <script id="whatifJS">
 (function(){
@@ -33111,8 +33182,8 @@ body.whatif-solid .topnav{ box-shadow:inset 0 -3px 0 #4A99C4; }
     var s=st(); if(!s) return null;
     var cur=s.run(s.S,false); cur.conf=s.conf(cur); var b=s.base;
     var extra=0; Object.keys(W.moves).forEach(function(k){ extra+=W.moves[k].end||0; });
-    return { plan:{ funded:92, conf:b.conf, end:b.end, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend },
-             what:{ funded:cur.out?(61+(cur.out-2026)):92, conf:cur.conf, end:cur.end+extra, ret:s.S.ret, ss:s.S.ss, spend:s.S.spend } };
+    return { plan:{ funded:92, conf:b.conf, end:b.end, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend, rows:b.rows },
+             what:{ funded:cur.out?(61+(cur.out-2026)):92, conf:cur.conf, end:cur.end+extra, ret:s.S.ret, ss:s.S.ss, spend:s.S.spend, rows:cur.rows } };
   }
   function autoName(){
     if(W.title) return W.title;
@@ -33129,21 +33200,96 @@ body.whatif-solid .topnav{ box-shadow:inset 0 -3px 0 #4A99C4; }
     Object.keys(W.changes).forEach(function(k){ var c=W.changes[k]; h+='<span class="wi-chip"><b>'+KEYS[k]+'</b><span>'+esc(c.from.replace(/^at /,''))+'</span><span class="arr">&rarr;</span><span class="to">'+esc(c.to.replace(/^at /,''))+'</span></span>'; });
     $chips.innerHTML=h;
   }
+  /* ---------- metrics the member adds to the quick compare ---------- */
+  var MKEY='boldin.qc.metrics';
+  function myMets(){ try{ return JSON.parse(localStorage.getItem(MKEY)||'[]'); }catch(e){ return []; } }
+  function saveMets(a){ try{ localStorage.setItem(MKEY, JSON.stringify(a)); }catch(e){} }
+  var MCAT=[
+    {k:'at', t:'Savings at an age', age:true},
+    {k:'ret', t:'Savings when you retire'},
+    {k:'peak', t:'Peak savings'},
+    {k:'low', t:'Lowest savings after retiring'},
+    {k:'spent', t:'Total spent in retirement'},
+    {k:'mo', t:'Monthly spending'},
+    {k:'yrs', t:'Years in retirement'}
+  ];
+  function ageOf(y){ return 61+(y-2026); }
+  function calc(k, side, rows, opt){
+    rows=rows||[]; var r0=rows[0]; if(!r0) return null; var retY=2026+(side.ret-61);
+    if(k==='at'){ var r=rows.filter(function(q){ return ageOf(q.y)===opt; })[0]; return r?{v:r.bal,f:'$'}:null; }
+    if(k==='ret'){ var r2=rows.filter(function(q){ return q.y===retY; })[0]||r0; return {v:r2.bal,f:'$'}; }
+    if(k==='peak'){ var mx=0; rows.forEach(function(q){ if(q.bal>mx) mx=q.bal; }); return {v:mx,f:'$'}; }
+    if(k==='low'){ var lo=Infinity; rows.forEach(function(q){ if(q.y>=retY && q.bal<lo) lo=q.bal; }); return {v:lo===Infinity?0:lo,f:'$'}; }
+    if(k==='spent'){ var t=0; rows.forEach(function(q){ if(q.y>=retY) t+=(q.spend||0); }); var mult=(r0.spend&&r0.spend<30000)?12:1; return {v:t*mult,f:'$'}; }
+    if(k==='mo'){ return {v:side.spend,f:'mo'}; }
+    if(k==='yrs'){ return {v:92-side.ret,f:'yrs'}; }
+    return null;
+  }
+  function metLabel(x){ var c=MCAT.filter(function(q){ return q.k===x.k; })[0]; return x.k==='at' ? 'Savings at '+x.age : (c?c.t:x.k); }
+  function fmtM(o){ if(!o) return '—'; if(o.f==='$') return big(o.v); if(o.f==='mo') return '$'+Math.round(o.v).toLocaleString('en-US')+'/mo'; return o.v+' yrs'; }
+  function fmtD(a,b){ if(!a||!b) return 0; var d=b.v-a.v; if(a.f==='$') return Math.abs(d)<1000?0:((d>0?'+':'−')+big(Math.abs(d))); if(a.f==='mo') return d?((d>0?'+':'−')+'$'+Math.abs(Math.round(d)).toLocaleString('en-US')):0; return d?((d>0?'+':'−')+Math.abs(d)+' yrs'):0; }
+  function extra(m){ return myMets().map(function(x){ var a=calc(x.k, m.plan, m.plan.rows, x.age), b=calc(x.k, m.what, m.what.rows, x.age); var good = b&&a ? ((x.k==='spent'||x.k==='mo'||x.k==='yrs') ? null : b.v>a.v) : null; return { id:x.id, lab:metLabel(x), a:fmtM(a), b:fmtM(b), d:fmtD(a,b), good:good }; }); }
+  function addMenu(){ return '<div class="qc-addm"><button type="button" class="qc-addbtn">+ Add a metric</button><div class="qc-menu" hidden>'+MCAT.map(function(c){ return c.age ? '<div class="qc-age"><span>Savings at age</span><input type="number" min="62" max="100" value="75" aria-label="Age"><button type="button" data-addm="at">Add</button></div>' : '<button type="button" data-addm="'+c.k+'">'+c.t+'</button>'; }).join('')+'</div></div>'; }
+  function wireMets(){
+    var btn=$read.querySelector('.qc-addbtn'), menu=$read.querySelector('.qc-menu'); if(btn) btn.addEventListener('click', function(e){ e.stopPropagation(); menu.hidden=!menu.hidden; });
+    $read.querySelectorAll('[data-addm]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); var a=myMets(); var o={ id:'m'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), k:b.dataset.addm }; if(o.k==='at'){ var v=+(b.parentNode.querySelector('input').value||75); o.age=Math.max(62,Math.min(100,v)); } a.push(o); saveMets(a); paintSheet(); }); });
+    $read.querySelectorAll('[data-delm]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); saveMets(myMets().filter(function(x){ return x.id!==b.dataset.delm; })); paintSheet(); }); });
+    if(menu) menu.addEventListener('click', function(e){ e.stopPropagation(); });
+  }
   function paintSheet(){
     var m=metrics(); if(!m) return;
     var nm=W.solid?W.solid.name:autoName();
-    function row(lab, a, b, d, cls){ return '<tr><td class="lab">'+lab+'</td><td class="r">'+a+'</td><td class="r what">'+b+'</td><td class="d '+(cls||'')+'">'+(d||'')+'</td></tr>'; }
     var dc=m.what.conf-m.plan.conf, de=m.what.end-m.plan.end, df=m.what.funded-m.plan.funded;
-    $tbl.innerHTML='<thead><tr><th></th><th class="r plan"><i></i>Your plan</th><th class="r what"><i></i>'+esc(nm)+'</th><th class="r">Change</th></tr></thead><tbody>'+
-      row('Funded to', 'age '+m.plan.funded, 'age '+m.what.funded, df?((df>0?'+':'')+df+' yrs'):'same', df>0?'pos':df<0?'neg':'')+
-      row('Confidence', m.plan.conf+'%', m.what.conf+'%', dc?((dc>0?'+':'')+dc+' pts'):'same', dc>0?'pos':dc<0?'neg':'')+
-      row('Ending balance', big(m.plan.end), big(m.what.end), Math.abs(de)>=1000?((de>0?'+':'−')+big(Math.abs(de))):'same', de>=1000?'pos':de<=-1000?'neg':'')+
-      row('Retire', 'at '+m.plan.ret, 'at '+m.what.ret, m.what.ret!==m.plan.ret?((m.what.ret-m.plan.ret>0?'+':'')+(m.what.ret-m.plan.ret)+' yrs'):'same')+
-      row('Social Security', 'at '+m.plan.ss, 'at '+m.what.ss, m.what.ss!==m.plan.ss?((m.what.ss-m.plan.ss>0?'+':'')+(m.what.ss-m.plan.ss)+' yrs'):'same')+
-      row('Monthly spending', '$'+m.plan.spend.toLocaleString('en-US'), '$'+m.what.spend.toLocaleString('en-US'), m.what.spend!==m.plan.spend?((m.what.spend-m.plan.spend>0?'+':'−')+'$'+Math.abs(m.what.spend-m.plan.spend).toLocaleString('en-US')):'same')+
-      '</tbody>';
-    $read.innerHTML='<div class="t">In plain words</div>'+lines(m).map(function(l){ return '<p>'+l+'</p>'; }).join('')+
-      '<p class="tip">'+(W.solid?'This scenario is kept. Make it your plan and every page follows.':'Nothing here is saved. Keep it to compare later, or discard it and your plan is untouched.')+'</p>';
+    function tile(lab, a, b, d, good){ var cls=d===0?'':(good?'pos':'neg'); return '<div class="qc-t"><div class="k">'+lab+'</div><div class="v">'+b+'</div><div class="f"><span>was '+a+'</span>'+(d===0?'<em>same</em>':'<em class="'+cls+'">'+d+'</em>')+'</div></div>'; }
+    var tiles=tile('Confidence', m.plan.conf+'%', m.what.conf+'%', dc?((dc>0?'+':'−')+Math.abs(dc)+' pts'):0, dc>0)+
+              tile('Money lasts to', 'age '+m.plan.funded, 'age '+m.what.funded, df?((df>0?'+':'−')+Math.abs(df)+' yrs'):0, df>0)+
+              tile('Left at 92', big(m.plan.end), big(m.what.end), Math.abs(de)>=1000?((de>0?'+':'−')+big(Math.abs(de))):0, de>0);
+    var EX=extra(m); var xdel=function(id){ return '<button type="button" class="qc-del" data-delm="'+id+'" aria-label="Remove metric">\u00d7</button>'; };
+    EX.forEach(function(x){ tiles+='<div class="qc-t qc-x">'+xdel(x.id)+'<div class="k">'+esc(x.lab)+'</div><div class="v">'+x.b+'</div><div class="f"><span>was '+x.a+'</span>'+(x.d===0?'<em>same</em>':'<em class="'+(x.good===null?'':(x.good?'pos':'neg'))+'">'+x.d+'</em>')+'</div></div>'; });
+    var ch=[]; Object.keys(W.changes).forEach(function(k){ var c=W.changes[k]; var lab={ret:'Retire',ss:'Social Security',spend:'Spending',life:'Lifestyle',ret_r:'Returns'}[k]||k; ch.push('<span><b>'+lab+'</b> '+esc(c.from)+' → '+esc(c.to)+'</span>'); });
+    Object.keys(W.moves).forEach(function(k){ ch.push('<span>'+esc(W.moves[k].label)+'</span>'); });
+    var verdict = (window.__scnStrip && window.__scnStrip.verdict) ? window.__scnStrip.verdict({conf:m.what.conf, end:m.what.end}, {conf:m.plan.conf, end:m.plan.end}) : '';
+    $tbl.innerHTML=''; $tbl.style.display='none';
+    var mode='a'; try{ mode=localStorage.getItem('boldin.qc.mode')||'a'; }catch(err){}
+    var tog='<div class="qc-mode" role="tablist"><button type="button" data-qm="a"'+(mode==='a'?' class="on"':'')+'>Tiles</button><button type="button" data-qm="b"'+(mode==='b'?' class="on"':'')+'>Before / after</button><button type="button" data-qm="c"'+(mode==='c'?' class="on"':'')+'>The gap</button></div>';
+    var bot='<div class="qc-bot"><div class="qc-ch">'+(ch.length?ch.join(''):'<span>No changes yet</span>')+'</div><button type="button" class="wi-full">Open full compare →</button></div>';
+    var body='';
+    if(mode==='b'){
+      var d=function(x, unit, good){ if(!x) return '<span class="qb-d">same</span>'; return '<span class="qb-d '+(good?'pos':'neg')+'">'+(x>0?'+':'−')+(unit==='$'?big(Math.abs(x)):Math.abs(x)+unit)+'</span>'; };
+      body='<div class="qb"><div class="qb-c plan"><div class="qb-h">Your plan</div><div class="qb-r"><span>Confidence</span><b>'+m.plan.conf+'%</b></div><div class="qb-r"><span>Money lasts to</span><b>age '+m.plan.funded+'</b></div><div class="qb-r"><span>Left at 92</span><b>'+big(m.plan.end)+'</b></div>'+EX.map(function(x){ return '<div class="qb-r"><span>'+esc(x.lab)+'</span><b>'+x.a+'</b></div>'; }).join('')+'</div>'+
+        '<div class="qb-mid"><div class="qb-arrow">→</div>'+d(dc,' pts',dc>0)+d(df,' yrs',df>0)+d(Math.abs(de)>=1000?de:0,'$',de>0)+EX.map(function(x){ return x.d===0?'<span class="qb-d">same</span>':'<span class="qb-d '+(x.good===null?'':(x.good?'pos':'neg'))+'">'+x.d+'</span>'; }).join('')+'</div>'+
+        '<div class="qb-c what"><div class="qb-h"><i></i>'+esc(nm)+'</div><div class="qb-r"><span>Confidence</span><b>'+m.what.conf+'%</b></div><div class="qb-r"><span>Money lasts to</span><b>age '+m.what.funded+'</b></div><div class="qb-r"><span>Left at 92</span><b>'+big(m.what.end)+'</b></div>'+EX.map(function(x){ return '<div class="qb-r"><span>'+esc(x.lab)+' '+xdel(x.id)+'</span><b>'+x.b+'</b></div>'; }).join('')+'</div></div>'+
+        '<p class="qc-v qb-v">'+verdict+'</p>';
+    } else if(mode==='c'){
+      body='<div class="qg-head"><p class="qc-v">'+verdict+'</p><div class="qg-key"><div><span>Confidence</span><b>'+m.plan.conf+'% → '+m.what.conf+'%</b></div><div><span>At 92</span><b class="'+(de<0?'neg':'pos')+'">'+(Math.abs(de)<1000?'same':(de>0?'+':'−')+big(Math.abs(de)))+'</b></div>'+EX.map(function(x){ return '<div><span>'+esc(x.lab)+' '+xdel(x.id)+'</span><b class="'+(x.good===null||x.d===0?'':(x.good?'pos':'neg'))+'">'+x.a+' \u2192 '+x.b+'</b></div>'; }).join('')+'</div></div>'+gapchart(m.plan.rows, m.what.rows, nm);
+    } else {
+      body='<div class="qc-top"><p class="qc-v">'+verdict+'</p></div><div class="qc-mid"><div class="qc-tiles">'+tiles+'</div>'+qchart(m.plan.rows, m.what.rows, nm)+'</div>';
+    }
+    $read.innerHTML=body+bot.replace('<div class="qc-ch">', addMenu()+'<div class="qc-ch">').replace('<button type="button" class="wi-full">', tog+'<button type="button" class="wi-full">');
+    wireMets();
+    $read.querySelectorAll('[data-qm]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); try{ localStorage.setItem('boldin.qc.mode', b.dataset.qm); }catch(err){} paintSheet(); }); });
+    var fb=$read.querySelector('.wi-full'); if(fb) fb.addEventListener('click', function(e){ e.stopPropagation(); var s2=st(); var obj=W.solid ? W.solid : { id:'__live', name:nm, vals:Object.assign({}, s2?s2.S:{}), moves:Object.assign({}, W.moves) }; W.cmp=false; paint(); if(window.SCENARIOS) window.SCENARIOS.open(); setTimeout(function(){ if(window.__scnVers && window.__scnVers.compare) window.__scnVers.compare([obj]); }, 60); });
+  }
+  function gapchart(a, b, nm){
+    if(!a||!a.length||!b||!b.length) return ''; var W2=1200,H2=230,L2=8,R2=W2-120,T2=14,B2=H2-26; var hi=0; a.concat(b).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); hi*=1.08; var y0=a[0].y, y1=a[a.length-1].y;
+    function X(y){ return L2+(R2-L2)*(y-y0)/(y1-y0); } function Y(v){ return T2+(B2-T2)*(1-Math.max(0,v)/hi); }
+    function pts(rs){ return rs.map(function(r){ return [X(r.y), Y(r.bal)]; }); }
+    var pa=pts(a), pb=pts(b); var la=a[a.length-1], lb=b[b.length-1]; var worse=lb.bal<la.bal; var col=worse?'#B42318':'#0E794E';
+    var gap='M'+pa.map(function(q){ return q[0].toFixed(1)+' '+q[1].toFixed(1); }).join(' L')+' L'+pb.slice().reverse().map(function(q){ return q[0].toFixed(1)+' '+q[1].toFixed(1); }).join(' L')+' Z';
+    var line=function(p){ return 'M'+p.map(function(q){ return q[0].toFixed(1)+' '+q[1].toFixed(1); }).join(' L'); };
+    var d=lb.bal-la.bal, xa=X(la.y), ya=Y(la.bal), yb=Y(lb.bal), my=(ya+yb)/2;
+    var g='<path d="'+gap+'" fill="'+col+'" fill-opacity=".14"/><path d="'+line(pa)+'" fill="none" stroke="#10182C" stroke-width="2" stroke-dasharray="5 4"/><path d="'+line(pb)+'" fill="none" stroke="#4A99C4" stroke-width="2.8"/>'+
+      '<line x1="'+(xa+10)+'" y1="'+ya.toFixed(1)+'" x2="'+(xa+10)+'" y2="'+yb.toFixed(1)+'" stroke="'+col+'" stroke-width="2"/><line x1="'+(xa+5)+'" y1="'+ya.toFixed(1)+'" x2="'+(xa+15)+'" y2="'+ya.toFixed(1)+'" stroke="'+col+'" stroke-width="2"/><line x1="'+(xa+5)+'" y1="'+yb.toFixed(1)+'" x2="'+(xa+15)+'" y2="'+yb.toFixed(1)+'" stroke="'+col+'" stroke-width="2"/>'+
+      '<text x="'+(xa+24)+'" y="'+(my+6).toFixed(1)+'" font-size="20" font-weight="600" fill="'+col+'">'+(Math.abs(d)<1000?'same':(d>0?'+':'−')+big(Math.abs(d)))+'</text><text x="'+(xa+24)+'" y="'+(my+26).toFixed(1)+'" font-size="13" fill="#6E7687">at 92</text>'+
+      '<text x="'+L2+'" y="'+(H2-4)+'" font-size="13" fill="#6E7687">'+y0+'</text><text x="'+R2+'" y="'+(H2-4)+'" font-size="13" fill="#6E7687" text-anchor="end">'+y1+'</text>';
+    return '<div class="qg"><svg viewBox="0 0 '+W2+' '+H2+'" aria-label="The gap between your plan and this scenario">'+g+'</svg><div class="wi-qcl"><span><i class="d"></i>Your plan</span><span><i></i>'+esc(nm)+'</span><span><i class="g" style="border-color:'+col+'"></i>The gap</span></div></div>';
+  }
+  function qchart(a, b, nm){
+    if(!a||!a.length) return ''; var W2=560,H2=170,P=4; var hi=0; a.concat(b||[]).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); hi=hi*1.08||1; var n=a.length, y0=a[0].y, y1=a[n-1].y;
+    function X(y){ return P+(W2-2*P)*(y-y0)/(y1-y0); } function Y(v){ return H2-18-(Math.max(0,v)/hi)*(H2-30); }
+    function path(rs){ return rs.map(function(r,i){ return (i?'L':'M')+X(r.y).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
+    var lb=b&&b.length?b[b.length-1]:null, la=a[n-1];
+    return '<div class="wi-qc"><svg viewBox="0 0 '+W2+' '+H2+'" aria-label="Savings over time, plan and scenario"><path d="'+path(a)+' L'+X(y1)+' '+(H2-18)+' L'+X(y0)+' '+(H2-18)+' Z" fill="#0E794E" fill-opacity=".06"/><path d="'+path(a)+'" fill="none" stroke="#10182C" stroke-width="1.8" stroke-dasharray="4 3"/>'+(b?'<path d="'+path(b)+'" fill="none" stroke="#4A99C4" stroke-width="2.4" stroke-linejoin="round"/><circle cx="'+X(lb.y).toFixed(1)+'" cy="'+Y(lb.bal).toFixed(1)+'" r="3.5" fill="#4A99C4"/>':'')+'<circle cx="'+X(la.y).toFixed(1)+'" cy="'+Y(la.bal).toFixed(1)+'" r="3" fill="#10182C"/><text x="'+P+'" y="'+(H2-3)+'" font-size="12" fill="#6E7687">'+y0+'</text><text x="'+(W2-P)+'" y="'+(H2-3)+'" font-size="12" fill="#6E7687" text-anchor="end">'+y1+'</text></svg><div class="wi-qcl"><span><i class="d"></i>Your plan</span><span><i></i>'+esc(nm.length>22?nm.slice(0,21)+'\u2026':nm)+'</span></div></div>';
   }
   function lines(m){
     var out=[]; var dc=m.what.conf-m.plan.conf, de=m.what.end-m.plan.end;
@@ -33696,7 +33842,7 @@ body.bai-open .so-result{ grid-template-columns:minmax(0,1fr); }
   function close(){ inOne=false; document.body.classList.remove('scn-open','scn-one'); if(window.__bai){ if(window.__bai.isOpen()) window.__bai.close(); if(window.__bai.resetChips) window.__bai.resetChips(); } }
   body.addEventListener('click', function(e){
     if(e.target.closest('.scn-back')){ close(); return; }
-    var sv=e.target.closest('.scn-strips .scv [data-act]'); if(sv){ e.preventDefault(); var WI2=window.WHATIF; var id=sv.closest('.scv').dataset.id, it=WI2.list().filter(function(x){ return x.id===id; })[0]; if(!it) return; if(sv.dataset.act==='remove'){ WI2.remove(id); showList(); } else if(sv.dataset.act==='plan'){ WI2.activate(it, true); setTimeout(function(){ WI2.makePlan(); showList(); }, 80); } return; }
+    var sv=e.target.closest('.scn-strips .scv [data-act]'); if(sv){ e.preventDefault(); var WI2=window.WHATIF; var id=sv.closest('.scv').dataset.id, it=WI2.list().filter(function(x){ return x.id===id; })[0]; if(!it) return; if(sv.dataset.act==='remove'){ WI2.remove(id); showList(); } else if(sv.dataset.act==='plan'){ WI2.activate(it); setTimeout(function(){ WI2.makePlan(); showList(); }, 80); } return; }
     var st=e.target.closest('.scn-start'); if(st){ var sdef=STARTERS[+st.dataset.i]; if(sdef.ai){ if(window.__bai){ if(!window.__bai.isOpen()) window.__bai.open(); var ta=document.querySelector('.bai-ask textarea, .bai-ask input'); if(ta){ ta.focus(); } } return; } var b=window.WHATIF&&WHATIF.base(); if(!b) return; start(sdef.set(b)); return; }
     var row=e.target.closest('.scn-row'); if(!row) return; var id=row.dataset.id; var it=WHATIF.list().filter(function(x){ return x.id===id; })[0]; if(!it) return;
     if(e.target.closest('.pick')){ var n=Object.keys(picked).filter(function(k){ return picked[k]; }).length; if(!picked[id] && n>=3) return; picked[id]=!picked[id]; render(); return; }
@@ -37916,8 +38062,8 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
   function fmtDelta(kind, d){ if(kind==='end') return Math.abs(d)<1000?'same':((d>0?'+':'\u2212')+money(Math.abs(d))); return d===0?'same':((d>0?'+':'')+d+(kind==='conf'?' pts':' yrs')); }
   function shortDiff(it){ var B=base(); if(!B) return ''; var v=it.vals||{}, o=[]; if(v.ret!==undefined&&v.ret!==B.ret) o.push('Retire '+v.ret); if(v.ss!==undefined&&v.ss!==B.ss) o.push('Social Security '+v.ss); if(v.spend!==undefined&&v.spend!==B.spend) o.push('Spend '+usd(v.spend)); if(v.life!==undefined&&v.life!==B.life) o.push(LIFE[v.life]); if(v.ret_r!==undefined&&v.ret_r!==B.ret_r) o.push(RR[v.ret_r]+' returns'); Object.keys(it.moves||{}).forEach(function(k){ if(it.moves[k]&&it.moves[k].label) o.push(it.moves[k].label); }); return o.join(' \u00b7 '); }
   function verdict(m, p){ if(!p) return ''; var dc=m.conf-p.conf, de=m.end-p.end, big=Math.abs(de)>=1000;
-    if(dc>0) return dc+' points more confidence'+(big?(de>0?' and '+money(de)+' more at 92.':', '+money(-de)+' less at 92.'):'.')+' If that is the life you want, make it your plan.';
-    if(dc<0) return (-dc)+' points less confidence'+(big?(de>0?', '+money(de)+' more at 92.':' and '+money(-de)+' less at 92.'):'.')+' The plan you have is the safer one.';
+    if(dc>0) return dc+(dc===1?' point':' points')+' more confidence'+(big?(de>0?' and '+money(de)+' more at 92.':', '+money(-de)+' less at 92.'):'.')+' If that is the life you want, make it your plan.';
+    if(dc<0) return (-dc)+(dc===-1?' point':' points')+' less confidence'+(big?(de>0?', '+money(de)+' more at 92.':' and '+money(-de)+' less at 92.'):'.')+' The plan you have is the safer one.';
     if(big) return 'Same confidence, '+money(Math.abs(de))+(de<0?' less at 92. Your plan is the better deal.':' more at 92. Same safety, more left over.');
     return 'Nothing moves. Choose the life, not the number.'; }
   function strip(it, m, p, opts){ opts=opts||{}; var dc=p?m.conf-p.conf:0, de=p?m.end-p.end:0, df=p?m.funded-p.funded:0; var col=opts.color||'#4A99C4';
@@ -37940,7 +38086,7 @@ body[data-view="today"] .rail.mr-story-on > :not(.mr-story):not(.bai):not(.scn-p
       var sv=a.closest('.scv'); var it=sv && item(sv.dataset.id); if(!it) return;
       if(a.classList.contains('scv-x')) { show(active.filter(function(x){ return x!==it.id; })); return; }
       var act=a.dataset.act;
-      if(act==='plan'){ if(window.WHATIF.activate) window.WHATIF.activate(it, true); setTimeout(function(){ if(window.WHATIF.makePlan) window.WHATIF.makePlan(); if(window.__peToast) window.__peToast(it.letter+' is now your plan'); show([]); }, 80); }
+      if(act==='plan'){ if(window.WHATIF.activate) window.WHATIF.activate(it); setTimeout(function(){ if(window.WHATIF.makePlan) window.WHATIF.makePlan(); if(window.__peToast) window.__peToast(it.letter+' is now your plan'); show([]); }, 80); }
       else if(act==='compare'){ if(window.__sum2 && window.__sum2.close) window.__sum2.close(); setTimeout(function(){ if(window.SCENARIOS) window.SCENARIOS.open(); }, 350); }
       else if(act==='remove'){ window.WHATIF.remove(it.id); show(active.filter(function(x){ return x!==it.id; })); }
     });
@@ -38062,6 +38208,10 @@ body[data-view="today"] #v-budget > .grid2, body[data-view="today"] #v-budget > 
 /* the Sankey power mode, from My Money: this year only */
 body[data-view="today"].pm-open #powerMode .pm-year, body[data-view="today"].pm-open #powerMode [data-pm-view="time"]{ display:none !important; }
 body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view="today"].pm-open #powerMode .pm-tbl td:last-child{ display:none; }
+/* rates of return are a planning assumption: they live in My Plans, not in the account editor on My Money */
+body[data-view="today"] .pm-choice[data-pm="rate"], body[data-view="today"] .pm-rates, body[data-view="today"] .pm-sd,
+body[data-view="today"] .pm-how, body[data-view="today"] .pm-over, body[data-view="today"] .pm-stage, body[data-view="today"] .pm-stage-rate,
+body[data-view="today"] .fb-three-up, body[data-view="today"] .fb-sd, body[data-view="today"] .fb-how, body[data-view="today"] .fb-anch{ display:none !important; }
 </style>
 <script>
 (function(){
@@ -38254,13 +38404,149 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
 </script>
 <!-- ===== Scenarios: two simpler takes, behind a tiny toggle ===== -->
 <style id="scnVersCSS">
-#scnPage .sv-toggle{ position:fixed; bottom:20px; left:24px; z-index:60; border:1px solid var(--hairline-strong); background:#fff; display:inline-flex; gap:2px; padding:3px; background:#F2F3F5; border-radius:999px; }
-#scnPage .sv-toggle button{ border:0; background:none; font:inherit; font-size:12px; font-weight:600; color:var(--text-secondary); padding:4px 10px; border-radius:999px; cursor:pointer; }
-#scnPage .sv-toggle button.on{ background:#1F2A44; color:#fff; }
-body.scn-one #scnPage .sv-toggle{ display:none; }
+.sv-toggle{ display:none !important; }
+body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
+.sv-toggle{ position:fixed; bottom:20px; left:24px; z-index:95; border:1px solid var(--hairline-strong); background:#fff; display:inline-flex; gap:2px; padding:3px; background:#F2F3F5; border-radius:999px; }
+.sv-toggle button{ border:0; background:none; font:inherit; font-size:12px; font-weight:600; color:var(--text-secondary); padding:4px 10px; border-radius:999px; cursor:pointer; }
+.sv-toggle button.on{ background:#1F2A44; color:#fff; }
+
 #scnPage .scn-alt{ grid-column:1; min-width:0; display:none; padding:56px 0 120px; }
-#scnPage.sv-2 .scn-body, #scnPage.sv-3 .scn-body{ display:none; }
-#scnPage.sv-2 .scn-alt, #scnPage.sv-3 .scn-alt{ display:block; }
+#scnPage.sv-c .scn-body, #scnPage.sv-3 .scn-body, #scnPage.sv-4 .scn-body, #scnPage.sv-5 .scn-body, #scnPage.sv-6 .scn-body, #scnPage.sv-7 .scn-body{ display:none; }
+#scnPage.sv-c .scn-alt, #scnPage.sv-3 .scn-alt, #scnPage.sv-4 .scn-alt, #scnPage.sv-5 .scn-alt, #scnPage.sv-6 .scn-alt, #scnPage.sv-7 .scn-alt{ display:block; }
+/* ---- version 6: type it ---- */
+.sv6-box{ display:flex; align-items:center; gap:12px; max-width:820px; border:1.5px solid var(--hairline-strong); border-radius:18px; padding:6px 8px 6px 20px; background:#fff; transition:border-color .15s ease; }
+.sv6-box:focus-within{ border-color:var(--green-cta); }
+.sv6-box input{ flex:1; border:0; outline:none; font:inherit; font-size:22px; padding:14px 0; color:var(--ink); background:none; min-width:0; }
+.sv6-box button{ font:inherit; font-size:15px; font-weight:600; border:0; border-radius:12px; padding:12px 18px; background:var(--green-cta); color:#fff; cursor:pointer; }
+.sv6-box button[disabled]{ opacity:.35; cursor:default; }
+.sv6-eg{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 0; max-width:820px; }
+.sv6-eg button{ font:inherit; font-size:13.5px; color:var(--text-secondary); background:#F6F7F8; border:0; border-radius:999px; padding:7px 12px; cursor:pointer; }
+.sv6-eg button:hover{ color:var(--ink); }
+.sv6-out{ max-width:820px; margin-top:26px; min-height:120px; }
+.sv6-heard{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 14px; }
+.sv6-heard span{ font-size:13px; font-weight:600; color:var(--green-cta); background:#EEF6F1; border-radius:999px; padding:5px 11px; }
+.sv6-res{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.sv6-res > div{ border:1px solid var(--hairline); border-radius:16px; padding:16px 18px; }
+.sv6-res .k{ font-size:13px; color:var(--text-secondary); }
+.sv6-res .v{ font-size:32px; font-weight:600; letter-spacing:-0.6px; margin-top:2px; }
+.sv6-res .d{ font-size:13px; font-weight:600; color:var(--text-secondary); }
+.sv6-res .d.pos{ color:var(--green-cta); } .sv6-res .d.neg{ color:#B42318; }
+.sv6-none{ font-size:15px; color:var(--text-secondary); }
+/* ---- version 7: nudge ---- */
+.sv7{ max-width:820px; }
+.sv7-big{ display:flex; align-items:baseline; gap:18px; margin:4px 0 30px; }
+.sv7-big .n{ font-size:96px; font-weight:600; letter-spacing:-3px; line-height:1; color:var(--ink); transition:color .2s ease; }
+.sv7-big .n.up{ color:var(--green-cta); } .sv7-big .n.dn{ color:#B42318; }
+.sv7-big .s{ font-size:17px; color:var(--text-secondary); line-height:1.5; }
+.sv7-big .s b{ color:var(--ink); font-weight:600; }
+.sv7-row{ display:flex; align-items:center; justify-content:space-between; padding:16px 0; border-top:1px solid var(--hairline); }
+.sv7-row:last-of-type{ border-bottom:1px solid var(--hairline); }
+.sv7-row .l{ font-size:17px; color:var(--ink); }
+.sv7-row .l small{ display:block; font-size:13px; color:var(--text-secondary); margin-top:2px; }
+.sv7-step{ display:flex; align-items:center; gap:14px; }
+.sv7-step button{ width:44px; height:44px; border-radius:50%; border:1px solid var(--hairline-strong); background:#fff; font-size:22px; line-height:1; color:var(--ink); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.sv7-step button:hover{ border-color:var(--ink); }
+.sv7-step .v{ min-width:110px; text-align:center; font-size:24px; font-weight:600; letter-spacing:-0.3px; }
+.sv7-step .v.ch{ color:var(--green-cta); }
+.sv7-acts{ display:flex; gap:12px; margin-top:24px; }
+.sv7-acts button{ font:inherit; font-size:15px; font-weight:600; border-radius:999px; padding:12px 20px; cursor:pointer; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+.sv7-acts button.go{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+.sv7-acts button[disabled]{ opacity:.4; cursor:default; }
+/* ---- full compare ---- */
+.svc-add{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:-6px 0 22px; padding:12px 14px; border:1px solid var(--hairline-strong); border-radius:16px; background:#FAFBFC; }
+.svc-add .l{ font-size:14px; font-weight:600; color:var(--ink); margin-right:6px; display:inline-flex; align-items:center; gap:8px; }
+.svc-add .l svg{ width:16px; height:16px; color:var(--green-cta); }
+.svc-add button{ display:inline-flex; align-items:center; gap:8px; font:inherit; font-size:14px; font-weight:600; color:var(--ink); background:#fff; border:1.5px solid var(--hairline-strong); border-radius:999px; padding:7px 14px 7px 10px; cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+.svc-add button:hover{ border-color:var(--c); }
+.svc-add button .cb{ width:18px; height:18px; border-radius:50%; border:1.5px solid var(--c); display:inline-flex; align-items:center; justify-content:center; flex:none; }
+.svc-add button .cb svg{ width:11px; height:11px; color:#fff; opacity:0; }
+.svc-add button.on{ border-color:var(--c); background:color-mix(in srgb, var(--c) 10%, #fff); }
+.svc-add button.on .cb{ background:var(--c); }
+.svc-add button.on .cb svg{ opacity:1; }
+.svc-add .n{ margin-left:auto; font-size:13px; color:var(--text-secondary); }
+.svc-sel{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:-6px 0 22px; }
+.svc-slot{ display:inline-flex; align-items:center; gap:8px; max-width:260px; font-size:14px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-left:4px solid var(--c, #10182C); border-radius:10px; padding:8px 8px 8px 12px; }
+.svc-slot.plan{ border-left-color:#10182C; background:#FAFBFA; padding-right:12px; }
+.svc-slot i{ display:none; }
+.svc-slot span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.svc-slot small{ font-size:12px; font-weight:500; color:var(--text-secondary); }
+.svc-x{ border:0; background:none; color:var(--text-secondary); font-size:16px; line-height:1; padding:2px 5px; border-radius:6px; cursor:pointer; }
+.svc-x:hover{ color:var(--ink); background:#F2F3F5; }
+.svc-vs{ font-size:13px; color:var(--text-secondary); margin:0 2px; }
+.svc-more{ position:relative; }
+.svc-addb{ font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); background:none; border:1.5px dashed #9FD2B9; border-radius:10px; padding:8px 14px; cursor:pointer; }
+.svc-addb:hover{ border-color:var(--green-cta); background:#F5FBF8; }
+.svc-menu{ position:absolute; top:calc(100% + 6px); left:0; z-index:9; background:#fff; border:1px solid var(--hairline-strong); border-radius:12px; padding:6px; min-width:300px; }
+.svc-menu[hidden]{ display:none; }
+.svc-menu button{ display:grid; grid-template-columns:10px 1fr; column-gap:10px; align-items:center; width:100%; text-align:left; font:inherit; background:none; border:0; border-radius:8px; padding:9px 10px; cursor:pointer; }
+.svc-menu button:hover{ background:#F6F7F8; }
+.svc-menu button i{ width:10px; height:10px; border-radius:50%; grid-row:span 2; }
+.svc-menu button span{ font-size:14px; font-weight:600; color:var(--ink); }
+.svc-menu button small{ font-size:12.5px; color:var(--text-secondary); }
+.svc-chart{ border:1px solid var(--hairline); border-radius:18px; padding:18px 20px 12px; }
+.svc-chart svg{ width:100%; height:auto; display:block; }
+.svc-chart svg text{ font-family:var(--font); font-size:14px; fill:#6E7687; }
+.svc-leg{ display:flex; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-secondary); margin:8px 0 2px; }
+.svc-leg i{ display:inline-block; width:16px; height:0; border-top:2.6px solid var(--c); margin-right:6px; vertical-align:3px; }
+.svc-tbl{ width:100%; border-collapse:collapse; margin-top:26px; font-size:14.5px; }
+.svc-tbl th{ text-align:right; font-size:13px; font-weight:600; padding:0 12px 10px; color:var(--ink); vertical-align:bottom; }
+.svc-tbl th:first-child, .svc-tbl td:first-child{ text-align:left; padding-left:0; color:var(--text-secondary); font-weight:400; }
+.svc-tbl th i{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
+.svc-tbl td{ text-align:right; padding:11px 12px; border-top:1px solid var(--hairline); white-space:nowrap; }
+.svc-tbl td b{ font-weight:600; }
+.svc-tbl td small{ display:block; font-size:12px; font-weight:600; color:var(--text-secondary); }
+.svc-tbl td small.pos{ color:var(--green-cta); } .svc-tbl td small.neg{ color:#B42318; }
+.svc-tbl tr.sep td{ border-top:1px solid var(--hairline-strong); }
+.svc-cards{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:28px; }
+.svc-card{ border:1px solid var(--hairline); border-radius:16px; padding:16px 18px; }
+.svc-card .h{ display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; }
+.svc-card .h i{ width:9px; height:9px; border-radius:50%; }
+.svc-card .ch{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
+.svc-card .ch span{ font-size:12.5px; background:#F4F5F6; border-radius:999px; padding:4px 10px; }
+.svc-card p{ margin:0 0 12px; font-size:14.5px; line-height:1.5; }
+.svc-card .a{ display:flex; gap:14px; }
+.svc-card .a a{ font-size:13.5px; font-weight:600; color:var(--green-cta); cursor:pointer; }
+.svc-card .a a.mute{ color:var(--text-secondary); }
+/* ---- version 4: branches ---- */
+.sv4-wrap{ position:relative; margin-top:6px; }
+.sv4-wrap svg{ width:100%; height:auto; display:block; overflow:visible; }
+.sv4-wrap svg text{ font-family:var(--font); }
+.sv4-trunk-hit{ cursor:crosshair; }
+.sv4-node{ cursor:pointer; }
+.sv4-hint{ font-size:13.5px; color:var(--text-secondary); margin:8px 0 0; }
+.sv4-pop{ position:absolute; background:#fff; border:1px solid var(--hairline-strong); border-radius:12px; padding:6px; min-width:210px; z-index:6; }
+.sv4-pop .h{ font-size:12px; font-weight:600; color:var(--text-secondary); padding:6px 10px 4px; }
+.sv4-pop button{ display:block; width:100%; text-align:left; font:inherit; font-size:14px; color:var(--ink); background:none; border:0; border-radius:8px; padding:8px 10px; cursor:pointer; }
+.sv4-pop button:hover{ background:#F6F7F8; }
+.sv4-pop button.go{ color:var(--green-cta); font-weight:600; }
+.sv4-pop button.mute{ color:var(--text-secondary); }
+.sv4-pop .d{ font-size:13px; color:var(--text-secondary); padding:2px 10px 8px; line-height:1.45; }
+/* ---- version 5: this or that ---- */
+.sv5-duel{ display:grid; grid-template-columns:1fr 56px 1fr; align-items:stretch; margin-top:8px; }
+.sv5-card{ border:1px solid var(--hairline); border-radius:22px; padding:26px 26px 22px; display:flex; flex-direction:column; min-height:340px; transition:transform .25s cubic-bezier(.2,.8,.2,1), opacity .25s ease; }
+.sv5-card.mine{ background:#FAFBFA; }
+.sv5-card.in{ animation:sv5In .35s cubic-bezier(.2,.8,.2,1); }
+@keyframes sv5In{ from{ opacity:0; transform:translateX(24px); } to{ opacity:1; transform:none; } }
+.sv5-tag{ font-size:12px; font-weight:600; letter-spacing:.3px; color:var(--text-secondary); }
+.sv5-card h3{ font-size:24px; font-weight:600; letter-spacing:-0.3px; margin:6px 0 14px; line-height:1.2; }
+.sv5-life{ font-size:16px; line-height:1.65; color:var(--ink); margin:0; flex:1; }
+.sv5-life b{ font-weight:600; }
+.sv5-nums{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:18px 0 18px; padding-top:16px; border-top:1px solid var(--hairline); }
+.sv5-nums .k{ font-size:12.5px; color:var(--text-secondary); }
+.sv5-nums .v{ font-size:30px; font-weight:600; letter-spacing:-0.6px; }
+.sv5-nums .v small{ font-size:13px; font-weight:600; margin-left:6px; letter-spacing:0; }
+.sv5-nums .v small.pos{ color:var(--green-cta); } .sv5-nums .v small.neg{ color:#B42318; }
+.sv5-card button{ font:inherit; font-size:15px; font-weight:600; border-radius:999px; padding:12px 18px; cursor:pointer; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+.sv5-card button.go{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+.sv5-or{ display:flex; align-items:center; justify-content:center; }
+.sv5-or span{ width:40px; height:40px; border-radius:50%; background:#fff; border:1px solid var(--hairline-strong); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:var(--text-secondary); }
+.sv5-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:20px; }
+.sv5-dots{ display:flex; gap:6px; }
+.sv5-dots i{ width:7px; height:7px; border-radius:50%; background:#D9DDE3; cursor:pointer; }
+.sv5-dots i.on{ background:var(--ink); }
+.sv5-next{ font:inherit; font-size:14.5px; font-weight:600; color:var(--green-cta); background:none; border:0; cursor:pointer; padding:6px 0; }
+.sv5-verdict{ font-size:15px; color:var(--text-secondary); margin:0 0 22px; }
+.sv5-verdict b{ color:var(--ink); font-weight:600; }
 #scnPage .scn-alt h1{ font-size:34px; font-weight:400; letter-spacing:-0.3px; line-height:1.15; margin:0 0 6px; color:var(--ink); }
 #scnPage .scn-alt .sv-sub{ font-size:16px; color:var(--text-secondary); margin:0 0 28px; }
 #scnPage .scn-alt .sv-back{ display:inline-flex; align-items:center; gap:6px; border:0; background:none; font:inherit; font-size:14px; font-weight:600; color:var(--text-secondary); padding:0; margin:0 0 18px; cursor:pointer; }
@@ -38337,16 +38623,16 @@ body.scn-one #scnPage .sv-toggle{ display:none; }
   var page=null, alt=null, tog=null;
   function ensure(){
     page=document.getElementById('scnPage'); if(!page) return false;
-    if(!tog){ tog=document.createElement('div'); tog.className='sv-toggle'; tog.setAttribute('role','tablist'); tog.innerHTML='<button type="button" data-v="1">Classic</button><button type="button" data-v="2">Side by side</button><button type="button" data-v="3">One question</button>'; page.appendChild(tog);
-      tog.addEventListener('click', function(e){ var b=e.target.closest('button[data-v]'); if(!b) return; setV(b.dataset.v); paint(); page.scrollTop=0; }); }
+    if(!tog){ tog=document.createElement('div'); tog.className='sv-toggle'; tog.setAttribute('role','tablist'); document.body.appendChild(tog); tog.innerHTML='<button type="button" data-v="1">Classic</button><button type="button" data-v="3">One question</button><button type="button" data-v="6">Type it</button><button type="button" data-v="7">Nudge</button><button type="button" data-v="4">Branches</button><button type="button" data-v="5">This or that</button>';
+      tog.addEventListener('click', function(e){ var b=e.target.closest('button[data-v]'); if(!b) return; CMP=null; setV(b.dataset.v); paint(); page.scrollTop=0; }); }
     if(!alt){ var frame=page.querySelector('.scn-frame'); if(!frame) return false; alt=document.createElement('div'); alt.className='scn-alt'; frame.insertBefore(alt, frame.firstChild); alt.addEventListener('click', onClick); alt.addEventListener('change', onChange); }
     return true;
   }
   function paint(){
     if(!ensure()) return; var v=get();
-    page.classList.toggle('sv-2', v==='2'); page.classList.toggle('sv-3', v==='3');
+    if(v==='2'){ v='1'; setV('1'); } if(CMP){ ['3','4','5','6','7'].forEach(function(k){ page.classList.remove('sv-'+k); }); page.classList.add('sv-c'); tog.querySelectorAll('button').forEach(function(b){ b.classList.remove('on'); }); vC(); return; } page.classList.remove('sv-c'); ['3','4','5','6','7'].forEach(function(k){ page.classList.toggle('sv-'+k, v===k); });
     tog.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); });
-    if(v==='2') v2(); else if(v==='3') v3();
+    if(v==='6') v6(); else if(v==='7') v7(); else if(v==='3') v3(); else if(v==='4') v4(); else if(v==='5') v5();
   }
 
   /* ---------------- version 2: side by side ---------------- */
@@ -38399,6 +38685,204 @@ body.scn-one #scnPage .sv-toggle{ display:none; }
   }
   function onChange(e){ var s=e.target.closest('select[data-k]'); if(!s||!Q) return; Q[s.dataset.k]=+s.value; v3(); var again=alt.querySelector('select[data-k="'+s.dataset.k+'"]'); if(again) again.focus(); }
 
+  /* ---------------- full compare ---------------- */
+  var CMP=null;
+  function colOf(o){ return o.id==='__live' ? '#4A99C4' : colorOf(o.id); }
+  function vC(){
+    var w=WI(); if(!w||!w.planMetrics) return; var p=w.planMetrics(); if(!p) return; var B=w.base();
+    var list=CMP.map(function(o){ var m=w.metricsFor(Object.assign({ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, o.vals), o.moves); return m?{o:o, m:m, col:colOf(o)}:null; }).filter(Boolean);
+    var title= list.length===1 ? 'Your plan vs. '+esc(list[0].o.name) : 'Your plan vs. '+list.length+' scenarios';
+    var others=w.list().filter(function(it){ return !CMP.some(function(o){ return o.id===it.id; }); });
+    var h='<button type="button" class="sv-back" data-act="back">← My Plans</button><h1>'+title+'</h1><p class="sv-sub">Every number side by side, on the same assumptions. Nothing changes until you choose.</p>';
+    h+='<div class="svc-sel"><div class="svc-slot plan"><i style="background:#10182C"></i><span>My Financial Plan</span><small>baseline</small></div><span class="svc-vs">vs</span>'+CMP.map(function(o){ var c=colOf(o); return '<div class="svc-slot" style="--c:'+c+'"><i style="background:'+c+'"></i><span title="'+esc(o.name)+'">'+esc(o.name)+'</span>'+(CMP.length>1?'<button type="button" class="svc-x" data-cmpx="'+o.id+'" aria-label="Remove from compare">×</button>':'')+'</div>'; }).join('')+(others.length?'<div class="svc-more"><button type="button" class="svc-addb" aria-haspopup="true">+ Add to compare</button><div class="svc-menu" hidden>'+others.map(function(it){ return '<button type="button" data-cmpt="'+it.id+'"><i style="background:'+colorOf(it.id)+'"></i><span>'+esc(it.name)+'</span><small>'+esc(changes(it).slice(0,2).join(' · '))+'</small></button>'; }).join('')+'</div></div>':'')+'</div>';
+    /* chart */
+    var W=1000,H=340,L=64,R=W-16,T=16,Bm=H-30; var rows=p.rows||[]; var y0=rows[0].y, y1=rows[rows.length-1].y; var hi=0; rows.forEach(function(r){ hi=Math.max(hi,r.bal); }); list.forEach(function(x){ (x.m.rows||[]).forEach(function(r){ hi=Math.max(hi,r.bal); }); }); hi=Math.ceil(hi*1.08/500000)*500000||1;
+    var X=function(y){ return L+(R-L)*(y-y0)/(y1-y0); }, Y=function(v){ return T+(Bm-T)*(1-Math.max(0,v)/hi); };
+    var g=''; for(var t=0;t<=4;t++){ var v=hi*t/4; g+='<line x1="'+L+'" y1="'+Y(v).toFixed(1)+'" x2="'+R+'" y2="'+Y(v).toFixed(1)+'" stroke="#E9EBEE" stroke-dasharray="2 3"/><text x="'+(L-10)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+(v?money(v):'$0')+'</text>'; }
+    for(var yy=y0; yy<=y1; yy+=5) g+='<text x="'+X(yy).toFixed(1)+'" y="'+(Bm+20)+'" text-anchor="middle">'+yy+'</text>';
+    function path(rs){ return rs.map(function(r,i){ return (i?'L':'M')+X(r.y).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
+    g+='<path d="'+path(rows)+' L'+X(y1)+' '+Bm+' L'+X(y0)+' '+Bm+' Z" fill="#0E794E" fill-opacity=".06"/><path d="'+path(rows)+'" fill="none" stroke="#10182C" stroke-width="2.6" stroke-linejoin="round"/>';
+    list.forEach(function(x){ if(!x.m.rows) return; var last=x.m.rows[x.m.rows.length-1]; g+='<path d="'+path(x.m.rows)+'" fill="none" stroke="'+x.col+'" stroke-width="2.6" stroke-linejoin="round"/><circle cx="'+X(last.y).toFixed(1)+'" cy="'+Y(last.bal).toFixed(1)+'" r="4.5" fill="'+x.col+'" stroke="#fff" stroke-width="2"/>'; });
+    var lp=rows[rows.length-1]; g+='<circle cx="'+X(lp.y).toFixed(1)+'" cy="'+Y(lp.bal).toFixed(1)+'" r="4.5" fill="#10182C" stroke="#fff" stroke-width="2"/>';
+    h+='<div class="svc-chart"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Savings over time">'+g+'</svg><div class="svc-leg"><span><i style="--c:#10182C"></i>My Financial Plan</span>'+list.map(function(x){ return '<span><i style="--c:'+x.col+'"></i>'+esc(x.o.name)+'</span>'; }).join('')+'</div></div>';
+    /* table */
+    function balAt(rs, age){ var y=2026+(age-61); var r=(rs||[]).filter(function(q){ return q.y===y; })[0]; return r?r.bal:null; }
+    function cell(v, base, kind){ var d=v-base; var dd= kind==='$' ? (Math.abs(d)<1000?'':'<small class="'+(d>0?'pos':'neg')+'">'+(d>0?'+':'−')+money(d)+'</small>') : (d?'<small class="'+(kind==='inv'?(d<0?'pos':'neg'):(d>0?'pos':'neg'))+'">'+(d>0?'+':'−')+Math.abs(d)+(kind==='pts'?' pts':kind==='yrs'||kind==='inv'?' yrs':'')+'</small>':''); return dd; }
+    var rowsT=[
+      ['Confidence', function(m){ return m.conf+'%'; }, function(m){ return cell(m.conf,p.conf,'pts'); }],
+      ['Funded to', function(m){ return 'age '+m.funded; }, function(m){ return cell(m.funded,p.funded,'yrs'); }],
+      ['Left at 92', function(m){ return money(m.end); }, function(m){ return cell(m.end,p.end,'$'); }],
+      ['sep'],
+      ['Savings at 70', function(m,rs){ var v=balAt(rs,70); return v==null?'—':money(v); }, function(m,rs){ var a=balAt(rs,70), b=balAt(p.rows,70); return a==null||b==null?'':cell(a,b,'$'); }],
+      ['Savings at 80', function(m,rs){ var v=balAt(rs,80); return v==null?'—':money(v); }, function(m,rs){ var a=balAt(rs,80), b=balAt(p.rows,80); return a==null||b==null?'':cell(a,b,'$'); }],
+      ['Savings at 90', function(m,rs){ var v=balAt(rs,90); return v==null?'—':money(v); }, function(m,rs){ var a=balAt(rs,90), b=balAt(p.rows,90); return a==null||b==null?'':cell(a,b,'$'); }],
+      ['sep'],
+      ['Retire at', function(m,rs,v){ return v.ret; }, function(m,rs,v){ return cell(v.ret,B.ret,'inv'); }],
+      ['Social Security at', function(m,rs,v){ return v.ss; }, function(){ return ''; }],
+      ['Monthly spending', function(m,rs,v){ return usd(v.spend); }, function(m,rs,v){ return v.spend===B.spend?'':'<small>'+(v.spend>B.spend?'+':'−')+usd(Math.abs(v.spend-B.spend))+'</small>'; }]
+    ];
+    var pv={ ret:B.ret, ss:B.ss, spend:B.spend };
+    h+='<table class="svc-tbl"><thead><tr><th></th><th><i style="background:#10182C"></i>My Financial Plan</th>'+list.map(function(x){ return '<th><i style="background:'+x.col+'"></i>'+esc(x.o.name)+'</th>'; }).join('')+'</tr></thead><tbody>';
+    var sep=false; rowsT.forEach(function(r){ if(r[0]==='sep'){ sep=true; return; } var vv=function(o){ return Object.assign({}, pv, o.vals||{}); };
+      h+='<tr'+(sep?' class="sep"':'')+'><td>'+r[0]+'</td><td><b>'+r[1](p,p.rows,pv)+'</b></td>'+list.map(function(x){ return '<td><b>'+r[1](x.m,x.m.rows,vv(x.o))+'</b>'+r[2](x.m,x.m.rows,vv(x.o))+'</td>'; }).join('')+'</tr>'; sep=false; });
+    h+='</tbody></table>';
+    /* what each one means */
+    h+='<div class="svc-cards">'+list.map(function(x){ var ch=changes(x.o.id==='__live'?{vals:x.o.vals, moves:x.o.moves}:x.o); var verdict=window.__scnStrip?window.__scnStrip.verdict(x.m,p):''; return '<div class="svc-card" data-cid="'+x.o.id+'"><div class="h"><i style="background:'+x.col+'"></i>'+esc(x.o.name)+'</div><div class="ch">'+ch.map(function(c){ return '<span>'+esc(c)+'</span>'; }).join('')+'</div><p>'+verdict+'</p><div class="a">'+(x.o.id==='__live'?'<a data-cact="keep">Keep it</a>':'<a data-cact="plan">Make this my plan</a>')+(list.length>1?'<a class="mute" data-cact="drop">Remove from compare</a>':'')+'</div></div>'; }).join('')+'</div>';
+    alt.innerHTML=h;
+    var ab=alt.querySelector('.svc-addb'), mn=alt.querySelector('.svc-menu'); if(ab) ab.addEventListener('click', function(e){ e.stopPropagation(); mn.hidden=!mn.hidden; });
+    document.addEventListener('click', function cl(e){ if(mn && !e.target.closest('.svc-more')){ mn.hidden=true; } }, { once:true });
+    alt.querySelectorAll('[data-cmpt]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); var it=w.list().filter(function(x){ return x.id===b.dataset.cmpt; })[0]; if(it) CMP.push(it); vC(); }); });
+    alt.querySelectorAll('[data-cmpx]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); CMP=CMP.filter(function(o){ return o.id!==b.dataset.cmpx; }); vC(); }); });
+    alt.querySelectorAll('[data-cact]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); var id=b.closest('[data-cid]').dataset.cid; var o=CMP.filter(function(x){ return x.id===id; })[0]; if(!o) return; var a=b.dataset.cact;
+      if(a==='drop'){ CMP=CMP.filter(function(x){ return x.id!==id; }); vC(); return; }
+      if(a==='keep'){ var it=w.add(o.name, o.vals, o.moves); CMP=CMP.map(function(x){ return x.id==='__live'?it:x; }); if(window.__peToast) window.__peToast('Kept: '+o.name); vC(); return; }
+      if(a==='plan'){ w.activate(o); setTimeout(function(){ w.makePlan(); if(window.__peToast) window.__peToast(o.name+' is now your plan'); CMP=null; paint(); }, 80); }
+    }); });
+  }
+
+  /* ---------------- version 6: type it ---------------- */
+  var T6='';
+  function parse(txt){
+    var w=WI(), B=w.base(); var v={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, mv={}, heard=[]; var t=' '+(txt||'').toLowerCase().replace(/,/g,'')+' ';
+    function num(s){ if(!s) return null; var m=s.match(/\$?\s*(\d+(?:\.\d+)?)\s*(k|m|thousand|million)?/); if(!m) return null; var n=+m[1]; if(m[2]==='k'||m[2]==='thousand') n*=1000; if(m[2]==='m'||m[2]==='million') n*=1e6; return n; }
+    var m;
+    if((m=t.match(/retire\D{0,12}(\d{2})/))){ v.ret=Math.max(55,Math.min(75,+m[1])); heard.push('Retire at '+v.ret); }
+    else if((m=t.match(/retire\s+(\d)\s+years?\s+(early|earlier|sooner)/))){ v.ret=B.ret-+m[1]; heard.push('Retire at '+v.ret); }
+    else if((m=t.match(/(work|retire)\s+(\d|one|two|three)\s+(more\s+)?years?\s*(more|later|longer)?/))&&/(more|later|longer)/.test(m[0])){ var n={one:1,two:2,three:3}[m[2]]||+m[2]; v.ret=B.ret+n; heard.push('Retire at '+v.ret); }
+    if((m=t.match(/(social security|ss|claim)\D{0,14}(6[2-9]|70)/))){ v.ss=+m[2]; heard.push('Social Security at '+v.ss); }
+    if((m=t.match(/spend\s+(\$?[\d.]+\s*k?)\s+(more|less)/))){ var d=num(m[1]); if(d){ v.spend=B.spend+(m[2]==='more'?d:-d); heard.push('Spend '+usd(v.spend)+'/mo'); } }
+    else if((m=t.match(/spend\D{0,10}(\$?[\d.]+\s*k?)/))){ var s2=num(m[1]); if(s2 && s2>=1000){ v.spend=s2; heard.push('Spend '+usd(v.spend)+'/mo'); } }
+    if(/(crash|downturn|bad market|poor market|recession)/.test(t)){ v.ret_r=0; heard.push('Poor markets'); }
+    else if(/(strong market|good market|boom)/.test(t)){ v.ret_r=2; heard.push('Strong markets'); }
+    if(/(travel|generous|splurge)/.test(t)){ v.life=2; heard.push('Generous lifestyle'); }
+    if((m=t.match(/(inherit\w*|windfall|gift from)\D{0,12}(\$?[\d.]+\s*(k|m|thousand|million)?)/))){ var a=num(m[2]); if(a){ mv.w={label:'Windfall: '+money(a), impact:'', end:Math.round(a*1.9), conf:a/40000}; heard.push('Windfall '+money(a)); } }
+    if((m=t.match(/(part.time|consult\w*|side income)\D{0,14}(\$?[\d.]+\s*k?)/))){ var pt=num(m[2]); if(pt){ mv.pt={label:'Part-time: '+usd(pt)+'/mo for 5 yrs', impact:'', end:Math.round(pt*60*1.7), conf:pt/250}; heard.push('Part-time '+usd(pt)+'/mo'); } }
+    if((m=t.match(/(downsize|sell the (house|home))\D{0,14}(\$?[\d.]+\s*(k|m)?)?/))){ var hv=num(m[3])||150000; mv.h={label:'Downsize: '+money(hv)+' freed', impact:'', end:Math.round(hv*2.1), conf:hv/30000}; heard.push('Downsize, '+money(hv)+' freed'); }
+    if((m=t.match(/(long.term care|nursing)\D{0,10}(\d)?/))){ var yrs=+(m[2]||2); mv.l={label:'Long-term care: '+yrs+' yrs', impact:'', end:-yrs*290000, conf:-yrs*3}; heard.push('Long-term care, '+yrs+' yrs'); }
+    if((m=t.match(/(gift|help)\D{0,20}(kids|children|grandkids)\D{0,10}(\$?[\d.]+\s*k?)?/))){ var gv=num(m[3])||50000; mv.g={label:'Gift to the kids: '+money(gv), impact:'', end:-Math.round(gv*2.4), conf:-gv/40000}; heard.push('Gift to the kids '+money(gv)); }
+    return { vals:v, moves:mv, heard:heard };
+  }
+  function v6(){
+    var w=WI(); if(!w||!w.planMetrics) return;
+    if(!alt.querySelector('.sv6-box')){
+      alt.innerHTML='<button type="button" class="sv-back" data-act="back">← My Plans</button><h1>Type a change. See what it does.</h1><p class="sv-sub">Write it the way you would say it. Nothing in your plan changes until you keep it.</p>'+
+        '<div class="sv6-box"><input type="text" id="sv6In" placeholder="Retire at 64 and spend $7,000 a month" autocomplete="off"><button type="button" id="sv6Keep" disabled>Keep it</button></div>'+
+        '<div class="sv6-eg">'+['Retire 2 years sooner','Claim Social Security at 67','Spend $500 more','A market crash','Inherit $200k','Part-time $2,000 a month','Downsize the house $250k','Long-term care 3 years'].map(function(x){ return '<button type="button">'+x+'</button>'; }).join('')+'</div><div class="sv6-out" id="sv6Out"></div>';
+      var inp=alt.querySelector('#sv6In'); inp.value=T6; var tm=null;
+      inp.addEventListener('input', function(){ T6=inp.value; clearTimeout(tm); tm=setTimeout(out6, 120); });
+      inp.addEventListener('keydown', function(e){ if(e.key==='Enter') keep6(); });
+      alt.querySelector('.sv6-eg').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; inp.value=b.textContent; T6=inp.value; out6(); inp.focus(); });
+      alt.querySelector('#sv6Keep').addEventListener('click', keep6);
+      setTimeout(function(){ inp.focus(); }, 60);
+    }
+    out6();
+  }
+  function out6(){
+    var w=WI(), p=w.planMetrics(); var o=alt.querySelector('#sv6Out'); if(!o) return; var r=parse(T6); var keep=alt.querySelector('#sv6Keep');
+    if(!T6.trim()){ o.innerHTML=''; keep.disabled=true; return; }
+    if(!r.heard.length){ o.innerHTML='<p class="sv6-none">Try a retirement age, a Social Security age, a monthly amount, or something like an inheritance or a market crash.</p>'; keep.disabled=true; return; }
+    var m=w.metricsFor(r.vals, r.moves), dc=m.conf-p.conf, de=m.end-p.end;
+    function d(x, unit){ if(unit==='$') return Math.abs(x)<1000?'<div class="d">same as your plan</div>':'<div class="d '+(x>0?'pos':'neg')+'">'+(x>0?'+':'−')+money(x)+' vs your plan</div>'; return !x?'<div class="d">same as your plan</div>':'<div class="d '+(x>0?'pos':'neg')+'">'+(x>0?'+':'−')+Math.abs(x)+unit+' vs your plan</div>'; }
+    o.innerHTML='<div class="sv6-heard">'+r.heard.map(function(h){ return '<span>'+esc(h)+'</span>'; }).join('')+'</div><div class="sv6-res"><div><div class="k">Confidence</div><div class="v">'+m.conf+'%</div>'+d(dc,' pts')+'</div><div><div class="k">Funded to</div><div class="v">'+m.funded+'</div>'+d(m.funded-p.funded,' yrs')+'</div><div><div class="k">Left at 92</div><div class="v">'+money(m.end)+'</div>'+d(de,'$')+'</div></div>';
+    keep.disabled=false;
+  }
+  function keep6(){ var w=WI(); var r=parse(T6); if(!r.heard.length) return; var nm=r.heard.join(', '); w.add(nm, r.vals, r.moves); if(window.__peToast) window.__peToast('Kept: '+nm); T6=''; var inp=alt.querySelector('#sv6In'); if(inp){ inp.value=''; inp.focus(); } out6(); }
+
+  /* ---------------- version 7: nudge ---------------- */
+  var N7=null;
+  function v7(){
+    var w=WI(); if(!w||!w.planMetrics) return; var B=w.base(), p=w.planMetrics(); if(!N7) N7={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r };
+    var m=w.metricsFor(N7,{}), dc=m.conf-p.conf, de=m.end-p.end, changed=N7.ret!==B.ret||N7.ss!==B.ss||N7.spend!==B.spend;
+    function row(k,label,sub,val,ch){ return '<div class="sv7-row"><div class="l">'+label+'<small>'+sub+'</small></div><div class="sv7-step"><button type="button" data-n="'+k+'" data-d="-1" aria-label="Less">−</button><div class="v'+(ch?' ch':'')+'">'+val+'</div><button type="button" data-n="'+k+'" data-d="1" aria-label="More">+</button></div></div>'; }
+    alt.innerHTML='<button type="button" class="sv-back" data-act="back">← My Plans</button><h1>Nudge it.</h1><p class="sv-sub">Tap a plus or a minus. Watch the number.</p><div class="sv7">'+
+      '<div class="sv7-big"><div class="n'+(dc>0?' up':dc<0?' dn':'')+'">'+m.conf+'%</div><div class="s">confidence your money lasts'+(changed?(dc?' — <b>'+(dc>0?'+':'−')+Math.abs(dc)+' points</b> from your plan':' — <b>same</b> as your plan'):'')+'<br>about <b>'+money(m.end)+'</b> left at 92'+(changed&&Math.abs(de)>=1000?' ('+(de>0?'+':'−')+money(de)+')':'')+'</div></div>'+
+      row('ret','Retire at','Plan: '+B.ret, N7.ret, N7.ret!==B.ret)+row('spend','Spend each month','Plan: '+usd(B.spend), usd(N7.spend), N7.spend!==B.spend)+row('ss','Social Security at','Plan: '+B.ss, N7.ss, N7.ss!==B.ss)+
+      '<div class="sv7-acts"><button type="button" class="go" data-n7="keep"'+(changed?'':' disabled')+'>Save as a scenario</button><button type="button" data-n7="reset"'+(changed?'':' disabled')+'>Reset</button></div></div>';
+    alt.querySelectorAll('[data-n]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); var k=b.dataset.n, d=+b.dataset.d; if(k==='ret') N7.ret=Math.max(58,Math.min(75,N7.ret+d)); if(k==='ss') N7.ss=Math.max(62,Math.min(70,N7.ss+d)); if(k==='spend') N7.spend=Math.max(3000,Math.min(12000,N7.spend+d*250)); v7(); }); });
+    alt.querySelectorAll('[data-n7]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); if(b.dataset.n7==='reset'){ N7=null; v7(); return; } var B2=w.base(), o=[]; if(N7.ret!==B2.ret) o.push('Retire at '+N7.ret); if(N7.spend!==B2.spend) o.push('Spend '+usd(N7.spend)); if(N7.ss!==B2.ss) o.push('Social Security at '+N7.ss); var nm=o.join(', '); w.add(nm, Object.assign({},N7)); if(window.__peToast) window.__peToast('Saved: '+nm); N7=null; v7(); }); });
+  }
+
+  /* ---------------- version 4: branches ---------------- */
+  function v4(){
+    var w=WI(); if(!w||!w.planMetrics) return; var p=w.planMetrics(); if(!p||!p.rows) return; var items=w.list();
+    var W=1000,H=460,L=40,R=760,T=30,B=H-46; var rows=p.rows, y0=rows[0].y, y1=rows[rows.length-1].y;
+    var br=items.map(function(it){ var m=w.metricsFor(it.vals,it.moves); if(!m||!m.rows) return null; var k=0; for(var i=0;i<m.rows.length;i++){ var a=rows[i]; if(a && Math.abs(m.rows[i].bal-a.bal)>Math.max(2000,a.bal*0.004)){ k=Math.max(0,i-1); break; } k=i; } return {it:it, m:m, from:k, col:colorOf(it.id)}; }).filter(Boolean);
+    /* the trunk is straight; a branch rises above it when it ends with more money, falls below when it ends with less */
+    var TR=(T+B)/2, maxd=1; br.forEach(function(b){ b.m.rows.forEach(function(r,i){ var a=rows[i]; if(a) maxd=Math.max(maxd, Math.abs(r.bal-a.bal)); }); });
+    var SPAN=(B-T)/2*0.86; function off(d){ var t=Math.sqrt(Math.min(1,Math.abs(d)/maxd)); return (d>=0?-1:1)*t*SPAN; }
+    var X=function(y){ return L+(R-L)*(y-y0)/(y1-y0); };
+    function smooth(pts){ if(pts.length<2) return ''; var d='M'+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1); for(var i=1;i<pts.length;i++){ var p0=pts[i-1], p1=pts[i], cx=(p0[0]+p1[0])/2; d+=' C'+cx.toFixed(1)+' '+p0[1].toFixed(1)+' '+cx.toFixed(1)+' '+p1[1].toFixed(1)+' '+p1[0].toFixed(1)+' '+p1[1].toFixed(1); } return d; }
+    var trunk=rows.map(function(r){ return [X(r.y), TR]; });
+    var g='';
+    for(var y=y0;y<=y1;y+=5){ g+='<text x="'+X(y).toFixed(1)+'" y="'+(B+26)+'" text-anchor="middle" font-size="13" fill="#6E7687">'+y+'</text>'; }
+    g+='<text x="'+L+'" y="'+(T-6)+'" font-size="12" fill="#6E7687">More left at 92 ↑</text><text x="'+L+'" y="'+(B+4)+'" font-size="12" fill="#6E7687">Less left at 92 ↓</text>';
+    var ends=[];
+    br.forEach(function(b){ var k=0; for(var i=0;i<b.m.rows.length;i++){ var a=rows[i]; if(a && Math.abs(off(b.m.rows[i].bal-a.bal))>3){ k=Math.max(0,i-1); break; } k=i; } b.from=k;
+      var sample=[]; for(var j=k;j<b.m.rows.length;j+=3){ sample.push(j); } if(sample[sample.length-1]!==b.m.rows.length-1) sample.push(b.m.rows.length-1);
+      var pts=sample.map(function(j){ var r=b.m.rows[j], a=rows[j]||rows[rows.length-1]; return [X(r.y), TR+off(r.bal-a.bal)]; }); pts[0]=[X(rows[k].y), TR];
+      g+='<path d="'+smooth(pts)+'" fill="none" stroke="'+b.col+'" stroke-width="3.5" stroke-linecap="round"/><circle cx="'+pts[0][0].toFixed(1)+'" cy="'+TR+'" r="5" fill="#fff" stroke="'+b.col+'" stroke-width="2.6"/>'; var e=pts[pts.length-1]; ends.push({x:e[0], y:e[1], b:b}); });
+    g+='<line x1="'+X(y0)+'" y1="'+TR+'" x2="'+X(y1)+'" y2="'+TR+'" stroke="#0D3F4A" stroke-width="7" stroke-linecap="round"/>';
+    g+='<line class="sv4-trunk-hit" x1="'+X(y0)+'" y1="'+TR+'" x2="'+X(y1)+'" y2="'+TR+'" stroke="transparent" stroke-width="28" stroke-linecap="round"/>';
+    g+='<circle cx="'+X(y0)+'" cy="'+TR+'" r="9" fill="#0D3F4A"/><text x="'+X(y0)+'" y="'+(TR-18)+'" text-anchor="middle" font-size="12" font-weight="600" fill="#10182C">Today</text>';
+    var te=trunk[trunk.length-1]; ends.push({x:te[0], y:te[1], plan:true});
+    /* labels on the right, spread so they never collide */
+    ends.sort(function(a,b){ return a.y-b.y; }); var ly=[]; ends.forEach(function(e,i){ var want=e.y; if(i && want<ly[i-1]+44) want=ly[i-1]+44; ly.push(want); });
+    var over=ly.length? ly[ly.length-1]-(B-10) : 0; if(over>0) ly=ly.map(function(v){ return v-over; });
+    ends.forEach(function(e,i){ var tx=R+34, ty=ly[i];
+      if(e.plan){ g+='<circle cx="'+e.x.toFixed(1)+'" cy="'+e.y.toFixed(1)+'" r="7" fill="#0D3F4A"/><path d="M'+(e.x+8).toFixed(1)+' '+e.y.toFixed(1)+' C'+(tx-14)+' '+e.y.toFixed(1)+' '+(tx-14)+' '+ty.toFixed(1)+' '+(tx-6)+' '+ty.toFixed(1)+'" fill="none" stroke="#C9CDD4"/><text x="'+tx+'" y="'+(ty-3)+'" font-size="14" font-weight="600" fill="#10182C">My Financial Plan</text><text x="'+tx+'" y="'+(ty+15)+'" font-size="13" fill="#47495A">'+p.conf+'% · '+money(p.end)+' at 92</text>'; return; }
+      var b=e.b; g+='<g class="sv4-node" data-id="'+b.it.id+'"><circle cx="'+e.x.toFixed(1)+'" cy="'+e.y.toFixed(1)+'" r="7" fill="'+b.col+'" stroke="#fff" stroke-width="2.5"/><path d="M'+(e.x+8).toFixed(1)+' '+e.y.toFixed(1)+' C'+(tx-14)+' '+e.y.toFixed(1)+' '+(tx-14)+' '+ty.toFixed(1)+' '+(tx-6)+' '+ty.toFixed(1)+'" fill="none" stroke="#C9CDD4"/><text x="'+tx+'" y="'+(ty-3)+'" font-size="14" font-weight="600" fill="'+b.col+'">'+esc(b.it.name.length>26?b.it.name.slice(0,25)+'…':b.it.name)+'</text><text x="'+tx+'" y="'+(ty+15)+'" font-size="13" fill="#47495A">'+b.m.conf+'% · '+money(b.m.end)+' at 92</text><rect x="'+(tx-8)+'" y="'+(ty-20)+'" width="230" height="44" fill="transparent"/></g>'; });
+    var h='<button type="button" class="sv-back" data-act="back">← My Plans</button><h1>Every scenario is a branch.</h1><p class="sv-sub">Your plan is the trunk. Click anywhere on it to branch off from that year.</p>';
+    h+='<div class="sv4-wrap"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Your plan and its scenario branches">'+g+'</svg></div><p class="sv4-hint">'+(br.length?br.length+' branch'+(br.length>1?'es':'')+'. Click a branch’s end to keep it, make it your plan, or prune it.':'No branches yet. Click the trunk to grow one.')+'</p>';
+    alt.innerHTML=h;
+    var svg=alt.querySelector('svg');
+    svg.addEventListener('click', function(e){
+      var pop=alt.querySelector('.sv4-pop'); if(pop) pop.remove();
+      var wrapR=alt.querySelector('.sv4-wrap').getBoundingClientRect(), sr=svg.getBoundingClientRect(), k=W/sr.width;
+      var node=e.target.closest('.sv4-node');
+      if(node){ var it=w.list().filter(function(x){ return x.id===node.dataset.id; })[0]; if(!it) return; var m=w.metricsFor(it.vals,it.moves);
+        popAt(e.clientX-wrapR.left, e.clientY-wrapR.top, '<div class="h">'+esc(it.name)+'</div><div class="d">'+esc(changes(it).join(' · '))+'<br>'+m.conf+'% confidence, '+money(m.end)+' at 92</div><button type="button" class="go" data-pact="plan" data-id="'+it.id+'">Make this my plan</button><button type="button" class="mute" data-pact="remove" data-id="'+it.id+'">Prune this branch</button>'); return; }
+      if(!e.target.closest('.sv4-trunk-hit')) return;
+      var vx=(e.clientX-sr.left)*k; var yr=Math.round(y0+(vx-L)/(R-L)*(y1-y0)); yr=Math.max(y0+1, Math.min(y1-3, yr)); var age=61+(yr-2026);
+      popAt(e.clientX-wrapR.left, e.clientY-wrapR.top, '<div class="h">Branch off in '+yr+' · Marshall '+age+'</div>'+(age>=60&&age<=72?'<button type="button" data-pact="ret" data-age="'+age+'">Retire here, at '+age+'</button>':'')+(age>=62&&age<=70?'<button type="button" data-pact="ss" data-age="'+age+'">Claim Social Security here</button>':'')+'<button type="button" data-pact="spend">Spend $500 more a month</button><button type="button" data-pact="crash">A market drop here</button>');
+    });
+    function popAt(x,y,html){ var d=document.createElement('div'); d.className='sv4-pop'; d.innerHTML=html; alt.querySelector('.sv4-wrap').appendChild(d); var ww=alt.querySelector('.sv4-wrap').clientWidth; d.style.left=Math.min(x, ww-d.offsetWidth-4)+'px'; d.style.top=(y+10)+'px';
+      d.addEventListener('click', function(ev){ var b=ev.target.closest('[data-pact]'); if(!b) return; ev.stopPropagation(); var B=w.base(); var base0={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }; var act=b.dataset.pact;
+        if(act==='plan'){ var it=w.list().filter(function(x){ return x.id===b.dataset.id; })[0]; w.activate(it); setTimeout(function(){ w.makePlan(); if(window.__peToast) window.__peToast(it.name+' is now your plan'); v4(); },80); return; }
+        if(act==='remove'){ w.remove(b.dataset.id); v4(); return; }
+        if(act==='ret'){ w.add('Retire at '+b.dataset.age, Object.assign(base0,{ret:+b.dataset.age})); }
+        else if(act==='ss'){ w.add('Social Security at '+b.dataset.age, Object.assign(base0,{ss:+b.dataset.age})); }
+        else if(act==='spend'){ w.add('Spend '+usd(B.spend+500)+' a month', Object.assign(base0,{spend:B.spend+500})); }
+        else if(act==='crash'){ w.add('A market drop', Object.assign(base0,{ret_r:0})); }
+        v4(); }); }
+  }
+  document.addEventListener('click', function(e){ if(alt && !e.target.closest('.sv4-pop, .sv4-wrap svg')){ var p=alt.querySelector('.sv4-pop'); if(p) p.remove(); } });
+
+  /* ---------------- version 5: this or that ---------------- */
+  var duel=0;
+  function candidates(){ var w=WI(), B=w.base(); var out=w.list().map(function(it){ return { it:it, name:it.name, vals:Object.assign({ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, it.vals), moves:it.moves||{} }; });
+    var have=out.map(function(c){ return c.name; });
+    [['Retire two years sooner',{ret:B.ret-2}],['Spend $800 more, enjoy it now',{spend:B.spend+800}],['Claim Social Security at 67',{ss:67}],['Work one more year',{ret:B.ret+1}],['A generous lifestyle',{life:2,spend:B.spend+1200}]].forEach(function(x){ if(have.indexOf(x[0])<0) out.push({ name:x[0], vals:Object.assign({ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, x[1]), moves:{}, idea:true }); });
+    return out; }
+  function lifeOf(v){ return 'Retire at <b>'+v.ret+'</b>. Live on <b>'+usd(v.spend)+'</b> a month. Social Security starts at <b>'+v.ss+'</b>'+(v.life===2?', and you travel generously':v.life===0?', and you keep things lean':'')+'.'; }
+  function v5(){
+    var w=WI(); if(!w||!w.planMetrics) return; var p=w.planMetrics(); var B=w.base(); if(!p||!B) return; var cs=candidates(); if(!cs.length) return; duel=(duel+cs.length)%cs.length; var c=cs[duel]; var m=w.metricsFor(c.vals,c.moves);
+    var dc=m.conf-p.conf, de=m.end-p.end;
+    var verdict = dc>0 ? 'This one is <b>safer</b> than your plan.' : dc<0 ? 'Your plan is <b>safer</b>; this one trades '+Math.abs(dc)+' points of confidence for the life on the right.' : (de<0 ? 'Same confidence. This one <b>spends '+money(-de)+' more</b> of your money while you are here.' : 'Same confidence, and <b>'+money(de)+' more</b> left at 92.');
+    function nums(cc, ee, d1, d2){ return '<div class="sv5-nums"><div><div class="k">Confidence</div><div class="v">'+cc+'%'+(d1===undefined?'':(d1?'<small class="'+(d1>0?'pos':'neg')+'">'+(d1>0?'+':'−')+Math.abs(d1)+'</small>':''))+'</div></div><div><div class="k">Left at 92</div><div class="v">'+money(ee)+(d2===undefined?'':(Math.abs(d2)>=1000?'<small class="'+(d2>0?'pos':'neg')+'">'+(d2>0?'+':'−')+money(d2)+'</small>':''))+'</div></div></div>'; }
+    var h='<button type="button" class="sv-back" data-act="back">← My Plans</button><h1>Which life would you rather live?</h1><p class="sv5-verdict">'+verdict+'</p>';
+    h+='<div class="sv5-duel"><div class="sv5-card mine"><div class="sv5-tag">Your plan</div><h3>The life you planned</h3><p class="sv5-life">'+lifeOf({ret:B.ret, spend:B.spend, ss:B.ss, life:B.life})+'</p>'+nums(p.conf,p.end)+'<button type="button" data-d5="keep">Keep my plan</button></div>';
+    h+='<div class="sv5-or"><span>or</span></div>';
+    h+='<div class="sv5-card in"><div class="sv5-tag">'+(c.idea?'An idea':'Saved scenario')+'</div><h3>'+esc(c.name)+'</h3><p class="sv5-life">'+lifeOf(c.vals)+(Object.keys(c.moves).length?' '+esc(Object.keys(c.moves).map(function(k){ return c.moves[k].label; }).join('. '))+'.':'')+'</p>'+nums(m.conf,m.end,dc,de)+'<button type="button" class="go" data-d5="choose">I’d choose this</button></div></div>';
+    h+='<div class="sv5-foot"><div class="sv5-dots">'+cs.map(function(x,i){ return '<i data-d5i="'+i+'" class="'+(i===duel?'on':'')+'" title="'+esc(x.name)+'"></i>'; }).join('')+'</div><button type="button" class="sv5-next" data-d5="next">Show me another →</button></div>';
+    alt.innerHTML=h;
+    alt.onclick=null;
+    alt.querySelectorAll('[data-d5], [data-d5i]').forEach(function(b){ b.addEventListener('click', function(ev){ ev.stopPropagation(); var a=b.dataset.d5;
+      if(b.dataset.d5i!==undefined){ duel=+b.dataset.d5i; v5(); return; }
+      if(a==='next' || a==='keep'){ duel++; v5(); if(a==='keep' && window.__peToast) window.__peToast('Kept your plan'); return; }
+      if(a==='choose'){ var it=c.it; if(!it) it=w.add(c.name, c.vals, c.moves); w.activate(it); setTimeout(function(){ w.makePlan(); if(window.__peToast) window.__peToast(c.name+' is now your plan'); duel=0; v5(); },80); }
+    }); });
+  }
+
   /* ---------------- shared actions ---------------- */
   function name(vals){ var B=WI().base(), o=[]; if(vals.ret!==B.ret) o.push('Retire at '+vals.ret); if(vals.ss!==B.ss) o.push('Social Security at '+vals.ss); if(vals.spend!==B.spend) o.push('Spend '+usd(vals.spend)); if(vals.ret_r!==undefined&&vals.ret_r!==B.ret_r) o.push(RR[vals.ret_r]+' markets'); return o.join(', ')||'A scenario'; }
   function onClick(e){
@@ -38408,14 +38892,14 @@ body.scn-one #scnPage .sv-toggle{ display:none; }
     if(a.dataset.preset!==undefined){ var B=w.base(); var d=PRESETS[+a.dataset.preset]; var vals=Object.assign({ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, d[1](B)); w.add(d[0], vals); paint(); return; }
     if(act==='own'){ if(window.__routeScn && window.__routeScn.add){ window.__routeScn.add(); var t=setInterval(function(){ var m=document.querySelector('.rs-modal.on'); if(!m){ clearInterval(t); paint(); } }, 400); } return; }
     if(act==='remove' && it){ w.remove(it.id); paint(); return; }
-    if(act==='plan' && it){ w.activate(it, true); setTimeout(function(){ w.makePlan(); if(window.__peToast) window.__peToast(it.name+' is now your plan'); paint(); }, 80); return; }
+    if(act==='plan' && it){ w.activate(it); setTimeout(function(){ w.makePlan(); if(window.__peToast) window.__peToast(it.name+' is now your plan'); paint(); }, 80); return; }
     if(act==='keep' && Q){ var vals2=Object.assign({}, Q); w.add(name(vals2), vals2); if(window.__peToast) window.__peToast('Kept: '+name(vals2)); v3(); return; }
     if(act==='reset'){ Q=null; v3(); return; }
     if(act==='load' && it){ var B2=w.base(); Q=Object.assign({ ret:B2.ret, ss:B2.ss, spend:B2.spend, life:B2.life, ret_r:B2.ret_r }, it.vals); v3(); window.scrollTo(0,0); var pg=document.getElementById('scnPage'); if(pg) pg.scrollTop=0; return; }
   }
   /* repaint whenever Scenarios opens */
-  var wasOpen=false; new MutationObserver(function(){ var on=document.body.classList.contains('scn-open'); if(on && !wasOpen){ Q=null; setTimeout(paint, 30); } wasOpen=on; }).observe(document.body, { attributes:true, attributeFilter:['class'] });
-  window.__scnVers={ set:function(v){ setV(String(v)); paint(); }, paint:paint };
+  var wasOpen=false; new MutationObserver(function(){ var on=document.body.classList.contains('scn-open'); if(on && !wasOpen){ Q=null; N7=null; CMP=null; setTimeout(paint, 30); } wasOpen=on; }).observe(document.body, { attributes:true, attributeFilter:['class'] });
+  window.__scnVers={ set:function(v){ CMP=null; setV(String(v)); paint(); }, paint:paint, compare:function(objs){ CMP=(objs||[]).slice(); paint(); var pg=document.getElementById('scnPage'); if(pg) pg.scrollTop=0; window.scrollTo(0,0); } };
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
