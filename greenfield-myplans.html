@@ -33158,6 +33158,7 @@ body.whatif-cmp .dock{ z-index:60; }
 .wi-band.solid .wi-chip.wi-chip-move .to{ font-weight:400; color:var(--text-secondary); }
 .wi-band.solid .wi-btn{ height:32px; font-size:13.5px; padding:0 12px; }
 .wi-band.solid .wi-btn.ghost{ color:var(--ink); }
+.wi-band.solid .wi-btn.is-on, .wi-band .wi-btn.ghost.is-on{ background:#E6EEF4; color:var(--ink); }
 body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid #4A99C4; pointer-events:none; z-index:57; }
 .wi-qc{ margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid var(--hairline); }
 .wi-qc svg{ width:100%; height:auto; display:block; font-family:var(--font); }
@@ -33384,7 +33385,7 @@ body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid 
     $tbl.innerHTML=''; $tbl.style.display='none';
     var mode='a'; try{ mode=localStorage.getItem('boldin.qc.mode')||'a'; }catch(err){}
     var tog='<div class="qc-mode" role="tablist"><button type="button" data-qm="a"'+(mode==='a'?' class="on"':'')+'>Tiles</button><button type="button" data-qm="b"'+(mode==='b'?' class="on"':'')+'>Before / after</button><button type="button" data-qm="c"'+(mode==='c'?' class="on"':'')+'>The gap</button></div>';
-    var bot='<div class="qc-bot"><div class="qc-ch">'+(ch.length?ch.join(''):'<span>No changes yet</span>')+'</div><button type="button" class="wi-full">Open full compare →</button></div>';
+    var bot='<div class="qc-bot"><div class="qc-ch">'+(ch.length?ch.join(''):'<span>No changes yet</span>')+'</div><button type="button" class="wi-full" title="Opens in Optimize">Compare and optimize →</button></div>';
     var body='';
     if(mode==='b'){
       var d=function(x, unit, good){ if(!x) return '<span class="qb-d">same</span>'; return '<span class="qb-d '+(good?'pos':'neg')+'">'+(x>0?'+':'−')+(unit==='$'?big(Math.abs(x)):Math.abs(x)+unit)+'</span>'; };
@@ -33400,7 +33401,7 @@ body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid 
     $read.innerHTML=body+bot.replace('<div class="qc-ch">', addMenu()+'<div class="qc-ch">').replace('<button type="button" class="wi-full">', tog+'<button type="button" class="wi-full">');
     wireMets();
     $read.querySelectorAll('[data-qm]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); try{ localStorage.setItem('boldin.qc.mode', b.dataset.qm); }catch(err){} paintSheet(); }); });
-    var fb=$read.querySelector('.wi-full'); if(fb) fb.addEventListener('click', function(e){ e.stopPropagation(); var s2=st(); var obj=W.solid ? W.solid : { id:'__live', name:nm, vals:Object.assign({}, s2?s2.S:{}), moves:Object.assign({}, W.moves) }; W.cmp=false; paint(); if(window.SCENARIOS) window.SCENARIOS.open(); setTimeout(function(){ if(window.__scnVers && window.__scnVers.compare) window.__scnVers.compare([obj]); }, 60); });
+    var fb=$read.querySelector('.wi-full'); if(fb) fb.addEventListener('click', function(e){ e.stopPropagation(); var s2=st(); var obj=W.solid ? W.solid : { id:'__live', name:nm, vals:Object.assign({}, s2?s2.S:{}), moves:Object.assign({}, W.moves) }; W.cmp=false; paint(); window.__cmpQueue=[obj]; var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /optimize/i.test(x.textContent); })[0]; if(nav) nav.click(); var n=0, t=setInterval(function(){ if(window.__optTools){ clearInterval(t); window.__optTools.open('compare'); } else if(++n>40) clearInterval(t); }, 100); });
   }
   function gapchart(a, b, nm){
     if(!a||!a.length||!b||!b.length) return ''; var W2=1200,H2=230,L2=8,R2=W2-120,T2=14,B2=H2-26; var hi=0; a.concat(b).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); hi*=1.08; var y0=a[0].y, y1=a[a.length-1].y;
@@ -37677,7 +37678,8 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     {id:'tax-planning', t:'Tax Planning',             sub:[['The window','tx-window'],['The ladder','tx-ladder'],['The guardrail','tx-guard'],['Your move','tx-move'],['Required distributions','tx-rmd'],['Tax diversification','tx-div'],['Taxes by year','tx-year']]},
     {id:'withdrawal-strategy', t:'Withdrawal Strategy', sub:[['The order','wd-order'],['Guardrails','wd-guard'],['One month, mapped','wd-month'],['Your move','wd-move']]},
     {id:'healthcare', t:'Healthcare Costs', sub:[]},
-    {id:'scenario-adjust', t:'Adjust a scenario', sub:[]}
+    {id:'scenario-adjust', t:'Create or adjust a scenario', sub:[]},
+    {id:'compare', t:'Compare scenarios', sub:[]}
   ];
   var nav=document.createElement('nav'); nav.className='ost-nav'; nav.setAttribute('aria-label','Optimize tools');
   nav.innerHTML='<div class="ost-collapse" aria-hidden="true">&lsaquo;</div><div class="ost-head"><span>Optimize Tools</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div><ul>'+TOOLS.map(function(t,i){ return '<li data-sec="'+t.id+'"'+(i===0?' class="on"':'')+'><div class="ost-item">'+esc(t.t)+'</div>'+(t.sub.length?'<ul class="ost-sub">'+t.sub.map(function(s){ return '<li><a data-go="'+s[1]+'">'+esc(s[0])+'</a></li>'; }).join('')+'</ul>':'')+'</li>'; }).join('')+'</ul>';
@@ -37695,7 +37697,8 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     '<section class="ost-sec" id="tax-planning"></section>'+
     '<section class="ost-sec" id="withdrawal-strategy"></section>'+
     '<section class="ost-sec" id="healthcare"></section>'+
-    '<section class="ost-sec" id="scenario-adjust"></section>';
+    '<section class="ost-sec" id="scenario-adjust"></section>'+
+    '<section class="ost-sec" id="compare"></section>';
   center.appendChild(root);
 
   /* ======================================================= STRESS TEST ======================================================= */
@@ -38074,9 +38077,11 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     var sel=null, V=null, M=null, dirty=false;
     function W(){ return window.WHATIF; }
     function base(){ var B=W().base(); return { ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }; }
-    function load(id){ var w=W(); sel=id; var it=id&&w.list().filter(function(x){ return x.id===id; })[0]; V=Object.assign(base(), it?it.vals:{}); M=Object.assign({}, it?it.moves:{}); dirty=false; }
+    function load(id){ var w=W(); sel=id; var it=id&&w.list().filter(function(x){ return x.id===id; })[0]; newName=it?it.name:''; V=Object.assign(base(), it?it.vals:{}); M=Object.assign({}, it?it.moves:{}); dirty=false; }
     function cat(){ return (window.__routeScn && window.__routeScn.cat) || []; }
     function catOf(k){ return cat().filter(function(c){ return c.k===k; })[0]; }
+    function ctl(mv){ if(mv.own && window.__routeScn && window.__routeScn.own){ var o=window.__routeScn.own(mv.own.name, mv.own.kind, mv.own.dir); o.k='own'; return o; } return mv.cat&&catOf(mv.cat); }
+    var ownOpen=false, newName='';
     function spark(a,b){ if(!a||!a.length) return ''; var Wd=1000,H=300,L=56,R=10,T=12,Bm=28, hi=0; a.concat(b||[]).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); var step=hi>4e6?2e6:hi>2e6?1e6:5e5; hi=Math.ceil(hi*1.04/step)*step; var n=a.length, y0=a[0].y, y1=a[n-1].y; function X(y){ return L+(Wd-L-R)*(y-y0)/(y1-y0); } function Y(v){ return T+(H-T-Bm)*(1-Math.max(0,v)/hi); } function pth(rs){ return rs.map(function(r,i){ return (i?'L':'M')+X(r.y).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
       var g=''; for(var v=0; v<=hi; v+=step){ g+='<line x1="'+L+'" x2="'+(Wd-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#EEF1F3"/><text x="'+(L-10)+'" y="'+(Y(v)+4)+'" font-size="12" fill="#6E7687" text-anchor="end">'+(v?money(v):'$0')+'</text>'; }
       var xl=''; for(var yy=Math.ceil(y0/10)*10; yy<=y1; yy+=10) xl+='<text x="'+X(yy)+'" y="'+(H-6)+'" font-size="12" fill="#6E7687" text-anchor="middle">'+yy+'</text>';
@@ -38084,27 +38089,32 @@ body.ost-open .opt-index{ padding-bottom:140px; }
       return '<svg viewBox="0 0 '+Wd+' '+H+'" class="sa-chart">'+g+xl+area+'<path d="'+pth(a)+'" fill="none" stroke="#10182C" stroke-width="2" stroke-dasharray="6 5"/>'+(b?'<path d="'+pth(b)+'" fill="none" stroke="#4A99C4" stroke-width="3"/>':'')+'</svg>'; }
     function bend(rows, moves){ var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); if(!extra) return rows; var n=rows.length; return rows.map(function(r,i){ return { y:r.y, bal:Math.max(0, r.bal+extra*(n>1?i/(n-1):1)) }; }); }
     function paint(){
-      var w=W(); if(!w||!w.planMetrics||!w.base()) return; if(V===null) load((w.list()[0]||{}).id||null);
+      var w=W(); if(!w||!w.planMetrics||!w.base()) return; if(V===null) load(null);
       var items=w.list(), p=w.planMetrics(), m=w.metricsFor(V, M), B=base(), it=sel&&items.filter(function(x){ return x.id===sel; })[0];
       var dc=m.conf-p.conf, de=m.end-p.end;
-      var h='<h2 class="ost-hero">Adjust a <span class="p">scenario</span>.</h2><p class="ost-herosub">Pick one, move anything, watch the result. Saving updates the scenario everywhere.</p>';
-      h+='<div class="sa-pick"><span class="l">Scenario</span>'+items.map(function(x){ return '<button type="button" data-sa="'+x.id+'" class="'+(x.id===sel?'on':'')+'">'+esc(x.name)+'</button>'; }).join('')+'<button type="button" data-sa="" class="new'+(sel?'':' on')+'">+ New from my plan</button></div>';
+      var h='<h2 class="ost-hero">Create or adjust a <span class="p">scenario</span>.</h2><p class="ost-herosub">Start a new what-if from your plan, or pick one you have. Move anything and watch the result.</p>';
+      h+='<div class="sa-top"><div class="sa-sel"><select aria-label="Scenario"><option value="">+ New scenario</option>'+(items.length?'<optgroup label="Adjust one you have">'+items.map(function(x){ return '<option value="'+x.id+'"'+(x.id===sel?' selected':'')+'>'+esc(x.name)+'</option>'; }).join('')+'</optgroup>':'')+'</select><span class="car">\u25be</span></div><input class="sa-name" type="text" placeholder="Name it, e.g. Retire early and travel" value="'+esc(newName)+'" aria-label="Scenario name"></div>';
       h+='<div class="sa-grid"><div class="sa-r"><div class="sa-res"><div><span>Confidence</span><b>'+m.conf+'%</b><em class="'+(dc>0?'pos':dc<0?'neg':'')+'">'+(dc?((dc>0?'+':'−')+Math.abs(dc)+' pts vs plan'):'same as plan')+'</em></div><div><span>Left at 92</span><b>'+money(m.end)+'</b><em class="'+(de>=1000?'pos':de<=-1000?'neg':'')+'">'+(Math.abs(de)<1000?'same as plan':((de>0?'+':'−')+money(Math.abs(de))+' vs plan'))+'</em></div></div>'+spark(p.rows, bend(m.rows, M))+'<div class="sa-leg"><span><i class="d"></i>Your plan</span><span><i></i>'+(it?esc(it.name):'This scenario')+'</span></div>'+
         '<div class="sa-acts"><button type="button" class="go" data-sact="save"'+(dirty||!sel?'':' disabled')+'>'+(sel?'Save changes':'Save as a scenario')+'</button><button type="button" data-sact="open"'+(sel?'':' disabled')+'>Open in My Plans</button></div></div>'+
         '<div class="sa-l">'+LV.map(function(l){ var v=V[l.k], diff=v!==B[l.k]; return '<div class="sa-lev'+(diff?' is-diff':'')+'"><div class="r"><span>'+l.t+'</span><b>'+l.f(v)+'</b></div><input type="range" data-k="'+l.k+'" min="'+l.min+'" max="'+l.max+'" step="'+l.step+'" value="'+v+'" style="--p:'+((v-l.min)/(l.max-l.min)*100)+'%">'+(diff?'<small>plan '+l.f(B[l.k])+'</small>':'')+'</div>'; }).join('')+
-        Object.keys(M).map(function(id){ var mv=M[id], c=mv.cat&&catOf(mv.cat); if(!c) return '<div class="sa-lev is-diff"><div class="r"><span>'+esc(mv.label)+' <button type="button" class="sa-del" data-del="'+id+'">×</button></span></div></div>'; return '<div class="sa-lev is-diff"><div class="r"><span>'+c.t+' <button type="button" class="sa-del" data-del="'+id+'">×</button></span><b>'+c.f(mv.v)+'</b></div><input type="range" data-mid="'+id+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+mv.v+'" style="--p:'+((mv.v-c.min)/(c.max-c.min)*100)+'%"></div>'; }).join('')+
-        '<div class="sa-add"><span>Add your own</span>'+cat().filter(function(c){ return !Object.keys(M).some(function(id){ return M[id].cat===c.k; }); }).map(function(c){ return '<button type="button" data-cat="'+c.k+'">'+c.t+'</button>'; }).join('')+'</div></div></div>';
+        Object.keys(M).map(function(id){ var mv=M[id], c=ctl(mv); if(!c) return '<div class="sa-lev is-diff"><div class="r"><span>'+esc(mv.label)+' <button type="button" class="sa-del" data-del="'+id+'">×</button></span></div></div>'; return '<div class="sa-lev is-diff"><div class="r"><span>'+c.t+' <button type="button" class="sa-del" data-del="'+id+'">×</button></span><b>'+c.f(mv.v)+'</b></div><input type="range" data-mid="'+id+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+mv.v+'" style="--p:'+((mv.v-c.min)/(c.max-c.min)*100)+'%"></div>'; }).join('')+
+        '<div class="sa-add"><div class="sa-addh"><b>Add your own</b><span>Life changes the five levers above don’t cover.</span></div><div class="sa-chips">'+cat().filter(function(c){ return !Object.keys(M).some(function(id){ return M[id].cat===c.k; }); }).map(function(c){ return '<button type="button" data-cat="'+c.k+'"><i>+</i>'+c.t+'</button>'; }).join('')+'<button type="button" class="own" data-ownopen="1"><i>+</i>Something else…</button></div>'+(ownOpen?'<form class="sa-own"><input type="text" name="nm" placeholder="Name it, e.g. Rental income" required><select name="kind"><option value="monthly">Every month</option><option value="once">One time</option></select><select name="dir"><option value="gain">Adds money</option><option value="cost">Costs money</option></select><button type="submit" class="go">Add</button><button type="button" data-owncancel="1">Cancel</button></form>':'')+'</div></div></div>';
       sec.innerHTML=h;
     }
     function money(v){ v=Math.abs(v); return v>=1e6?'$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':'$'+Math.round(v/1e3)+'K'; }
-    sec.addEventListener('input', function(e){ var r=e.target; if(r.type!=='range') return; if(r.dataset.k){ V[r.dataset.k]=+r.value; } else if(r.dataset.mid){ var mv=M[r.dataset.mid], c=catOf(mv.cat), v=+r.value, ef=c.fx(v), lab=c.t+': '+c.f(v); M[r.dataset.mid]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:v, cat:c.k }; } dirty=true; var foc=r.dataset.k||r.dataset.mid; paint(); var again=sec.querySelector('input[data-k="'+foc+'"], input[data-mid="'+foc+'"]'); if(again) again.focus(); });
+    sec.addEventListener('input', function(e){ if(e.target.classList.contains('sa-name')){ newName=e.target.value; if(sel && !dirty){ dirty=true; var sb=sec.querySelector('[data-sact="save"]'); if(sb) sb.disabled=false; } return; } var r=e.target; if(r.type!=='range') return; if(r.dataset.k){ V[r.dataset.k]=+r.value; } else if(r.dataset.mid){ var mv=M[r.dataset.mid], c=ctl(mv), v=+r.value, ef=c.fx(v), lab=c.t+': '+c.f(v); M[r.dataset.mid]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:v, cat:mv.cat, own:mv.own }; } dirty=true; var foc=r.dataset.k||r.dataset.mid; paint(); var again=sec.querySelector('input[data-k="'+foc+'"], input[data-mid="'+foc+'"]'); if(again) again.focus(); });
     sec.addEventListener('click', function(e){ var w=W(); var b=e.target.closest('[data-sa]'); if(b){ load(b.dataset.sa||null); paint(); return; }
+      if(e.target.closest('[data-ownopen]')){ ownOpen=true; paint(); var fi=sec.querySelector('.sa-own input'); if(fi) fi.focus(); return; }
+      if(e.target.closest('[data-owncancel]')){ ownOpen=false; paint(); return; }
       var c=e.target.closest('[data-cat]'); if(c){ var cc=catOf(c.dataset.cat), ef=cc.fx(cc.v), lab=cc.t+': '+cc.f(cc.v); M['x'+Date.now().toString(36)]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:cc.v, cat:cc.k }; dirty=true; paint(); return; }
       var d=e.target.closest('[data-del]'); if(d){ delete M[d.dataset.del]; dirty=true; paint(); return; }
       var a=e.target.closest('[data-sact]'); if(!a||a.disabled) return;
-      if(a.dataset.sact==='save'){ if(sel){ w.update(sel, V, M); if(window.__peToast) window.__peToast('Saved'); } else { var B=base(), o=[]; if(V.ret!==B.ret) o.push('Retire at '+V.ret); if(V.ss!==B.ss) o.push('Social Security at '+V.ss); if(V.spend!==B.spend) o.push('Spend '+usd(V.spend)); Object.keys(M).forEach(function(k){ o.push(M[k].label.split(':')[0]); }); var it=w.add(o.join(', ')||'A scenario', V, M); sel=it.id; if(window.__peToast) window.__peToast('Saved: '+it.name); } dirty=false; paint(); return; }
+      if(a.dataset.sact==='save'){ if(sel){ w.update(sel, V, M, newName.trim()||null); if(window.__peToast) window.__peToast('Saved'); } else { var B=base(), o=[]; if(V.ret!==B.ret) o.push('Retire at '+V.ret); if(V.ss!==B.ss) o.push('Social Security at '+V.ss); if(V.spend!==B.spend) o.push('Spend '+usd(V.spend)); Object.keys(M).forEach(function(k){ o.push(M[k].label.split(':')[0]); }); var it=w.add(newName.trim()||o.join(', ')||'A scenario', V, M); newName=''; sel=it.id; if(window.__peToast) window.__peToast('Saved: '+it.name); } dirty=false; paint(); return; }
       if(a.dataset.sact==='open'){ var it2=w.list().filter(function(x){ return x.id===sel; })[0]; if(!it2) return; var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my plans/i.test(x.textContent); })[0]; if(nav) nav.click(); setTimeout(function(){ w.activate(it2); }, 300); }
     });
+    sec.addEventListener('change', function(e){ if(e.target.closest('.sa-sel')){ load(e.target.value||null); paint(); } });
+    sec.addEventListener('submit', function(e){ var f=e.target.closest('.sa-own'); if(!f) return; e.preventDefault(); var nm=f.nm.value.trim(); if(!nm) return; var own={ name:nm, kind:f.kind.value, dir:f.dir.value }; var cc=window.__routeScn.own(own.name, own.kind, own.dir), ef=cc.fx(cc.v), lab=nm+': '+cc.f(cc.v); M['o'+Date.now().toString(36)]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:cc.v, own:own }; ownOpen=false; dirty=true; paint(); });
+    sec.addEventListener('keydown', function(e){ if(e.key==='Escape' && e.target.closest('.sa-own')){ ownOpen=false; paint(); } });
     var obs=new MutationObserver(function(){ if(document.body.classList.contains('ost-open') && sec.classList.contains('ost-on')){ V=null; paint(); } }); obs.observe(sec, { attributes:true, attributeFilter:['class'] });
   })();
 
@@ -38128,6 +38138,7 @@ body.ost-open .opt-index{ padding-bottom:140px; }
   var MAP={ stress:'stress-test', alloc:'asset-allocation', budget:'budget', ss:'social-security-explorer', ssx:'social-security-explorer', tax:'tax-planning', withdraw:'withdrawal-strategy' };
   function openTool(id){
     var sec=root.querySelector('#'+id); if(!sec) return;
+    if(id==='compare') paintCompare(sec); else if(window.__scnVers && window.__scnVers.compareOut) window.__scnVers.compareOut();
     root.querySelectorAll('.ost-sec').forEach(function(x){ x.classList.toggle('ost-on', x===sec); });
     var tool=TOOLS.filter(function(t){ return t.id===id; })[0];
     root.querySelector('.ost-subnav').innerHTML=(tool&&tool.sub.length?tool.sub.slice(0,8).map(function(s){ return '<a data-go="'+s[1]+'">'+esc(s[0])+'</a>'; }).join(''):'');
@@ -38135,6 +38146,16 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     if(window.__bai && !window.__bai.isOpen()) setTimeout(function(){ window.__bai.open(); }, 200);
   }
   function closeTool(){ document.body.classList.remove('ost-open'); window.scrollTo({ top:0, behavior:'auto' }); }
+  function paintCompare(sec){
+    var w=window.WHATIF, q=window.__cmpQueue; window.__cmpQueue=null;
+    var objs=q || (w? w.list().slice(0,3) : []);
+    if(!objs.length || !window.__scnVers || !window.__scnVers.compareIn){
+      sec.innerHTML='<h2 class="ost-hero">Compare <span class="p">scenarios</span>.</h2><p class="ost-herosub">You don’t have a scenario yet. Make one, then see it next to your plan.</p><button type="button" class="ost-cmpgo">Create a scenario</button>';
+      var b=sec.querySelector('.ost-cmpgo'); if(b) b.addEventListener('click', function(){ openTool('scenario-adjust'); });
+      return;
+    }
+    window.__scnVers.compareIn(sec, objs);
+  }
   window.__optTools={ open:openTool, close:closeTool, MAP:MAP };
   root.querySelector('.ost-back').addEventListener('click', closeTool);
   root.querySelector('.ost-subnav').addEventListener('click', function(e){ var a=e.target.closest('a[data-go]'); if(!a) return; var t=document.getElementById(a.dataset.go); if(t){ var y=t.getBoundingClientRect().top+window.scrollY-84; window.scrollTo({ top:y, behavior:reduce?'auto':'smooth' }); } });
@@ -38181,6 +38202,12 @@ body.ost-open #ostIndex{ display:none; }
 @keyframes icoStretch{ 0%,100%{ transform:scaleX(1); } 50%{ transform:scaleX(.9); } }
 @keyframes icoWave{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
 @media (prefers-reduced-motion:reduce){ #ostIndex .ost-icon svg *{ animation:none !important; } }
+#ostIndex .ico-compare .c1{ animation:icoBob 4s ease-in-out infinite; transform-box:fill-box; }
+@keyframes icoBob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-3px); } }
+#optStage #compare .sv-back{ display:none; }
+#optStage #compare .sv-sub{ font-size:16px; color:var(--text-secondary); margin:0 0 20px; }
+#optStage #compare h1{ font-size:34px; font-weight:400; letter-spacing:-0.6px; margin:0 0 6px; color:var(--ink); }
+#optStage .ost-cmpgo{ margin-top:18px; font:inherit; font-size:15px; font-weight:600; height:44px; padding:0 22px; border:0; border-radius:999px; background:var(--green-cta); color:#fff; cursor:pointer; }
 #ostIndex .ico-adjust .k1{ animation:icoSlide 5s ease-in-out infinite; transform-box:fill-box; }
 #ostIndex .ico-adjust .k2{ animation:icoSlide 6s ease-in-out infinite reverse; transform-box:fill-box; }
 @keyframes icoSlide{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(-10px); } }
@@ -38189,7 +38216,16 @@ body.ost-open #ostIndex{ display:none; }
 #optStage .sa-pick button{ font:inherit; font-size:13.5px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:6px 13px; cursor:pointer; }
 #optStage .sa-pick button.on{ background:#1F2A44; color:#fff; border-color:#1F2A44; }
 #optStage .sa-pick button.new{ color:var(--green-cta); border-style:dashed; }
-#optStage .sa-pick button.new.on{ background:#F5FBF8; color:var(--green-cta); border-color:var(--green-cta); }
+#optStage .sa-pick button.new.on{ background:var(--green-cta); color:#fff; border-color:var(--green-cta); border-style:solid; }
+#optStage .sa-pick .l{ margin-left:8px; }
+#optStage .sa-top{ display:flex; gap:10px; align-items:stretch; margin:24px 0 22px; max-width:760px; }
+#optStage .sa-sel{ position:relative; flex:0 0 240px; }
+#optStage .sa-sel select{ -webkit-appearance:none; appearance:none; width:100%; height:44px; font:inherit; font-size:15px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:10px; padding:0 34px 0 14px; cursor:pointer; text-overflow:ellipsis; }
+#optStage .sa-sel select:focus{ outline:none; border-color:var(--green-cta); }
+#optStage .sa-sel .car{ position:absolute; right:13px; top:50%; transform:translateY(-50%); font-size:12px; color:var(--text-secondary); pointer-events:none; }
+#optStage .sa-top .sa-name{ flex:1 1 auto; max-width:none; height:44px; }
+#optStage .sa-name{ font:inherit; font-size:15px; width:100%; max-width:520px; height:42px; border:1px solid var(--hairline-strong); border-radius:10px; padding:0 14px; color:var(--ink); background:#fff; }
+#optStage .sa-name:focus{ outline:none; border-color:var(--green-cta); }
 #optStage .sa-grid{ display:block; }
 #optStage .sa-l{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:40px; margin-top:22px; }
 #optStage .sa-l .sa-add{ grid-column:1 / -1; }
@@ -38204,10 +38240,21 @@ body.ost-open #ostIndex{ display:none; }
 #optStage .sa-lev input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid #4A99C4; margin-top:-5.5px; cursor:pointer; }
 #optStage .sa-del{ border:0; background:none; color:var(--text-secondary); font-size:14px; cursor:pointer; padding:0 3px; }
 #optStage .sa-del:hover{ color:#B42318; }
-#optStage .sa-add{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:12px 0 0; }
-#optStage .sa-add span{ font-size:13px; font-weight:600; color:var(--green-cta); margin-right:4px; }
-#optStage .sa-add button{ font:inherit; font-size:12.5px; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:4px 10px; cursor:pointer; }
-#optStage .sa-add button:hover{ border-color:#4A99C4; }
+#optStage .sa-add{ grid-column:1 / -1; margin-top:28px; border:1px solid var(--hairline-strong); border-radius:16px; padding:18px 20px 20px; }
+#optStage .sa-addh{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+#optStage .sa-addh b{ font-size:17px; font-weight:600; color:var(--ink); }
+#optStage .sa-addh span{ font-size:14px; color:var(--text-secondary); }
+#optStage .sa-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+#optStage .sa-chips button{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:14px; font-weight:500; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:7px 14px 7px 10px; cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+#optStage .sa-chips button i{ font-style:normal; font-weight:600; color:var(--green-cta); width:16px; text-align:center; }
+#optStage .sa-chips button:hover{ border-color:var(--green-cta); background:#F7FBF9; }
+#optStage .sa-chips button.own{ color:var(--green-cta); font-weight:600; border-style:dashed; border-color:var(--green-cta); }
+#optStage .sa-own{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:12px; padding:12px; border:1px solid var(--hairline); border-radius:12px; }
+#optStage .sa-own input, #optStage .sa-own select{ font:inherit; font-size:14px; height:36px; border:1px solid var(--hairline-strong); border-radius:8px; padding:0 10px; background:#fff; color:var(--ink); }
+#optStage .sa-own input{ flex:1 1 220px; }
+#optStage .sa-own input:focus, #optStage .sa-own select:focus{ outline:none; border-color:var(--green-cta); }
+#optStage .sa-own button{ font:inherit; font-size:14px; font-weight:600; height:36px; padding:0 14px; border-radius:999px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; }
+#optStage .sa-own button.go{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
 #optStage .sa-r{ border:1px solid var(--hairline); border-radius:16px; padding:20px 22px; }
 #optStage .sa-res{ max-width:520px; }
 #optStage .sa-res{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -38241,7 +38288,7 @@ body.ost-open #ostIndex{ display:none; }
   var center=root.parentNode;
   var T=window.__optTools; if(!T) return;
   var idx=document.createElement('div'); idx.id='ostIndex';
-  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Eight tools, each one a lever on the whole plan.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
+  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Nine tools, each one a lever on the whole plan.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
   center.insertBefore(idx, root);
   var grid=idx.querySelector('#ostGrid');
   function go(label){ return '<span class="opt-card-go">'+label+' <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; }
@@ -38255,18 +38302,20 @@ body.ost-open #ostIndex{ display:none; }
     tax:'<svg viewBox="0 0 160 80" class="ico-tax"><circle cx="80" cy="40" r="26" fill="none" stroke="#2E9E6E" stroke-width="14"/><path class="sg" d="M80 14 A26 26 0 0 1 104 28" fill="none" stroke="#0D3F4A" stroke-width="14"/></svg>',
     budget:'<svg viewBox="0 0 160 80" class="ico-budget"><rect x="30" y="24" width="60" height="14" rx="3" fill="#0D3F4A"/><rect class="gr" x="96" y="24" width="34" height="14" rx="3" fill="#2E9E6E"/><rect x="30" y="44" width="52" height="14" rx="3" fill="#0D3F4A"/><rect class="gr g2" x="88" y="44" width="42" height="14" rx="3" fill="#2E9E6E"/></svg>',
     withdraw:'<svg viewBox="0 0 160 80" class="ico-wd">'+['#0D3F4A','#0D3F4A','#0D3F4A','#0D3F4A','#2E9E6E','#2E9E6E','#2E9E6E','#2E9E6E','#2E9E6E','#9FDFC6','#9FDFC6','#9FDFC6','#CFE6D9','#CFE6D9'].map(function(c,i){ return '<rect class="wb" style="--i:'+i+'" x="'+(24+i*8.5)+'" y="22" width="5" height="36" rx="1.2" fill="'+c+'"/>'; }).join('')+'</svg>',
+    compare:'<svg viewBox="0 0 160 80" class="ico-compare"><path d="M34 58 C60 54 80 44 126 22" fill="none" stroke="#4A99C4" stroke-width="3" stroke-linecap="round"/><path d="M34 58 C60 56 84 52 126 40" fill="none" stroke="#10182C" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 5"/><circle class="c1" cx="126" cy="22" r="4.5" fill="#4A99C4"/><circle cx="126" cy="40" r="4.5" fill="#10182C"/></svg>',
     adjust:'<svg viewBox="0 0 160 80" class="ico-adjust"><line x1="30" y1="26" x2="130" y2="26" stroke="#DCE4EC" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="26" x2="92" y2="26" stroke="#4A99C4" stroke-width="4" stroke-linecap="round"/><circle class="k1" cx="92" cy="26" r="7" fill="#fff" stroke="#4A99C4" stroke-width="3"/><line x1="30" y1="54" x2="130" y2="54" stroke="#DCE4EC" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="54" x2="62" y2="54" stroke="#0D3F4A" stroke-width="4" stroke-linecap="round"/><circle class="k2" cx="62" cy="54" r="7" fill="#fff" stroke="#0D3F4A" stroke-width="3"/></svg>',
     health:'<svg viewBox="0 0 160 80" class="ico-health"><path d="M30 28 H86 V52 H130" fill="none" stroke="#0D3F4A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle class="dt" cx="86" cy="52" r="4" fill="#0E794E"/></svg>'
   };
   function build(){
     grid.innerHTML='';
-    [['stress-test','stress','Stress Test','Test the plan against rough markets.'],
+    [['scenario-adjust','adjust','Create or adjust a scenario','Model a new what-if, or fine-tune one you have.'],
+     ['compare','compare','Compare scenarios','See your plan and scenarios side by side.'],
+     ['stress-test','stress','Stress Test','Test the plan against rough markets.'],
      ['social-security-explorer','ss','Social Security Explorer','Compare claiming ages side by side.'],
      ['asset-allocation','alloc','Asset Allocation','Check your mix against your target.'],
      ['tax-planning','tax','Tax Planning','Plan Roth conversions year by year.'],
      ['budget','budget','Detailed Budgeter','Map spending now and in retirement.'],
      ['withdrawal-strategy','withdraw','Withdrawal Strategy','Choose which accounts pay you first.'],
-     ['scenario-adjust','adjust','Adjust a scenario','Fine-tune any scenario, lever by lever.'],
      ['healthcare','health','Healthcare Costs','Price care before and after Medicare.']
     ].forEach(function(t){ var c=document.createElement('div'); c.className='opt-card ost-tool'; c.dataset.tool=t[0]; c.setAttribute('role','link'); c.tabIndex=0; c.innerHTML='<div class="ost-icon">'+ICO[t[1]]+'</div><div class="opt-card-t">'+t[2]+'</div><div class="opt-card-sub">'+t[3]+'</div>'; grid.appendChild(c); });
   }
@@ -39129,9 +39178,11 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
   function onChange(e){ var s=e.target.closest('select[data-k]'); if(!s||!Q) return; Q[s.dataset.k]=+s.value; v3(); var again=alt.querySelector('select[data-k="'+s.dataset.k+'"]'); if(again) again.focus(); }
 
   /* ---------------- full compare ---------------- */
-  var CMP=null;
+  var CMP=null, HOST=null;
+  function ALT0(){ return alt; }
   function colOf(o){ return o.id==='__live' ? '#4A99C4' : colorOf(o.id); }
   function vC(){
+    var alt=HOST||ALT0();
     var w=WI(); if(!w||!w.planMetrics) return; var p=w.planMetrics(); if(!p) return; var B=w.base();
     var list=CMP.map(function(o){ var m=w.metricsFor(Object.assign({ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, o.vals), o.moves); return m?{o:o, m:m, col:colOf(o)}:null; }).filter(Boolean);
     var title= list.length===1 ? 'Your plan vs. '+esc(list[0].o.name) : 'Your plan vs. '+list.length+' scenarios';
@@ -39342,7 +39393,7 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
   }
   /* repaint whenever Scenarios opens */
   var wasOpen=false; new MutationObserver(function(){ var on=document.body.classList.contains('scn-open'); if(on && !wasOpen){ Q=null; N7=null; CMP=null; setTimeout(paint, 30); } wasOpen=on; }).observe(document.body, { attributes:true, attributeFilter:['class'] });
-  window.__scnVers={ set:function(v){ CMP=null; setV(String(v)); paint(); }, paint:paint, compare:function(objs){ CMP=(objs||[]).slice(); paint(); var pg=document.getElementById('scnPage'); if(pg) pg.scrollTop=0; window.scrollTo(0,0); } };
+  window.__scnVers={ set:function(v){ CMP=null; setV(String(v)); paint(); }, paint:paint, compareIn:function(host, objs){ HOST=host; CMP=(objs||[]).slice(); vC(); }, compareOut:function(){ HOST=null; }, compare:function(objs){ HOST=null; CMP=(objs||[]).slice(); paint(); var pg=document.getElementById('scnPage'); if(pg) pg.scrollTop=0; window.scrollTo(0,0); } };
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
