@@ -33503,7 +33503,7 @@ body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid 
   /* straight to the plan, no scenario in between */
   function applyNow(label){ var s=st(); if(!s) return; if(W.solid){ makePlan(); return; } var nm=autoName(); s.rebase(); reflect(); ORIG.forEach(function(v,el){ el.classList.remove('wi-shadowed'); }); ORIG.clear(); document.querySelectorAll('.sbox .meter > i').forEach(function(i){ delete i.dataset.wiW; }); W.open=false; W.cmp=false; W.changes={}; W.moves={}; paint(); say('Plan updated \u2014 '+nm); }
   function applyMove(label){ if(W.open && !W.solid && Object.keys(W.moves).length===0 && !count()){ W.open=false; } paint(); say('Plan updated \u2014 '+label); }
-  window.WHATIF={ add:function(name, vals){ var v={}; Object.keys(vals||{}).forEach(function(k){ v[k]=vals[k]; }); var item={ id:'wi'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), name:name, letter:'Plan '+String.fromCharCode(66+SOLID.length), vals:v, changes:{}, moves:(arguments[2]||{}) }; var s0=st(); if(s0) Object.keys(s0.BASE).forEach(function(k){ if(v[k]!==undefined && v[k]!==s0.BASE[k]) item.changes[k]={from:fmt(k,s0.BASE[k]), to:fmt(k,v[k])}; }); SOLID.push(item); save(); rail(); return item; }, open:function(){ ensureOpen(); paint(); }, keepAs:function(name){ if(W.solid) return; finalize((name||'').trim()||autoName()); }, lines:function(){ var m=metrics(); return m? lines(m) : []; }, metrics:metrics, levers:function(){ var s=st(); return s? s.S : null; }, activate:activate, makePlan:makePlan, remove:function(id){ SOLID=SOLID.filter(function(x){ return x.id!==id; }); SOLID.forEach(function(x,i){ x.letter='Plan '+String.fromCharCode(66+i); }); save(); if(W.solid&&W.solid.id===id) discard(); rail(); }, list:function(){ return SOLID.slice(); }, metricsFor:function(vals, moves){ var s=st(); if(!s) return null; var r=s.run(vals,false); r.conf=s.conf(r); var extra=0, dc=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; dc+=moves[k].conf||0; }); return { funded:r.out?(61+(r.out-2026)):92, conf:Math.max(1, Math.min(99, Math.round(r.conf+dc))), end:Math.max(0, r.end+extra), rows:r.rows, ret:vals.ret, ss:vals.ss, spend:vals.spend }; }, planMetrics:function(){ var s=st(); if(!s) return null; var b=s.base; return { funded:92, conf:b.conf, end:b.end, rows:b.rows, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend }; }, setLevers:function(o){ var s=st(); if(!s) return; Object.keys(o).forEach(function(k){ var inp=document.getElementById('st_'+k); var v=o[k]; if(inp){ v=Math.max(+inp.min, Math.min(+inp.max, v)); inp.value=v; inp.dispatchEvent(new Event('input')); } s.S[k]=v; }); s.render(null); syncStress(); }, base:function(){ var s=st(); return s? s.BASE : null; }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, refresh:function(){ paint(); }, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
+  window.WHATIF={ add:function(name, vals){ var v={}; Object.keys(vals||{}).forEach(function(k){ v[k]=vals[k]; }); var item={ id:'wi'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), name:name, letter:'Plan '+String.fromCharCode(66+SOLID.length), vals:v, changes:{}, moves:(arguments[2]||{}) }; var s0=st(); if(s0) Object.keys(s0.BASE).forEach(function(k){ if(v[k]!==undefined && v[k]!==s0.BASE[k]) item.changes[k]={from:fmt(k,s0.BASE[k]), to:fmt(k,v[k])}; }); SOLID.push(item); save(); rail(); return item; }, open:function(){ ensureOpen(); paint(); }, keepAs:function(name){ if(W.solid) return; finalize((name||'').trim()||autoName()); }, lines:function(){ var m=metrics(); return m? lines(m) : []; }, metrics:metrics, levers:function(){ var s=st(); return s? s.S : null; }, activate:activate, makePlan:makePlan, remove:function(id){ SOLID=SOLID.filter(function(x){ return x.id!==id; }); SOLID.forEach(function(x,i){ x.letter='Plan '+String.fromCharCode(66+i); }); save(); if(W.solid&&W.solid.id===id) discard(); rail(); }, list:function(){ return SOLID.slice(); }, metricsFor:function(vals, moves){ var s=st(); if(!s) return null; var r=s.run(vals,false); r.conf=s.conf(r); var extra=0, dc=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; dc+=moves[k].conf||0; }); return { funded:r.out?(61+(r.out-2026)):92, conf:Math.max(1, Math.min(99, Math.round(r.conf+dc))), end:Math.max(0, r.end+extra), rows:r.rows, ret:vals.ret, ss:vals.ss, spend:vals.spend }; }, planMetrics:function(){ var s=st(); if(!s) return null; var b=s.base; return { funded:92, conf:b.conf, end:b.end, rows:b.rows, ret:s.BASE.ret, ss:s.BASE.ss, spend:s.BASE.spend }; }, setLevers:function(o){ var s=st(); if(!s) return; Object.keys(o).forEach(function(k){ var inp=document.getElementById('st_'+k); var v=o[k]; if(inp){ v=Math.max(+inp.min, Math.min(+inp.max, v)); inp.value=v; inp.dispatchEvent(new Event('input')); } s.S[k]=v; }); s.render(null); syncStress(); }, base:function(){ var s=st(); return s? s.BASE : null; }, discard:discard, keep:keep, state:W, solid:SOLID, addMove:addMove, refresh:function(){ paint(); }, update:function(id, vals, moves, name){ var it=SOLID.filter(function(x){ return x.id===id; })[0]; if(!it) return null; if(vals) it.vals=Object.assign({}, vals); if(moves) it.moves=Object.assign({}, moves); if(name) it.name=name; var s0=st(); it.changes={}; if(s0) Object.keys(s0.BASE).forEach(function(k){ if(it.vals[k]!==undefined && it.vals[k]!==s0.BASE[k]) it.changes[k]={from:fmt(k,s0.BASE[k]), to:fmt(k,it.vals[k])}; }); save(); return it; }, sync:syncStress, applyNow:applyNow, applyMove:applyMove };
 })();
 </script>
 <style id="osApplyCSS">
@@ -36926,7 +36926,7 @@ body.whatif-open .rail.scn-pop-on{ padding-top:8px; }
 .scn-pop .sp-acts{ margin-top:10px !important; }
 .scn-pop .sp-acts button{ padding:7px 14px !important; font-size:13px !important; }
 .scn-pop .sp-leg{ display:none !important; }
-.wi-band .wi-tweak{ display:inline-flex; align-items:center; gap:6px; }
+.wi-band .wi-tweak{ display:none !important; }
 .wi-band .wi-tweak.is-on{ background:#E9EFF5; }
 .scn-pop .sp-xdel{ border:0; background:none; color:var(--text-secondary); font-size:14px; line-height:1; padding:0 3px; cursor:pointer; }
 .scn-pop .sp-xdel:hover{ color:#B42318; }
@@ -37472,7 +37472,8 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     {id:'social-security-explorer', t:'Social Security Explorer', sub:[['Your scenario','ssxStats'],['By year','ssxBars'],['Compare','ssxTbl']]},
     {id:'tax-planning', t:'Tax Planning',             sub:[['The window','tx-window'],['The ladder','tx-ladder'],['The guardrail','tx-guard'],['Your move','tx-move'],['Required distributions','tx-rmd'],['Tax diversification','tx-div'],['Taxes by year','tx-year']]},
     {id:'withdrawal-strategy', t:'Withdrawal Strategy', sub:[['The order','wd-order'],['Guardrails','wd-guard'],['One month, mapped','wd-month'],['Your move','wd-move']]},
-    {id:'healthcare', t:'Healthcare Costs', sub:[]}
+    {id:'healthcare', t:'Healthcare Costs', sub:[]},
+    {id:'scenario-adjust', t:'Adjust a scenario', sub:[]}
   ];
   var nav=document.createElement('nav'); nav.className='ost-nav'; nav.setAttribute('aria-label','Optimize tools');
   nav.innerHTML='<div class="ost-collapse" aria-hidden="true">&lsaquo;</div><div class="ost-head"><span>Optimize Tools</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div><ul>'+TOOLS.map(function(t,i){ return '<li data-sec="'+t.id+'"'+(i===0?' class="on"':'')+'><div class="ost-item">'+esc(t.t)+'</div>'+(t.sub.length?'<ul class="ost-sub">'+t.sub.map(function(s){ return '<li><a data-go="'+s[1]+'">'+esc(s[0])+'</a></li>'; }).join('')+'</ul>':'')+'</li>'; }).join('')+'</ul>';
@@ -37489,7 +37490,8 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     '<section class="ost-sec" id="social-security-explorer"></section>'+
     '<section class="ost-sec" id="tax-planning"></section>'+
     '<section class="ost-sec" id="withdrawal-strategy"></section>'+
-    '<section class="ost-sec" id="healthcare"></section>';
+    '<section class="ost-sec" id="healthcare"></section>'+
+    '<section class="ost-sec" id="scenario-adjust"></section>';
   center.appendChild(root);
 
   /* ======================================================= STRESS TEST ======================================================= */
@@ -37861,6 +37863,43 @@ body.ost-open .opt-index{ padding-bottom:140px; }
       '<p class="ost-note wide">Converting too much in the bridge years raises your marketplace premium; converting too much after 63 raises Medicare premiums two years later. The Roth ladder keeps both in view.</p>';
   })();
 
+  /* ======================================================= ADJUST A SCENARIO ======================================================= */
+  (function(){
+    var sec=root.querySelector('#scenario-adjust'); if(!sec) return;
+    var LV=[{k:'ret',t:'Retirement age',min:62,max:72,step:1,f:String},{k:'ss',t:'Social Security age',min:62,max:70,step:1,f:String},{k:'spend',t:'Monthly spending',min:4500,max:9000,step:100,f:function(v){ return usd(v); }},{k:'life',t:'Lifestyle',min:0,max:2,step:1,f:function(v){ return ['Lean','Comfortable','Generous'][v]; }},{k:'ret_r',t:'Investment return',min:0,max:2,step:1,f:function(v){ return ['Conservative','Balanced','Growth'][v]; }}];
+    var sel=null, V=null, M=null, dirty=false;
+    function W(){ return window.WHATIF; }
+    function base(){ var B=W().base(); return { ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }; }
+    function load(id){ var w=W(); sel=id; var it=id&&w.list().filter(function(x){ return x.id===id; })[0]; V=Object.assign(base(), it?it.vals:{}); M=Object.assign({}, it?it.moves:{}); dirty=false; }
+    function cat(){ return (window.__routeScn && window.__routeScn.cat) || []; }
+    function catOf(k){ return cat().filter(function(c){ return c.k===k; })[0]; }
+    function spark(a,b){ if(!a||!a.length) return ''; var Wd=600,H=160,P=6, hi=0; a.concat(b||[]).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); hi*=1.08; var n=a.length, y0=a[0].y, y1=a[n-1].y; function X(y){ return P+(Wd-2*P)*(y-y0)/(y1-y0); } function Y(v){ return H-20-(Math.max(0,v)/hi)*(H-30); } function pth(rs){ return rs.map(function(r,i){ return (i?'L':'M')+X(r.y).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
+      return '<svg viewBox="0 0 '+Wd+' '+H+'" class="sa-chart"><path d="'+pth(a)+'" fill="none" stroke="#10182C" stroke-width="2" stroke-dasharray="5 4"/>'+(b?'<path d="'+pth(b)+'" fill="none" stroke="#4A99C4" stroke-width="2.8"/>':'')+'<text x="'+P+'" y="'+(H-4)+'" font-size="12" fill="#6E7687">'+y0+'</text><text x="'+(Wd-P)+'" y="'+(H-4)+'" font-size="12" fill="#6E7687" text-anchor="end">'+y1+'</text></svg>'; }
+    function paint(){
+      var w=W(); if(!w||!w.planMetrics||!w.base()) return; if(V===null) load((w.list()[0]||{}).id||null);
+      var items=w.list(), p=w.planMetrics(), m=w.metricsFor(V, M), B=base(), it=sel&&items.filter(function(x){ return x.id===sel; })[0];
+      var dc=m.conf-p.conf, de=m.end-p.end;
+      var h='<h2 class="ost-hero">Adjust a <span class="p">scenario</span>.</h2><p class="ost-herosub">Pick one, move anything, watch the result. Saving updates the scenario everywhere.</p>';
+      h+='<div class="sa-pick"><span class="l">Scenario</span>'+items.map(function(x){ return '<button type="button" data-sa="'+x.id+'" class="'+(x.id===sel?'on':'')+'">'+esc(x.name)+'</button>'; }).join('')+'<button type="button" data-sa="" class="new'+(sel?'':' on')+'">+ New from my plan</button></div>';
+      h+='<div class="sa-grid"><div class="sa-l">'+LV.map(function(l){ var v=V[l.k], diff=v!==B[l.k]; return '<div class="sa-lev'+(diff?' is-diff':'')+'"><div class="r"><span>'+l.t+'</span><b>'+l.f(v)+'</b></div><input type="range" data-k="'+l.k+'" min="'+l.min+'" max="'+l.max+'" step="'+l.step+'" value="'+v+'" style="--p:'+((v-l.min)/(l.max-l.min)*100)+'%">'+(diff?'<small>plan '+l.f(B[l.k])+'</small>':'')+'</div>'; }).join('')+
+        Object.keys(M).map(function(id){ var mv=M[id], c=mv.cat&&catOf(mv.cat); if(!c) return '<div class="sa-lev is-diff"><div class="r"><span>'+esc(mv.label)+' <button type="button" class="sa-del" data-del="'+id+'">×</button></span></div></div>'; return '<div class="sa-lev is-diff"><div class="r"><span>'+c.t+' <button type="button" class="sa-del" data-del="'+id+'">×</button></span><b>'+c.f(mv.v)+'</b></div><input type="range" data-mid="'+id+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+mv.v+'" style="--p:'+((mv.v-c.min)/(c.max-c.min)*100)+'%"></div>'; }).join('')+
+        '<div class="sa-add"><span>Add your own</span>'+cat().filter(function(c){ return !Object.keys(M).some(function(id){ return M[id].cat===c.k; }); }).map(function(c){ return '<button type="button" data-cat="'+c.k+'">'+c.t+'</button>'; }).join('')+'</div></div>'+
+        '<div class="sa-r"><div class="sa-res"><div><span>Confidence</span><b>'+m.conf+'%</b><em class="'+(dc>0?'pos':dc<0?'neg':'')+'">'+(dc?((dc>0?'+':'−')+Math.abs(dc)+' pts vs plan'):'same as plan')+'</em></div><div><span>Left at 92</span><b>'+money(m.end)+'</b><em class="'+(de>=1000?'pos':de<=-1000?'neg':'')+'">'+(Math.abs(de)<1000?'same as plan':((de>0?'+':'−')+money(Math.abs(de))+' vs plan'))+'</em></div></div>'+spark(p.rows, m.rows)+'<div class="sa-leg"><span><i class="d"></i>Your plan</span><span><i></i>'+(it?esc(it.name):'This scenario')+'</span></div>'+
+        '<div class="sa-acts"><button type="button" class="go" data-sact="save"'+(dirty||!sel?'':' disabled')+'>'+(sel?'Save changes':'Save as a scenario')+'</button><button type="button" data-sact="open"'+(sel?'':' disabled')+'>Open in My Plans</button></div></div></div>';
+      sec.innerHTML=h;
+    }
+    function money(v){ v=Math.abs(v); return v>=1e6?'$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':'$'+Math.round(v/1e3)+'K'; }
+    sec.addEventListener('input', function(e){ var r=e.target; if(r.type!=='range') return; if(r.dataset.k){ V[r.dataset.k]=+r.value; } else if(r.dataset.mid){ var mv=M[r.dataset.mid], c=catOf(mv.cat), v=+r.value, ef=c.fx(v), lab=c.t+': '+c.f(v); M[r.dataset.mid]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:v, cat:c.k }; } dirty=true; var foc=r.dataset.k||r.dataset.mid; paint(); var again=sec.querySelector('input[data-k="'+foc+'"], input[data-mid="'+foc+'"]'); if(again) again.focus(); });
+    sec.addEventListener('click', function(e){ var w=W(); var b=e.target.closest('[data-sa]'); if(b){ load(b.dataset.sa||null); paint(); return; }
+      var c=e.target.closest('[data-cat]'); if(c){ var cc=catOf(c.dataset.cat), ef=cc.fx(cc.v), lab=cc.t+': '+cc.f(cc.v); M['x'+Date.now().toString(36)]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:cc.v, cat:cc.k }; dirty=true; paint(); return; }
+      var d=e.target.closest('[data-del]'); if(d){ delete M[d.dataset.del]; dirty=true; paint(); return; }
+      var a=e.target.closest('[data-sact]'); if(!a||a.disabled) return;
+      if(a.dataset.sact==='save'){ if(sel){ w.update(sel, V, M); if(window.__peToast) window.__peToast('Saved'); } else { var B=base(), o=[]; if(V.ret!==B.ret) o.push('Retire at '+V.ret); if(V.ss!==B.ss) o.push('Social Security at '+V.ss); if(V.spend!==B.spend) o.push('Spend '+usd(V.spend)); Object.keys(M).forEach(function(k){ o.push(M[k].label.split(':')[0]); }); var it=w.add(o.join(', ')||'A scenario', V, M); sel=it.id; if(window.__peToast) window.__peToast('Saved: '+it.name); } dirty=false; paint(); return; }
+      if(a.dataset.sact==='open'){ var it2=w.list().filter(function(x){ return x.id===sel; })[0]; if(!it2) return; var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my plans/i.test(x.textContent); })[0]; if(nav) nav.click(); setTimeout(function(){ w.activate(it2); }, 300); }
+    });
+    var obs=new MutationObserver(function(){ if(document.body.classList.contains('ost-open') && sec.classList.contains('ost-on')){ V=null; paint(); } }); obs.observe(sec, { attributes:true, attributeFilter:['class'] });
+  })();
+
   /* ---------- rail behaviour: click scrolls, scroll highlights ---------- */
   function setActive(id){ nav.querySelectorAll('li[data-sec]').forEach(function(li){ li.classList.toggle('on', li.dataset.sec===id); }); }
   nav.addEventListener('click', function(e){
@@ -37934,6 +37973,44 @@ body.ost-open #ostIndex{ display:none; }
 @keyframes icoStretch{ 0%,100%{ transform:scaleX(1); } 50%{ transform:scaleX(.9); } }
 @keyframes icoWave{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
 @media (prefers-reduced-motion:reduce){ #ostIndex .ost-icon svg *{ animation:none !important; } }
+#ostIndex .ico-adjust .k1{ animation:icoSlide 5s ease-in-out infinite; transform-box:fill-box; }
+#ostIndex .ico-adjust .k2{ animation:icoSlide 6s ease-in-out infinite reverse; transform-box:fill-box; }
+@keyframes icoSlide{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(-10px); } }
+#optStage .sa-pick{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:22px 0 20px; }
+#optStage .sa-pick .l{ font-size:13px; color:var(--text-secondary); margin-right:4px; }
+#optStage .sa-pick button{ font:inherit; font-size:13.5px; font-weight:600; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:6px 13px; cursor:pointer; }
+#optStage .sa-pick button.on{ background:#1F2A44; color:#fff; border-color:#1F2A44; }
+#optStage .sa-pick button.new{ color:var(--green-cta); border-style:dashed; }
+#optStage .sa-pick button.new.on{ background:#F5FBF8; color:var(--green-cta); border-color:var(--green-cta); }
+#optStage .sa-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:28px; align-items:start; }
+#optStage .sa-lev{ padding:10px 0 8px; border-bottom:1px solid var(--hairline); }
+#optStage .sa-lev .r{ display:flex; justify-content:space-between; font-size:14px; color:var(--text-secondary); }
+#optStage .sa-lev .r b{ color:var(--ink); font-weight:600; }
+#optStage .sa-lev.is-diff .r b{ color:#2F6F93; }
+#optStage .sa-lev small{ font-size:12px; color:var(--text-secondary); }
+#optStage .sa-lev input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:18px; background:none; margin:4px 0 0; display:block; }
+#optStage .sa-lev input[type=range]::-webkit-slider-runnable-track{ height:3px; border-radius:999px; background:linear-gradient(90deg,#4A99C4 0,#4A99C4 var(--p,50%),#DCE4EC var(--p,50%),#DCE4EC 100%); }
+#optStage .sa-lev input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid #4A99C4; margin-top:-5.5px; cursor:pointer; }
+#optStage .sa-del{ border:0; background:none; color:var(--text-secondary); font-size:14px; cursor:pointer; padding:0 3px; }
+#optStage .sa-del:hover{ color:#B42318; }
+#optStage .sa-add{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:12px 0 0; }
+#optStage .sa-add span{ font-size:13px; font-weight:600; color:var(--green-cta); margin-right:4px; }
+#optStage .sa-add button{ font:inherit; font-size:12.5px; color:var(--ink); background:#fff; border:1px solid var(--hairline-strong); border-radius:999px; padding:4px 10px; cursor:pointer; }
+#optStage .sa-add button:hover{ border-color:#4A99C4; }
+#optStage .sa-r{ position:sticky; top:96px; border:1px solid var(--hairline); border-radius:16px; padding:18px; }
+#optStage .sa-res{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+#optStage .sa-res span{ display:block; font-size:12.5px; color:var(--text-secondary); }
+#optStage .sa-res b{ display:block; font-size:30px; font-weight:600; letter-spacing:-0.6px; margin:2px 0; }
+#optStage .sa-res em{ font-style:normal; font-size:12.5px; font-weight:600; color:var(--text-secondary); }
+#optStage .sa-res em.pos{ color:var(--green-cta); } #optStage .sa-res em.neg{ color:#B42318; }
+#optStage .sa-chart{ width:100%; height:auto; display:block; margin:14px 0 4px; font-family:var(--font); }
+#optStage .sa-leg{ display:flex; gap:14px; font-size:12px; color:var(--text-secondary); }
+#optStage .sa-leg i{ display:inline-block; width:14px; height:0; border-top:2.6px solid #4A99C4; margin-right:6px; vertical-align:3px; }
+#optStage .sa-leg i.d{ border-top:2px dashed #10182C; }
+#optStage .sa-acts{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+#optStage .sa-acts button{ font:inherit; font-size:14px; font-weight:600; border-radius:999px; padding:10px 16px; cursor:pointer; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+#optStage .sa-acts button.go{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+#optStage .sa-acts button[disabled]{ opacity:.4; cursor:default; }
 #ostIndex h1{ font-size:34px; font-weight:400; letter-spacing:-0.3px; margin:0 0 6px; line-height:1.15; color:var(--ink); }
 #ostIndex .ost-isub{ font-size:16px; color:var(--text-secondary); margin:0 0 24px; }
 #ostIndex .ost-grid{ display:grid !important; grid-template-columns:repeat(3,1fr); grid-auto-rows:1fr; gap:18px; align-items:stretch; columns:auto !important; }
@@ -37952,7 +38029,7 @@ body.ost-open #ostIndex{ display:none; }
   var center=root.parentNode;
   var T=window.__optTools; if(!T) return;
   var idx=document.createElement('div'); idx.id='ostIndex';
-  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Seven tools, each one a lever on the whole plan.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
+  idx.innerHTML='<h1>Optimize</h1><p class="ost-isub">Eight tools, each one a lever on the whole plan.</p><div class="opt-grid ost-grid" id="ostGrid"></div>';
   center.insertBefore(idx, root);
   var grid=idx.querySelector('#ostGrid');
   function go(label){ return '<span class="opt-card-go">'+label+' <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; }
@@ -37966,6 +38043,7 @@ body.ost-open #ostIndex{ display:none; }
     tax:'<svg viewBox="0 0 160 80" class="ico-tax"><circle cx="80" cy="40" r="26" fill="none" stroke="#2E9E6E" stroke-width="14"/><path class="sg" d="M80 14 A26 26 0 0 1 104 28" fill="none" stroke="#0D3F4A" stroke-width="14"/></svg>',
     budget:'<svg viewBox="0 0 160 80" class="ico-budget"><rect x="30" y="24" width="60" height="14" rx="3" fill="#0D3F4A"/><rect class="gr" x="96" y="24" width="34" height="14" rx="3" fill="#2E9E6E"/><rect x="30" y="44" width="52" height="14" rx="3" fill="#0D3F4A"/><rect class="gr g2" x="88" y="44" width="42" height="14" rx="3" fill="#2E9E6E"/></svg>',
     withdraw:'<svg viewBox="0 0 160 80" class="ico-wd">'+['#0D3F4A','#0D3F4A','#0D3F4A','#0D3F4A','#2E9E6E','#2E9E6E','#2E9E6E','#2E9E6E','#2E9E6E','#9FDFC6','#9FDFC6','#9FDFC6','#CFE6D9','#CFE6D9'].map(function(c,i){ return '<rect class="wb" style="--i:'+i+'" x="'+(24+i*8.5)+'" y="22" width="5" height="36" rx="1.2" fill="'+c+'"/>'; }).join('')+'</svg>',
+    adjust:'<svg viewBox="0 0 160 80" class="ico-adjust"><line x1="30" y1="26" x2="130" y2="26" stroke="#DCE4EC" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="26" x2="92" y2="26" stroke="#4A99C4" stroke-width="4" stroke-linecap="round"/><circle class="k1" cx="92" cy="26" r="7" fill="#fff" stroke="#4A99C4" stroke-width="3"/><line x1="30" y1="54" x2="130" y2="54" stroke="#DCE4EC" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="54" x2="62" y2="54" stroke="#0D3F4A" stroke-width="4" stroke-linecap="round"/><circle class="k2" cx="62" cy="54" r="7" fill="#fff" stroke="#0D3F4A" stroke-width="3"/></svg>',
     health:'<svg viewBox="0 0 160 80" class="ico-health"><path d="M30 28 H86 V52 H130" fill="none" stroke="#0D3F4A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle class="dt" cx="86" cy="52" r="4" fill="#0E794E"/></svg>'
   };
   function build(){
@@ -37976,6 +38054,7 @@ body.ost-open #ostIndex{ display:none; }
      ['tax-planning','tax','Tax Planning','Plan Roth conversions year by year.'],
      ['budget','budget','Detailed Budgeter','Map spending now and in retirement.'],
      ['withdrawal-strategy','withdraw','Withdrawal Strategy','Choose which accounts pay you first.'],
+     ['scenario-adjust','adjust','Adjust a scenario','Fine-tune any scenario, lever by lever.'],
      ['healthcare','health','Healthcare Costs','Price care before and after Medicare.']
     ].forEach(function(t){ var c=document.createElement('div'); c.className='opt-card ost-tool'; c.dataset.tool=t[0]; c.setAttribute('role','link'); c.tabIndex=0; c.innerHTML='<div class="ost-icon">'+ICO[t[1]]+'</div><div class="opt-card-t">'+t[2]+'</div><div class="opt-card-sub">'+t[3]+'</div>'; grid.appendChild(c); });
   }
