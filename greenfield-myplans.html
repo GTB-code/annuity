@@ -38341,6 +38341,13 @@ body[data-view="today"].pm-open #powerMode .pm-tbl th:last-child, body[data-view
 body[data-view="today"] .pm-choice[data-pm="rate"], body[data-view="today"] .pm-rates, body[data-view="today"] .pm-sd,
 body[data-view="today"] .pm-how, body[data-view="today"] .pm-over, body[data-view="today"] .pm-stage, body[data-view="today"] .pm-stage-rate,
 body[data-view="today"] .fb-three-up, body[data-view="today"] .fb-sd, body[data-view="today"] .fb-how, body[data-view="today"] .fb-anch{ display:none !important; }
+/* scenarios are a planning idea: only My Plans shows them */
+body:not([data-view="plan"]) .wi-band, body:not([data-view="plan"]) .wi-scrim, body:not([data-view="plan"]) .scn-pop, body:not([data-view="plan"]) .rs-modal{ display:none !important; }
+body:not([data-view="plan"]).whatif-solid::after{ display:none !important; }
+body:not([data-view="plan"]).whatif-open .layout.page.on, body:not([data-view="plan"]).whatif-open .hm-page.on{ margin-top:0 !important; }
+body:not([data-view="plan"]).whatif-open .layout.page.on > .side, body:not([data-view="plan"]).whatif-open .layout.page.on > .rail{ top:96px !important; }
+body:not([data-view="plan"]).whatif-open .layout.page.on > .side{ max-height:calc(100vh - 96px) !important; }
+body:not([data-view="plan"]).whatif-open #powerMode, body:not([data-view="plan"]).whatif-open .ps-wrap{ top:73px; }
 </style>
 <script>
 (function(){
