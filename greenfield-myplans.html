@@ -39131,7 +39131,7 @@ body:not([data-view="plan"]).whatif-open #powerMode, body:not([data-view="plan"]
 <!-- ===== Scenarios: two simpler takes, behind a tiny toggle ===== -->
 <style id="scnVersCSS">
 .sv-toggle{ display:none !important; }
-body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
+body.scn-open:not(.scn-one) .sv-toggle{ display:none !important; }
 .sv-toggle{ position:fixed; bottom:20px; left:24px; z-index:95; border:1px solid var(--hairline-strong); background:#fff; display:inline-flex; gap:2px; padding:3px; background:#F2F3F5; border-radius:999px; }
 .sv-toggle button{ border:0; background:none; font:inherit; font-size:12px; font-weight:600; color:var(--text-secondary); padding:4px 10px; border-radius:999px; cursor:pointer; }
 .sv-toggle button.on{ background:#1F2A44; color:#fff; }
@@ -39328,6 +39328,18 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
 .sv3-row a{ font-size:13.5px; font-weight:600; color:var(--green-cta); cursor:pointer; }
 .sv3-row a.x{ color:var(--text-secondary); font-size:16px; }
 .sv3-empty{ font-size:14.5px; color:var(--text-secondary); padding:12px 0; }
+.svc-promo{ display:flex; align-items:center; gap:16px; margin:36px 0 8px; padding:20px 22px; border:1px solid #CFE6DA; border-radius:16px; background:#F6FBF8; }
+.svc-promo .ic{ flex:none; width:40px; height:40px; border-radius:50%; background:var(--green-cta); color:#fff; display:flex; align-items:center; justify-content:center; }
+.svc-promo .ic svg{ width:20px; height:20px; }
+.svc-promo .tx{ flex:1; min-width:0; }
+.svc-promo .tx b{ display:block; font-size:18px; font-weight:600; color:var(--ink); }
+.svc-promo .tx span{ display:block; font-size:15px; line-height:1.45; color:var(--text-secondary); margin-top:2px; }
+.svc-promo .go{ flex:none; font:inherit; font-size:15px; font-weight:600; height:44px; padding:0 20px; border:0; border-radius:999px; background:var(--green-cta); color:#fff; cursor:pointer; white-space:nowrap; }
+.svc-promo .go:hover{ background:#0B6440; }
+#optStage .svc-promo{ display:none; }
+@media (max-width:760px){ .svc-promo{ flex-wrap:wrap; } .svc-promo .go{ width:100%; } }
+.sv-toggle{ display:none !important; }
+.scm-btn{ display:none !important; }
 </style>
 <script>
 (function(){
@@ -39338,7 +39350,8 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
   function usd(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
   function money(v){ v=Math.abs(v); return v>=1e6 ? '$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M' : '$'+Math.round(v/1e3)+'K'; }
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-  function get(){ try{ return localStorage.getItem(KEY)||'1'; }catch(e){ return '1'; } }
+  /* Manage scenarios won: it is the Scenarios page now, and the version switcher is hidden */
+  function get(){ return '8'; }
   function setV(v){ try{ localStorage.setItem(KEY, v); }catch(e){} }
   var WI=function(){ return window.WHATIF; };
   function colorOf(id){ var i=WI().list().map(function(x){ return x.id; }).indexOf(id); return COLS[(i<0?0:i)%COLS.length]; }
@@ -39422,7 +39435,7 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
     var list=CMP.map(function(o){ var m=w.metricsFor(Object.assign({ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, o.vals), o.moves); return m?{o:o, m:m, col:colOf(o)}:null; }).filter(Boolean);
     var title= list.length===1 ? 'Your plan vs. '+esc(list[0].o.name) : 'Your plan vs. '+list.length+' scenarios';
     var others=w.list().filter(function(it){ return !CMP.some(function(o){ return o.id===it.id; }); });
-    var h='<button type="button" class="sv-back" data-act="back">← My Plans</button><h1>'+title+'</h1><p class="sv-sub">Every number side by side, on the same assumptions. Nothing changes until you choose.</p>';
+    var h='<button type="button" class="sv-back" data-cmpback="1">← Manage scenarios</button><h1>'+title+'</h1><p class="sv-sub">Every number side by side, on the same assumptions. Nothing changes until you choose.</p>';
     h+='<div class="svc-sel"><div class="svc-slot plan"><i style="background:#10182C"></i><span>My Financial Plan</span><small>baseline</small></div><span class="svc-vs">vs</span>'+CMP.map(function(o){ var c=colOf(o); return '<div class="svc-slot" style="--c:'+c+'"><i style="background:'+c+'"></i><span title="'+esc(o.name)+'">'+esc(o.name)+'</span>'+(CMP.length>1?'<button type="button" class="svc-x" data-cmpx="'+o.id+'" aria-label="Remove from compare">×</button>':'')+'</div>'; }).join('')+(others.length?'<div class="svc-more"><button type="button" class="svc-addb" aria-haspopup="true">+ Add to compare</button>'+(others.length>1?'<button type="button" class="svc-addb svc-all" data-cmpall="1">Show all '+(CMP.length+others.length)+'</button>':'')+'<div class="svc-menu" hidden>'+others.map(function(it){ return '<button type="button" data-cmpt="'+it.id+'"><i style="background:'+colorOf(it.id)+'"></i><span>'+esc(it.name)+'</span><small>'+esc(changes(it).slice(0,2).join(' · '))+'</small></button>'; }).join('')+'</div></div>':'')+'</div>';
     /* chart */
     var W=1000,H=340,L=64,R=W-16,T=16,Bm=H-30; var rows=p.rows||[]; var y0=rows[0].y, y1=rows[rows.length-1].y; var hi=0; rows.forEach(function(r){ hi=Math.max(hi,r.bal); }); list.forEach(function(x){ (x.m.rows||[]).forEach(function(r){ hi=Math.max(hi,r.bal); }); }); hi=Math.ceil(hi*1.08/500000)*500000||1;
@@ -39457,7 +39470,11 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
     h+='</tbody></table>';
     /* what each one means */
     h+='<div class="svc-cards">'+list.map(function(x){ var ch=changes(x.o.id==='__live'?{vals:x.o.vals, moves:x.o.moves}:x.o); var verdict=window.__scnStrip?window.__scnStrip.verdict(x.m,p):''; return '<div class="svc-card" data-cid="'+x.o.id+'"><div class="h"><i style="background:'+x.col+'"></i>'+esc(x.o.name)+'</div><div class="ch">'+ch.map(function(c){ return '<span>'+esc(c)+'</span>'; }).join('')+'</div><p>'+verdict+'</p><div class="a">'+(x.o.id==='__live'?'<a data-cact="keep">Keep it</a>':'<a data-cact="plan">Make this my plan</a><a data-cact="dup">Duplicate</a>')+(list.length>1?'<a class="mute" data-cact="drop">Remove from compare</a>':'')+'</div></div>'; }).join('')+'</div>';
+    var first=list[0]&&list[0].o, pname=list.length===1&&first?esc(first.name):'a scenario';
+    h+='<div class="svc-promo"><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.1 6.4L20.5 10.5 14.1 12.6 12 19l-2.1-6.4L3.5 10.5l6.4-2.1z"/></svg></span><div class="tx"><b>Make '+pname+' even better</b><span>Fine-tune it with sliders in Optimize, or let Autopilot find the best version for you.</span></div><button type="button" class="go" data-promo="'+(first&&first.id!=='__live'?first.id:'')+'">Optimize '+(list.length===1?'this scenario':'a scenario')+' →</button></div>';
     alt.innerHTML=h;
+    var bk=alt.querySelector('[data-cmpback]'); if(bk) bk.addEventListener('click', function(e){ e.stopPropagation(); CMP=null; HOST=null; paint(); window.scrollTo(0,0); });
+    var pr=alt.querySelector('[data-promo]'); if(pr) pr.addEventListener('click', function(e){ e.stopPropagation(); var id=pr.dataset.promo; if(window.SCENARIOS) window.SCENARIOS.close(); var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /optimize/i.test(x.textContent); })[0]; if(nav) nav.click(); var n=0, t=setInterval(function(){ if(window.__optTools){ clearInterval(t); window.__optTools.open('scenario-adjust'); setTimeout(function(){ var sel=document.querySelector('#scenario-adjust .tc-pick select'); if(sel && id && sel.value!==id){ sel.value=id; sel.dispatchEvent(new Event('change',{bubbles:true})); } window.scrollTo(0,0); }, 250); } else if(++n>40) clearInterval(t); }, 100); });
     var ab=alt.querySelector('.svc-addb'), mn=alt.querySelector('.svc-menu'); if(ab) ab.addEventListener('click', function(e){ e.stopPropagation(); mn.hidden=!mn.hidden; });
     document.addEventListener('click', function cl(e){ if(mn && !e.target.closest('.svc-more')){ mn.hidden=true; } }, { once:true });
     var sa=alt.querySelector('[data-cmpall]'); if(sa) sa.addEventListener('click', function(e){ e.stopPropagation(); w.list().forEach(function(it){ if(!CMP.some(function(x){ return x.id===it.id; })) CMP.push(it); }); vC(); });
@@ -39668,17 +39685,17 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
 .cc-tbl{ width:100%; border-collapse:collapse; }
 .cc-tbl th{ text-align:left; font-size:12.5px; font-weight:500; color:var(--text-secondary); padding:10px 12px; border-bottom:1px solid var(--hairline-strong); white-space:nowrap; }
 .cc-tbl th.n, .cc-tbl td.n{ text-align:right; }
-.cc-tbl td{ padding:14px 12px; border-bottom:1px solid var(--hairline); vertical-align:middle; font-size:14px; color:var(--ink); }
+.cc-tbl td{ padding:16px 12px; border-bottom:1px solid var(--hairline); vertical-align:middle; font-size:14px; color:var(--ink); }
 .cc-tbl tr:hover td{ background:#FAFBFB; }
 .cc-tbl tr.off td{ color:var(--text-secondary); }
 .cc-pick{ width:22px; height:22px; border-radius:6px; border:1.5px solid var(--hairline-strong); background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
 .cc-pick.on{ background:var(--c); border-color:var(--c); }
 .cc-pick svg{ width:12px; height:12px; color:#fff; opacity:0; }
 .cc-pick.on svg{ opacity:1; }
-.cc-nm{ font-size:15px; font-weight:600; outline:none; border-radius:4px; padding:1px 3px; margin:-1px -3px; cursor:text; }
+.cc-nm{ font-size:18px; font-weight:600; letter-spacing:-0.1px; outline:none; border-radius:4px; padding:1px 3px; margin:-1px -3px; cursor:text; }
 .cc-nm:hover{ background:#F3F5F6; }
 .cc-nm:focus{ background:#fff; box-shadow:0 0 0 1.5px var(--green-cta); }
-.cc-chg{ display:block; font-size:12.5px; color:var(--text-secondary); margin-top:2px; max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cc-chg{ display:block; font-size:13.5px; color:var(--text-secondary); margin-top:4px; max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .cc-tbl b{ font-weight:600; }
 .cc-d{ display:block; font-size:12px; font-weight:600; margin-top:1px; color:var(--text-secondary); }
 .cc-d.pos{ color:var(--green-cta); } .cc-d.neg{ color:#B42318; }
@@ -39848,7 +39865,9 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
     host=h||host; if(!host) return; var w=W(); if(!w || !w.planMetrics || !w.base()) return; var p=w.planMetrics(); if(!p) return;
     var items=w.list(), B=base();
     if(NEW){ renderNew(p, B); return; }
-    if(SHOW===null){ SHOW={}; items.slice(0,3).forEach(function(it){ SHOW[it.id]=true; }); }
+    if(SHOW===null) SHOW={};
+    /* scenarios made since the page was last drawn start ticked, up to three on the chart */
+    items.forEach(function(it){ if(SHOW[it.id]===undefined) SHOW[it.id]=items.filter(function(x){ return SHOW[x.id]; }).length<3; });
     var data=items.map(function(it,i){ var m=w.metricsFor(Object.assign({}, B, it.vals), it.moves); return m?{ it:it, m:m, c:col(i), rows:bend(m.rows, it.moves), dc:m.conf-p.conf, de:m.end-p.end }:null; }).filter(Boolean);
     var sorted=data.slice(); if(SORT==='conf') sorted.sort(function(a,b){ return b.m.conf-a.m.conf; }); else if(SORT==='end') sorted.sort(function(a,b){ return b.m.end-a.m.end; }); else if(SORT==='az') sorted.sort(function(a,b){ return a.it.name.localeCompare(b.it.name); });
     var shown=data.filter(function(x){ return SHOW[x.it.id]; });
