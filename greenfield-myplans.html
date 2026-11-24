@@ -38201,8 +38201,7 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     function paint(){
       var w=W(); if(!w||!w.planMetrics||!w.base()) return; if(V===null) load((w.list()[0]||{}).id||null);
       var items=w.list(), B=base(), it=sel&&items.filter(function(x){ return x.id===sel; })[0], mids=Object.keys(M);
-      var h='<h2 class="ost-hero">Your plan vs. <span class="p">'+(it?esc(it.name):'a new scenario')+'</span></h2><p class="ost-herosub">Fine-tune it here. Every number below follows the sliders, and nothing changes until you save.</p>';
-      h+='<div class="svc-sel tc-sel"><div class="svc-slot plan"><i style="background:#10182C"></i><span>My Financial Plan</span><small>baseline</small></div><span class="svc-vs">vs</span><div class="sa-sel tc-pick"><select aria-label="Scenario">'+items.map(function(x){ return '<option value="'+x.id+'"'+(x.id===sel?' selected':'')+'>'+esc(x.name)+'</option>'; }).join('')+'<option value=""'+(sel?'':' selected')+'>+ New scenario</option></select><span class="car">▾</span></div></div>';
+      var h='<div class="tc-head"><h2 class="ost-hero">Your plan vs. <span class="p">'+(it?esc(it.name):'a new scenario')+'</span></h2><div class="sa-sel tc-pick tc-switch"><span class="lb">Switch scenario</span><span class="car">▾</span><select aria-label="Switch scenario">'+items.map(function(x){ return '<option value="'+x.id+'"'+(x.id===sel?' selected':'')+'>'+esc(x.name)+'</option>'; }).join('')+'<option value=""'+(sel?'':' selected')+'>+ New scenario</option></select></div></div><p class="ost-herosub">Fine-tune it here. Every number below follows the sliders, and nothing changes until you save.</p>';
       h+='<div class="ap-card">'+apHTML()+'</div>';
       h+='<div class="tc-levs">'+LV.map(function(l){ return levRow(l, B); }).join('')+
         mids.map(function(id){ var mv=M[id], c=ctl(mv); if(!c) return '<div class="sa-lev is-diff"><div class="r"><span>'+esc(mv.label)+' <button type="button" class="sa-del" data-del="'+id+'" aria-label="Remove">×</button></span></div></div>'; return '<div class="sa-lev is-diff" data-mrow="'+id+'"><div class="r"><span>'+c.t+lockBtn(id)+' <button type="button" class="sa-del" data-del="'+id+'" aria-label="Remove">×</button></span><b>'+c.f(mv.v)+'</b></div><input type="range" data-mid="'+id+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+mv.v+'" style="--p:'+((mv.v-c.min)/(c.max-c.min)*100)+'%"></div>'; }).join('')+'</div>';
@@ -38421,6 +38420,16 @@ body.ost-open #ostIndex{ display:none; }
 #optStage .tc-name{ flex:1 1 200px; height:40px; max-width:320px; font-size:15px; }
 #optStage .tc-levs{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:44px; margin-top:8px; }
 #optStage .tc-levs .sa-lev{ padding:14px 0 10px; }
+/* top of Optimize a scenario: one headline row with the switcher on the right, then Autopilot */
+#optStage .tc-head{ display:flex; align-items:center; justify-content:space-between; gap:20px; }
+#optStage .tc-head .ost-hero{ margin-bottom:0; min-width:0; }
+#optStage .tc-head .tc-pick.tc-switch{ flex:0 0 auto; }
+#optStage .tc-switch{ position:relative; flex:none; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px; border:1px solid var(--hairline-strong); border-radius:999px; background:#fff; font-size:14.5px; font-weight:600; color:var(--ink); margin:0; width:auto !important; min-width:0 !important; max-width:none; flex:0 0 auto; }
+#optStage .tc-switch:hover{ background:#F6F7F8; }
+#optStage .tc-head .tc-pick.tc-switch .car{ position:static !important; transform:none !important; right:auto; top:auto; font-size:11px; color:var(--text-secondary); pointer-events:none; }
+#optStage .tc-switch select{ position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; border:0; padding:0; margin:0; font-size:15px; }
+#optStage .tc-head + .ost-herosub{ margin-top:8px; margin-bottom:22px; }
+#optStage .ap-card{ margin-top:0; margin-bottom:26px; }
 #optStage .tc-cmp{ margin-top:30px; }
 #optStage .tc-cmp > .sv-back, #optStage .tc-cmp > h1, #optStage .tc-cmp > .sv-sub, #optStage .tc-cmp > .svc-sel, #optStage .tc-cmp > .svc-cards{ display:none !important; }
 #optStage .tc-save{ margin-top:24px; justify-content:flex-end; }
@@ -40352,6 +40361,27 @@ body[data-view="today"] #sideNav > .nav-more{ order:6; align-self:flex-start; }
 body[data-view="today"] #sideNav > .ins-div, body[data-view="today"] #sideNav > .ins-lab, body[data-view="today"] #sideNav > #xpNav{ order:7; }
 body[data-view="today"] #sideNav > .side-download{ order:9; align-self:flex-start; }
 </style>
+<!-- ===== In a scenario: the page subheader invites the next step, adding inputs ===== -->
+<style id="scnSubCSS">
+.snap-sub .scn-sublink{ font:inherit; font-weight:600; color:var(--green-cta); background:none; border:0; padding:0; cursor:pointer; white-space:nowrap; }
+.snap-sub .scn-sublink:hover{ text-decoration:underline; }
+</style>
+<script>
+(function(){
+  'use strict';
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function paint(){
+    var so=window.WHATIF && WHATIF.state && WHATIF.state.solid;
+    [].forEach.call(document.querySelectorAll('p.pf-sub.snap-sub'), function(p){
+      if(p.dataset.orig===undefined) p.dataset.orig=p.innerHTML;
+      var h= so ? 'This is a scenario, a safe copy of your plan. Make it yours: <button type="button" class="scn-sublink" data-scnadd="1">Add life events and other inputs →</button>' : p.dataset.orig;
+      if(p.dataset.scn!==(so?so.id:'')){ p.dataset.scn=so?so.id:''; p.innerHTML=h; }
+    });
+  }
+  document.addEventListener('click', function(e){ var b=e.target.closest && e.target.closest('[data-scnadd]'); if(!b) return; e.preventDefault(); if(window.__openEventEditor) window.__openEventEditor(); });
+  document.addEventListener('whatif:change', paint); setInterval(paint, 700); paint();
+})();
+</script>
 <!-- ===== "Make this my plan": always confirm, and say it overwrites the main plan ===== -->
 <style id="planConfirmCSS">
 .pc-scrim{ position:fixed; inset:0; background:rgba(16,24,44,.42); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; transition:opacity .18s ease; }
@@ -40481,6 +40511,9 @@ body.whatif-solid.scn-open #scnPage .scn-frame{ margin-top:82px; }
 .ps-btn.is-scn{ color:var(--ink); font-weight:600; border-color:#2F6F93; }
 .ps-btn.is-scn .dot{ background:#2F6F93; }
 .ps-btn .lbl{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* line the dot and label up with the checkbox and the Manage scenarios icon */
+.pdd-wrap .ps-btn{ margin-left:-11px; width:calc(100% + 11px); gap:10px; }
+.pdd-wrap .ps-btn .dot{ margin:0 3px; width:10px; }
 .ps-btn .lbl small{ display:block; font-size:11.5px; font-weight:500; color:var(--text-secondary); line-height:1.2; }
 .ps-btn .car{ flex:none; font-size:11px; color:var(--text-secondary); transition:transform .15s ease; }
 .ps-btn[aria-expanded="true"] .car{ transform:rotate(180deg); }
