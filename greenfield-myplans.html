@@ -33090,6 +33090,8 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
 /* the page moves down to make room */
 body.whatif-open .layout.page.on, body.whatif-open .hm-page.on{ margin-top:60px !important; }
 body.whatif-open .layout.page.on.opt-index, body.whatif-open .layout.page.on.sub-layout, body.whatif-open .layout.page.on.alo-layout, body.whatif-open .layout.page.on.bud-layout{ margin-top:60px !important; }
+body.whatif-open[data-view="plan"].sum-open .layout.page.sum-layout{ margin-top:60px !important; }
+body.whatif-open[data-view="plan"].sum-open .layout.page.sum-layout > .rail{ top:156px; }
 body.whatif-open #powerMode{ top:133px; }
 body.whatif-open .layout.page.on > .side, body.whatif-open .layout.page.on > .rail{ top:156px; }
 body.whatif-open .ps-wrap{ top:133px; }
@@ -39985,6 +39987,63 @@ body.whatif-cmp[data-view="plan"]:not(.scn-open) aside.rail{ visibility:hidden; 
   new MutationObserver(function(){ var c=document.body.classList; if(c.contains('whatif-cmp') && c.contains('scn-open')){ var cb=document.querySelector('.wi-cmpbtn'); if(cb) cb.click(); return; } if(c.contains('whatif-cmp')) requestAnimationFrame(place); }).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
   window.addEventListener('resize', place); window.addEventListener('scroll', place, { passive:true });
   document.addEventListener('whatif:change', function(){ setTimeout(place, 30); });
+})();
+</script>
+<!-- ===== My Plans right rail, in a scenario: what this scenario gives you ===== -->
+<style id="scnRailCSS">
+.scn-rail{ display:none; }
+body.whatif-solid[data-view="plan"]:not(.bai-open):not(.scn-open):not(.sum-open) aside.rail > .scn-rail{ display:block; }
+body.whatif-solid[data-view="plan"]:not(.bai-open):not(.scn-open):not(.sum-open) aside.rail > *:not(.scn-rail){ display:none !important; }
+.scn-rail .story-head{ display:flex; align-items:center; gap:6px; min-height:38px; font-size:18px; font-weight:700; line-height:27px; color:var(--ink); margin:0 0 var(--s-4); }
+.scn-rail .story-head .spk{ color:var(--green); width:17px; height:17px; flex:none; display:inline-flex; }
+.scn-rail .story-head .spk svg{ width:17px; height:17px; }
+.scn-rail p{ font-size:16px; line-height:1.6; color:var(--text-secondary); margin:0; max-width:none; }
+.scn-rail p b{ color:var(--ink); font-weight:600; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var BR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="9" r="2.4"/><path d="M6 8.4v7.2M18 11.4c0 3-3 4.2-9.6 5.4"/></svg>';
+  function W(){ return window.WHATIF; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function usd(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function money(v){ v=Math.abs(v); return v>=1e6 ? '$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M' : '$'+Math.round(v/1e3)+'K'; }
+  function yrs(n){ return n+(n===1?' year':' years'); }
+  /* the one thing this scenario is really about, said the way you would say it to a friend */
+  function story(v, B, moves, m, p){
+    var dr=(v.ret!=null?v.ret:B.ret)-B.ret, ds=(v.spend!=null?v.spend:B.spend)-B.spend, dss=(v.ss!=null?v.ss:B.ss)-B.ss, life=v.life!=null?v.life:B.life, rr=v.ret_r!=null?v.ret_r:B.ret_r, mk=Object.keys(moves||{});
+    var holds=m.conf>=80 ? 'and the plan still holds at <b>'+m.conf+'% confidence</b>.' : 'at <b>'+m.conf+'% confidence</b>, so it needs something to lean on.';
+    if(dr<0) return ['<span class="g">'+yrs(-dr)+'</span> of your life back.', 'Retire at <b>'+(B.ret+dr)+'</b> instead of '+B.ret+'. That is <b>'+(-dr*12)+' more months</b> that are entirely yours, '+holds];
+    if(ds>0) return ['<span class="g">'+usd(ds)+' more</span> a month to live on.', 'That is <b>'+usd(ds*12)+' a year</b> for travel, family, or just saying yes more often, '+holds];
+    if(life>B.life) return ['A <span class="g">more generous</span> retirement.', 'More room in every month for the things you have been putting off, '+holds];
+    if(dr>0) return ['<span class="g">'+yrs(dr)+' more</span> at work, a lot more room later.', 'Working to '+(B.ret+dr)+' lifts confidence to '+m.conf+'% and leaves '+money(m.end)+' at 92.'];
+    if(ds<0) return ['Live on <span class="g">'+usd(-ds)+' less</span>, worry a lot less.', 'A lighter monthly budget lifts confidence to '+m.conf+'% and leaves '+money(m.end)+' at 92.'];
+    if(dss<0) return ['Social Security, <span class="g">'+yrs(-dss)+' sooner</span>.', 'Checks start at '+(B.ss+dss)+', which takes pressure off your savings in the early years, '+holds];
+    if(dss>0) return ['A <span class="g">bigger check</span> for life.', 'Waiting to '+(B.ss+dss)+' raises the income you can never outlive, '+holds];
+    if(rr<B.ret_r) return ['What if markets are <span class="g">unkind</span>?', 'Rough early years are the real test. Here the plan lands at '+m.conf+'% confidence, so you know before it happens.'];
+    if(rr>B.ret_r) return ['What if markets are <span class="g">kind</span>?', 'With stronger returns the plan reaches '+m.conf+'% confidence and '+money(m.end)+' at 92.'];
+    if(mk.length) return ['<span class="g">'+esc((moves[mk[0]].label||'A change').split(':')[0])+'</span>, tried on for size.', 'See what it does to the rest of your life before you commit to it.'];
+    return ['A <span class="g">fresh page</span> to dream on.', 'This starts as an <b>exact copy</b> of your plan. Change anything on this page, a life event, a date, an amount, and see where it leads. Your real plan stays untouched.'];
+  }
+  function paint(){
+    var rail=[].slice.call(document.querySelectorAll('.layout.page.on > aside.rail, aside.rail.rail-ai-host')).filter(function(r){ return r.offsetParent || document.body.classList.contains('whatif-solid'); })[0]; if(!rail) return;
+    var w=W(), so=w && w.state && w.state.solid, el=rail.querySelector(':scope > .scn-rail');
+    if(!so || !w.planMetrics || !w.base()){ return; }
+    if(!el){ el=document.createElement('div'); el.className='scn-rail'; rail.insertBefore(el, rail.firstChild);
+      el.addEventListener('click', function(e){ var b=e.target.closest('[data-sr]'); if(!b) return; var a=b.dataset.sr;
+        if(a==='event'){ var add=document.querySelector('#events-block .acc-head .cx-add-asset'); if(add) add.click(); }
+        else if(a==='compare'){ var c=document.querySelector('.wi-cmpbtn'); if(c) c.click(); }
+        else if(a==='basics'){ var id=(W().state.solid||{}).id; var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /optimize/i.test(x.textContent); })[0]; if(nav) nav.click(); var n=0, t=setInterval(function(){ if(window.__optTools){ clearInterval(t); window.__optTools.open('scenario-adjust'); setTimeout(function(){ var sel=document.querySelector('#scenario-adjust .sa-sel select'); if(sel && id){ sel.value=id; sel.dispatchEvent(new Event('change',{bubbles:true})); } }, 300); } else if(++n>40) clearInterval(t); }, 100); }
+      }); }
+    var B=w.base(), p=w.planMetrics(), v=so.vals||{}, m=w.metricsFor(Object.assign({ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }, v), so.moves); if(!m||!p) return;
+    var s=story(v, B, so.moves, m, p), dc=m.conf-p.conf, de=m.end-p.end;
+    var spk=document.querySelector('.rail .story-head .spk, .rail .rah-title + .spark, .rail .rh .spark'); spk=spk?spk.innerHTML:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"/></svg>';
+    var h='<div class="story-head">'+s[0].replace(/<\/?span[^>]*>/g,'').replace(/\.$/,'')+' <span class="spk">'+spk+'</span></div><p>'+s[1]+'</p>';
+    if(el.innerHTML!==h) el.innerHTML=h;
+  }
+  document.addEventListener('whatif:change', function(){ setTimeout(paint, 40); });
+  new MutationObserver(function(){ if(document.body.classList.contains('whatif-solid')) setTimeout(paint, 40); }).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
+  setInterval(function(){ if(document.body.classList.contains('whatif-solid') && document.body.dataset.view==='plan') paint(); }, 1200);
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
