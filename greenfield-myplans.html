@@ -38232,7 +38232,7 @@ body.ost-open .opt-index{ padding-bottom:140px; }
       var a=e.target.closest('[data-sact]'); if(!a||a.disabled) return;
       if(a.dataset.sact==='create'){ var B2=base(), o2=[]; if(V.ret!==B2.ret) o2.push('Retire at '+V.ret); if(V.ss!==B2.ss) o2.push('Social Security at '+V.ss); if(V.spend!==B2.spend) o2.push('Spend '+usd(V.spend)); var nit=sel ? w.update(sel, V, M, newName.trim()||null) : w.add(newName.trim()||o2.join(', ')||'New scenario', V, M); newName=''; V=null;
         var nv=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my plans/i.test(x.textContent); })[0]; if(nv) nv.click();
-        setTimeout(function(){ w.activate(nit); setTimeout(function(){ var ev=document.getElementById('events-block'); if(ev){ var y=ev.getBoundingClientRect().top+window.scrollY-150; window.scrollTo({ top:Math.max(0,y), behavior:'smooth' }); } if(window.__peToast) window.__peToast('You’re in '+nit.name+'. Edit any life event and it stays in this scenario.'); }, 450); }, 300); return; }
+        setTimeout(function(){ w.activate(nit); if(window.__openEventEditor) window.__openEventEditor(); }, 300); return; }
       if(a.dataset.sact==='save'){ if(sel){ w.update(sel, V, M, newName.trim()||null); if(window.__peToast) window.__peToast('Saved'); } else { var B=base(), o=[]; if(V.ret!==B.ret) o.push('Retire at '+V.ret); if(V.ss!==B.ss) o.push('Social Security at '+V.ss); if(V.spend!==B.spend) o.push('Spend '+usd(V.spend)); Object.keys(M).forEach(function(k){ o.push(M[k].label.split(':')[0]); }); var it=w.add(newName.trim()||o.join(', ')||'A scenario', V, M); newName=''; sel=it.id; if(window.__peToast) window.__peToast('Saved: '+it.name); } dirty=false; paint(); return; }
       if(a.dataset.sact==='open'){ var it2=w.list().filter(function(x){ return x.id===sel; })[0]; if(!it2) return; var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my plans/i.test(x.textContent); })[0]; if(nav) nav.click(); setTimeout(function(){ w.activate(it2); }, 300); }
     });
@@ -39932,7 +39932,7 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
     var go=host.querySelector('.nw-go'); if(go){ go.disabled=true; go.textContent='Creating…'; }
     var cc=host.querySelector('.cc'); if(cc) cc.classList.add('cc-out');
     setTimeout(function(){ NEW=false; if(window.SCENARIOS) SCENARIOS.close(); w.activate(it);
-      setTimeout(function(){ var ev=document.getElementById('events-block'); if(ev){ var y=ev.getBoundingClientRect().top+window.scrollY-150; window.scrollTo({ top:Math.max(0,y), behavior:'smooth' }); ev.classList.add('nw-flash'); setTimeout(function(){ ev.classList.remove('nw-flash'); }, 1600); } }, 260);
+      window.__openEventEditor();
     }, 220);
   }
   function goOptimize(tool){ if(window.SCENARIOS) SCENARIOS.close(); var a=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /optimize/i.test(x.textContent); })[0]; if(a) a.click(); var n=0, t=setInterval(function(){ if(window.__optTools){ clearInterval(t); window.__optTools.open(tool); } else if(++n>40) clearInterval(t); }, 100); }
@@ -40012,6 +40012,26 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && document.body.classList.contains('scm-open')){ e.stopPropagation(); mClose(); } }, true);
   document.addEventListener('whatif:change', function(){ arm(); if(document.body.classList.contains('scm-open')) mPaint(); });
   new MutationObserver(function(){ if(document.body.classList.contains('scn-open')) arm(); else mClose(); }).observe(document.body, { attributes:true, attributeFilter:['class'] });
+  /* land in Life Events with the green editor already open; keep trying until the page has settled */
+  window.__openEventEditor=function(){
+    var n=0, t=setInterval(function(){
+      n++; var b=document.body, ev=document.getElementById('events-block');
+      if(n>40){ clearInterval(t); return; }
+      if(b.dataset.view!=='plan' || b.classList.contains('scn-open') || !ev || !ev.offsetParent) return;
+      var top=ev.querySelector('.acct.pe-top'), ed=top && top.nextElementSibling && top.nextElementSibling.classList.contains('row-editor') ? top.nextElementSibling : null;
+      if(ed){ clearInterval(t); var r=ed.getBoundingClientRect(); if(r.top<80 || r.top>window.innerHeight*0.6) window.scrollTo({ top:Math.max(0, r.top+window.scrollY-97), behavior:'smooth' }); ev.classList.add('nw-flash'); setTimeout(function(){ ev.classList.remove('nw-flash'); }, 1600); return; }
+      var col=ev.querySelector('.acc-head .btn-collapse'); if(col && col.getAttribute('aria-expanded')==='false'){ col.click(); return; }
+      /* another event's editor is open: close it so the new one can lead */
+      var other=ev.querySelector('.row-editor'); if(other){ var cancel=other.querySelector('.ec-toggle'); if(cancel){ cancel.click(); return; } }
+      var add=ev.querySelector('.acc-head .cx-add-asset'); if(add) add.click();
+    }, 150);
+  };
+  /* after a new event is saved from the top editor, open the next blank one so they can keep adding */
+  document.addEventListener('click', function(e){
+    var b=e.target.closest && e.target.closest('#events-block .row-editor .btn-save'); if(!b || b.disabled) return;
+    var ed=b.closest('.row-editor'), row=ed && ed.previousElementSibling; if(!row || !row.classList.contains('pe-top')) return;
+    var n=0, t=setInterval(function(){ n++; if(n>60){ clearInterval(t); return; } if(document.body.contains(row) || document.body.contains(ed)) return; clearInterval(t); setTimeout(function(){ if(!document.querySelector('#events-block .row-editor')) window.__openEventEditor(); }, 250); }, 150);
+  }, true);
   window.__scnCC={ render:render, manage:mOpen };
 })();
 </script>
