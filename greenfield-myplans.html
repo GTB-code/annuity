@@ -33296,7 +33296,7 @@ body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid 
       '<span class="wi-name" spellcheck="false"></span>'+
       '<span class="wi-chips"></span>'+
       '<span class="wi-acts">'+
-        '<button type="button" class="wi-btn ghost wi-cmpbtn">Compare</button>'+
+        '<button type="button" class="wi-btn ghost wi-cmpbtn" title="Fine-tune this scenario in Optimize">Optimize</button>'+
         '<button type="button" class="wi-btn pri wi-keepbtn">Keep it</button>'+
         '<button type="button" class="wi-btn pri wi-planbtn" hidden>Make this my plan</button>'+
         '<button type="button" class="wi-x" aria-label="Discard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'+
@@ -33568,7 +33568,12 @@ body.whatif-solid::after{ content:''; position:fixed; inset:0; border:3px solid 
   document.addEventListener('click', function(e){ var fin=e.target.closest && e.target.closest('.plan-row[data-plan="financial"]'); if(fin && W.solid){ discard(); } }, true);
 
   /* ---------- wiring ---------- */
-  $cmp.addEventListener('click', function(){ W.cmp=!W.cmp; paint(); });
+  /* quick compare is parked for now: the bar's button takes the open scenario to Optimize instead */
+  $cmp.addEventListener('click', function(){
+    W.cmp=false; var id=(W.solid||{}).id;
+    var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /optimize/i.test(x.textContent); })[0]; if(nav) nav.click();
+    var n=0, t=setInterval(function(){ if(window.__optTools){ clearInterval(t); window.__optTools.open('scenario-adjust'); setTimeout(function(){ var sel=document.querySelector('#scenario-adjust .tc-pick select'); if(sel && id && sel.value!==id){ sel.value=id; sel.dispatchEvent(new Event('change',{bubbles:true})); } window.scrollTo(0,0); }, 250); } else if(++n>40) clearInterval(t); }, 100);
+  });
   var scrim=document.createElement('div'); scrim.className='wi-scrim'; document.body.appendChild(scrim);
   scrim.addEventListener('click', function(){ if(W.cmp){ W.cmp=false; paint(); } });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && W.open && W.cmp){ W.cmp=false; paint(); } });
@@ -39224,6 +39229,15 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:none !important; }
 .svc-tbl td small{ display:block; font-size:12px; font-weight:600; color:var(--text-secondary); }
 .svc-tbl td small.pos{ color:var(--green-cta); } .svc-tbl td small.neg{ color:#B42318; }
 .svc-tbl tr.sep td{ border-top:1px solid var(--hairline-strong); }
+.svc-sumh{ font-size:20px; font-weight:600; letter-spacing:-0.2px; color:var(--ink); margin:34px 0 0; }
+.svc-tbl.svc-sum{ margin-top:14px; }
+.svc-tbl tr.grp td{ border-top:0; padding:22px 0 8px; text-align:left; white-space:normal; }
+.svc-tbl tr.grp:first-child td{ padding-top:4px; }
+.svc-tbl tr.grp td b{ font-size:15px; font-weight:600; color:var(--ink); }
+.svc-tbl tr.grp td span{ font-size:13px; color:var(--text-secondary); margin-left:10px; }
+.svc-tbl tr.grp + tr td{ border-top:1px solid var(--hairline-strong); }
+.svc-tbl td.same b{ font-weight:400; color:var(--text-secondary); }
+.svc-tbl td.chg b{ color:#2F6F93; }
 .svc-cards{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:14px; margin-top:28px; }
 .svc-card{ border:1px solid var(--hairline); border-radius:16px; padding:16px 18px; }
 .svc-card .h{ display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; }
@@ -39458,15 +39472,24 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:none !important; }
       ['Savings at 70', function(m,rs){ var v=balAt(rs,70); return v==null?'—':money(v); }, function(m,rs){ var a=balAt(rs,70), b=balAt(p.rows,70); return a==null||b==null?'':cell(a,b,'$'); }],
       ['Savings at 80', function(m,rs){ var v=balAt(rs,80); return v==null?'—':money(v); }, function(m,rs){ var a=balAt(rs,80), b=balAt(p.rows,80); return a==null||b==null?'':cell(a,b,'$'); }],
       ['Savings at 90', function(m,rs){ var v=balAt(rs,90); return v==null?'—':money(v); }, function(m,rs){ var a=balAt(rs,90), b=balAt(p.rows,90); return a==null||b==null?'':cell(a,b,'$'); }],
-      ['sep'],
-      ['Retire at', function(m,rs,v){ return v.ret; }, function(m,rs,v){ return cell(v.ret,B.ret,'inv'); }],
-      ['Social Security at', function(m,rs,v){ return v.ss; }, function(){ return ''; }],
-      ['Monthly spending', function(m,rs,v){ return usd(v.spend); }, function(m,rs,v){ return v.spend===B.spend?'':'<small>'+(v.spend>B.spend?'+':'−')+usd(Math.abs(v.spend-B.spend))+'</small>'; }]
+      ['grp','Inputs','What is different from your plan'],
+      ['Retire at', function(m,rs,v){ return v.ret; }, function(m,rs,v){ return cell(v.ret,B.ret,'inv'); }, 'ret'],
+      ['Social Security at', function(m,rs,v){ return v.ss; }, function(){ return ''; }, 'ss'],
+      ['Monthly spending', function(m,rs,v){ return usd(v.spend); }, function(m,rs,v){ return v.spend===B.spend?'':'<small>'+(v.spend>B.spend?'+':'−')+usd(Math.abs(v.spend-B.spend))+'</small>'; }, 'spend'],
+      ['Lifestyle', function(m,rs,v){ return ['Lean','Comfortable','Generous'][v.life]||'—'; }, function(){ return ''; }, 'life'],
+      ['Investment return', function(m,rs,v){ return ['Conservative','Balanced','Growth'][v.ret_r]||'—'; }, function(){ return ''; }, 'ret_r']
     ];
-    var pv={ ret:B.ret, ss:B.ss, spend:B.spend };
-    h+='<table class="svc-tbl"><thead><tr><th></th><th><i style="background:#10182C"></i>My Financial Plan</th>'+list.map(function(x){ return '<th><i style="background:'+x.col+'"></i>'+esc(x.o.name)+'</th>'; }).join('')+'</tr></thead><tbody>';
-    var sep=false; rowsT.forEach(function(r){ if(r[0]==='sep'){ sep=true; return; } var vv=function(o){ return Object.assign({}, pv, o.vals||{}); };
-      h+='<tr'+(sep?' class="sep"':'')+'><td>'+r[0]+'</td><td><b>'+r[1](p,p.rows,pv)+'</b></td>'+list.map(function(x){ return '<td><b>'+r[1](x.m,x.m.rows,vv(x.o))+'</b>'+r[2](x.m,x.m.rows,vv(x.o))+'</td>'; }).join('')+'</tr>'; sep=false; });
+    rowsT.unshift(['grp','Outputs','What it does to your results']);
+    /* life changes: one row each, across every scenario shown */
+    function mvParts(mv){ var l=String(mv.label||''), i=l.indexOf(': '); return i>0?[l.slice(0,i), l.slice(i+2)]:[l,'Added']; }
+    var mvT=[]; list.forEach(function(x){ Object.keys(x.o.moves||{}).forEach(function(id){ var t=mvParts(x.o.moves[id])[0]; if(t && mvT.indexOf(t)<0) mvT.push(t); }); });
+    function mvVal(o,t){ var r=null; Object.keys(o.moves||{}).forEach(function(id){ var q=mvParts(o.moves[id]); if(q[0]===t) r=q[1]; }); return r; }
+    var pv={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r };
+    var NC=list.length+2;
+    h+='<h3 class="svc-sumh">Summary of changes</h3><table class="svc-tbl svc-sum"><thead><tr><th></th><th><i style="background:#10182C"></i>My Financial Plan</th>'+list.map(function(x){ return '<th><i style="background:'+x.col+'"></i>'+esc(x.o.name)+'</th>'; }).join('')+'</tr></thead><tbody>';
+    var sep=false; rowsT.forEach(function(r){ if(r[0]==='sep'){ sep=true; return; } if(r[0]==='grp'){ h+='<tr class="grp"><td colspan="'+NC+'"><b>'+r[1]+'</b><span>'+r[2]+'</span></td></tr>'; return; } var vv=function(o){ return Object.assign({}, pv, o.vals||{}); };
+      h+='<tr'+(sep?' class="sep"':'')+'><td>'+r[0]+'</td><td><b>'+r[1](p,p.rows,pv)+'</b></td>'+list.map(function(x){ var v=vv(x.o), same=r[3] && v[r[3]]===pv[r[3]]; return '<td'+(r[3]?(same?' class="same"':' class="chg"'):'')+'><b>'+r[1](x.m,x.m.rows,v)+'</b>'+r[2](x.m,x.m.rows,v)+'</td>'; }).join('')+'</tr>'; sep=false; });
+    mvT.forEach(function(t){ h+='<tr><td>'+esc(t)+'</td><td class="same"><b>—</b></td>'+list.map(function(x){ var v=mvVal(x.o,t); return v==null?'<td class="same"><b>—</b></td>':'<td class="chg"><b>'+esc(v)+'</b></td>'; }).join('')+'</tr>'; });
     h+='</tbody></table>';
     /* what each one means */
     h+='<div class="svc-cards">'+list.map(function(x){ var ch=changes(x.o.id==='__live'?{vals:x.o.vals, moves:x.o.moves}:x.o); var verdict=window.__scnStrip?window.__scnStrip.verdict(x.m,p):''; return '<div class="svc-card" data-cid="'+x.o.id+'"><div class="h"><i style="background:'+x.col+'"></i>'+esc(x.o.name)+'</div><div class="ch">'+ch.map(function(c){ return '<span>'+esc(c)+'</span>'; }).join('')+'</div><p>'+verdict+'</p><div class="a">'+(x.o.id==='__live'?'<a data-cact="keep">Keep it</a>':'<a data-cact="plan">Make this my plan</a><a data-cact="dup">Duplicate</a>')+(list.length>1?'<a class="mute" data-cact="drop">Remove from compare</a>':'')+'</div></div>'; }).join('')+'</div>';
@@ -39650,6 +39673,25 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:none !important; }
   window.__scnVers={ set:function(v){ CMP=null; setV(String(v)); paint(); }, paint:paint, compareIn:function(host, objs){ HOST=host; CMP=(objs||[]).slice(); vC(); }, compareOut:function(){ HOST=null; }, compareClear:function(){ HOST=null; CMP=null; }, compare:function(objs){ HOST=null; CMP=(objs||[]).slice(); paint(); var pg=document.getElementById('scnPage'); if(pg) pg.scrollTop=0; window.scrollTo(0,0); } };
 })();
 </script>
+<style id="scnOpenMotionCSS">
+#scnPage.cc-leaving{ pointer-events:none; }
+#scnPage.cc-leaving > *{ animation:ccLeave .3s cubic-bezier(.4,0,.6,1) forwards; }
+#scnPage.cc-leaving tr.cc-picked td{ background:#F3F8FC; transition:background .15s ease; }
+#scnPage.cc-leaving tr:not(.cc-picked){ opacity:.35; transition:opacity .2s ease; }
+@keyframes ccLeave{ 0%{ opacity:1; transform:none; } 100%{ opacity:0; transform:translateY(-14px); } }
+body.wi-enter .wi-band.solid .wi-in{ animation:wiDrop .62s cubic-bezier(.22,1.25,.36,1) both; transform-origin:50% 0; }
+@keyframes wiDrop{ 0%{ opacity:0; transform:translateY(-26px) scale(.965); border-color:#2F6F93; } 55%{ opacity:1; border-color:#2F6F93; } 100%{ opacity:1; transform:none; border-color:#D3E3EF; } }
+body.wi-enter .wi-band.solid .wi-in > *{ animation:wiItem .42s cubic-bezier(.2,.7,.2,1) both; }
+body.wi-enter .wi-band.solid .wi-in > *:nth-child(1){ animation-delay:.22s; }
+body.wi-enter .wi-band.solid .wi-in > *:nth-child(2){ animation-delay:.28s; }
+body.wi-enter .wi-band.solid .wi-in > *:nth-child(3){ animation-delay:.34s; }
+body.wi-enter .wi-band.solid .wi-in > *:nth-child(4){ animation-delay:.40s; }
+body.wi-enter .wi-band.solid .wi-in > *:nth-child(n+5){ animation-delay:.46s; }
+@keyframes wiItem{ 0%{ opacity:0; transform:translateY(6px); } 100%{ opacity:1; transform:none; } }
+body.wi-enter .layout.page.on{ animation:wiPage .55s ease .12s both; }
+@keyframes wiPage{ 0%{ opacity:0; } 100%{ opacity:1; } }
+@media (prefers-reduced-motion: reduce){ body.wi-enter .wi-band.solid .wi-in, body.wi-enter .wi-band.solid .wi-in > *, body.wi-enter .layout.page.on, #scnPage.cc-leaving{ animation:none !important; } }
+</style>
 <!-- ===== Scenarios: Control center — Classic, rebuilt as one place to run every scenario ===== -->
 <style id="scnCCCSS">
 .cc{ max-width:1000px; }
@@ -39807,7 +39849,7 @@ body.scm-open .scm-scrim{ opacity:1; pointer-events:auto; } body.scm-open .scm-p
 @keyframes nwFlash{ 0%{ outline:2px solid rgba(14,121,78,0); outline-offset:6px; } 20%{ outline:2px solid rgba(14,121,78,.45); outline-offset:6px; } 100%{ outline:2px solid rgba(14,121,78,0); outline-offset:6px; } }
 .cc-tbl tbody tr:first-child td{ border-top:1px solid var(--hairline-strong); }
 .cc-tbl{ table-layout:fixed; width:100%; }
-.cc-tbl td:first-child{ width:34px; }
+.cc-tbl td:first-child{ width:auto; padding-left:2px; }
 .cc-tbl td:last-child{ width:120px; }
 .cc-tbl td{ overflow:visible; }
 .cc-tbl td:nth-child(2){ min-width:0; }
@@ -39861,6 +39903,15 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
     return '<svg viewBox="0 0 '+Wd+' '+H+'" role="img" aria-label="Savings over time, plan and scenarios">'+g+'</svg>';
   }
 
+  /* Open a scenario: the list steps back, then the blue bar drops in and the page settles under it */
+  var opening=false;
+  function openScn(it, row){
+    var w=window.WHATIF; if(!w || opening) return; var pg=document.getElementById('scnPage');
+    var calm=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function go(){ opening=false; if(pg) pg.classList.remove('cc-leaving'); document.body.classList.add('wi-enter'); w.activate(it); if(window.SCENARIOS) SCENARIOS.close(); window.scrollTo(0,0); setTimeout(function(){ document.body.classList.remove('wi-enter'); }, 1100); }
+    if(calm || !pg){ go(); return; }
+    opening=true; if(row) row.classList.add('cc-picked'); pg.classList.add('cc-leaving'); setTimeout(go, 300);
+  }
   function render(h){
     host=h||host; if(!host) return; var w=W(); if(!w || !w.planMetrics || !w.base()) return; var p=w.planMetrics(); if(!p) return;
     var items=w.list(), B=base();
@@ -39875,20 +39926,19 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
     var x='<button type="button" class="sv-back" data-act="back">← My Plans</button><div class="cc">';
     var nSel=shown.length;
     x+='<div class="cc-bar"><h1>Manage scenarios</h1>'+
-      '<button type="button" class="cc-btn" data-cc="compare"'+(nSel?'':' disabled')+'>Compare '+(nSel?nSel+' ':'')+'→</button><button type="button" class="cc-btn go" data-cc="new">+ New scenario</button></div>';
+      '<button type="button" class="cc-btn" data-cc="compare"'+(data.length?'':' disabled')+'>Compare '+(data.length>1?'all ':'')+'→</button><button type="button" class="cc-btn go" data-cc="new">+ New scenario</button></div>';
     if(!data.length){ x+='<div class="cc-empty">No scenarios yet. Start with one of these, or make your own.</div>'; }
     else {
       x+='<table class="cc-tbl"><tbody>';
       sorted.forEach(function(r){ var id=r.it.id, on=!!SHOW[id];
         var acts= CONFIRM===id ? '<div class="cc-conf">Delete?<button type="button" class="yes" data-cc="delyes" data-id="'+id+'">Delete</button><button type="button" data-cc="delno">Keep</button></div>'
           : '<div class="cc-acts"><button type="button" class="cc-a" data-cc="open" data-id="'+id+'">Open</button><div class="cc-more"><button type="button" class="cc-a" data-cc="menu" data-id="'+id+'" aria-label="More">•••</button>'+(MENU===id?'<div class="cc-menu"><button type="button" data-cc="adjust" data-id="'+id+'">Adjust in Optimize</button><button type="button" data-cc="plan" data-id="'+id+'" style="color:var(--green-cta);font-weight:600">Make this my plan</button><div style="height:1px;background:var(--hairline);margin:4px 6px"></div><button type="button" data-cc="rename" data-id="'+id+'">Rename</button><button type="button" data-cc="dup" data-id="'+id+'">Duplicate</button><button type="button" class="del" data-cc="del" data-id="'+id+'">Delete</button></div>':'')+'</div></div>';
-        x+='<tr class="'+(on?'':'off')+'" data-row="'+id+'"><td style="width:34px"><button type="button" class="cc-pick'+(on?' on':'')+'" style="--c:'+r.c+'" data-cc="pick" data-id="'+id+'" aria-pressed="'+on+'" aria-label="Show on chart">'+CHECK+'</button></td>'+
+        x+='<tr data-row="'+id+'">'+
           '<td><span class="cc-nm" contenteditable="true" spellcheck="false" data-id="'+id+'">'+esc(r.it.name)+'</span>'+(best && best.it.id===id && data.length>1?' <span class="cc-v good" style="margin-left:6px">Best</span>':'')+'<span class="cc-chg" title="'+esc(changes(r.it).join(', '))+'">'+esc(brief(r.it))+'</span></td>'+
           '<td>'+acts+'</td></tr>'; });
       x+='</tbody></table>';
     }
     x+='<div class="cc-starts"><span>Quick start:</span>'+STARTS.map(function(s,i){ return '<button type="button" data-cc="start" data-i="'+i+'">'+s[0]+'</button>'; }).join('')+'</div>';
-    if(data.length) x+='<div class="cc-chart"><div class="cc-ch"><b>Savings over time</b></div>'+chart(p, shown)+'</div>';
     x+='</div>';
     host.innerHTML=x; if(ANIM){ ANIM=false; var cc0=host.querySelector('.cc'); if(cc0) cc0.classList.add('cc-in'); }
     if(!host._cc){ host.addEventListener('input', onInput); host.addEventListener('submit', onSubmit); host._cc=true; host.addEventListener('click', onClick); host.addEventListener('change', onChange); host.addEventListener('keydown', onKey); host.addEventListener('focusout', onBlur); }
@@ -39906,7 +39956,7 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
     x+='<h1>New scenario</h1><p class="nw-sub">Name it, set the basics, then fine-tune life events on My Plans.</p>';
     x+='<label class="nw-name"><span>Name</span><input class="nw-nm" type="text" placeholder="e.g. Retire early and travel" value="'+esc(NNAME)+'" aria-label="Scenario name"></label>';
     x+='<div class="nw-levs">'+LV.map(function(l){ return levHTML(l, B); }).join('')+'</div>';
-    x+='<div class="nw-foot"><div class="nw-res">'+resHTML(p)+'</div><div class="nw-acts"><button type="button" class="cc-btn" data-cc="nback">Cancel</button><button type="button" class="cc-btn go nw-go" data-cc="create">Create and edit life events →</button></div></div></div>';
+    x+='<div class="nw-foot"><div class="nw-res">'+resHTML(p)+'</div><div class="nw-acts"><button type="button" class="cc-btn" data-cc="nback">Cancel</button><button type="button" class="cc-btn go nw-go" data-cc="create">Add life events →</button></div></div></div>';
     host.innerHTML=x; if(ANIM){ ANIM=false; var c=host.querySelector('.cc'); if(c) c.classList.add('cc-in'); }
     if(!renderNew._said){ renderNew._said=true; if(window.__bai){ setTimeout(function(){ if(!window.__bai.isOpen()) window.__bai.open(); setTimeout(function(){ window.__bai.context('Building a new scenario? You can also just describe it to me, like <b>“what if Lily works until 66 and we spend $500 less a month?”</b> I’ll set it up for you.', ['What if we retire at 63?','What if we claim Social Security at 67?','What if markets are poor early on?']); }, 200); }, 120); } }
     if(!host._cc){ host._cc=true; host.addEventListener('click', onClick); host.addEventListener('change', onChange); host.addEventListener('keydown', onKey); host.addEventListener('focusout', onBlur); host.addEventListener('input', onInput); host.addEventListener('submit', onSubmit); }
@@ -39932,6 +39982,7 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
     var go=host.querySelector('.nw-go'); if(go){ go.disabled=true; go.textContent='Creating…'; }
     var cc=host.querySelector('.cc'); if(cc) cc.classList.add('cc-out');
     setTimeout(function(){ NEW=false; if(window.SCENARIOS) SCENARIOS.close(); w.activate(it);
+
       window.__openEventEditor();
     }, 220);
   }
@@ -39949,10 +40000,10 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
     if(a==='aiq'){ askAI(b.dataset.q); return; }
     if(a==='create'){ create(); return; }
     if(a==='ai'){ if(window.__bai){ if(!window.__bai.isOpen()) window.__bai.open(); setTimeout(function(){ var ta=document.querySelector('.bai-ask textarea, .bai-ask input, .bai textarea'); if(ta) ta.focus(); }, 250); } return; }
-    if(a==='compare'){ var objs=w.list().filter(function(x){ return SHOW[x.id]; }); if(!objs.length) return; if(window.__scnVers && window.__scnVers.compare) window.__scnVers.compare(objs); return; }
+    if(a==='compare'){ var objs=w.list(); if(!objs.length) return; if(window.__scnVers && window.__scnVers.compare) window.__scnVers.compare(objs); return; }
     if(a==='start'){ var s=STARTS[+b.dataset.i]; var v=Object.assign(base(), s[1](base())); var n=w.add(s[0], v, {}); SHOW[n.id]=true; if(window.__peToast) window.__peToast('Added: '+s[0]); render(); return; }
     if(!it) { render(); return; }
-    if(a==='open'){ w.activate(it); if(window.SCENARIOS) SCENARIOS.close(); return; }
+    if(a==='open'){ openScn(it, e.target.closest('tr')); return; }
     if(a==='adjust'){ goOptimize('scenario-adjust'); setTimeout(function(){ var sel=document.querySelector('#scenario-adjust .sa-sel select'); if(sel){ sel.value=id; sel.dispatchEvent(new Event('change',{bubbles:true})); } }, 700); return; }
     if(a==='plan'){ w.activate(it); setTimeout(function(){ w.makePlan(); delete SHOW[id]; if(window.__peToast) window.__peToast(it.name+' is now your plan'); render(); }, 80); return; }
     if(a==='rename'){ render(); var nm=host.querySelector('.cc-nm[data-id="'+id+'"]'); if(nm){ nm.focus(); var r=document.createRange(); r.selectNodeContents(nm); var sl=getSelection(); sl.removeAllRanges(); sl.addRange(r); } return; }
@@ -39992,7 +40043,7 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
         if(a==='new'){ mClose(); goOptimize('scenario-adjust'); return; }
         if(a==='delno'){ MCONF=null; mPaint(); return; }
         if(!it) return;
-        if(a==='open'){ mClose(); w.activate(it); if(window.SCENARIOS) SCENARIOS.close(); return; }
+        if(a==='open'){ mClose(); openScn(it, null); return; }
         if(a==='adjust'){ mClose(); goOptimize('scenario-adjust'); setTimeout(function(){ var sel=document.querySelector('#scenario-adjust .sa-sel select'); if(sel){ sel.value=id; sel.dispatchEvent(new Event('change',{bubbles:true})); } }, 700); return; }
         if(a==='dup'){ w.add(it.name+' (copy)', Object.assign({}, it.vals), JSON.parse(JSON.stringify(it.moves||{}))); refreshAll(); return; }
         if(a==='plan'){ w.activate(it); setTimeout(function(){ w.makePlan(); if(window.__peToast) window.__peToast(it.name+' is now your plan'); refreshAll(); }, 80); return; }
@@ -40042,8 +40093,11 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
 .aa-note svg{ flex:none; width:15px; height:15px; margin-top:1px; color:#2F6F93; }
 .aa-note b{ color:var(--ink); font-weight:600; }
 /* after saving on My Plans: apply to all? */
-.aa-bar{ position:fixed; left:50%; bottom:112px; transform:translate(-50%, 16px); z-index:90; width:min(680px, calc(100vw - 32px)); background:#F3F8FC; border:1.5px solid #7FAECB; border-radius:16px; padding:16px 18px; display:flex; flex-direction:column; gap:12px; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1); }
+.aa-bar{ position:fixed; left:50%; bottom:28px; transform:translate(-50%, 16px); z-index:90; width:min(680px, calc(100vw - 32px)); background:#F3F8FC; border:1.5px solid #7FAECB; border-radius:16px; padding:16px 18px; display:flex; flex-direction:column; gap:12px; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1); }
 .aa-bar.on{ opacity:1; transform:translate(-50%, 0); pointer-events:auto; }
+/* the bar takes the Ask anything spot while it is up, so there is only one thing at the bottom */
+.dock{ transition:opacity .2s ease; }
+body.aa-on .dock{ opacity:0; pointer-events:none; }
 .aa-top{ display:flex; align-items:flex-start; gap:12px; }
 .aa-ic{ flex:none; width:32px; height:32px; border-radius:50%; background:#2F6F93; color:#fff; display:flex; align-items:center; justify-content:center; }
 .aa-ic svg{ width:16px; height:16px; }
@@ -40108,8 +40162,8 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
     }); return bar; }
   function place(){ if(!bar) return; var c=[].slice.call(document.querySelectorAll('.layout.page.on > main.center, .layout.page.on > .center')).filter(function(x){ return x.offsetParent; })[0]; if(!c){ bar.style.left=''; bar.style.width=''; return; } var r=c.getBoundingClientRect(); bar.style.left=Math.round(r.left+r.width/2)+'px'; bar.style.width=Math.round(Math.min(680, r.width))+'px'; }
   window.addEventListener('resize', place);
-  function show(html){ ensureBar().innerHTML=html; place(); requestAnimationFrame(function(){ bar.classList.add('on'); }); clearTimeout(show._t); }
-  function hide(){ if(bar) bar.classList.remove('on'); pending=null; }
+  function show(html){ ensureBar().innerHTML=html; place(); requestAnimationFrame(function(){ bar.classList.add('on'); document.body.classList.add('aa-on'); }); clearTimeout(show._t); }
+  function hide(){ if(bar) bar.classList.remove('on'); document.body.classList.remove('aa-on'); pending=null; }
   function applyAll(p){ var k=n(); W().list().forEach(function(it){ if(it.keep) it.keep=it.keep.filter(function(t){ return t!==p.title; }); }); toast('Applied to your plan and '+sc(k)); }
   function justPlan(p){ W().list().forEach(function(it){ it.keep=(it.keep||[]).filter(function(t){ return t!==p.title; }).concat([p.title]); W().update(it.id); }); toast('Only your plan changed. Scenarios keep the old '+p.title.toLowerCase()); }
   function promote(p){ var k=n(); toast('Applied to your plan and '+(k>1?'your other '+sc(k-1):'your plan')); }
@@ -40203,7 +40257,7 @@ body.whatif-cmp[data-view="plan"]:not(.scn-open) aside.rail{ visibility:hidden; 
     var sr=sheet.getBoundingClientRect(), dx=Math.round(r.left-sr.left), dy=Math.round(top-sr.top);
     if(dx||dy){ st.setProperty('--qc-left', Math.round(r.left+dx)+'px'); st.setProperty('--qc-top', (top+dy)+'px'); }
   }
-  new MutationObserver(function(){ var c=document.body.classList; if(c.contains('whatif-cmp') && c.contains('scn-open')){ var cb=document.querySelector('.wi-cmpbtn'); if(cb) cb.click(); return; } if(c.contains('whatif-cmp')) requestAnimationFrame(place); }).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
+  new MutationObserver(function(){ var c=document.body.classList; if(c.contains('whatif-cmp') && c.contains('scn-open')) return; if(c.contains('whatif-cmp')) requestAnimationFrame(place); }).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
   window.addEventListener('resize', place); window.addEventListener('scroll', place, { passive:true });
   document.addEventListener('whatif:change', function(){ setTimeout(place, 30); });
 })();
@@ -40382,6 +40436,90 @@ body[data-view="today"] #sideNav > .side-download{ order:9; align-self:flex-star
     e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
     if(!open) ask(el);
   }, true);
+})();
+</script>
+<style id="scnBarRoomyCSS">
+/* scenario bar: taller, with more room around it, so the page under it is not cramped */
+.wi-band.solid .wi-in{ min-height:62px !important; padding:10px 12px 10px 20px !important; gap:14px !important; border-radius:16px; }
+/* one type size across the bar: name is the only bold thing, everything else regular */
+.wi-band.solid .wi-in{ align-items:center; font-size:15px; line-height:1.3; }
+.wi-band.solid .wi-tag, .wi-band.solid .wi-name, .wi-band.solid .wi-chip, .wi-band.solid .wi-chip *{ font-size:15px !important; line-height:1.3 !important; letter-spacing:0 !important; }
+.wi-band.solid .wi-tag{ font-weight:400 !important; color:#2F6F93 !important; }
+.wi-band.solid .wi-name{ font-weight:600 !important; color:var(--ink) !important; }
+.wi-band.solid .wi-chip{ font-weight:400 !important; color:var(--text-secondary) !important; }
+.wi-band.solid .wi-chip *{ font-weight:400 !important; color:var(--ink) !important; }
+.wi-band.solid .wi-btn{ height:40px !important; font-size:15px !important; padding:0 18px !important; }
+body.whatif-solid:not([data-view="optimize"]) .layout.page.on, body.whatif-solid:not([data-view="optimize"]) .hm-page.on,
+body.whatif-solid:not([data-view="optimize"]) .layout.page.on.opt-index, body.whatif-solid:not([data-view="optimize"]) .layout.page.on.sub-layout, body.whatif-solid:not([data-view="optimize"]) .layout.page.on.alo-layout, body.whatif-solid:not([data-view="optimize"]) .layout.page.on.bud-layout,
+body.whatif-solid:not([data-view="optimize"])[data-view="plan"].sum-open .layout.page.sum-layout{ margin-top:92px !important; }
+body.whatif-solid:not([data-view="optimize"]) .layout.page.on > .side, body.whatif-solid:not([data-view="optimize"]) .layout.page.on > .rail,
+body.whatif-solid:not([data-view="optimize"])[data-view="plan"].sum-open .layout.page.sum-layout > .rail{ top:188px; }
+body.whatif-solid:not([data-view="optimize"]) .layout.page.on > .side{ max-height:calc(100vh - 188px); }
+body.whatif-solid:not([data-view="optimize"]) #powerMode, body.whatif-solid:not([data-view="optimize"]) .ps-wrap{ top:165px; }
+body.whatif-solid.scn-open #scnPage .scn-frame{ margin-top:82px; }
+</style>
+<!-- ===== My Plans rail: plan + scenarios as one dropdown ===== -->
+<style id="planDDCSS">
+.plan-select.has-dd{ position:relative; }
+.plan-select.has-dd > .plan-row.wi-row{ display:none !important; }
+.plan-select.has-dd .pdd-wrap{ position:relative; margin:4px 0 6px; }
+.plan-select.has-dd .pdd-wrap[hidden]{ display:none; }
+.ps-btn{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; font:inherit; font-size:15px; font-weight:500; color:var(--text-secondary); background:#fff; border:1px solid var(--hairline-strong); border-radius:12px; padding:10px 12px; cursor:pointer; }
+.ps-btn:hover, .ps-btn[aria-expanded="true"]{ border-color:var(--ink); }
+.ps-btn .dot{ flex:none; width:10px; height:10px; border-radius:50%; background:var(--green-cta); }
+.ps-btn .dot{ background:#C9CFD6; }
+.ps-btn.is-scn{ color:var(--ink); font-weight:600; border-color:#2F6F93; }
+.ps-btn.is-scn .dot{ background:#2F6F93; }
+.ps-btn .lbl{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ps-btn .lbl small{ display:block; font-size:11.5px; font-weight:500; color:var(--text-secondary); line-height:1.2; }
+.ps-btn .car{ flex:none; font-size:11px; color:var(--text-secondary); transition:transform .15s ease; }
+.ps-btn[aria-expanded="true"] .car{ transform:rotate(180deg); }
+.ps-menu{ position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:40; background:#fff; border:1px solid var(--hairline-strong); border-radius:12px; padding:6px; display:none; max-height:320px; overflow:auto; }
+.ps-menu.on{ display:block; }
+.ps-menu button{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; font:inherit; font-size:14.5px; color:var(--ink); background:none; border:0; border-radius:8px; padding:9px 10px; cursor:pointer; }
+.ps-menu button:hover{ background:#F4F6F7; }
+.ps-menu button .dot{ flex:none; width:8px; height:8px; border-radius:50%; background:#C9CFD6; }
+.ps-menu button.on{ font-weight:600; }
+.ps-menu button.on .dot{ background:var(--green-cta); }
+.ps-menu button.is-scn.on .dot{ background:#2F6F93; }
+.ps-menu button span{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ps-menu .sep{ height:1px; background:var(--hairline); margin:6px 4px; }
+.ps-menu .hd{ font-size:11.5px; font-weight:600; color:var(--text-secondary); padding:6px 10px 2px; }
+.ps-menu button.man{ color:var(--green-cta); font-weight:600; }
+.ps-menu button.man svg{ width:15px; height:15px; flex:none; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var SL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>';
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function build(ps){
+    var rows=[].slice.call(ps.querySelectorAll(':scope > .plan-row')), plan=rows.filter(function(r){ return r.dataset.plan==='financial'; })[0], man=rows.filter(function(r){ return r.dataset.plan==='b'; })[0], scns=rows.filter(function(r){ return r.classList.contains('wi-row'); });
+    if(!plan) return;
+    var cur=scns.filter(function(r){ return r.getAttribute('aria-checked')==='true'; })[0], curName=cur?cur.querySelector('.plan-row-label').textContent:'My Financial Plan';
+    var sig=curName+'|'+scns.map(function(r){ return r.dataset.wi+':'+r.querySelector('.plan-row-label').textContent; }).join(',');
+    var btn, menu;
+    var wrap=ps.querySelector(':scope > .pdd-wrap');
+    if(!wrap){ wrap=document.createElement('div'); wrap.className='pdd-wrap'; plan.after(wrap); ps.classList.add('has-dd');
+      btn=document.createElement('button'); btn.type='button'; btn.className='ps-btn'; btn.setAttribute('aria-haspopup','listbox'); btn.setAttribute('aria-expanded','false'); wrap.appendChild(btn);
+      menu=document.createElement('div'); menu.className='ps-menu'; menu.setAttribute('role','listbox'); wrap.appendChild(menu);
+      btn.addEventListener('click', function(e){ e.stopPropagation(); var on=!menu.classList.contains('on'); menu.classList.toggle('on', on); btn.setAttribute('aria-expanded', on); });
+      menu.addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; e.stopPropagation(); menu.classList.remove('on'); btn.setAttribute('aria-expanded','false');
+        var t=[].slice.call(ps.querySelectorAll(':scope > .plan-row.wi-row')).filter(function(r){ return r.dataset.wi===b.dataset.go; })[0]; if(t) t.click(); });
+      document.addEventListener('click', function(e){ if(!wrap.contains(e.target)){ menu.classList.remove('on'); btn.setAttribute('aria-expanded','false'); } });
+      document.addEventListener('keydown', function(e){ if(e.key==='Escape' && menu.classList.contains('on')){ menu.classList.remove('on'); btn.setAttribute('aria-expanded','false'); btn.focus(); } });
+    } else if(wrap.previousElementSibling!==plan){ plan.after(wrap); }
+    btn=wrap.querySelector('.ps-btn'); menu=wrap.querySelector('.ps-menu');
+    wrap.hidden=!scns.length;
+    if(ps._sig===sig) return; ps._sig=sig;
+    btn.classList.toggle('is-scn', !!cur);
+    btn.innerHTML='<i class="dot"></i><span class="lbl">'+(cur?esc(curName):'Scenarios ('+scns.length+')')+'</span><span class="car">▾</span>';
+    var h=scns.map(function(r){ var on=r===cur; return '<button type="button" role="option" data-go="'+r.dataset.wi+'" class="is-scn'+(on?' on':'')+'"><i class="dot"></i><span>'+esc(r.querySelector('.plan-row-label').textContent)+'</span></button>'; }).join('');
+    menu.innerHTML=h;
+  }
+  function run(){ document.querySelectorAll('.plan-select').forEach(build); }
+  document.addEventListener('whatif:change', function(){ setTimeout(run, 30); });
+  setInterval(run, 700); run();
 })();
 </script>
 <!-- ===== right rail +50px on every page ===== -->
