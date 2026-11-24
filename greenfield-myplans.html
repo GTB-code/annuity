@@ -37709,7 +37709,7 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     {id:'tax-planning', t:'Tax Planning',             sub:[['The window','tx-window'],['The ladder','tx-ladder'],['The guardrail','tx-guard'],['Your move','tx-move'],['Required distributions','tx-rmd'],['Tax diversification','tx-div'],['Taxes by year','tx-year']]},
     {id:'withdrawal-strategy', t:'Withdrawal Strategy', sub:[['The order','wd-order'],['Guardrails','wd-guard'],['One month, mapped','wd-month'],['Your move','wd-move']]},
     {id:'healthcare', t:'Healthcare Costs', sub:[]},
-    {id:'scenario-adjust', t:'Try a scenario', sub:[]}
+    {id:'scenario-adjust', t:'Optimize a scenario', sub:[]}
   ];
   var nav=document.createElement('nav'); nav.className='ost-nav'; nav.setAttribute('aria-label','Optimize tools');
   nav.innerHTML='<div class="ost-collapse" aria-hidden="true">&lsaquo;</div><div class="ost-head"><span>Optimize Tools</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div><ul>'+TOOLS.map(function(t,i){ return '<li data-sec="'+t.id+'"'+(i===0?' class="on"':'')+'><div class="ost-item">'+esc(t.t)+'</div>'+(t.sub.length?'<ul class="ost-sub">'+t.sub.map(function(s){ return '<li><a data-go="'+s[1]+'">'+esc(s[0])+'</a></li>'; }).join('')+'</ul>':'')+'</li>'; }).join('')+'</ul>';
@@ -38108,71 +38108,140 @@ body.ost-open .opt-index{ padding-bottom:140px; }
     function edHTML(l, v){ var o=l.k==='life'?['Lean','Comfortable','Generous']:l.k==='ret_r'?['Conservative','Balanced','Growth']:null; if(o) return '<span class="lv-sel"><select data-ed="'+l.k+'" aria-label="'+l.t+'">'+o.map(function(x,i){ return '<option value="'+i+'"'+(i===v?' selected':'')+'>'+x+'</option>'; }).join('')+'</select><i>▾</i></span>'; var txt=l.f(v); return '<input type="text" class="lv-num" data-ed="'+l.k+'" inputmode="numeric" value="'+txt+'" size="'+Math.max(2,txt.length)+'" aria-label="'+l.t+'">'; }
   function edParse(l, raw){ var n=parseFloat(String(raw).replace(/[^0-9.]/g,'')); if(isNaN(n)) return null; n=Math.round(n); return Math.min(l.max, Math.max(l.min, n)); }
     function base(){ var B=W().base(); return { ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }; }
-    function load(id){ var w=W(); sel=id; var it=id&&w.list().filter(function(x){ return x.id===id; })[0]; newName=it?it.name:''; SHOWN={}; moreOpen=false; ownOpen=false; V=Object.assign(base(), it?it.vals:{}); M=Object.assign({}, it?it.moves:{}); dirty=false; }
+    function load(id){ var w=W(); sel=id; var it=id&&w.list().filter(function(x){ return x.id===id; })[0]; newName=it?it.name:''; SHOWN={}; moreOpen=false; ownOpen=false; AP={ msg:'', undo:null, run:false }; LOCK={}; (function(){ var B0=base(), v0=Object.assign({}, B0, it?it.vals:{}); ['ret','ss','spend'].forEach(function(k){ LOCK[k]=v0[k]!==B0[k]; }); Object.keys((it&&it.moves)||{}).forEach(function(id){ LOCK[id]=true; }); })(); V=Object.assign(base(), it?it.vals:{}); M=Object.assign({}, it?it.moves:{}); dirty=false; }
     function cat(){ return (window.__routeScn && window.__routeScn.cat) || []; }
     function catOf(k){ return cat().filter(function(c){ return c.k===k; })[0]; }
     function ctl(mv){ if(mv.own && window.__routeScn && window.__routeScn.own){ var o=window.__routeScn.own(mv.own.name, mv.own.kind, mv.own.dir); o.k='own'; return o; } return mv.cat&&catOf(mv.cat); }
-    var ownOpen=false, newName='', SHOWN={}, moreOpen=false;
+    var ownOpen=false, newName='', SHOWN={}, moreOpen=false, AP={ msg:'', undo:null, run:false }, TARGET=90, LOCK={}, GOAL='conf';
     function spark(a,b){ if(!a||!a.length) return ''; var Wd=1000,H=300,L=56,R=10,T=12,Bm=28, hi=0; a.concat(b||[]).forEach(function(r){ if(r.bal>hi) hi=r.bal; }); var step=hi>4e6?2e6:hi>2e6?1e6:5e5; hi=Math.ceil(hi*1.04/step)*step; var n=a.length, y0=a[0].y, y1=a[n-1].y; function X(y){ return L+(Wd-L-R)*(y-y0)/(y1-y0); } function Y(v){ return T+(H-T-Bm)*(1-Math.max(0,v)/hi); } function pth(rs){ return rs.map(function(r,i){ return (i?'L':'M')+X(r.y).toFixed(1)+' '+Y(r.bal).toFixed(1); }).join(' '); }
       var g=''; for(var v=0; v<=hi; v+=step){ g+='<line x1="'+L+'" x2="'+(Wd-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#EEF1F3"/><text x="'+(L-10)+'" y="'+(Y(v)+4)+'" font-size="12" fill="#6E7687" text-anchor="end">'+(v?money(v):'$0')+'</text>'; }
       var xl=''; for(var yy=Math.ceil(y0/10)*10; yy<=y1; yy+=10) xl+='<text x="'+X(yy)+'" y="'+(H-6)+'" font-size="12" fill="#6E7687" text-anchor="middle">'+yy+'</text>';
       var area=b?'<path d="'+pth(b)+' L'+X(b[b.length-1].y)+' '+Y(0)+' L'+X(b[0].y)+' '+Y(0)+'Z" fill="#4A99C4" opacity=".08"/>':'';
       return '<svg viewBox="0 0 '+Wd+' '+H+'" class="sa-chart">'+g+xl+area+'<path d="'+pth(a)+'" fill="none" stroke="#10182C" stroke-width="2" stroke-dasharray="6 5"/>'+(b?'<path d="'+pth(b)+'" fill="none" stroke="#4A99C4" stroke-width="3"/>':'')+'</svg>'; }
     function bend(rows, moves){ var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); if(!extra) return rows; var n=rows.length; return rows.map(function(r,i){ return { y:r.y, bal:Math.max(0, r.bal+extra*(n>1?i/(n-1):1)) }; }); }
+    /* Scenario builder: the full compare, with the levers on top. Every number follows the sliders. */
+    function levRow(l, B){ var v=V[l.k], diff=v!==B[l.k]; return '<div class="sa-lev'+(diff?' is-diff':'')+'"><div class="r"><span>'+l.t+(/^(ret|ss|spend)$/.test(l.k)?lockBtn(l.k):'')+'</span><b>'+edHTML(l, v)+'</b></div><input type="range" data-k="'+l.k+'" min="'+l.min+'" max="'+l.max+'" step="'+l.step+'" value="'+v+'" style="--p:'+((v-l.min)/(l.max-l.min)*100)+'%"><small>'+(diff?'Your plan: '+l.f(B[l.k]):'Same as your plan')+'</small></div>'; }
+    function tryName(){ var w=W(), it=sel&&w.list().filter(function(x){ return x.id===sel; })[0]; return newName.trim() || (it?it.name:'This scenario'); }
+    function cmp(){ var tc=sec.querySelector('.tc-cmp'); if(!tc || !window.__scnVers || !window.__scnVers.compareIn) return; window.__scnVers.compareIn(tc, [{ id:'__live', name:tryName(), vals:Object.assign({}, V), moves:M }]); if(window.__scnVers.compareClear) window.__scnVers.compareClear(); var sb=sec.querySelector('[data-sact="save"]'); if(sb) sb.disabled=!!(sel && !dirty); }
+    /* ---------- Autopilot: keep what the member changed, tune the rest toward the target ---------- */
+    var SPARK='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.1 6.4L20.5 10.5 14.1 12.6 12 19l-2.1-6.4L3.5 10.5l6.4-2.1z"/></svg>';
+    var GOALS=[['conf','Reach 90% confidence'],['end','Leave the most at 92'],['early','Retire as early as I can'],['spend','Spend as much as I can']];
+    var LOCKSVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+    function lockBtn(id){ var on=!!LOCK[id]; return '<button type="button" class="lv-lock'+(on?' on':'')+'" data-lock="'+id+'" aria-pressed="'+on+'" title="'+(on?'Locked: Autopilot will not change this':'Autopilot may change this')+'">'+LOCKSVG+'</button>'; }
+    function apHTML(){
+      if(AP.pick) return '<span class="ap-ic">'+SPARK+'</span><div class="ap-tx"><b>Autopilot:</b><span>what should I aim for?</span></div><div class="ap-btns"><button type="button" class="ap-undo" data-ap="cancel">Cancel</button></div><div class="ap-goals">'+GOALS.map(function(g){ return '<button type="button" data-apgoal="'+g[0]+'">'+g[1]+'</button>'; }).join('')+'</div>';
+      var body = AP.run ? '<b>Autopilot</b><span>is tuning everything that isn’t locked…</span>'
+        : AP.msg ? '<b>Autopilot:</b><span>'+AP.msg+'</span>'
+        : '<b>Autopilot</b><span>tunes this scenario for you and leaves locked levers alone.</span>';
+      var btn = AP.run ? '' : AP.undo ? '<button type="button" class="ap-undo" data-ap="undo">Undo</button><button type="button" class="ap-go" data-ap="pick">Try another goal</button>' : '<button type="button" class="ap-go" data-ap="pick">'+SPARK+'Optimize for me</button>';
+      return '<span class="ap-ic'+(AP.run?' spin':'')+'">'+SPARK+'</span><div class="ap-tx">'+body+'</div><div class="ap-btns">'+btn+'</div>';
+    }
+    function apPaint(){ var c=sec.querySelector('.ap-card'); if(c) c.innerHTML=apHTML(); }
+    function flash(row){ if(!row) return; row.classList.add('ap-hit'); setTimeout(function(){ row.classList.remove('ap-hit'); }, 900); }
+    function applyLev(k, quiet){ var r=sec.querySelector('input[data-k="'+k+'"]'); if(!r) return; var B=base(), l=LV.filter(function(x){ return x.k===k; })[0], row=r.closest('.sa-lev'), diff=V[k]!==B[k]; r.value=V[k]; r.style.setProperty('--p', ((Math.min(l.max,Math.max(l.min,V[k]))-l.min)/(l.max-l.min)*100)+'%'); row.classList.toggle('is-diff', diff); var ed=row.querySelector('[data-ed]'); if(ed){ if(ed.tagName==='SELECT') ed.value=V[k]; else { ed.value=l.f(V[k]); ed.size=Math.max(2, ed.value.length); } } row.querySelector('small').textContent=diff?'Your plan: '+l.f(B[k]):'Same as your plan'; if(!quiet) flash(row); }
+    function setMove(id, v){ var mv=M[id], c=ctl(mv); if(!c) return; var ef=c.fx(v), lab=c.t+': '+c.f(v); M[id]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:v, cat:mv.cat, own:mv.own }; }
+    function applyMove(id, quiet){ var r=sec.querySelector('input[data-mid="'+id+'"]'); if(!r) return; var mv=M[id], c=ctl(mv); r.value=mv.v; r.style.setProperty('--p', ((mv.v-c.min)/(c.max-c.min)*100)+'%'); var bb=r.closest('.sa-lev').querySelector('.r b'); if(bb) bb.textContent=c.f(mv.v); if(!quiet) flash(r.closest('.sa-lev')); }
+    /* every unlocked control, whatever the scenario is made of, described the same way so one search can tune any of them */
+    function controls(start){
+      var out=[], g=GOAL;
+      if(!LOCK.ss) out.push({ id:'ss', t:'Social Security age', min:62, max:70, step:1, get:function(){ return V.ss; }, set:function(v){ V.ss=v; }, f:String });
+      if(!LOCK.spend) out.push({ id:'spend', t:'Monthly spending', min:Math.ceil(start.spend*0.9/100)*100, max:g==='spend'?Math.min(9000, Math.floor(start.spend*1.3/100)*100):start.spend, step:100, get:function(){ return V.spend; }, set:function(v){ V.spend=v; }, f:function(v){ return usd(v); } });
+      if(!LOCK.ret) out.push({ id:'ret', t:'Retirement age', min:g==='early'?62:start.ret, max:g==='early'?start.ret:Math.min(72, start.ret+2), step:1, get:function(){ return V.ret; }, set:function(v){ V.ret=v; }, f:String });
+      Object.keys(M).forEach(function(id){ if(LOCK[id]) return; var c=ctl(M[id]); if(!c) return; out.push({ id:id, move:true, t:c.t, min:c.min, max:c.max, step:c.step, get:function(){ return M[id].v; }, set:function(v){ setMove(id, v); }, f:c.f }); });
+      return out;
+    }
+    function apPlan(){
+      var w=W(), start=Object.assign({}, V), startM=JSON.parse(JSON.stringify(M)), cs=controls(start), s0={}; cs.forEach(function(c){ s0[c.id]=c.get(); });
+      function met(){ return w.metricsFor(V, M); }
+      var m0=met(), floor=Math.min(TARGET, m0.conf);
+      function cost(){ var x=0; cs.forEach(function(c){ x+=Math.abs(c.get()-s0[c.id])/((c.max-c.min)||1); }); return x; }
+      function score(){ var m=met(); if(!m) return -1e18; var ok=m.conf>=floor;
+        if(GOAL==='end') return (m.conf>=floor?1e15:m.conf*1e9) + m.end - cost();
+        if(GOAL==='early') return ok ? 1e15 - V.ret*1e9 + m.conf*1e3 - cost() : m.conf*1e6 - cost();
+        if(GOAL==='spend') return ok ? 1e15 + V.spend*1e3 + m.conf - cost() : m.conf*1e6 - cost();
+        return Math.min(m.conf, TARGET)*1e6 - cost()*1e3 + m.conf; }
+      function climb(list, fn, stop){ var cur=fn(), guard=0; while(guard++<80 && !(stop && stop())){ var best=null; list.forEach(function(c){ var v0=c.get(); [1,-1,2,-2,3,-3].forEach(function(n){ var nv=v0+n*c.step; if(nv<c.min || nv>c.max) return; c.set(nv); var sc=fn(); c.set(v0); var gain=(sc-cur)/Math.abs(n); if(sc>cur && (!best || gain>best.g)) best={ c:c, v:nv, sc:sc, g:gain }; }); }); if(!best) break; best.c.set(best.v); cur=best.sc; } }
+      function snap(){ return { V:Object.assign({}, V), M:JSON.parse(JSON.stringify(M)) }; }
+      function back(x){ V=Object.assign({}, x.V); M=JSON.parse(JSON.stringify(x.M)); }
+      var lead = GOAL==='early' ? cs.filter(function(c){ return c.id==='ret'; })[0] : GOAL==='spend' ? cs.filter(function(c){ return c.id==='spend'; })[0] : null;
+      if(lead){
+        /* push the thing they asked for one notch, then let the other unlocked levers win the confidence back; stop at the first notch that can't be repaired */
+        var dir=GOAL==='early'?-1:1, rest=cs.filter(function(c){ return c!==lead; }), g2=0;
+        while(g2++<40){ var nv=lead.get()+dir*lead.step; if(nv<lead.min || nv>lead.max) break; var keep=snap(); lead.set(nv);
+          if(met().conf<floor) climb(rest, function(){ return met().conf*1e6 - cost(); }, function(){ return met().conf>=floor; });
+          if(met().conf<floor){ back(keep); break; } }
+      } else climb(cs, score);
+      var steps=[]; cs.forEach(function(c){ var a=s0[c.id], b=c.get(); if(a===b) return; var n=Math.round(Math.abs(b-a)/c.step), d=b>a?1:-1, jump=Math.max(1, Math.ceil(n/8)); for(var q=jump; q<n; q+=jump) steps.push({ id:c.id, move:!!c.move, v:a+d*q*c.step }); steps.push({ id:c.id, move:!!c.move, v:b }); });
+      var m1=met(), endV={}; cs.forEach(function(c){ endV[c.id]=c.get(); });
+      /* put everything back: the run replays the steps so the member watches it happen */
+      V=Object.assign({}, start); M=JSON.parse(JSON.stringify(startM));
+      return { cs:cs, s0:s0, endV:endV, start:start, startM:startM, m0:m0, m1:m1, steps:steps };
+    }
+    function apRun(){
+      if(AP.run) return; var plan=apPlan();
+      if(!plan.cs.length){ AP.msg='Everything is locked. Unlock a lever and I’ll have room to work.'; AP.undo=null; apPaint(); return; }
+      if(!plan.steps.length){ AP.msg=(GOAL==='conf' && plan.m0.conf>=TARGET ? 'Already at <strong>'+plan.m0.conf+'% confidence</strong>. Nothing to tune.' : (GOAL==='early'?'You can’t retire any earlier without losing confidence, using only what’s unlocked.':GOAL==='spend'?'There’s no room to spend more without losing confidence, using only what’s unlocked.':'I couldn’t find a better setting with the levers that are unlocked.')+' It stays at <strong>'+plan.m0.conf+'%</strong>.'); AP.undo={ V:plan.start, M:plan.startM }; apPaint(); return; }
+      AP.run=true; AP.msg=''; apPaint();
+      var i=0, gap=plan.steps.length>10?70:160; (function next(){
+        if(i<plan.steps.length){ var st=plan.steps[i++]; if(st.move){ setMove(st.id, st.v); applyMove(st.id); } else { V[st.id]=st.v; applyLev(st.id); } cmp(); setTimeout(next, gap); return; }
+        var ch=[]; plan.cs.forEach(function(c){ if(plan.s0[c.id]!==plan.endV[c.id]) ch.push(c.t+' '+c.f(plan.s0[c.id])+' → <strong>'+c.f(plan.endV[c.id])+'</strong>'); });
+        var res='Confidence <strong>'+plan.m0.conf+'% → '+plan.m1.conf+'%</strong>'; if(GOAL==='end') res+=', left at 92 <strong>'+money(plan.m0.end)+' → '+money(plan.m1.end)+'</strong>';
+        var short=GOAL==='conf' && plan.m1.conf<TARGET;
+        AP.run=false; AP.undo={ V:plan.start, M:plan.startM }; dirty=true;
+        AP.msg=ch.join(' · ')+'. '+res+(short?', the best I can reach with what’s unlocked.':'.');
+        apPaint(); cmp();
+      })();
+    }
+    function apUndo(){ if(!AP.undo) return; var prev=AP.undo; AP={ msg:'', undo:null, run:false }; V=Object.assign({}, prev.V); M=JSON.parse(JSON.stringify(prev.M)); LV.forEach(function(l){ applyLev(l.k, true); }); Object.keys(M).forEach(function(id){ applyMove(id, true); }); apPaint(); cmp(); }
     function paint(){
-      var w=W(); if(!w||!w.planMetrics||!w.base()) return; if(V===null) load(null);
-      var items=w.list(), p=w.planMetrics(), m=w.metricsFor(V, M), B=base(), it=sel&&items.filter(function(x){ return x.id===sel; })[0];
-      if(!sel){
-        var dc0=m.conf-p.conf;
-        var h0='<div class="sb-head"><h2 class="ost-hero">New scenario</h2>'+(items.length?'<div class="sa-sel sb-pick"><select aria-label="Scenario"><option value="">Or adjust one you have</option>'+items.map(function(x){ return '<option value="'+x.id+'">'+esc(x.name)+'</option>'; }).join('')+'</select><span class="car">▾</span></div>':'')+'</div>';
-        h0+='<p class="ost-herosub">Name it, set the basics, then fine-tune life events on My Plans.</p>';
-        h0+='<label class="sn-name"><span>Name</span><input class="sa-name" type="text" placeholder="e.g. Retire early and travel" value="'+esc(newName)+'" aria-label="Scenario name"></label>';
-        h0+='<div class="sn-levs">'+LV.map(function(l){ var v=V[l.k], diff=v!==B[l.k]; return '<div class="sa-lev'+(diff?' is-diff':'')+'"><div class="r"><span>'+l.t+'</span><b>'+edHTML(l, v)+'</b></div><input type="range" data-k="'+l.k+'" min="'+l.min+'" max="'+l.max+'" step="'+l.step+'" value="'+v+'" style="--p:'+((v-l.min)/(l.max-l.min)*100)+'%"><small>'+(diff?'Your plan: '+l.f(B[l.k]):'Same as your plan')+'</small></div>'; }).join('')+'</div>';
-        h0+='<div class="sn-foot"><div class="sn-res">Confidence <b>'+m.conf+'%</b> <em class="'+(dc0>0?'pos':dc0<0?'neg':'')+'">'+(dc0?(dc0>0?'+':'−')+Math.abs(dc0)+' pts vs plan':'same as plan')+'</em></div><button type="button" class="go" data-sact="create">Create and edit life events →</button></div>';
-        sec.innerHTML=h0; if(!paint._said){ paint._said=true; if(window.__bai){ setTimeout(function(){ if(!window.__bai.isOpen()) window.__bai.open(); setTimeout(function(){ window.__bai.context('Building a new scenario? You can also just describe it to me, like <b>“what if Lily works until 66 and we spend $500 less a month?”</b> I’ll set it up for you.', ['What if we retire at 63?','What if we claim Social Security at 67?','What if markets are poor early on?']); }, 200); }, 120); } } return;
-      }
-      LV.forEach(function(l){ if(V[l.k]!==B[l.k]) SHOWN[l.k]=true; });
-      var active=LV.filter(function(l){ return SHOWN[l.k]; }), mids=Object.keys(M), nChg=active.length+mids.length;
-      var dc=m.conf-p.conf, de=m.end-p.end;
-      var h='<div class="sb-head"><h2 class="ost-hero">'+(it?esc(it.name):'New scenario')+'</h2>'+(items.length?'<div class="sa-sel sb-pick"><select aria-label="Scenario"><option value="">'+(it?'+ Start a new one':'Or adjust one you have')+'</option>'+items.map(function(x){ return '<option value="'+x.id+'"'+(x.id===sel?' selected':'')+'>'+esc(x.name)+'</option>'; }).join('')+'</select><span class="car">▾</span></div>':'')+'</div>';
-      h+='<p class="ost-herosub">'+(it?'Change anything below and save.':'Pick what you want to change. You’ll see the result right away.')+'</p>';
-      if(nChg){
-        h+='<div class="sb-list">'+active.map(function(l){ var v=V[l.k]; return '<div class="sa-lev is-diff"><div class="r"><span>'+l.t+' <button type="button" class="sa-del" data-lvdel="'+l.k+'" aria-label="Remove">×</button></span><b>'+edHTML(l, v)+'</b></div><input type="range" data-k="'+l.k+'" min="'+l.min+'" max="'+l.max+'" step="'+l.step+'" value="'+v+'" style="--p:'+((v-l.min)/(l.max-l.min)*100)+'%"><small>Your plan: '+l.f(B[l.k])+'</small></div>'; }).join('')+
-          mids.map(function(id){ var mv=M[id], c=ctl(mv); if(!c) return '<div class="sa-lev is-diff"><div class="r"><span>'+esc(mv.label)+' <button type="button" class="sa-del" data-del="'+id+'" aria-label="Remove">×</button></span></div></div>'; return '<div class="sa-lev is-diff"><div class="r"><span>'+c.t+' <button type="button" class="sa-del" data-del="'+id+'" aria-label="Remove">×</button></span><b>'+c.f(mv.v)+'</b></div><input type="range" data-mid="'+id+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+mv.v+'" style="--p:'+((mv.v-c.min)/(c.max-c.min)*100)+'%"></div>'; }).join('')+'</div>';
-      }
-      var left=LV.filter(function(l){ return !SHOWN[l.k]; }), more=cat().filter(function(c){ return !mids.some(function(id){ return M[id].cat===c.k; }); });
-      h+='<div class="sb-pickers'+(nChg?' is-more':'')+'">'+(nChg?'<span class="sb-lbl">Add another change</span>':'')+left.map(function(l){ return '<button type="button" data-lv="'+l.k+'"><i>+</i>'+l.t+'</button>'; }).join('')+
-        (moreOpen? more.map(function(c){ return '<button type="button" data-cat="'+c.k+'"><i>+</i>'+c.t+'</button>'; }).join('')+'<button type="button" class="own" data-ownopen="1"><i>+</i>Something else…</button>' : '<button type="button" class="sb-more" data-more="1">More life changes…</button>')+'</div>';
+      var w=W(); if(!w||!w.planMetrics||!w.base()) return; if(V===null) load((w.list()[0]||{}).id||null);
+      var items=w.list(), B=base(), it=sel&&items.filter(function(x){ return x.id===sel; })[0], mids=Object.keys(M);
+      var h='<h2 class="ost-hero">Your plan vs. <span class="p">'+(it?esc(it.name):'a new scenario')+'</span></h2><p class="ost-herosub">Fine-tune it here. Every number below follows the sliders, and nothing changes until you save.</p>';
+      h+='<div class="svc-sel tc-sel"><div class="svc-slot plan"><i style="background:#10182C"></i><span>My Financial Plan</span><small>baseline</small></div><span class="svc-vs">vs</span><div class="sa-sel tc-pick"><select aria-label="Scenario">'+items.map(function(x){ return '<option value="'+x.id+'"'+(x.id===sel?' selected':'')+'>'+esc(x.name)+'</option>'; }).join('')+'<option value=""'+(sel?'':' selected')+'>+ New scenario</option></select><span class="car">▾</span></div></div>';
+      h+='<div class="ap-card">'+apHTML()+'</div>';
+      h+='<div class="tc-levs">'+LV.map(function(l){ return levRow(l, B); }).join('')+
+        mids.map(function(id){ var mv=M[id], c=ctl(mv); if(!c) return '<div class="sa-lev is-diff"><div class="r"><span>'+esc(mv.label)+' <button type="button" class="sa-del" data-del="'+id+'" aria-label="Remove">×</button></span></div></div>'; return '<div class="sa-lev is-diff" data-mrow="'+id+'"><div class="r"><span>'+c.t+lockBtn(id)+' <button type="button" class="sa-del" data-del="'+id+'" aria-label="Remove">×</button></span><b>'+c.f(mv.v)+'</b></div><input type="range" data-mid="'+id+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+mv.v+'" style="--p:'+((mv.v-c.min)/(c.max-c.min)*100)+'%"></div>'; }).join('')+'</div>';
+      var more=cat().filter(function(c){ return !mids.some(function(id){ return M[id].cat===c.k; }); });
+      h+='<div class="sb-pickers is-more"><span class="sb-lbl">Add a life change</span>'+more.map(function(c){ return '<button type="button" data-cat="'+c.k+'"><i>+</i>'+c.t+'</button>'; }).join('')+'<button type="button" class="own" data-ownopen="1"><i>+</i>Something else…</button></div>';
       if(ownOpen) h+='<form class="sa-own"><input type="text" name="nm" placeholder="Name it, e.g. Rental income" required><select name="kind"><option value="monthly">Every month</option><option value="once">One time</option></select><select name="dir"><option value="gain">Adds money</option><option value="cost">Costs money</option></select><button type="submit" class="go">Add</button><button type="button" data-owncancel="1">Cancel</button></form>';
-      if(nChg || it){
-        h+='<div class="sa-r sb-res"><div class="sb-nums"><div><span>Confidence</span><b>'+p.conf+'% <i>→</i> '+m.conf+'%</b><em class="'+(dc>0?'pos':dc<0?'neg':'')+'">'+(dc?((dc>0?'+':'−')+Math.abs(dc)+' pts'):'no change')+'</em></div><div><span>Left at 92</span><b>'+money(p.end)+' <i>→</i> '+money(m.end)+'</b><em class="'+(de>=1000?'pos':de<=-1000?'neg':'')+'">'+(Math.abs(de)<1000?'no change':((de>0?'+':'−')+money(Math.abs(de))))+'</em></div></div>'+spark(p.rows, bend(m.rows, M))+'<div class="sa-leg"><span><i class="d"></i>Your plan</span><span><i></i>'+(it?esc(it.name):'This scenario')+'</span></div>'+
-          '<div class="sb-save"><input class="sa-name" type="text" placeholder="Name it (optional)" value="'+esc(newName)+'" aria-label="Scenario name"><button type="button" class="go" data-sact="save"'+(dirty||!sel?'':' disabled')+'>'+(sel?'Save changes':'Save scenario')+'</button>'+(sel?'<button type="button" data-sact="open">Open in My Plans</button>':'')+'</div></div>';
-      }
-      sec.innerHTML=h;
+      h+='<div class="tc-cmp"></div>';
+      h+='<div class="sb-save tc-save"><button type="button" class="go" data-sact="save">'+(sel?'Save changes':'Save scenario')+'</button><button type="button" data-sact="create">Save and edit life events →</button></div>';
+      sec.innerHTML=h; cmp();
     }
     function money(v){ v=Math.abs(v); return v>=1e6?'$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':'$'+Math.round(v/1e3)+'K'; }
-    sec.addEventListener('input', function(e){ if(e.target.classList.contains('sa-name')){ newName=e.target.value; if(sel && !dirty){ dirty=true; var sb=sec.querySelector('[data-sact="save"]'); if(sb) sb.disabled=false; } return; } var r=e.target; if(r.type!=='range') return; if(r.dataset.k){ V[r.dataset.k]=+r.value; } else if(r.dataset.mid){ var mv=M[r.dataset.mid], c=ctl(mv), v=+r.value, ef=c.fx(v), lab=c.t+': '+c.f(v); M[r.dataset.mid]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:v, cat:mv.cat, own:mv.own }; } dirty=true; var foc=r.dataset.k||r.dataset.mid; paint(); var again=sec.querySelector('input[data-k="'+foc+'"], input[data-mid="'+foc+'"]'); if(again) again.focus(); });
+    var nameT=0;
+    sec.addEventListener('input', function(e){ var r=e.target;
+      if(r.classList.contains('sa-name')){ newName=r.value; dirty=true; clearTimeout(nameT); nameT=setTimeout(cmp, 250); return; }
+      if(r.type!=='range') return; var B=base();
+      var lid=r.dataset.k||r.dataset.mid; if(lid && !LOCK[lid]){ LOCK[lid]=true; var lb=sec.querySelector('[data-lock="'+lid+'"]'); if(lb){ lb.classList.add('on'); lb.setAttribute('aria-pressed','true'); lb.title='Locked: Autopilot will not change this'; } }
+      if(AP.undo || AP.msg){ AP={ msg:'', undo:null, run:false }; apPaint(); }
+      if(r.dataset.k){ var k=r.dataset.k, l=LV.filter(function(x){ return x.k===k; })[0]; V[k]=+r.value; var row=r.closest('.sa-lev'), diff=V[k]!==B[k]; row.classList.toggle('is-diff', diff); var ed=row.querySelector('[data-ed]'); if(ed){ if(ed.tagName==='SELECT') ed.value=V[k]; else { ed.value=l.f(V[k]); ed.size=Math.max(2, ed.value.length); } } row.querySelector('small').textContent=diff?'Your plan: '+l.f(B[k]):'Same as your plan'; r.style.setProperty('--p', ((V[k]-l.min)/(l.max-l.min)*100)+'%'); }
+      else if(r.dataset.mid){ var mv=M[r.dataset.mid], c=ctl(mv), v=+r.value, ef=c.fx(v), lab=c.t+': '+c.f(v); M[r.dataset.mid]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:v, cat:mv.cat, own:mv.own }; var rw=r.closest('.sa-lev'), bb=rw.querySelector('.r b'); if(bb) bb.textContent=c.f(v); r.style.setProperty('--p', ((v-c.min)/(c.max-c.min)*100)+'%'); }
+      dirty=true; cmp(); });
     sec.addEventListener('click', function(e){ var w=W(); var b=e.target.closest('[data-sa]'); if(b){ load(b.dataset.sa||null); paint(); return; }
       var lv=e.target.closest('[data-lv]'); if(lv){ SHOWN[lv.dataset.lv]=true; paint(); var r0=sec.querySelector('input[data-k="'+lv.dataset.lv+'"]'); if(r0) r0.focus(); return; }
       var lvd=e.target.closest('[data-lvdel]'); if(lvd){ var k=lvd.dataset.lvdel; V[k]=base()[k]; delete SHOWN[k]; dirty=true; paint(); return; }
       if(e.target.closest('[data-more]')){ moreOpen=true; paint(); return; }
+      var apg=e.target.closest('[data-apgoal]'); if(apg){ GOAL=apg.dataset.apgoal; AP.pick=false; if(AP.undo){ var pv=AP.undo; AP.undo=null; V=Object.assign({}, pv.V); M=JSON.parse(JSON.stringify(pv.M)); LV.forEach(function(l){ applyLev(l.k, true); }); Object.keys(M).forEach(function(id){ applyMove(id, true); }); } AP.msg=''; apRun(); return; }
+      var apb=e.target.closest('[data-ap]'); if(apb){ var aa=apb.dataset.ap; if(aa==='pick'){ AP.pick=true; apPaint(); } else if(aa==='cancel'){ AP.pick=false; apPaint(); } else apUndo(); return; }
+      var lk=e.target.closest('[data-lock]'); if(lk){ var id0=lk.dataset.lock; LOCK[id0]=!LOCK[id0]; lk.classList.toggle('on', LOCK[id0]); lk.setAttribute('aria-pressed', LOCK[id0]); lk.title=LOCK[id0]?'Locked: Autopilot will not change this':'Autopilot may change this'; return; }
       if(e.target.closest('[data-ownopen]')){ ownOpen=true; paint(); var fi=sec.querySelector('.sa-own input'); if(fi) fi.focus(); return; }
       if(e.target.closest('[data-owncancel]')){ ownOpen=false; paint(); return; }
-      var c=e.target.closest('[data-cat]'); if(c){ var cc=catOf(c.dataset.cat), ef=cc.fx(cc.v), lab=cc.t+': '+cc.f(cc.v); M['x'+Date.now().toString(36)]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:cc.v, cat:cc.k }; dirty=true; paint(); return; }
+      var c=e.target.closest('[data-cat]'); if(c){ var cc=catOf(c.dataset.cat), ef=cc.fx(cc.v), lab=cc.t+': '+cc.f(cc.v); var nid='x'+Date.now().toString(36); LOCK[nid]=true; M[nid]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:cc.v, cat:cc.k }; dirty=true; paint(); return; }
       var d=e.target.closest('[data-del]'); if(d){ delete M[d.dataset.del]; dirty=true; paint(); return; }
       var a=e.target.closest('[data-sact]'); if(!a||a.disabled) return;
-      if(a.dataset.sact==='create'){ var B2=base(), o2=[]; if(V.ret!==B2.ret) o2.push('Retire at '+V.ret); if(V.ss!==B2.ss) o2.push('Social Security at '+V.ss); if(V.spend!==B2.spend) o2.push('Spend '+usd(V.spend)); var nit=w.add(newName.trim()||o2.join(', ')||'New scenario', V, M); newName=''; V=null;
+      if(a.dataset.sact==='create'){ var B2=base(), o2=[]; if(V.ret!==B2.ret) o2.push('Retire at '+V.ret); if(V.ss!==B2.ss) o2.push('Social Security at '+V.ss); if(V.spend!==B2.spend) o2.push('Spend '+usd(V.spend)); var nit=sel ? w.update(sel, V, M, newName.trim()||null) : w.add(newName.trim()||o2.join(', ')||'New scenario', V, M); newName=''; V=null;
         var nv=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my plans/i.test(x.textContent); })[0]; if(nv) nv.click();
         setTimeout(function(){ w.activate(nit); setTimeout(function(){ var ev=document.getElementById('events-block'); if(ev){ var y=ev.getBoundingClientRect().top+window.scrollY-150; window.scrollTo({ top:Math.max(0,y), behavior:'smooth' }); } if(window.__peToast) window.__peToast('You’re in '+nit.name+'. Edit any life event and it stays in this scenario.'); }, 450); }, 300); return; }
       if(a.dataset.sact==='save'){ if(sel){ w.update(sel, V, M, newName.trim()||null); if(window.__peToast) window.__peToast('Saved'); } else { var B=base(), o=[]; if(V.ret!==B.ret) o.push('Retire at '+V.ret); if(V.ss!==B.ss) o.push('Social Security at '+V.ss); if(V.spend!==B.spend) o.push('Spend '+usd(V.spend)); Object.keys(M).forEach(function(k){ o.push(M[k].label.split(':')[0]); }); var it=w.add(newName.trim()||o.join(', ')||'A scenario', V, M); newName=''; sel=it.id; if(window.__peToast) window.__peToast('Saved: '+it.name); } dirty=false; paint(); return; }
       if(a.dataset.sact==='open'){ var it2=w.list().filter(function(x){ return x.id===sel; })[0]; if(!it2) return; var nav=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my plans/i.test(x.textContent); })[0]; if(nav) nav.click(); setTimeout(function(){ w.activate(it2); }, 300); }
     });
-    sec.addEventListener('change', function(e){ var k=e.target.dataset && e.target.dataset.ed; if(k){ var l=LV.filter(function(x){ return x.k===k; })[0]; var n=e.target.tagName==='SELECT'?+e.target.value:edParse(l, e.target.value); if(n!=null){ V[k]=n; dirty=true; } paint(); return; }
+    sec.addEventListener('change', function(e){ if(e.target.dataset && e.target.dataset.goal){ GOAL=e.target.value; return; } var k=e.target.dataset && e.target.dataset.ed; if(k && /^(ret|ss|spend)$/.test(k)){ LOCK[k]=true; var lb2=sec.querySelector('[data-lock="'+k+'"]'); if(lb2){ lb2.classList.add('on'); lb2.setAttribute('aria-pressed','true'); } } if(k){ var l=LV.filter(function(x){ return x.k===k; })[0]; var n=e.target.tagName==='SELECT'?+e.target.value:edParse(l, e.target.value); if(n!=null){ V[k]=n; dirty=true; } var rg=sec.querySelector('input[data-k="'+k+'"]'), row=rg&&rg.closest('.sa-lev'); if(row){ var B0=base(), df=V[k]!==B0[k]; rg.value=V[k]; rg.style.setProperty('--p', ((Math.min(l.max,Math.max(l.min,V[k]))-l.min)/(l.max-l.min)*100)+'%'); row.classList.toggle('is-diff', df); row.querySelector('small').textContent=df?'Your plan: '+l.f(B0[k]):'Same as your plan'; if(e.target.tagName!=='SELECT'){ e.target.value=l.f(V[k]); e.target.size=Math.max(2, e.target.value.length); } } cmp(); return; }
       if(e.target.closest('.sa-sel')){ load(e.target.value||null); paint(); } });
     function askAI(q){ q=(q||'').trim(); if(!q) return; var nv=[].slice.call(document.querySelectorAll('.topnav nav.modes a')).filter(function(x){ return /my plans/i.test(x.textContent); })[0]; if(nv) nv.click(); setTimeout(function(){ if(window.__bai) window.__bai.ask(q); }, 500); }
     sec.addEventListener('submit', function(e){ var fa=e.target.closest('.sn-ai'); if(fa){ e.preventDefault(); askAI(fa.q.value); } }, true);
     sec.addEventListener('click', function(e){ var b=e.target.closest('[data-aiq]'); if(b){ e.stopPropagation(); askAI(b.dataset.aiq); } }, true);
-    sec.addEventListener('submit', function(e){ var f=e.target.closest('.sa-own'); if(!f) return; e.preventDefault(); var nm=f.nm.value.trim(); if(!nm) return; var own={ name:nm, kind:f.kind.value, dir:f.dir.value }; var cc=window.__routeScn.own(own.name, own.kind, own.dir), ef=cc.fx(cc.v), lab=nm+': '+cc.f(cc.v); M['o'+Date.now().toString(36)]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:cc.v, own:own }; ownOpen=false; dirty=true; paint(); });
+    sec.addEventListener('submit', function(e){ var f=e.target.closest('.sa-own'); if(!f) return; e.preventDefault(); var nm=f.nm.value.trim(); if(!nm) return; var own={ name:nm, kind:f.kind.value, dir:f.dir.value }; var cc=window.__routeScn.own(own.name, own.kind, own.dir), ef=cc.fx(cc.v), lab=nm+': '+cc.f(cc.v); var oid='o'+Date.now().toString(36); LOCK[oid]=true; M[oid]={ label:lab, impact:lab, end:Math.round(ef.end), conf:ef.conf, v:cc.v, own:own }; ownOpen=false; dirty=true; paint(); });
     sec.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target.classList.contains('lv-num')){ e.preventDefault(); e.target.blur(); return; } if(e.key==='Escape' && e.target.closest('.sa-own')){ ownOpen=false; paint(); } });
     var obs=new MutationObserver(function(){ if(document.body.classList.contains('ost-open') && sec.classList.contains('ost-on')){ V=null; paint._said=false; paint(); } }); obs.observe(sec, { attributes:true, attributeFilter:['class'] });
   })();
@@ -38305,7 +38374,53 @@ body.ost-open #ostIndex{ display:none; }
 #optStage .sb-head .ost-hero{ margin:0; }
 #optStage .sb-pick{ flex:0 0 230px; }
 #optStage .sb-pick select{ font-weight:500; height:40px; }
-#optStage #scenario-adjust{ max-width:760px; }
+#optStage #scenario-adjust{ max-width:1000px; }
+#optStage .tc-sel{ margin:22px 0 6px; align-items:center; }
+#optStage .ap-card{ display:flex; align-items:center; gap:14px; margin:16px 0 10px; padding:14px 16px; border:1px solid #CFE6DA; border-radius:14px; background:#F6FBF8; }
+#optStage .ap-ic{ flex:none; width:36px; height:36px; border-radius:50%; background:var(--green-cta); color:#fff; display:flex; align-items:center; justify-content:center; }
+#optStage .ap-ic svg{ width:18px; height:18px; }
+#optStage .ap-ic.spin svg{ animation:apTurn 1.1s linear infinite; }
+@keyframes apTurn{ to{ transform:rotate(360deg); } }
+#optStage .ap-tx{ flex:1; min-width:0; font-size:14.5px; line-height:1.45; color:var(--text-secondary); }
+#optStage .ap-tx b{ display:inline; font-size:15px; font-weight:600; color:var(--ink); margin-right:5px; }
+#optStage .ap-tx{ font-size:15px; }
+#optStage .ap-tx strong{ color:var(--ink); font-weight:600; }
+#optStage .ap-btns{ flex:none; display:flex; gap:8px; }
+#optStage .ap-card{ flex-wrap:wrap; }
+#optStage .ap-goals{ flex:1 1 100%; display:flex; flex-wrap:wrap; gap:8px; padding-left:50px; animation:apIn .25s ease both; }
+@keyframes apIn{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
+#optStage .ap-goals button{ font:inherit; font-size:14.5px; font-weight:600; color:var(--ink); background:#fff; border:1px solid #BFDCCD; border-radius:999px; height:40px; padding:0 16px; cursor:pointer; }
+#optStage .ap-goals button:hover{ border-color:var(--green-cta); color:var(--green-cta); }
+#optStage .ap-goal{ position:relative; display:inline-flex; align-items:center; margin-right:6px; }
+#optStage .ap-goal select{ -webkit-appearance:none; appearance:none; font:inherit; font-size:15px; font-weight:600; color:var(--ink); background:none; border:0; border-bottom:1px dashed #8FB9A6; border-radius:0; height:auto; padding:0 16px 1px 0; cursor:pointer; field-sizing:content; }
+#optStage .ap-goal select:hover{ color:var(--green-cta); border-bottom-color:var(--green-cta); }
+#optStage .ap-goal select:focus{ outline:none; border-bottom-color:var(--green-cta); }
+#optStage .ap-goal i{ position:absolute; right:2px; font-style:normal; font-size:10px; color:var(--text-secondary); pointer-events:none; }
+#optStage .lv-lock{ display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; margin-left:6px; border:0; background:none; border-radius:6px; color:#B4BAC4; cursor:pointer; vertical-align:-6px; padding:0; }
+#optStage .lv-lock svg{ width:15px; height:15px; }
+#optStage .lv-lock .sh{ transform:translate(3px,-2px) rotate(18deg); transform-origin:16px 11px; transition:transform .15s ease; }
+#optStage .lv-lock.on{ color:#2F6F93; }
+#optStage .lv-lock.on .sh{ transform:none; }
+#optStage .lv-lock:hover{ background:#F2F4F5; color:var(--ink); }
+#optStage .ap-btns button{ font:inherit; font-size:14px; font-weight:600; height:40px; padding:0 18px; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
+#optStage .ap-go{ border:0; background:var(--green-cta); color:#fff; }
+#optStage .ap-go:hover{ background:#0B6440; }
+#optStage .ap-go svg{ width:14px; height:14px; }
+#optStage .ap-undo{ border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); }
+#optStage .sa-lev{ transition:background .5s ease; }
+#optStage .sa-lev.ap-hit{ background:#EAF6F0; transition:none; }
+@media (max-width:700px){ #optStage .ap-card{ flex-wrap:wrap; } }
+@media (prefers-reduced-motion:reduce){ #optStage .ap-ic.spin svg{ animation:none; } }
+#optStage .tc-pick{ flex:0 0 230px; position:relative; }
+#optStage .tc-pick select{ height:40px; font-weight:600; }
+#optStage .tc-name{ flex:1 1 200px; height:40px; max-width:320px; font-size:15px; }
+#optStage .tc-levs{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:44px; margin-top:8px; }
+#optStage .tc-levs .sa-lev{ padding:14px 0 10px; }
+#optStage .tc-cmp{ margin-top:30px; }
+#optStage .tc-cmp > .sv-back, #optStage .tc-cmp > h1, #optStage .tc-cmp > .sv-sub, #optStage .tc-cmp > .svc-sel, #optStage .tc-cmp > .svc-cards{ display:none !important; }
+#optStage .tc-save{ margin-top:24px; justify-content:flex-end; }
+#optStage .tc-levs .lv-num, #optStage .tc-levs .lv-sel{ margin-right:0; }
+@media (max-width:800px){ #optStage .tc-levs{ grid-template-columns:minmax(0,1fr); } }
 #optStage .sb-list{ margin:22px 0 4px; }
 #optStage .sb-list .sa-lev{ padding:14px 0 12px; }
 #optStage .sb-pickers{ display:flex; flex-wrap:wrap; gap:10px; margin:26px 0 0; align-items:center; }
@@ -38425,7 +38540,7 @@ body.ost-open #ostIndex{ display:none; }
   };
   function build(){
     grid.innerHTML='';
-    [['scenario-adjust','adjust','Try a scenario','Change one thing and see what happens.'],
+    [['scenario-adjust','adjust','Optimize a scenario','Fine-tune a scenario and watch it against your plan.'],
      ['stress-test','stress','Stress Test','Test the plan against rough markets.'],
      ['social-security-explorer','ss','Social Security Explorer','Compare claiming ages side by side.'],
      ['asset-allocation','alloc','Asset Allocation','Check your mix against your target.'],
@@ -39515,7 +39630,7 @@ body.scn-open:not(.scn-one) .sv-toggle{ display:inline-flex !important; }
   }
   /* repaint whenever Scenarios opens */
   var wasOpen=false; new MutationObserver(function(){ var on=document.body.classList.contains('scn-open'); if(on && !wasOpen){ Q=null; N7=null; CMP=null; setTimeout(paint, 30); } wasOpen=on; }).observe(document.body, { attributes:true, attributeFilter:['class'] });
-  window.__scnVers={ set:function(v){ CMP=null; setV(String(v)); paint(); }, paint:paint, compareIn:function(host, objs){ HOST=host; CMP=(objs||[]).slice(); vC(); }, compareOut:function(){ HOST=null; }, compare:function(objs){ HOST=null; CMP=(objs||[]).slice(); paint(); var pg=document.getElementById('scnPage'); if(pg) pg.scrollTop=0; window.scrollTo(0,0); } };
+  window.__scnVers={ set:function(v){ CMP=null; setV(String(v)); paint(); }, paint:paint, compareIn:function(host, objs){ HOST=host; CMP=(objs||[]).slice(); vC(); }, compareOut:function(){ HOST=null; }, compareClear:function(){ HOST=null; CMP=null; }, compare:function(objs){ HOST=null; CMP=(objs||[]).slice(); paint(); var pg=document.getElementById('scnPage'); if(pg) pg.scrollTop=0; window.scrollTo(0,0); } };
 })();
 </script>
 <!-- ===== Scenarios: Control center — Classic, rebuilt as one place to run every scenario ===== -->
@@ -39986,6 +40101,8 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
 </script>
 <!-- ===== Quick compare lives in the right rail: keep editing, watch the difference ===== -->
 <style id="qcRailCSS">
+/* on the Scenarios pages (full compare, manage) the bar's quick Compare has nothing to add */
+body.scn-open .wi-band .wi-cmpbtn{ display:none !important; }
 body.whatif-cmp .wi-scrim{ opacity:0 !important; pointer-events:none !important; }
 body.whatif-cmp .wi-band{ z-index:auto; }
 .wi-band.cmp .wi-sheet{ position:fixed; top:var(--qc-top,140px); left:var(--qc-left,954px); width:var(--qc-w,402px); margin:0; max-height:var(--qc-h,70vh) !important; overflow:auto; z-index:64; border-color:var(--hairline-strong); animation:qcIn .32s ease both; }
@@ -39994,12 +40111,14 @@ body.whatif-cmp .wi-band{ z-index:auto; }
 body.whatif-cmp[data-view="plan"]:not(.scn-open) aside.rail{ visibility:hidden; }
 .qc-head{ display:none; }
 .wi-band.cmp .qc-head{ display:flex; align-items:center; justify-content:space-between; padding:16px 18px 0; }
-.qc-head b{ font-size:16px; font-weight:600; color:var(--ink); }
+.qc-head b{ font-size:18px; font-weight:700; color:var(--ink); }
 .qc-head small{ display:block; font-size:12.5px; font-weight:400; color:var(--text-secondary); margin-top:2px; }
-.qc-head button{ flex:none; border:0; background:#F2F4F5; width:30px; height:30px; border-radius:50%; font-size:17px; color:var(--ink); cursor:pointer; }
-.wi-band.cmp .wi-sheet-in{ padding:14px 18px 18px !important; }
+.qc-head button{ flex:none; border:0; background:none; font:inherit; font-size:14px; font-weight:600; color:var(--green-cta); padding:4px 2px; cursor:pointer; }
+.qc-head button:hover{ text-decoration:underline; }
+.wi-band.cmp .wi-sheet-in{ padding:4px 18px 18px !important; }
 .wi-band.cmp .qc-top{ margin-bottom:14px; }
-.wi-band.cmp .qc-v{ font-size:15.5px; line-height:1.45; }
+.wi-band.cmp .qc-v{ font-size:14px; line-height:1.45; color:var(--text-secondary); font-weight:400; }
+.wi-band.cmp .qc-v b{ color:var(--ink); font-weight:600; }
 .wi-band.cmp .qc-mid{ grid-template-columns:minmax(0,1fr) !important; gap:14px; }
 .wi-band.cmp .qc-tiles{ grid-template-columns:minmax(0,1fr) !important; gap:0; border:1px solid var(--hairline); border-radius:14px; }
 .wi-band.cmp .qc-t{ border:0; border-radius:0; border-top:1px solid var(--hairline); padding:11px 14px; display:grid; grid-template-columns:1fr auto; grid-template-areas:"k v" "f f"; align-items:baseline; row-gap:2px; }
@@ -40012,18 +40131,26 @@ body.whatif-cmp[data-view="plan"]:not(.scn-open) aside.rail{ visibility:hidden; 
 .wi-band.cmp .qc-bot .qc-mode{ margin-left:0; }
 .wi-band.cmp .qc-bot .wi-full{ order:9; flex:1 1 100%; width:100% !important; height:44px; font-size:15px; padding:0 16px !important; }
 @media (max-width:1100px){ .wi-band.cmp .wi-sheet{ left:16px; right:16px; width:auto; top:auto; bottom:16px; max-height:60vh !important; } body.whatif-cmp[data-view="plan"] aside.rail{ visibility:visible; } }
+/* calmer: one list, one chart, one button */
+.wi-band.cmp .qc-addm, .wi-band.cmp .qc-mode, .wi-band.cmp .qc-del{ display:none !important; }
+.wi-band.cmp .qc-tiles{ border:0 !important; border-radius:0 !important; }
+.wi-band.cmp .qc-t{ padding:11px 0 !important; grid-template-areas:"k v" "k f" !important; align-items:center !important; }
+.wi-band.cmp .qc-t .f{ display:flex; justify-content:flex-end; }
+.wi-band.cmp .qc-t .f > :not(.d):not(em):not(b){ display:none; }
+.wi-band.cmp .qc-mid > :not(.qc-tiles){ border:0 !important; padding:0 !important; border-radius:0 !important; }
+.wi-band.cmp .qc-bot{ margin-top:6px !important; }
 </style>
 <script>
 (function(){
   'use strict';
   function place(){
     var band=document.querySelector('.wi-band'), sheet=band&&band.querySelector('.wi-sheet'); if(!sheet || !band.classList.contains('cmp')) return;
-    if(!sheet.querySelector('.qc-head')){ var h=document.createElement('div'); h.className='qc-head'; h.innerHTML='<div><b>Quick compare</b><small>Keep editing. This updates as you go.</small></div><button type="button" aria-label="Close compare">×</button>'; sheet.insertBefore(h, sheet.firstChild); h.querySelector('button').addEventListener('click', function(){ var c=document.querySelector('.wi-cmpbtn'); if(c) c.click(); }); }
+    if(!sheet.querySelector('.qc-head')){ var h=document.createElement('div'); h.className='qc-head'; h.innerHTML='<div><b>Quick compare</b></div><button type="button" aria-label="Hide quick compare">Hide</button>'; sheet.insertBefore(h, sheet.firstChild); h.querySelector('button').addEventListener('click', function(){ var c=document.querySelector('.wi-cmpbtn'); if(c) c.click(); }); }
     var rail=[].slice.call(document.querySelectorAll('aside.rail')).filter(function(r){ return r.offsetParent; })[0];
     var bar=band.querySelector('.wi-in'), bb=bar?bar.getBoundingClientRect():band.getBoundingClientRect();
     var st=document.documentElement.style;
     /* the band is the containing block for fixed children, so measure where the sheet actually lands and correct */
-    var top=Math.round(bb.bottom+12); st.setProperty('--qc-h', Math.max(240, window.innerHeight-top-20)+'px');
+    var top=Math.round(bb.bottom+32); st.setProperty('--qc-h', Math.max(240, window.innerHeight-top-20)+'px');
     var r=rail?rail.getBoundingClientRect():{ left:window.innerWidth-440, width:402 }; st.setProperty('--qc-w', Math.round(r.width)+'px');
     if(window.innerWidth<=1100) return;
     st.setProperty('--qc-top', top+'px'); st.setProperty('--qc-left', Math.round(r.left)+'px');
