@@ -33063,6 +33063,41 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
   document.addEventListener('click', function(){ setTimeout(build, 350); }, true);
 })();
 </script>
+<!-- ===== Life events: an icon on every entry, picked from what the event is ===== -->
+<style id="leIconCSS">
+#events-block .acct > div.le-has-ic{ position:relative; padding-left:56px; min-height:40px; display:flex; flex-direction:column; justify-content:center; }
+#events-block .le-ic{ position:absolute; left:0; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%; background:#EEF6F1; color:var(--green-cta); display:flex; align-items:center; justify-content:center; }
+#events-block .le-ic svg{ width:20px; height:20px; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var I={
+    retire:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+    ss:'<path d="M12 3l7 3v5c0 4.5-3 8.3-7 9.5C8 19.3 5 15.5 5 11V6z"/><path d="M9 12l2.2 2.2L15 10.5"/>',
+    health:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.600-7 10-7 10z"/><path d="M12 9.500v4M10 11.500h4"/>',
+    home:'<path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/>',
+    work:'<rect x="3.500" y="7.500" width="17" height="12" rx="2"/><path d="M9 7.500V5.500h6v2M3.500 13h17"/>',
+    trip:'<path d="M3 13l18-7-7 18-2.500-8z"/>',
+    gift:'<rect x="4" y="9" width="16" height="11" rx="1.500"/><path d="M4 13h16M12 9v11M12 9c-2-4-6-3-5-1s5 1 5 1zm0 0c2-4 6-3 5-1s-5 1-5 1z"/>',
+    draw:'<circle cx="12" cy="12" r="8.500"/><path d="M12 8v8M9 13l3 3 3-3"/>',
+    cal:'<rect x="4" y="5.500" width="16" height="14" rx="2"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4"/>'
+  };
+  function pick(t){ t=t.toLowerCase();
+    return /social security/.test(t)?'ss':/medicare|health|insurance|long-term care|care\b/.test(t)?'health':/withdrawal|rmd/.test(t)?'draw':/retire/.test(t)?'retire':/mortgage|home|house|property|downsize|move|dock|loan|rebuild|remodel/.test(t)?'home':/part-time|work|job|paycheck|business/.test(t)?'work':/trip|travel|vacation/.test(t)?'trip':/inherit|gift|charity|family|wedding|college/.test(t)?'gift':'cal'; }
+  function svg(k){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+I[k].replace(/\.(\d)00/g,'.$1')+'</svg>'; }
+  function run(){
+    var B=document.getElementById('events-block'); if(!B || !B.offsetParent) return;
+    [].forEach.call(B.querySelectorAll('.acct'), function(row){
+      var nm=row.querySelector('.nm'); if(!nm) return; var cell=nm.parentElement; if(!cell || cell===row) return;
+      var k=pick(nm.textContent||''), ic=cell.querySelector(':scope > .le-ic');
+      if(!ic){ ic=document.createElement('span'); ic.className='le-ic'; cell.insertBefore(ic, cell.firstChild); cell.classList.add('le-has-ic'); }
+      if(ic.dataset.k!==k){ ic.dataset.k=k; ic.innerHTML=svg(k); }
+    });
+  }
+  setInterval(run, 700); run();
+})();
+</script>
 <style id="whatifCSS">
 /* ======================================================================
    What-if: one plan, many shadows.
@@ -40502,7 +40537,7 @@ body.whatif-solid.scn-open #scnPage .scn-frame{ margin-top:82px; }
 <style id="planDDCSS">
 .plan-select.has-dd{ position:relative; }
 .plan-select.has-dd > .plan-row.wi-row{ display:none !important; }
-.plan-select.has-dd .pdd-wrap{ position:relative; margin:4px 0 6px; }
+.plan-select.has-dd .pdd-wrap{ position:relative; margin:6px 0 6px; order:100; }
 .plan-select.has-dd .pdd-wrap[hidden]{ display:none; }
 .ps-btn{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; font:inherit; font-size:15px; font-weight:500; color:var(--text-secondary); background:#fff; border:1px solid var(--hairline-strong); border-radius:12px; padding:10px 12px; cursor:pointer; }
 .ps-btn:hover, .ps-btn[aria-expanded="true"]{ border-color:var(--ink); }
@@ -40529,6 +40564,10 @@ body.whatif-solid.scn-open #scnPage .scn-frame{ margin-top:82px; }
 .ps-menu .sep{ height:1px; background:var(--hairline); margin:6px 4px; }
 .ps-menu .hd{ font-size:11.5px; font-weight:600; color:var(--text-secondary); padding:6px 10px 2px; }
 .ps-menu button.man{ color:var(--green-cta); font-weight:600; }
+/* menu lines up with the button: same left edge, same dot and label columns */
+.pdd-wrap .ps-menu{ left:-11px; right:0; }
+.pdd-wrap .ps-menu button{ padding:9px 9px; gap:13px; font-size:15px; }
+.pdd-wrap .ps-menu button .dot{ width:10px; height:10px; }
 .ps-menu button.man svg{ width:15px; height:15px; flex:none; }
 </style>
 <script>
