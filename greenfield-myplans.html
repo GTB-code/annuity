@@ -40046,6 +40046,62 @@ body.whatif-solid[data-view="plan"]:not(.bai-open):not(.scn-open):not(.sum-open)
   setInterval(function(){ if(document.body.classList.contains('whatif-solid') && document.body.dataset.view==='plan') paint(); }, 1200);
 })();
 </script>
+<!-- ===== "Make this my plan": always confirm, and say it overwrites the main plan ===== -->
+<style id="planConfirmCSS">
+.pc-scrim{ position:fixed; inset:0; background:rgba(16,24,44,.42); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; transition:opacity .18s ease; }
+.pc-scrim.on{ opacity:1; }
+.pc-modal{ width:min(480px, 100%); background:#fff; border-radius:20px; padding:28px 28px 24px; transform:translateY(10px); transition:transform .22s cubic-bezier(.2,.7,.2,1); }
+.pc-scrim.on .pc-modal{ transform:none; }
+.pc-modal h3{ font-size:24px; font-weight:600; letter-spacing:-0.3px; line-height:1.25; color:var(--ink); margin:0 0 10px; }
+.pc-modal p{ font-size:16px; line-height:1.5; color:var(--text-secondary); margin:0 0 18px; }
+.pc-modal p b{ color:var(--ink); font-weight:600; }
+.pc-keep{ display:flex; align-items:flex-start; gap:10px; padding:14px 16px; border:1px solid var(--hairline-strong); border-radius:12px; font-size:15px; line-height:1.4; color:var(--ink); cursor:pointer; margin-bottom:22px; }
+.pc-keep input{ width:18px; height:18px; margin:1px 0 0; accent-color:var(--green-cta); flex:none; }
+.pc-keep small{ display:block; font-size:13px; color:var(--text-secondary); margin-top:2px; }
+.pc-acts{ display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+.pc-acts button{ font:inherit; font-size:15px; font-weight:600; height:44px; padding:0 20px; border-radius:999px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; }
+.pc-acts button.go{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
+.pc-acts button.go:hover{ background:#0B6440; }
+</style>
+<script>
+(function(){
+  'use strict';
+  var RE=/^\s*Make (this )?my plan\s*$/i, open=null;
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function nameFor(el){
+    var w=window.WHATIF; if(!w) return '';
+    var host=el.closest('[data-id], [data-row]'), id=el.dataset.id || (host && (host.dataset.id||host.dataset.row)), it=id && w.list().filter(function(x){ return x.id===id; })[0];
+    if(it) return it.name;
+    var card=el.closest('.svc-card, .scv, .scn-row, .cmp-col'); var nm=card && card.querySelector('.nm, .name, h3, h4, b'); if(nm && nm.textContent.trim() && !RE.test(nm.textContent)) return nm.textContent.trim();
+    return (w.state && w.state.solid && w.state.solid.name) || '';
+  }
+  function close(){ if(!open) return; var s=open; open=null; s.classList.remove('on'); setTimeout(function(){ s.remove(); }, 200); document.removeEventListener('keydown', onKey, true); }
+  function onKey(e){ if(e.key==='Escape'){ e.stopPropagation(); close(); } }
+  function ask(el){
+    var w=window.WHATIF, nm=nameFor(el);
+    var sc=document.createElement('div'); sc.className='pc-scrim'; sc.setAttribute('role','dialog'); sc.setAttribute('aria-modal','true'); sc.setAttribute('aria-labelledby','pcTitle');
+    sc.innerHTML='<div class="pc-modal"><h3 id="pcTitle">Replace your plan with '+(nm?'“'+esc(nm)+'”':'this scenario')+'?</h3><p>This <b>overwrites My Financial Plan</b>. Everything in this scenario becomes your real plan, and your current plan’s numbers are replaced.</p><label class="pc-keep"><input type="checkbox" class="pc-save" checked><span>Keep my current plan as a scenario<small>Saved as “My previous plan” so you can switch back.</small></span></label><div class="pc-acts"><button type="button" data-pc="no">Cancel</button><button type="button" class="go" data-pc="yes">Yes, replace my plan</button></div></div>';
+    document.body.appendChild(sc); open=sc; requestAnimationFrame(function(){ sc.classList.add('on'); var c=sc.querySelector('[data-pc="no"]'); if(c) c.focus(); });
+    document.addEventListener('keydown', onKey, true);
+    sc.addEventListener('click', function(e){
+      if(e.target===sc){ close(); return; }
+      var b=e.target.closest('[data-pc]'); if(!b) return;
+      if(b.dataset.pc==='no'){ close(); return; }
+      var keep=sc.querySelector('.pc-save').checked, old=null; if(keep && w && w.base()){ var B=w.base(); old={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }; }
+      close();
+      el._pcOk=true; el.click();
+      if(old) setTimeout(function(){ try{ var had=w.list().filter(function(x){ return x.name==='My previous plan'; })[0]; if(had) w.update(had.id, old, {}); else w.add('My previous plan', old, {}); document.dispatchEvent(new CustomEvent('whatif:change')); }catch(err){} }, 600);
+    });
+  }
+  document.addEventListener('click', function(e){
+    var el=e.target.closest && e.target.closest('button, a'); if(!el || !RE.test(el.textContent)) return;
+    if(el.closest('.pc-modal')) return;
+    if(el._pcOk){ el._pcOk=false; return; }
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+    if(!open) ask(el);
+  }, true);
+})();
+</script>
 <!-- ===== right rail +50px on every page ===== -->
 <style>
 .layout, .dock .dock-inner{ grid-template-columns:200px minmax(0,620px) 1fr; }
