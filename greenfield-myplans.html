@@ -32831,6 +32831,15 @@ body.bai-open .layout.page.sub-layout.on > .rail.bai-host > :not(.bai), body.bai
 #events-block .acc-head{ align-items:center; }
 #events-block .acc-head .cx-actions{ display:flex; align-items:center; gap:10px; margin:0 14px 0 auto; }
 #events-block .acc-head .cx-actions .cx-add-asset{ display:inline-flex; }
+
+/* header in two calm rows: title + Add on top; "How life events work" and Arrange share the line below */
+#events-block .acc-head{ display:grid !important; grid-template-columns:minmax(0,1fr) auto auto; column-gap:12px; row-gap:14px; align-items:center; }
+#events-block .acc-head > div:first-child, #events-block .acc-head > .cx-actions{ display:contents; }
+#events-block .acc-head h2{ grid-column:1; grid-row:1; margin:0; }
+#events-block .acc-head .cx-add-asset{ grid-column:2; grid-row:1; }
+#events-block .acc-head > .assets-actions{ grid-column:3; grid-row:1; }
+#events-block .acc-head .sub{ grid-column:1; grid-row:2; margin:0; }
+#events-block .acc-head .ao-btn{ grid-column:2 / 4; grid-row:2; justify-self:end; }
 </style>
 <script id="lifeEventPresetsJS">
 (function(){
