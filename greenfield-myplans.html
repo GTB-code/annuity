@@ -39794,7 +39794,7 @@ body.scm-open .scm-scrim{ opacity:1; pointer-events:auto; } body.scm-open .scm-p
 .cc-tbl td:last-child{ width:120px; }
 .cc-tbl td{ overflow:visible; }
 .cc-tbl td:nth-child(2){ min-width:0; }
-.cc-chg{ max-width:none; white-space:normal; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; text-overflow:clip; line-height:1.45; }
+.cc-chg{ max-width:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; line-height:1.45; }
 .cc-nm{ overflow-wrap:anywhere; }
 /* a scenario bar is showing: keep the back link clear of it */
 body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
@@ -39826,6 +39826,7 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
   function changes(it){ var B=W().base(), v=it.vals||{}, o=[];
     if(v.ret!==undefined&&v.ret!==B.ret) o.push('Retire at '+v.ret); if(v.ss!==undefined&&v.ss!==B.ss) o.push('Social Security at '+v.ss); if(v.spend!==undefined&&v.spend!==B.spend) o.push('Spend '+usd(v.spend)+'/mo'); if(v.life!==undefined&&v.life!==B.life) o.push(LIFE[v.life]+' lifestyle'); if(v.ret_r!==undefined&&v.ret_r!==B.ret_r) o.push(RR[v.ret_r]+' returns');
     Object.keys(it.moves||{}).forEach(function(k){ var m=it.moves[k]; if(m&&m.label) o.push(m.label); }); return o; }
+  function brief(it){ var c=changes(it).map(function(x){ return x.split(':')[0]; }); if(!c.length) return 'Same as your plan'; var n=c.length; return n<=2 ? c.join(' \u00b7 ') : c.slice(0,2).join(' \u00b7 ')+' \u00b7 +'+(n-2)+' more'; }
   function bend(rows, moves){ var extra=0; Object.keys(moves||{}).forEach(function(k){ extra+=moves[k].end||0; }); if(!extra) return rows; var n=rows.length; return rows.map(function(r,i){ return { y:r.y, bal:Math.max(0, r.bal+extra*(n>1?i/(n-1):1)) }; }); }
   function d(v, unit){ if(!v || (unit==='$' && Math.abs(v)<1000)) return '<span class="cc-d">same</span>'; return '<span class="cc-d '+(v>0?'pos':'neg')+'">'+(v>0?'+':'−')+(unit==='$'?money(v):Math.abs(v)+unit)+'</span>'; }
   function verdict(dc, de){ var up=dc>0||de>=1000, dn=dc<0||de<=-1000; if(up&&!dn) return '<span class="cc-v good">Better</span>'; if(dn&&!up) return '<span class="cc-v bad">Costs you</span>'; if(up&&dn) return '<span class="cc-v mix">Trade-off</span>'; return '<span class="cc-v mix">About the same</span>'; }
@@ -39863,7 +39864,7 @@ body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
         var acts= CONFIRM===id ? '<div class="cc-conf">Delete?<button type="button" class="yes" data-cc="delyes" data-id="'+id+'">Delete</button><button type="button" data-cc="delno">Keep</button></div>'
           : '<div class="cc-acts"><button type="button" class="cc-a" data-cc="open" data-id="'+id+'">Open</button><div class="cc-more"><button type="button" class="cc-a" data-cc="menu" data-id="'+id+'" aria-label="More">•••</button>'+(MENU===id?'<div class="cc-menu"><button type="button" data-cc="adjust" data-id="'+id+'">Adjust in Optimize</button><button type="button" data-cc="plan" data-id="'+id+'" style="color:var(--green-cta);font-weight:600">Make this my plan</button><div style="height:1px;background:var(--hairline);margin:4px 6px"></div><button type="button" data-cc="rename" data-id="'+id+'">Rename</button><button type="button" data-cc="dup" data-id="'+id+'">Duplicate</button><button type="button" class="del" data-cc="del" data-id="'+id+'">Delete</button></div>':'')+'</div></div>';
         x+='<tr class="'+(on?'':'off')+'" data-row="'+id+'"><td style="width:34px"><button type="button" class="cc-pick'+(on?' on':'')+'" style="--c:'+r.c+'" data-cc="pick" data-id="'+id+'" aria-pressed="'+on+'" aria-label="Show on chart">'+CHECK+'</button></td>'+
-          '<td><span class="cc-nm" contenteditable="true" spellcheck="false" data-id="'+id+'">'+esc(r.it.name)+'</span>'+(best && best.it.id===id && data.length>1?' <span class="cc-v good" style="margin-left:6px">Best</span>':'')+'<span class="cc-chg">'+esc(changes(r.it).join(' · ')||'Same as your plan')+'</span></td>'+
+          '<td><span class="cc-nm" contenteditable="true" spellcheck="false" data-id="'+id+'">'+esc(r.it.name)+'</span>'+(best && best.it.id===id && data.length>1?' <span class="cc-v good" style="margin-left:6px">Best</span>':'')+'<span class="cc-chg" title="'+esc(changes(r.it).join(', '))+'">'+esc(brief(r.it))+'</span></td>'+
           '<td>'+acts+'</td></tr>'; });
       x+='</tbody></table>';
     }
