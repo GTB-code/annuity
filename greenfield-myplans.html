@@ -40281,6 +40281,16 @@ body.whatif-solid[data-view="plan"]:not(.bai-open):not(.scn-open):not(.sum-open)
 .pc-acts button{ font:inherit; font-size:15px; font-weight:600; height:44px; padding:0 20px; border-radius:999px; border:1px solid var(--hairline-strong); background:#fff; color:var(--ink); cursor:pointer; }
 .pc-acts button.go{ background:var(--green-cta); border-color:var(--green-cta); color:#fff; }
 .pc-acts button.go:hover{ background:#0B6440; }
+.pc-undo{ position:fixed; left:50%; bottom:112px; transform:translate(-50%, 14px); z-index:92; display:flex; align-items:center; gap:12px; max-width:min(640px, calc(100vw - 32px)); background:#10182C; color:#fff; border-radius:999px; padding:10px 10px 10px 14px; opacity:0; pointer-events:none; transition:opacity .22s ease, transform .28s cubic-bezier(.2,.7,.2,1); }
+.pc-undo.on{ opacity:1; transform:translate(-50%, 0); pointer-events:auto; }
+.pc-undo .ic{ flex:none; width:26px; height:26px; border-radius:50%; background:var(--green-cta); display:flex; align-items:center; justify-content:center; }
+.pc-undo .ic svg{ width:14px; height:14px; }
+.pc-undo .tx{ font-size:14.5px; line-height:1.35; color:#D8DCE4; min-width:0; }
+.pc-undo .tx b{ color:#fff; font-weight:600; }
+.pc-undo .un{ flex:none; font:inherit; font-size:14.5px; font-weight:600; height:36px; padding:0 18px; border-radius:999px; border:0; background:#fff; color:#10182C; cursor:pointer; }
+.pc-undo .un:hover{ background:#E6F5EE; }
+.pc-undo .x{ flex:none; width:32px; height:32px; border:0; background:none; color:#B9C0CC; font-size:18px; cursor:pointer; border-radius:50%; }
+.pc-undo .x:hover{ color:#fff; background:rgba(255,255,255,.12); }
 </style>
 <script>
 (function(){
@@ -40294,6 +40304,32 @@ body.whatif-solid[data-view="plan"]:not(.bai-open):not(.scn-open):not(.sum-open)
     var card=el.closest('.svc-card, .scv, .scn-row, .cmp-col'); var nm=card && card.querySelector('.nm, .name, h3, h4, b'); if(nm && nm.textContent.trim() && !RE.test(nm.textContent)) return nm.textContent.trim();
     return (w.state && w.state.solid && w.state.solid.name) || '';
   }
+  function scnFor(el){ var w=window.WHATIF; if(!w) return null; var host=el.closest('[data-id], [data-row]'), id=el.dataset.id || (host && (host.dataset.id||host.dataset.row)); var it=id && w.list().filter(function(x){ return x.id===id; })[0]; return it || (w.state && w.state.solid) || null; }
+  /* after replacing: an Undo that stays until they dismiss it */
+  var ubar=null;
+  function undoBar(u){
+    if(ubar) ubar.remove();
+    ubar=document.createElement('div'); ubar.className='pc-undo'; ubar.setAttribute('role','status');
+    ubar.innerHTML='<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tx"><b>“'+esc(u.name)+'” is now your plan.</b> Changed your mind?</span><button type="button" class="un" data-pu="undo">Undo</button><button type="button" class="x" data-pu="x" aria-label="Dismiss">×</button>';
+    document.body.appendChild(ubar); placeBar(); requestAnimationFrame(function(){ ubar.classList.add('on'); });
+    ubar.addEventListener('click', function(e){ var b=e.target.closest('[data-pu]'); if(!b) return; var bar=ubar; ubar=null; bar.classList.remove('on'); setTimeout(function(){ bar.remove(); }, 250); if(b.dataset.pu==='undo') undo(u); });
+  }
+  function placeBar(){ if(!ubar) return; var c=[].slice.call(document.querySelectorAll('.layout.page.on > main.center, .layout.page.on > .center, #scnPage .scn-alt, #optStage')).filter(function(x){ return x.offsetParent; })[0]; if(!c){ ubar.style.left='50%'; return; } var r=c.getBoundingClientRect(); ubar.style.left=Math.round(r.left+r.width/2)+'px'; }
+  window.addEventListener('resize', placeBar); document.addEventListener('click', function(){ setTimeout(placeBar, 350); }, true);
+  function undo(u){
+    var w=window.WHATIF; if(!w) return;
+    if(w.state && w.state.solid && w.discard) try{ w.discard(); }catch(e){}
+    var tmp=w.add('Your plan, restored', u.was, {}); w.activate(tmp);
+    setTimeout(function(){ w.makePlan();
+      setTimeout(function(){
+        if(u.madePrev){ var pv=w.list().filter(function(x){ return x.name==='My previous plan'; })[0]; if(pv) w.remove(pv.id); }
+        if(u.scn && !w.list().some(function(x){ return x.name===u.scn.name; })) w.add(u.scn.name, u.scn.vals, u.scn.moves);
+        document.dispatchEvent(new CustomEvent('whatif:change'));
+        if(window.__scnVers && window.__scnVers.paint && document.body.classList.contains('scn-open')) window.__scnVers.paint();
+        if(window.__peToast) window.__peToast('Undone. Your plan is back'+(u.scn?', and “'+u.scn.name+'” is a scenario again.':'.'));
+      }, 200);
+    }, 120);
+  }
   function close(){ if(!open) return; var s=open; open=null; s.classList.remove('on'); setTimeout(function(){ s.remove(); }, 200); document.removeEventListener('keydown', onKey, true); }
   function onKey(e){ if(e.key==='Escape'){ e.stopPropagation(); close(); } }
   function ask(el){
@@ -40306,9 +40342,10 @@ body.whatif-solid[data-view="plan"]:not(.bai-open):not(.scn-open):not(.sum-open)
       if(e.target===sc){ close(); return; }
       var b=e.target.closest('[data-pc]'); if(!b) return;
       if(b.dataset.pc==='no'){ close(); return; }
-      var keep=sc.querySelector('.pc-save').checked, old=null; if(keep && w && w.base()){ var B=w.base(); old={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }; }
+      var keep=sc.querySelector('.pc-save').checked, old=null, was=null, scn=scnFor(el); if(w && w.base()){ var B=w.base(); was={ ret:B.ret, ss:B.ss, spend:B.spend, life:B.life, ret_r:B.ret_r }; if(keep) old=was; }
       close();
       el._pcOk=true; el.click();
+      if(was) setTimeout(function(){ undoBar({ name:nm||(scn&&scn.name)||'That scenario', was:was, scn:scn?{ name:scn.name, vals:Object.assign({}, scn.vals), moves:JSON.parse(JSON.stringify(scn.moves||{})) }:null, madePrev:keep }); }, 900);
       if(old) setTimeout(function(){ try{ var had=w.list().filter(function(x){ return x.name==='My previous plan'; })[0]; if(had) w.update(had.id, old, {}); else w.add('My previous plan', old, {}); document.dispatchEvent(new CustomEvent('whatif:change')); }catch(err){} }, 600);
     });
   }
