@@ -39646,6 +39646,8 @@ body.scm-open .scm-scrim{ opacity:1; pointer-events:auto; } body.scm-open .scm-p
 @keyframes nwFlash{ 0%{ outline:2px solid rgba(14,121,78,0); outline-offset:6px; } 20%{ outline:2px solid rgba(14,121,78,.45); outline-offset:6px; } 100%{ outline:2px solid rgba(14,121,78,0); outline-offset:6px; } }
 .cc-tbl tbody tr:first-child td{ border-top:1px solid var(--hairline-strong); }
 .cc-chg{ max-width:none; }
+/* a scenario bar is showing: keep the back link clear of it */
+body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
 </style>
 <script>
 (function(){
@@ -39941,7 +39943,7 @@ body.whatif-cmp .wi-band{ z-index:auto; }
 .wi-band.cmp .wi-sheet{ position:fixed; top:var(--qc-top,140px); left:var(--qc-left,954px); width:var(--qc-w,402px); margin:0; max-height:var(--qc-h,70vh) !important; overflow:auto; z-index:64; border-color:var(--hairline-strong); animation:qcIn .32s ease both; }
 @keyframes qcIn{ from{ opacity:0; } to{ opacity:1; } }
 @media (prefers-reduced-motion:reduce){ .wi-band.cmp .wi-sheet{ animation:none; } }
-body.whatif-cmp[data-view="plan"] aside.rail{ visibility:hidden; }
+body.whatif-cmp[data-view="plan"]:not(.scn-open) aside.rail{ visibility:hidden; }
 .qc-head{ display:none; }
 .wi-band.cmp .qc-head{ display:flex; align-items:center; justify-content:space-between; padding:16px 18px 0; }
 .qc-head b{ font-size:16px; font-weight:600; color:var(--ink); }
@@ -39980,7 +39982,7 @@ body.whatif-cmp[data-view="plan"] aside.rail{ visibility:hidden; }
     var sr=sheet.getBoundingClientRect(), dx=Math.round(r.left-sr.left), dy=Math.round(top-sr.top);
     if(dx||dy){ st.setProperty('--qc-left', Math.round(r.left+dx)+'px'); st.setProperty('--qc-top', (top+dy)+'px'); }
   }
-  new MutationObserver(function(){ if(document.body.classList.contains('whatif-cmp')) requestAnimationFrame(place); }).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
+  new MutationObserver(function(){ var c=document.body.classList; if(c.contains('whatif-cmp') && c.contains('scn-open')){ var cb=document.querySelector('.wi-cmpbtn'); if(cb) cb.click(); return; } if(c.contains('whatif-cmp')) requestAnimationFrame(place); }).observe(document.body, { attributes:true, attributeFilter:['class','data-view'] });
   window.addEventListener('resize', place); window.addEventListener('scroll', place, { passive:true });
   document.addEventListener('whatif:change', function(){ setTimeout(place, 30); });
 })();
