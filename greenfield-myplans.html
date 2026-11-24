@@ -39789,7 +39789,13 @@ body.scm-open .scm-scrim{ opacity:1; pointer-events:auto; } body.scm-open .scm-p
 #events-block.nw-flash{ animation:nwFlash 1.6s ease; border-radius:16px; }
 @keyframes nwFlash{ 0%{ outline:2px solid rgba(14,121,78,0); outline-offset:6px; } 20%{ outline:2px solid rgba(14,121,78,.45); outline-offset:6px; } 100%{ outline:2px solid rgba(14,121,78,0); outline-offset:6px; } }
 .cc-tbl tbody tr:first-child td{ border-top:1px solid var(--hairline-strong); }
-.cc-chg{ max-width:none; }
+.cc-tbl{ table-layout:fixed; width:100%; }
+.cc-tbl td:first-child{ width:34px; }
+.cc-tbl td:last-child{ width:120px; }
+.cc-tbl td{ overflow:visible; }
+.cc-tbl td:nth-child(2){ min-width:0; }
+.cc-chg{ max-width:none; white-space:normal; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; text-overflow:clip; line-height:1.45; }
+.cc-nm{ overflow-wrap:anywhere; }
 /* a scenario bar is showing: keep the back link clear of it */
 body.whatif-open.scn-open #scnPage .scn-frame{ margin-top:50px; }
 
